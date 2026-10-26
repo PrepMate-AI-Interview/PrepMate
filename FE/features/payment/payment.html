@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Thanh toán đơn hàng</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canonical Design Tokens & System Stylesheets -->
+    <link rel="stylesheet" href="../../shared/css/tokens.css?v=26">
+    <link rel="stylesheet" href="../../shared/css/base.css?v=26">
+    <link rel="stylesheet" href="../../shared/css/layout.css?v=26">
+    <link rel="stylesheet" href="../../shared/css/components.css?v=26">
+
+    <link rel="stylesheet" href="../../shared/css/style.css?v=19">
+    <link rel="stylesheet" href="../../features/dashboard/new-dashboard.css?v=19">
+    <link rel="stylesheet" href="./payment.css?v=21">
+    <script>
+        (function() {
+            var raw = localStorage.getItem('prepmate_current_user') || localStorage.getItem('prepmate_user');
+            var user = null;
+            try { if (raw) user = JSON.parse(raw); } catch (e) {}
+            if (!user || !user.token) {
+                document.documentElement.style.display = 'none';
+                var ret = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+                window.location.replace('../auth/auth.html?redirect=' + ret);
+            }
+        })();
+    </script>
+</head>
+<body class="checkout-body">
+
+    <!-- MAIN CONTENT: FOCUSED CHECKOUT SHELL -->
+    <main class="main-content main-content-new">
+        <div class="checkout-page">
+            <!-- Focused Checkout Top Bar -->
+            <div class="checkout-top-bar">
+                <div class="checkout-brand">
+                    <a href="../../index.html" class="logo brand-logo" title="PrepMate - Về trang chủ" style="cursor: pointer; text-decoration: none;">Prep<span>Mate</span></a>
+                    <div class="brand-divider"></div>
+                    <span class="page-badge">Thanh Toán Đơn Hàng</span>
+                </div>
+
+                <div class="checkout-steps">
+                    <a href="./pricing.html" class="checkout-step-item" style="text-decoration:none;">
+                        <span class="checkout-step-dot">1</span>
+                        <span>Chọn gói</span>
+                    </a>
+                    <span class="checkout-step-separator">➔</span>
+                    <div class="checkout-step-item active">
+                        <span class="checkout-step-dot">2</span>
+                        <span>Thanh toán</span>
+                    </div>
+                    <span class="checkout-step-separator">➔</span>
+                    <div class="checkout-step-item">
+                        <span class="checkout-step-dot">3</span>
+                        <span>Kích hoạt PRO</span>
+                    </div>
+                </div>
+
+                <div class="checkout-top-actions">
+                    <a href="./pricing.html" class="checkout-back-link" title="Quay lại bảng giá so sánh các gói">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+                        ← Quay lại bảng giá
+                    </a>
+                    <div class="checkout-security-tag">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        PCI-DSS 256-bit
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Alert Banners -->
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+
+            <!-- TWO-COLUMN CHECKOUT GRID -->
+            <div class="checkout-grid">
+                <!-- LEFT COLUMN: ACCOUNT & PAYMENT METHOD SELECTION -->
+                <div class="checkout-main-col">
+                    <!-- 1. ACCOUNT RECIPIENT CARD -->
+                    <div class="checkout-card shopee-card account-card">
+                        <div class="checkout-card-header">
+                            <div class="checkout-card-title">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <span id="checkout-recipient-title">Tài khoản nhận Gói Hội viên PRO</span>
+                            </div>
+                            <a href="../../features/auth/auth.html" class="account-action-link" id="auth-switch-link">Thay đổi tài khoản</a>
+                        </div>
+                        <div class="account-info-box">
+                            <div class="account-avatar-wrapper">
+                                <div class="account-avatar">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                </div>
+                            </div>
+                            <div class="account-detail">
+                                <div class="account-name-row">
+                                    <span class="account-name" id="checkout-account-name">Đang tải...</span>
+                                    <span class="account-tier-tag" id="checkout-account-badge">Gói Hiện Tại: Miễn Phí</span>
+                                </div>
+                                <span class="account-email" id="checkout-account-email">Đang kiểm tra...</span>
+                            </div>
+                            <div class="account-status-tag">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span>Kích hoạt tự động</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. PAYMENT METHODS SELECTION CARD -->
+                    <div class="checkout-card shopee-card payment-method-card">
+                        <div class="checkout-card-header">
+                            <div class="checkout-card-title">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                                <span>Phương thức thanh toán</span>
+                            </div>
+                            <span class="payment-note-badge">Không mất phí giao dịch</span>
+                        </div>
+
+                        <!-- Horizontal Method Tabs -->
+                        <div class="payment-method-tabs">
+                            <button type="button" class="method-tab-btn active" onclick="selectPaymentMethod('bank', this)">
+                                <div class="method-tab-icon" style="color:#059669;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+                                <div class="method-tab-label">Chuyển khoản QR</div>
+                                <div class="method-tab-sub">VietQR 24/7</div>
+                            </button>
+
+                            <button type="button" class="method-tab-btn" onclick="selectPaymentMethod('momo', this)">
+                                <div class="method-tab-icon" style="color:#d82d8b;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+                                <div class="method-tab-label">Ví MoMo</div>
+                                <div class="method-tab-sub">Quét mã nhanh</div>
+                            </button>
+
+                            <button type="button" class="method-tab-btn" onclick="selectPaymentMethod('card', this)">
+                                <div class="method-tab-icon" style="color:#1d4ed8;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+                                <div class="method-tab-label">Thẻ quốc tế</div>
+                                <div class="method-tab-sub">Visa, Master, JCB</div>
+                            </button>
+
+                            <button type="button" class="method-tab-btn" onclick="selectPaymentMethod('zalopay', this)">
+                                <div class="method-tab-icon" style="color:#0284c7;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+                                <div class="method-tab-label">Ví ZaloPay</div>
+                                <div class="method-tab-sub">Cổng ZaloPay</div>
+                            </button>
+
+                            <button type="button" class="method-tab-btn" onclick="selectPaymentMethod('paypal', this)">
+                                <div class="method-tab-icon" style="color:#0079c1;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+                                <div class="method-tab-label">PayPal</div>
+                                <div class="method-tab-sub">Cổng quốc tế</div>
+                            </button>
+
+                            <button type="button" class="method-tab-btn" onclick="selectPaymentMethod('stripe', this)">
+                                <div class="method-tab-icon" style="color:#6366f1;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                                <div class="method-tab-label">Cổng Stripe</div>
+                                <div class="method-tab-sub">Global Pay</div>
+                            </button>
+                        </div>
+
+                        <!-- Method Detail Panels -->
+                        <div class="method-detail-card">
+                            <!-- 1. BANK TRANSFER / VIETQR -->
+                            <div id="bank-details" class="qr-code-section active">
+                                <div class="qr-transfer-grid">
+                                    <div class="qr-image-wrapper">
+                                        <img src="./images/bank_qr.jpg" alt="VietQR Bank Transfer">
+                                        <p>Quét bằng ứng dụng ngân hàng bất kỳ để chuyển khoản tự động</p>
+                                    </div>
+
+                                    <div class="transfer-data-table">
+                                        <div class="transfer-data-row">
+                                            <span class="label">Ngân hàng thụ hưởng</span>
+                                            <span class="val">Techcombank (TCB)</span>
+                                        </div>
+                                        <div class="transfer-data-row">
+                                            <span class="label">Số tài khoản</span>
+                                            <div class="value-group">
+                                                <span class="val font-mono" id="val-acc-num">1907 6001 4680 11</span>
+                                                <button type="button" class="btn-copy-tag" onclick="copyText('19076001468011', this)">Sao chép</button>
+                                            </div>
+                                        </div>
+                                        <div class="transfer-data-row">
+                                            <span class="label">Chủ tài khoản</span>
+                                            <span class="val">NGUYEN VIET HUNG</span>
+                                        </div>
+                                        <div class="transfer-data-row highlight-amount-row">
+                                            <span class="label">Số tiền cần chuyển</span>
+                                            <div class="value-group">
+                                                <span class="val font-mono text-primary-val" id="val-transfer-amount">99.000 VNĐ</span>
+                                                <button type="button" class="btn-copy-tag" id="btn-copy-amount" onclick="copyAmount(this)">Sao chép</button>
+                                            </div>
+                                        </div>
+                                        <div class="transfer-data-row highlight-ref-row">
+                                            <span class="label">Nội dung chuyển khoản</span>
+                                            <div class="value-group">
+                                                <input type="text" id="bank-reference" readonly class="font-mono text-ref-input" title="Mã tham chiếu thanh toán">
+                                                <button type="button" class="btn-copy-tag" onclick="copyBankRef(this)">Sao chép</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="qr-notice-box">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                    <span>Hệ thống tự động kích hoạt tài khoản PRO trong vòng 1-3 phút sau khi nhận thanh toán. Vui lòng giữ nguyên mã nội dung chuyển khoản để được đối soát tức thì.</span>
+                                </div>
+                            </div>
+
+                            <!-- 2. MOMO DETAILS -->
+                            <div id="momo-details" class="qr-code-section">
+                                <div class="qr-transfer-grid">
+                                    <div class="qr-image-wrapper">
+                                        <img src="./images/momo_qr.jpg" alt="MoMo Transfer">
+                                        <p>Quét mã bằng ứng dụng MoMo để chuyển tiền</p>
+                                    </div>
+
+                                    <div class="momo-form-wrapper">
+                                        <div class="form-group">
+                                            <label for="momo-phone">Số điện thoại MoMo của bạn:</label>
+                                            <input type="tel" id="momo-phone" placeholder="Ví dụ: 0987 654 321">
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label for="momo-transaction">Mã giao dịch MoMo (Tùy chọn đối soát nhanh):</label>
+                                            <input type="text" id="momo-transaction" placeholder="Ví dụ: 1234567890">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. CREDIT / DEBIT CARD -->
+                            <div id="card-details" class="card-details-section">
+                                <div class="form-group">
+                                    <label for="card-name">Tên in trên thẻ (In hoa, không dấu)</label>
+                                    <input type="text" id="card-name" placeholder="NGUYEN VAN A">
+                                </div>
+                                <div class="form-group">
+                                    <label for="card-number">Số thẻ tín dụng / ghi nợ (16 chữ số)</label>
+                                    <input type="text" id="card-number" placeholder="4123 4567 8901 2345" maxlength="19">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label for="card-expiry">Ngày hết hạn (MM/YY)</label>
+                                        <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label for="card-cvv">Mã bảo mật CVV / CVC</label>
+                                        <input type="password" id="card-cvv" placeholder="123" maxlength="4">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. ZALOPAY -->
+                            <div id="zalopay-details" class="qr-code-section">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label for="zalopay-phone">Số điện thoại đăng ký ZaloPay của bạn</label>
+                                    <input type="tel" id="zalopay-phone" placeholder="Ví dụ: 0901 234 567">
+                                </div>
+                            </div>
+
+                            <!-- 5. PAYPAL -->
+                            <div id="paypal-details" class="qr-code-section">
+                                <p style="font-size: 14px; color: var(--pm-text-secondary, #334155); margin: 0 0 6px;">
+                                    Thanh toán an toàn qua cổng PayPal quốc tế.
+                                </p>
+                                <p style="font-size: 13px; color: var(--pm-text-muted, #64748b); margin: 0;">
+                                    Tài khoản đối tác: <strong>payment@prepmate.ai</strong>
+                                </p>
+                            </div>
+
+                            <!-- 6. STRIPE -->
+                            <div id="stripe-details" class="qr-code-section">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label for="stripe-email">Địa chỉ email nhận biên lai Stripe</label>
+                                    <input type="email" id="stripe-email" placeholder="your.name@example.com">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: ORDER SUMMARY & PRIMARY CTA (STICKY) -->
+                <div class="checkout-summary-col">
+                    <div class="checkout-card shopee-card order-summary-box">
+                        <div class="summary-header">
+                            <h2 class="summary-title">Tóm tắt đơn hàng</h2>
+                            <span class="plan-period-badge" id="checkout-plan-qty">1 tháng (30 ngày)</span>
+                        </div>
+
+                        <!-- Selected Plan Info -->
+                        <div class="summary-plan-card">
+                            <div class="summary-plan-top">
+                                <div class="product-icon-badge" id="checkout-plan-badge-icon">P</div>
+                                <div class="summary-plan-meta">
+                                    <strong id="checkout-plan-name" class="summary-plan-name">Gói Hội Viên Toàn Diện PrepMate PRO</strong>
+                                    <div class="summary-plan-pricing">
+                                        <span class="summary-unit-price" id="checkout-unit-price">99.000 VNĐ</span>
+                                        <span class="summary-unit-period">/ tháng</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="summary-plan-desc" id="checkout-plan-desc">Mở khóa không giới hạn lượt phỏng vấn AI, kịch bản thích ứng theo JD và báo cáo STAR chi tiết.</p>
+
+                            <!-- Plan Feature Checklist -->
+                            <ul class="summary-features-list">
+                                <li>
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Không giới hạn phiên phỏng vấn AI mô phỏng</span>
+                                </li>
+                                <li>
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Tương tác giọng nói ElevenLabs Voice AI</span>
+                                </li>
+                                <li>
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Kịch bản phỏng vấn thích ứng theo JD & CV</span>
+                                </li>
+                                <li>
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Báo cáo đánh giá năng lực STAR chi tiết</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Price Breakdown -->
+                        <div class="breakdown-table">
+                            <div class="breakdown-row">
+                                <span class="label">Đơn giá gói PRO:</span>
+                                <span class="val font-mono" id="breakdown-subtotal">99.000 VNĐ</span>
+                            </div>
+                            <div class="breakdown-row" id="breakdown-row-total-item" style="display:none;">
+                                <span class="label">Thành tiền:</span>
+                                <span class="val" id="checkout-row-total">99.000 VNĐ</span>
+                            </div>
+                            <div class="breakdown-row discount-row" style="display:none;" id="breakdown-discount-container">
+                                <span class="label">Ưu đãi giảm giá:</span>
+                                <span class="val font-mono" id="breakdown-discount">0 VNĐ</span>
+                            </div>
+                            <div class="breakdown-row">
+                                <span class="label">Phí dịch vụ & kích hoạt:</span>
+                                <span class="val font-mono" style="color:#059669; font-weight:700;">0 VNĐ (Miễn phí)</span>
+                            </div>
+                            <div class="breakdown-divider"></div>
+                            <div class="breakdown-row total-row">
+                                <span class="label">Tổng thanh toán:</span>
+                                <span class="val font-mono" id="breakdown-total">99.000 VNĐ</span>
+                            </div>
+                        </div>
+
+                        <!-- Hidden fields preserved for JS/tests -->
+                        <div style="display:none;" aria-hidden="true">
+                            <span id="checkout-voucher-code">PRO99K</span>
+                            <span id="checkout-voucher-desc">Giá niêm yết chính thức</span>
+                            <span id="checkout-voucher-amount">0 VNĐ</span>
+                            <span id="checkout-savings-note">Giá gói chính thức: 99.000 VNĐ / tháng</span>
+                            <span id="checkout-orig-price">99.000 VNĐ</span>
+                        </div>
+
+                        <!-- Primary CTA -->
+                        <div class="summary-action-area">
+                            <button type="button" class="btn-primary-checkout btn-shopee-pay" onclick="processPayment()" id="btn-process-payment">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <span>Thanh toán ngay • 99.000 VNĐ</span>
+                            </button>
+                        </div>
+
+                        <!-- Legal & Compliance Links -->
+                        <div class="checkout-terms-note">
+                            Bằng việc nhấn <strong>"Thanh toán ngay"</strong>, bạn đồng ý tuân theo <a href="../legal/legal-center.html#terms-of-use" target="_blank" rel="noopener noreferrer">Điều khoản Dịch vụ</a> và <a href="../legal/legal-center.html#payment-policy" target="_blank" rel="noopener noreferrer">Quy định Thanh toán</a> của PrepMate.
+                        </div>
+
+                        <!-- Trust badges -->
+                        <div class="checkout-trust-badges">
+                            <div class="trust-badge-item">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                <span>Bảo mật SSL 256-bit</span>
+                            </div>
+                            <div class="trust-badge-item">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                                <span>Kích hoạt tự động 24/7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <app-workspace-footer></app-workspace-footer>
+    </main>
+
+    <script src="../../shared/js/main.js?v=19"></script>
+    <script src="../../features/auth/auth.js?v=19"></script>
+    <script src="../../features/dashboard/dashboard.js?v=19"></script>
+    <script src="../../features/interview/interview.js?v=19"></script>
+    <script>
+        let selectedPaymentMethod = 'bank';
+
+        const PLANS_CONFIG = {
+            pro: {
+                id: 'pro',
+                name: 'Gói Hội Viên Toàn Diện PrepMate PRO',
+                shortName: 'PrepMate PRO',
+                badge: 'Khuyên Dùng ★',
+                origPrice: 99000,
+                price: 99000,
+                discount: 0,
+                period: '1 tháng (30 ngày)',
+                desc: 'Mở khóa không giới hạn lượt phỏng vấn AI, ElevenLabs Voice AI, tạo kịch bản theo mọi link JD, phân tích CV & báo cáo STAR chi tiết.',
+                voucherCode: 'PRO99K',
+                voucherDesc: 'Giá niêm yết chính thức 99.000 VNĐ'
+            },
+            free: {
+                id: 'free',
+                name: 'Gói Trải Nghiệm (Miễn Phí)',
+                shortName: 'Miễn Phí',
+                badge: 'Cơ bản',
+                origPrice: 0,
+                price: 0,
+                discount: 0,
+                period: 'Vĩnh viễn',
+                desc: '3 lượt phỏng vấn AI mô phỏng mỗi tháng, phòng phỏng vấn 1-1, đánh giá năng lực STAR chi tiết.',
+                voucherCode: 'FREE0K',
+                voucherDesc: 'Miễn phí hoàn toàn'
+            }
+        };
+
+        function formatVND(num) {
+            return (num || 0).toLocaleString('vi-VN') + ' VNĐ';
+        }
+
+        let selectedPlan = PLANS_CONFIG.pro;
+
+        function initCheckoutPlan() {
+            // Sync with dynamic plans configured in Admin
+            try {
+                const storedPlans = JSON.parse(localStorage.getItem('prepmate_subscription_plans'));
+                if (Array.isArray(storedPlans)) {
+                    storedPlans.forEach(p => {
+                        if (p.slug && p.price !== undefined) {
+                            PLANS_CONFIG[p.slug] = {
+                                id: p.slug,
+                                name: p.name,
+                                shortName: p.name,
+                                badge: p.badge || 'PRO ★',
+                                origPrice: p.origPrice || p.price,
+                                price: p.price,
+                                discount: (p.origPrice && p.origPrice > p.price) ? (p.origPrice - p.price) : 0,
+                                period: p.period || '1 tháng',
+                                desc: (p.features || []).slice(0, 3).join(', ') + '...',
+                                voucherCode: 'PRO99K',
+                                voucherDesc: 'Giá niêm yết chính thức'
+                            };
+                        }
+                    });
+                }
+            } catch(e) {}
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const planKey = (urlParams.get('plan') || 'pro').toLowerCase();
+            selectedPlan = PLANS_CONFIG[planKey] || PLANS_CONFIG.pro;
+
+            // Update Account Recipient Card
+            const recipientTitle = document.getElementById('checkout-recipient-title');
+            if (recipientTitle) recipientTitle.textContent = `Tài khoản nhận Gói Hội viên ${selectedPlan.shortName}`;
+
+            // Update Plan Details
+            const planBadge = document.getElementById('checkout-plan-badge-icon');
+            if (planBadge) planBadge.textContent = selectedPlan.shortName.charAt(0);
+
+            const planName = document.getElementById('checkout-plan-name');
+            if (planName) planName.textContent = selectedPlan.name;
+
+            const planDesc = document.getElementById('checkout-plan-desc');
+            if (planDesc) planDesc.textContent = selectedPlan.desc;
+
+            const origPrice = document.getElementById('checkout-orig-price');
+            if (origPrice) origPrice.textContent = formatVND(selectedPlan.origPrice);
+
+            const unitPrice = document.getElementById('checkout-unit-price');
+            if (unitPrice) unitPrice.textContent = formatVND(selectedPlan.price);
+
+            const planQty = document.getElementById('checkout-plan-qty');
+            if (planQty) planQty.textContent = selectedPlan.period;
+
+            const rowTotal = document.getElementById('checkout-row-total');
+            if (rowTotal) rowTotal.textContent = formatVND(selectedPlan.price);
+
+            const savingsNote = document.getElementById('checkout-savings-note');
+            if (savingsNote) {
+                if (selectedPlan.discount > 0) {
+                    const percent = Math.round((selectedPlan.discount / selectedPlan.origPrice) * 100);
+                    savingsNote.textContent = `Tiết kiệm ${formatVND(selectedPlan.discount)} (${percent}%) theo chương trình ưu đãi`;
+                } else {
+                    savingsNote.textContent = `Giá gói chính thức: ${formatVND(selectedPlan.price)} / tháng (thời hạn 30 ngày)`;
+                }
+            }
+
+            // Update Voucher (if any discount)
+            const vCode = document.getElementById('checkout-voucher-code');
+            if (vCode) vCode.textContent = selectedPlan.voucherCode;
+
+            const vDesc = document.getElementById('checkout-voucher-desc');
+            if (vDesc) vDesc.textContent = selectedPlan.voucherDesc;
+
+            const vAmount = document.getElementById('checkout-voucher-amount');
+            if (vAmount) vAmount.textContent = selectedPlan.discount > 0 ? `-${formatVND(selectedPlan.discount)}` : '0 VNĐ';
+
+            // Update Transfer Amount in QR details
+            const transferAmount = document.getElementById('val-transfer-amount');
+            if (transferAmount) transferAmount.textContent = formatVND(selectedPlan.price);
+
+            // Update Summary Breakdown
+            const breakdownSubtotal = document.getElementById('breakdown-subtotal');
+            if (breakdownSubtotal) breakdownSubtotal.textContent = formatVND(selectedPlan.origPrice);
+
+            const breakdownDiscount = document.getElementById('breakdown-discount');
+            if (breakdownDiscount) breakdownDiscount.textContent = selectedPlan.discount > 0 ? `-${formatVND(selectedPlan.discount)}` : '0 VNĐ';
+
+            const discountContainer = document.getElementById('breakdown-discount-container');
+            if (discountContainer) {
+                discountContainer.style.display = selectedPlan.discount > 0 ? 'flex' : 'none';
+            }
+
+            const breakdownTotal = document.getElementById('breakdown-total');
+            if (breakdownTotal) breakdownTotal.textContent = formatVND(selectedPlan.price);
+
+            const btnPay = document.getElementById('btn-process-payment');
+            if (btnPay) {
+                btnPay.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> <span>Thanh toán ngay • ${formatVND(selectedPlan.price)}</span>`;
+            }
+        }
+
+        function copyAmount(btn) {
+            copyText(selectedPlan.price.toString(), btn);
+        }
+
+        function selectPaymentMethod(method, btnElement) {
+            selectedPaymentMethod = method;
+
+            // Update active state on method tabs
+            document.querySelectorAll('.method-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (btnElement) {
+                btnElement.classList.add('active');
+            }
+
+            // Hide all detail sections
+            document.querySelectorAll('.card-details-section, .qr-code-section').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Show selected method section
+            if (method === 'card') {
+                const el = document.getElementById('card-details');
+                if (el) el.classList.add('active');
+            } else if (method === 'momo') {
+                const el = document.getElementById('momo-details');
+                if (el) el.classList.add('active');
+            } else if (method === 'zalopay') {
+                const el = document.getElementById('zalopay-details');
+                if (el) el.classList.add('active');
+            } else if (method === 'bank') {
+                const el = document.getElementById('bank-details');
+                if (el) el.classList.add('active');
+            } else if (method === 'paypal') {
+                const el = document.getElementById('paypal-details');
+                if (el) el.classList.add('active');
+            } else if (method === 'stripe') {
+                const el = document.getElementById('stripe-details');
+                if (el) el.classList.add('active');
+            }
+        }
+
+        function copyText(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const old = btn.innerText;
+                btn.innerText = 'Đã sao chép!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerText = old;
+                    btn.classList.remove('copied');
+                }, 1500);
+            });
+        }
+
+        function copyBankRef(btn) {
+            const input = document.getElementById('bank-reference');
+            if (input && input.value) {
+                copyText(input.value, btn);
+            }
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('error-message');
+            if (errorEl) {
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            const successEl = document.getElementById('success-message');
+            if (successEl) successEl.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successEl = document.getElementById('success-message');
+            if (successEl) {
+                successEl.textContent = message;
+                successEl.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            const errorEl = document.getElementById('error-message');
+            if (errorEl) errorEl.style.display = 'none';
+        }
+
+        let isProcessingPayment = false;
+
+        function processPayment() {
+            if (isProcessingPayment) return;
+            const currentUser = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            
+            if (!currentUser) {
+                showError('Vui lòng đăng nhập tài khoản trước khi thực hiện thanh toán.');
+                setTimeout(() => {
+                    window.location.href = '../../features/auth/auth.html';
+                }, 1500);
+                return;
+            }
+
+            if (selectedPlan.id === 'free') {
+                showError('Gói Trải Nghiệm (Miễn Phí) không yêu cầu thanh toán.');
+                return;
+            }
+
+            const isCurrentProActive = currentUser.subscription === 'pro' && (!currentUser.subscriptionExpiry || new Date(currentUser.subscriptionExpiry) > new Date());
+            if (isCurrentProActive && selectedPlan.id === 'pro') {
+                showError('Tài khoản của bạn đang có gói PrepMate PRO còn hạn sử dụng. Không thể mua trùng gói đang hoạt động.');
+                return;
+            }
+
+            let isValid = false;
+            let paymentData = {
+                method: selectedPaymentMethod,
+                plan: selectedPlan.id,
+                planName: selectedPlan.name,
+                amount: selectedPlan.price,
+                currency: 'VND',
+                timestamp: new Date().toISOString(),
+                user: currentUser.id || currentUser.username
+            };
+
+            // Validate based on payment method
+            if (selectedPaymentMethod === 'card') {
+                const cardName = document.getElementById('card-name').value.trim();
+                const cardNumber = document.getElementById('card-number').value.trim();
+                const cardExpiry = document.getElementById('card-expiry').value.trim();
+                const cardCvv = document.getElementById('card-cvv').value.trim();
+
+                if (!cardName || !cardNumber || !cardExpiry || !cardCvv) {
+                    showError('Vui lòng điền đầy đủ thông tin thẻ tín dụng / ghi nợ.');
+                    return;
+                }
+
+                if (cardNumber.replace(/\s/g, '').length !== 16) {
+                    showError('Số thẻ phải bao gồm đúng 16 chữ số.');
+                    return;
+                }
+
+                if (cardCvv.length < 3 || cardCvv.length > 4) {
+                    showError('Mã CVV/CVC phải gồm 3 hoặc 4 chữ số.');
+                    return;
+                }
+
+                paymentData.cardLast4 = cardNumber.slice(-4);
+                paymentData.cardName = cardName;
+                isValid = true;
+
+            } else if (selectedPaymentMethod === 'momo') {
+                const momoPhone = document.getElementById('momo-phone').value.trim();
+                if (!momoPhone) {
+                    showError('Vui lòng nhập số điện thoại MoMo thực hiện chuyển khoản.');
+                    return;
+                }
+                const momoTx = document.getElementById('momo-transaction').value.trim();
+                paymentData.momoPhone = momoPhone;
+                paymentData.transactionId = momoTx || ('MOMO_' + Date.now());
+                isValid = true;
+
+            } else if (selectedPaymentMethod === 'zalopay') {
+                const zalopayPhone = document.getElementById('zalopay-phone').value.trim();
+                if (!zalopayPhone) {
+                    showError('Vui lòng nhập số điện thoại ZaloPay.');
+                    return;
+                }
+                paymentData.zalopayPhone = zalopayPhone;
+                isValid = true;
+
+            } else if (selectedPaymentMethod === 'bank') {
+                paymentData.bankReference = document.getElementById('bank-reference').value;
+                isValid = true;
+
+            } else if (selectedPaymentMethod === 'paypal') {
+                isValid = true;
+
+            } else if (selectedPaymentMethod === 'stripe') {
+                const stripeEmail = document.getElementById('stripe-email').value.trim();
+                if (!stripeEmail) {
+                    showError('Vui lòng nhập địa chỉ email nhận biên lai Stripe.');
+                    return;
+                }
+                paymentData.stripeEmail = stripeEmail;
+                isValid = true;
+            }
+
+            if (!isValid) return;
+
+            isProcessingPayment = true;
+            const btn = document.getElementById('btn-process-payment');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="checkout-spinner"></span> <span>Đang xử lý giao dịch an toàn...</span>`;
+            }
+
+            showSuccess('Đang xử lý thanh toán qua cổng bảo mật...');
+
+            const payToken = currentUser?.token || (typeof getAuthToken === 'function' ? getAuthToken() : null);
+            const payHeaders = { 'Content-Type': 'application/json' };
+            if (payToken) {
+                payHeaders['Authorization'] = `Bearer ${payToken}`;
+            }
+            
+            fetch(`${API_BASE_URL}/api/payment/process`, {
+                method: 'POST',
+                headers: {
+                    ...payHeaders
+                },
+                body: JSON.stringify(paymentData)
+            })
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    return res.json().then(data => {
+                        throw new Error(data.message || data.error || 'Lỗi thanh toán từ server');
+                    });
+                }
+            })
+            .then(data => {
+                showSuccess(data.message || 'Thanh toán thành công! Gói PRO đã được kích hoạt.');
+                savePaymentTransaction(paymentData);
+                
+                // Sync user status on client
+                const user = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+                if (user) {
+                    user.subscription = 'pro';
+                    user.subscriptionDate = (data.user && data.user.subscriptionDate) || new Date().toISOString();
+                    user.subscriptionExpiry = (data.user && data.user.subscriptionExpiry) || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+                    if (typeof setCurrentUser === 'function') setCurrentUser(user);
+                    
+                    let users = JSON.parse(localStorage.getItem('prepmate_users')) || {};
+                    const uid = user.id || user.username;
+                    if (users[uid]) {
+                        users[uid].subscription = 'pro';
+                        users[uid].subscriptionDate = user.subscriptionDate;
+                        users[uid].subscriptionExpiry = user.subscriptionExpiry;
+                        localStorage.setItem('prepmate_users', JSON.stringify(users));
+                    }
+                }
+
+                setTimeout(() => {
+                    window.location.href = '../../features/dashboard/dashboard.html';
+                }, 1800);
+            })
+            .catch(err => {
+                isProcessingPayment = false;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> <span>Thanh toán ngay • ${formatVND(selectedPlan.price)}</span>`;
+                }
+                showError('Có lỗi xảy ra: ' + err.message);
+            });
+        }
+
+        function savePaymentTransaction(paymentData) {
+            let transactions = JSON.parse(localStorage.getItem('prepmate_transactions')) || [];
+            transactions.push(paymentData);
+            localStorage.setItem('prepmate_transactions', JSON.stringify(transactions));
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initCheckoutPlan();
+            const user = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const accNameEl = document.getElementById('checkout-account-name');
+            const accEmailEl = document.getElementById('checkout-account-email');
+            const accBadgeEl = document.getElementById('checkout-account-badge');
+            const authSwitch = document.getElementById('auth-switch-link');
+            const btnPay = document.getElementById('btn-process-payment');
+
+            const isProActive = user && user.subscription === 'pro' && (!user.subscriptionExpiry || new Date(user.subscriptionExpiry) > new Date());
+
+            if (user) {
+                if (accNameEl) accNameEl.textContent = user.fullname || user.username;
+                if (accEmailEl) accEmailEl.textContent = user.email || (user.username + '@gmail.com');
+                if (accBadgeEl) {
+                    if (isProActive) {
+                        accBadgeEl.textContent = 'Gói Hiện Tại: PRO (Đang hoạt động)';
+                        accBadgeEl.style.color = '#059669';
+                        accBadgeEl.style.borderColor = '#a7f3d0';
+                        accBadgeEl.style.background = '#ecfdf5';
+                    } else {
+                        accBadgeEl.textContent = 'Gói Hiện Tại: Miễn Phí';
+                    }
+                }
+                if (authSwitch) authSwitch.textContent = 'Đổi tài khoản';
+
+                if (selectedPlan.id === 'pro' && isProActive) {
+                    const expiryText = user.subscriptionExpiry ? new Date(user.subscriptionExpiry).toLocaleDateString('vi-VN') : '';
+                    showError(`Bạn đang sử dụng gói PrepMate PRO${expiryText ? ' (còn hạn đến ' + expiryText + ')' : ''}. Bạn không thể mua trùng gói đang hoạt động.`);
+                    if (btnPay) {
+                        btnPay.disabled = true;
+                        btnPay.style.opacity = '0.65';
+                        btnPay.style.cursor = 'not-allowed';
+                        btnPay.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> <span>Gói PRO đang hoạt động (Không thể mua trùng)</span>`;
+                    }
+                } else if (selectedPlan.id === 'free') {
+                    showError('Gói Trải Nghiệm (Miễn Phí) không yêu cầu thanh toán. Bạn có thể sử dụng trực tiếp.');
+                    if (btnPay) {
+                        btnPay.disabled = true;
+                        btnPay.style.opacity = '0.65';
+                        btnPay.style.cursor = 'not-allowed';
+                        btnPay.innerHTML = `<span>Gói Miễn Phí (Không yêu cầu thanh toán)</span>`;
+                    }
+                }
+            } else {
+                if (accNameEl) accNameEl.textContent = 'Khách dùng thử';
+                if (accEmailEl) accEmailEl.textContent = 'Chưa đăng nhập tài khoản';
+                if (accBadgeEl) {
+                    accBadgeEl.textContent = 'Khách trải nghiệm';
+                    accBadgeEl.style.color = '#059669';
+                    accBadgeEl.style.borderColor = '#a7f3d0';
+                    accBadgeEl.style.background = '#ecfdf5';
+                }
+                if (authSwitch) authSwitch.textContent = 'Đăng nhập ngay';
+            }
+
+            if (typeof initSidebarUserProfile === 'function') {
+                initSidebarUserProfile();
+            }
+
+            // Auto generate bank reference on initial load
+            const bankRef = document.getElementById('bank-reference');
+            if (bankRef) {
+                const uname = (user && user.username) ? user.username.toUpperCase() : 'USER';
+                bankRef.value = 'PREPMATE_' + uname + '_' + Math.floor(1000 + Math.random() * 9000);
+            }
+        });
+    </script>
+    <script src="../../shared/js/components.js"></script>
+</body>
+</html>

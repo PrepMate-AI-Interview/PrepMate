@@ -1,0 +1,201 @@
+/**
+ * PREPMATE — 404 NOT FOUND STYLESHEET
+ * Design Authority: Mobbin Analysis (Gallery-white, Monochrome, Stadium Pills, 24px Card)
+ */
+
+.error-page-container {
+  min-height: calc(100vh - 160px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  background-color: var(--mobbin-canvas, #ffffff);
+}
+
+.error-card {
+  max-width: 580px;
+  width: 100%;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid var(--mobbin-hairline, #e0e0e0);
+  border-radius: 24px;
+  padding: 48px 36px;
+  box-shadow: none;
+}
+
+.error-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mobbin-ink, #141414);
+  background: var(--mobbin-canvas-soft, #f3f3f3);
+  border: 1px solid var(--mobbin-hairline-soft, #f0f0f0);
+  padding: 4px 14px;
+  border-radius: 9999px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.error-title {
+  font-size: 28px;
+  font-weight: 652;
+  color: var(--mobbin-ink, #141414);
+  margin: 0 0 12px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.error-desc {
+  font-size: 15px;
+  font-weight: 456;
+  color: var(--mobbin-text-muted, #707070);
+  line-height: 1.5;
+  margin: 0 0 32px;
+}
+
+.error-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.error-actions .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--mobbin-ink, #141414);
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.error-actions .btn-primary:hover {
+  opacity: 0.9;
+}
+
+.error-actions .btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #ffffff;
+  color: var(--mobbin-ink, #141414);
+  border: 1px solid var(--mobbin-hairline, #e0e0e0);
+  border-radius: 9999px;
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.error-actions .btn-outline:hover {
+  background: var(--mobbin-canvas-soft, #f3f3f3);
+  border-color: #cbd5e1;
+}
+
+.error-links-box {
+  padding-top: 24px;
+  border-top: 1px solid var(--mobbin-hairline-soft, #f0f0f0);
+  font-size: 13px;
+  color: var(--mobbin-text-muted, #707070);
+}
+
+.error-links-box a {
+  color: var(--mobbin-ink, #141414);
+  font-weight: 600;
+  text-decoration: none;
+  margin: 0 6px;
+  transition: color 0.15s ease;
+}
+
+.error-links-box a:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   MODERN DARK CANONICAL PALETTE SUPPORT FOR 404 PAGE
+   ========================================================================== */
+html[data-theme="dark"] body,
+body.dark-mode {
+  background-color: #202124 !important;
+  color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .error-page-container,
+body.dark-mode .error-page-container {
+  background-color: #202124 !important;
+}
+
+html[data-theme="dark"] .error-card,
+body.dark-mode .error-card {
+  background: #292A2D !important;
+  border-color: #3C4043 !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4) !important;
+}
+
+html[data-theme="dark"] .error-title,
+body.dark-mode .error-title {
+  color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .error-desc,
+body.dark-mode .error-desc {
+  color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .error-badge,
+body.dark-mode .error-badge {
+  background: #252629 !important;
+  border-color: #3C4043 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .error-actions .btn-primary,
+body.dark-mode .error-actions .btn-primary {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
+}
+
+html[data-theme="dark"] .error-actions .btn-primary:hover,
+body.dark-mode .error-actions .btn-primary:hover {
+  background: #1d4ed8 !important;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5) !important;
+}
+
+html[data-theme="dark"] .error-actions .btn-outline,
+body.dark-mode .error-actions .btn-outline {
+  background: #202124 !important;
+  border-color: #3C4043 !important;
+  color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .error-actions .btn-outline:hover,
+body.dark-mode .error-actions .btn-outline:hover {
+  background: #252629 !important;
+  border-color: #5F6368 !important;
+}
+
+html[data-theme="dark"] .error-links-box,
+body.dark-mode .error-links-box {
+  border-top-color: #3C4043 !important;
+  color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .error-links-box a,
+body.dark-mode .error-links-box a {
+  color: #38bdf8 !important;
+}

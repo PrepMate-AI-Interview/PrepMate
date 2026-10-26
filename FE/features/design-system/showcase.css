@@ -1,0 +1,514 @@
+/**
+ * PREPMATE — DESIGN SYSTEM SHOWCASE STYLESHEET
+ * Design Authority: Mobbin Analysis Specification
+ */
+
+body {
+  background-color: var(--mobbin-canvas, #ffffff);
+  color: var(--mobbin-ink, #141414);
+  font-family: var(--pm-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+.showcase-header-dock {
+  position: sticky;
+  top: 16px;
+  z-index: 100;
+  max-width: 1140px;
+  margin: 16px auto 0;
+  padding: 0 20px;
+}
+
+.showcase-floating-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--mobbin-canvas-soft, #f3f3f3);
+  border: 1px solid var(--mobbin-hairline-soft, #f0f0f0);
+  border-radius: 9999px;
+  padding: 8px 16px;
+}
+
+.showcase-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 652;
+  font-size: 16px;
+  text-decoration: none;
+  color: var(--mobbin-ink, #141414);
+}
+
+.brand-squircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 30%;
+  background: var(--mobbin-ink, #141414);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.showcase-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.showcase-nav-links a {
+  color: var(--mobbin-text-muted, #707070);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.showcase-nav-links a:hover {
+  color: var(--mobbin-ink, #141414);
+}
+
+.showcase-cta-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.showcase-container {
+  max-width: 1140px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+}
+
+/* ── HERO BANNER ── */
+.showcase-hero {
+  padding: 60px 0 40px;
+  border-bottom: 1px solid var(--mobbin-hairline, #e0e0e0);
+  margin-bottom: 48px;
+}
+
+.showcase-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--mobbin-canvas-soft, #f3f3f3);
+  color: var(--mobbin-ink, #141414);
+  padding: 4px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.showcase-hero h1 {
+  font-size: 56px;
+  font-weight: 652;
+  line-height: 1.05;
+  color: var(--mobbin-ink, #141414);
+  letter-spacing: -0.03em;
+  margin: 0 0 16px;
+}
+
+.showcase-hero p {
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--mobbin-text-muted, #707070);
+  line-height: 1.4;
+  max-width: 800px;
+  margin: 0;
+}
+
+/* ── SECTION ARCHITECTURE ── */
+.showcase-section {
+  margin-bottom: 64px;
+}
+
+.section-head {
+  margin-bottom: 24px;
+}
+
+.section-head h2 {
+  font-size: 32px;
+  font-weight: 652;
+  color: var(--mobbin-ink, #141414);
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+.section-head p {
+  font-size: 15px;
+  font-weight: 456;
+  color: var(--mobbin-text-muted, #707070);
+  margin: 0;
+}
+
+/* ── PALETTE GRID ── */
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.swatch-card {
+  background: #ffffff;
+  border: 1px solid var(--mobbin-hairline, #e0e0e0);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.swatch-color {
+  height: 80px;
+  width: 100%;
+}
+
+.swatch-meta {
+  padding: 12px 14px;
+}
+
+.swatch-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mobbin-ink, #141414);
+  margin-bottom: 2px;
+}
+
+.swatch-code {
+  font-size: 11px;
+  font-family: var(--pm-font-mono, monospace);
+  color: var(--mobbin-text-muted, #707070);
+}
+
+.swatch-desc {
+  font-size: 11px;
+  color: var(--mobbin-text-faint, #adadad);
+  margin-top: 4px;
+}
+
+/* ── TYPOGRAPHY SPECIMEN TABLE ── */
+.type-specimen-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--mobbin-hairline, #e0e0e0);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.type-specimen-table th,
+.type-specimen-table td {
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid var(--mobbin-hairline-soft, #f0f0f0);
+}
+
+.type-specimen-table th {
+  background: var(--mobbin-canvas-soft, #f3f3f3);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--mobbin-text-muted, #707070);
+  letter-spacing: 0.04em;
+}
+
+.type-specimen-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── COMPONENT TILES ── */
+.component-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.specimen-card {
+  background: #ffffff;
+  border: 1px solid var(--mobbin-hairline, #e0e0e0);
+  border-radius: 24px;
+  padding: 28px;
+}
+
+.specimen-card h3 {
+  font-size: 18px;
+  font-weight: 652;
+  color: var(--mobbin-ink, #141414);
+  margin: 0 0 4px;
+}
+
+.specimen-card p.card-sub {
+  font-size: 13px;
+  color: var(--mobbin-text-muted, #707070);
+  margin: 0 0 20px;
+}
+
+.specimen-demo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ── MOBBIN PILL BUTTONS ── */
+.btn-primary-pill {
+  background: var(--mobbin-ink, #141414);
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary-pill:hover {
+  opacity: 0.9;
+}
+
+.btn-outline-pill {
+  background: #ffffff;
+  color: var(--mobbin-ink, #141414);
+  border: 1px solid var(--mobbin-hairline, #e0e0e0);
+  border-radius: 9999px;
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-outline-pill:hover {
+  background: var(--mobbin-canvas-soft, #f3f3f3);
+  border-color: #cbd5e1;
+}
+
+.btn-soft-pill {
+  background: var(--mobbin-canvas-soft, #f3f3f3);
+  color: var(--mobbin-ink, #141414);
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-soft-pill:hover {
+  background: var(--mobbin-hairline, #e0e0e0);
+}
+
+/* ── SEGMENTED CONTROL ── */
+.segmented-control-track {
+  display: inline-flex;
+  background: var(--mobbin-canvas-soft, #f3f3f3);
+  border-radius: 9999px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.segmented-control-btn {
+  background: transparent;
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 18px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--mobbin-text-muted, #707070);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.segmented-control-btn.active {
+  background: #ffffff;
+  color: var(--mobbin-ink, #141414);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ── SQUIRCLE APP ICONS ── */
+.squircle-tile {
+  width: 52px;
+  height: 52px;
+  border-radius: 30%;
+  background: var(--mobbin-canvas-soft, #f3f3f3);
+  border: 1px solid var(--mobbin-hairline-soft, #f0f0f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mobbin-ink, #141414);
+}
+
+/* ── INVERTED FOOTER ── */
+.showcase-footer {
+  background: var(--mobbin-ink, #141414);
+  color: #ffffff;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  padding: 60px 24px 40px;
+  margin-top: 80px;
+}
+
+.showcase-footer-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.footer-copy {
+  font-size: 13px;
+  color: #adadad;
+}
+
+@media (max-width: 768px) {
+  .component-showcase-grid {
+    grid-template-columns: 1fr;
+  }
+  .showcase-hero h1 {
+    font-size: 38px;
+  }
+}
+
+/* ==========================================================================
+   MODERN DARK CANONICAL PALETTE SUPPORT FOR DESIGN SYSTEM SHOWCASE
+   ========================================================================== */
+html[data-theme="dark"] body,
+body.dark-mode {
+  background-color: #202124 !important;
+  color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .showcase-floating-nav,
+body.dark-mode .showcase-floating-nav {
+  background: rgba(26, 27, 30, 0.95) !important;
+  border-color: #3C4043 !important;
+}
+
+html[data-theme="dark"] .showcase-brand,
+body.dark-mode .showcase-brand {
+  color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .swatch-card,
+body.dark-mode .swatch-card,
+html[data-theme="dark"] .component-card,
+body.dark-mode .component-card,
+html[data-theme="dark"] .typo-card,
+body.dark-mode .typo-card {
+  background: #292A2D !important;
+  border-color: #3C4043 !important;
+  color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] h1, html[data-theme="dark"] h2, html[data-theme="dark"] h3, html[data-theme="dark"] h4,
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4 {
+  color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .specimen-card,
+body.dark-mode .specimen-card {
+  background: #292A2D !important;
+  border-color: #3C4043 !important;
+  color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .specimen-card h3,
+body.dark-mode .specimen-card h3 {
+  color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .specimen-card p.card-sub,
+body.dark-mode .specimen-card p.card-sub {
+  color: #9AA0A6 !important;
+}
+
+
+/* ==========================================================================
+   SHOWCASE BUTTONS & SQUIRCLE DARK MODE OVERRIDES (R21)
+   ========================================================================== */
+html[data-theme="dark"] .brand-squircle,
+body.dark-mode .brand-squircle {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .btn-primary-pill,
+body.dark-mode .btn-primary-pill {
+  background: #2563eb !important;
+  border: 1px solid #2563eb !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .btn-outline-pill,
+body.dark-mode .btn-outline-pill {
+  background: #252629 !important;
+  border: 1px solid #3C4043 !important;
+  color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .btn-outline-pill:hover,
+body.dark-mode .btn-outline-pill:hover {
+  background: #292A2D !important;
+  border-color: #5F6368 !important;
+}
+
+
+html[data-theme="dark"] .segmented-control-btn.active,
+body.dark-mode .segmented-control-btn.active {
+  background: #292A2D !important;
+  color: #8ab4f8 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4) !important;
+}
+
+html[data-theme="dark"] .segmented-control,
+body.dark-mode .segmented-control {
+  background: #202124 !important;
+  border: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .showcase-footer,
+body.dark-mode .showcase-footer {
+  background: #202124 !important;
+  border-top: 1px solid #3C4043 !important;
+  color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .specimen-box,
+html[data-theme="dark"] .example-card,
+body.dark-mode .specimen-box,
+body.dark-mode .example-card {
+  background: #292A2D !important;
+  border: 1px solid #3C4043 !important;
+}
+
+
+html[data-theme="dark"] div[style*="background: #ffffff"],
+html[data-theme="dark"] div[style*="background:#ffffff"],
+body.dark-mode div[style*="background: #ffffff"],
+body.dark-mode div[style*="background:#ffffff"] {
+  background: #292A2D !important;
+  border-color: #3C4043 !important;
+  color: #E8EAED !important;
+}

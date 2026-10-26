@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PrepMate — Phòng Phỏng Vấn Chuyên Nghiệp</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../shared/css/tokens.css" />
+    <link rel="stylesheet" href="../../shared/css/base.css" />
+    <link rel="stylesheet" href="../../shared/css/layout.css" />
+    <link rel="stylesheet" href="../../shared/css/components.css" />
+    <link rel="stylesheet" href="../../shared/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="../../features/dashboard/new-dashboard.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../features/interview/interview-room.css?v=30"
+    />
+  </head>
+  <body class="dashboard-body interview-body">
+    <!-- Accessibility Live Region for Screen Readers (WCAG 4.1.3) -->
+    <div id="sr-status-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ==========================================================================
+         VIRTUAL INTERVIEW ROOM MASTER CONTAINER
+         ========================================================================== -->
+    <div class="ir-container-master">
+      <!-- Top HUD Bar: Clean, Executive Meeting Navigation (Zoom Desktop Top Bar) -->
+      <header class="ir-top-hud">
+        <div class="ir-hud-left">
+          <a
+            href="../../features/dashboard/dashboard.html"
+            class="ir-brand-badge"
+            title="Quay về Dashboard"
+          >
+            <span class="ir-brand-dot">P</span>
+            <span class="ir-brand-name">PrepMate</span>
+          </a>
+          <div class="ir-hud-divider"></div>
+          <div class="ir-session-meta">
+            <span class="ir-job-badge" id="topbar-job-title"
+              >Đang tải vị trí...</span
+            >
+          </div>
+          <div
+            class="ir-zoom-security-badge"
+            title="Phiên làm việc được mã hóa bảo mật E2E"
+          >
+            <svg class="zoom-shield-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span class="zoom-verified-label">Bảo mật</span>
+          </div>
+        </div>
+
+        <div class="ir-hud-center">
+          <span
+            id="question-counter"
+            class="ir-progress-pill pm-status-pill ready"
+          >
+            <span class="pm-status-dot ready" id="main-status-dot"></span>
+            <span id="main-status-label">Sẵn sàng</span>
+          </span>
+          <div class="ir-timer-box pm-time-badge" title="Thời lượng phỏng vấn">
+            <span
+              class="ir-timer-pulse"
+              id="timer-pulse-indicator"
+              style="opacity: 0.35"
+            ></span>
+            <span id="interview-timer-display">00:00</span>
+          </div>
+        </div>
+
+        <div class="ir-hud-right">
+          <button
+            type="button"
+            onclick="toggleTranscriptDrawer()"
+            class="ir-btn-hud-action"
+            id="btn-toggle-transcript"
+            title="Xem biên bản & lịch sử phỏng vấn"
+            aria-label="Xem biên bản và lịch sử đối thoại"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Biên bản
+          </button>
+          <button
+            type="button"
+            onclick="pauseInterview()"
+            class="ir-btn-hud-action"
+            id="btn-pause-interview"
+            title="Tạm dừng buổi phỏng vấn"
+            aria-label="Tạm dừng buổi phỏng vấn"
+            disabled
+          >
+            Tạm dừng
+          </button>
+          <button
+            type="button"
+            onclick="startInterviewSession()"
+            class="ir-btn-hud-start"
+            id="btn-start-interview"
+            title="Bắt đầu buổi phỏng vấn ngay"
+            aria-label="Bắt đầu buổi phỏng vấn"
+          >
+            Bắt đầu
+          </button>
+          <button
+            type="button"
+            onclick="endInterview()"
+            class="ir-btn-hud-end"
+            id="btn-end-interview"
+            style="display: none"
+            title="Kết thúc buổi phỏng vấn và xuất báo cáo"
+            aria-label="Kết thúc buổi phỏng vấn và xuất báo cáo"
+          >
+            Kết thúc
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Virtual Interview Stage (Zero-Scroll Real-Life Video Cockpit) -->
+      <main class="ir-stage-area" id="interview-room">
+        <!-- Left: Primary Video Stage (Dual Video Grid + CC Prompter) -->
+        <div class="ir-video-stage-column">
+          <!-- 1. DUAL-TILE VIDEO MEETING GRID (Zoom Desktop Gallery / Speaker View) -->
+          <section
+            class="ir-video-grid"
+            id="ir-video-grid"
+            aria-label="Khung hình hội thoại phỏng vấn"
+          >
+            <!-- Interviewer Video Tile (Executive Lead) -->
+            <div class="ir-video-tile interviewer-tile" id="interviewer-tile">
+              <div class="tile-top-bar">
+                <span class="tile-tag live"
+                  ><span class="live-dot"></span> TRỰC TIẾP • HD</span
+                >
+                <span
+                  class="interviewer-status-pill"
+                  id="interviewer-status-pill"
+                >
+                  <span
+                    class="ir-state-indicator-dot"
+                    id="topbar-status-dot"
+                  ></span>
+                  <span id="interviewer-status-text">Sẵn sàng</span>
+                </span>
+              </div>
+
+              <!-- Center Interviewer Avatar (Symmetrical with Candidate) -->
+              <div class="tile-media-wrapper interviewer-media">
+                <div id="ai-avatar-visual" class="ai-avatar-visual idle">
+                  <div
+                    class="avatar-interviewer-ring"
+                    id="interviewer-avatar-ring"
+                  >
+                    <div
+                      class="avatar-interviewer"
+                      id="interviewer-avatar-preview"
+                    >
+                      <span>MV</span>
+                    </div>
+                  </div>
+                  <div class="camera-off-indicator interviewer-off-indicator">
+                    <span class="cam-off-icon">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                      </svg>
+                    </span>
+                    <span id="interviewer-state-badge">Người phỏng vấn</span>
+                  </div>
+                </div>
+                <div class="voice-wave" id="voice-wave">
+                  <span class="stroke"></span>
+                  <span class="stroke"></span>
+                  <span class="stroke"></span>
+                  <span class="stroke"></span>
+                  <span class="stroke"></span>
+                </div>
+              </div>
+
+              <!-- Interviewer Zoom Desktop Nameplate -->
+              <div class="tile-bottom-bar">
+                <div class="zoom-nameplate">
+                  <span
+                    class="zoom-mic-badge live"
+                    id="interviewer-mic-badge"
+                    title="Micro người phỏng vấn hoạt động"
+                  >
+                    <span class="zoom-wave-bar"></span>
+                    <span class="zoom-wave-bar"></span>
+                    <span class="zoom-wave-bar"></span>
+                  </span>
+                  <span class="tile-user-name" id="interviewer-name-display"
+                    >Trần Minh Vũ</span
+                  >
+                </div>
+
+                <!-- Floating In-Tile Audio Toggle for Interviewer (Zoom Icon Button) -->
+                <div class="tile-floating-controls interviewer-ctrls">
+                  <button
+                    type="button"
+                    id="btn-tts"
+                    class="in-tile-icon-btn in-tile-tts"
+                    onclick="toggleTTS()"
+                    title="Bật/Tắt âm thanh người phỏng vấn"
+                    aria-label="Bật hoặc tắt âm thanh người phỏng vấn"
+                  >
+                    <svg
+                      class="zoom-svg-icon"
+                      viewBox="0 0 24 24"
+                      width="20"
+                      height="20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path
+                        d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Candidate Video Tile (Candidate Webcam / Mirror) -->
+            <div class="ir-video-tile candidate-tile" id="candidate-tile">
+              <div class="tile-top-bar">
+                <span class="tile-tag candidate"
+                  ><span class="live-dot green"></span> Bạn (Ứng viên)</span
+                >
+              </div>
+
+              <!-- Candidate Camera / Placeholder -->
+              <div class="tile-media-wrapper candidate-media">
+                <video
+                  id="webcam-video"
+                  autoplay
+                  playsinline
+                  muted
+                  style="display: none"
+                ></video>
+                <div class="camera-placeholder" id="camera-placeholder">
+                  <div class="avatar-user-ring" id="candidate-avatar-ring">
+                    <div class="avatar-user" id="candidate-avatar-preview">
+                      <span id="candidate-initials">UV</span>
+                    </div>
+                  </div>
+                  <div class="camera-off-indicator">
+                    <span class="cam-off-icon">
+                      <svg
+                        viewBox="0 0 24 24"
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <line
+                          x1="2"
+                          y1="2"
+                          x2="22"
+                          y2="22"
+                          stroke="#ef4444"
+                          stroke-width="2.5"
+                        />
+                        <path
+                          d="M16 16v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m4 0h4a2 2 0 0 1 2 2v3.5l7-5v11l-3.5-2.5"
+                        />
+                      </svg>
+                    </span>
+                    <span>Camera đang tắt</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Candidate Zoom Desktop Nameplate + Floating In-Tile Mic/Cam Controls -->
+              <div class="tile-bottom-bar">
+                <div class="zoom-nameplate">
+                  <span
+                    class="zoom-mic-badge muted"
+                    id="candidate-mic-badge"
+                    title="Micro đang tắt"
+                  >
+                    <svg
+                      class="zoom-nameplate-svg-red"
+                      viewBox="0 0 24 24"
+                      width="14"
+                      height="14"
+                      fill="none"
+                      stroke="#ef4444"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line
+                        x1="2"
+                        y1="2"
+                        x2="22"
+                        y2="22"
+                        stroke="#ef4444"
+                        stroke-width="2.6"
+                      />
+                      <path d="M18.89 13.23A7.12 7.12 0 0 0 19 11v-1" />
+                      <path d="M5 10v1a7 7 0 0 0 11.37 5.5" />
+                      <path d="M15 9.34V5a3 3 0 0 0-5.68-1.33" />
+                      <path d="M9 9v2a3 3 0 0 0 5.12 2.12" />
+                      <line x1="12" y1="18" x2="12" y2="22" />
+                      <line x1="8" y1="22" x2="16" y2="22" />
+                    </svg>
+                  </span>
+                  <div id="candidate-mic-level-wrap" class="candidate-mic-level-wrap" title="Mức âm thanh micro (Nói thử để kiểm tra)"><div id="candidate-mic-level-bar" class="candidate-mic-level-bar"></div></div>
+                  <span class="tile-user-name" id="candidate-tile-name"
+                    >Bạn (Ứng viên)</span
+                  >
+                </div>
+
+                <!-- Floating In-Tile Mic & Cam Controls (Zoom Desktop In-Frame Controls) -->
+                <div class="tile-floating-controls candidate-ctrls">
+                  <button
+                    type="button"
+                    id="btn-mic"
+                    class="in-tile-icon-btn in-tile-mic off"
+                    onclick="toggleMic()"
+                    title="Bật Micro"
+                    aria-label="Bật micro"
+                  >
+                    <svg
+                      class="zoom-svg-icon zoom-svg-muted"
+                      viewBox="0 0 24 24"
+                      width="20"
+                      height="20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line
+                        x1="2"
+                        y1="2"
+                        x2="22"
+                        y2="22"
+                        stroke="#ef4444"
+                        stroke-width="2.5"
+                      />
+                      <path d="M18.89 13.23A7.12 7.12 0 0 0 19 11v-1" />
+                      <path d="M5 10v1a7 7 0 0 0 11.37 5.5" />
+                      <path d="M15 9.34V5a3 3 0 0 0-5.68-1.33" />
+                      <path d="M9 9v2a3 3 0 0 0 5.12 2.12" />
+                      <line x1="12" y1="18" x2="12" y2="22" />
+                      <line x1="8" y1="22" x2="16" y2="22" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onclick="toggleCamera()"
+                    id="btn-toggle-cam"
+                    class="in-tile-icon-btn in-tile-cam off"
+                    title="Bật Camera"
+                    aria-label="Bật camera"
+                  >
+                    <svg
+                      class="zoom-svg-icon zoom-svg-muted"
+                      viewBox="0 0 24 24"
+                      width="20"
+                      height="20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line
+                        x1="2"
+                        y1="2"
+                        x2="22"
+                        y2="22"
+                        stroke="#ef4444"
+                        stroke-width="2.5"
+                      />
+                      <path
+                        d="M16 16v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m4 0h4a2 2 0 0 1 2 2v3.5l7-5v11l-3.5-2.5"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. CLOSED CAPTION / QUESTION PROMPTER (Zoom Live CC Style) -->
+          <section
+            class="ir-question-stage"
+            aria-label="Nội dung câu hỏi phỏng vấn"
+          >
+            <div class="ir-question-header">
+              <div class="ir-question-header-left">
+                <span id="current-question-badge" class="ir-question-badge">
+                  PHÒNG CHỜ PHỎNG VẤN
+                </span>
+                <span class="ir-question-hint" id="current-question-hint">
+                  Lắng nghe và trả lời tự nhiên như trong buổi phỏng vấn trực tiếp
+                </span>
+              </div>
+              <div class="ir-question-quick-actions">
+                <button
+                  type="button"
+                  class="ir-btn-assist"
+                  onclick="requestClarification()"
+                  title="Nhờ người phỏng vấn nhắc lại hoặc làm rõ ý câu hỏi"
+                  aria-label="Nhờ người phỏng vấn nhắc lại câu hỏi"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  Nhắc lại
+                </button>
+                <button
+                  type="button"
+                  class="ir-btn-assist"
+                  onclick="requestThinkTime()"
+                  title="Xin 30 giây chuẩn bị ý trả lời"
+                  aria-label="Xin 30 giây chuẩn bị ý trả lời"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Xin 30s
+                </button>
+              </div>
+            </div>
+
+            <h2 id="current-question-text" class="ir-question-text">
+              Chào bạn! Hãy chuẩn bị tinh thần và nhấn nút "Bắt đầu" ở góc trên
+              bên phải khi đã sẵn sàng.
+            </h2>
+
+            <div id="stage-context-guidance" class="ir-stage-guidance" style="display: none;"></div>
+          </section>
+
+          <!-- 3. SPACIOUS ACTIVE RESPONSE CONSOLE (Primary Candidate Workspace) -->
+          <section
+            class="ir-response-console"
+            aria-label="Khu vực trình bày câu trả lời"
+          >
+            <!-- Status & Countdown Header -->
+            <div class="ir-response-status-bar">
+              <div class="chat-status" id="chat-status">
+                <span class="status-dot" id="chat-status-dot"></span>
+                <span id="chat-status-text"
+                  >Chờ bạn nhấn nút Bắt đầu phỏng vấn...</span
+                >
+              </div>
+
+              <div class="ir-response-status-right">
+                <div class="ir-audio-recording-badge" id="ir-audio-recording-badge" style="display: none;"></div>
+                <div class="ir-live-speech-pill" id="speech-status-indicator">
+                  <span class="speech-dot">●</span>
+                  <span id="speech-status-text-hint"
+                    >Bật Mic trên camera hoặc nhập nội dung</span
+                  >
+                </div>
+
+                <div
+                  class="ir-dialogue-timer-pill"
+                  id="dialogue-answer-countdown"
+                  style="display: none"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span class="countdown-label">Thời gian trả lời:</span>
+                  <strong class="countdown-time" id="answer-countdown-time"
+                    >02:00</strong
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Main Input Row -->
+            <div class="ir-response-input-row">
+              <textarea
+                id="user-input"
+                class="ir-response-input"
+                placeholder="Trình bày câu trả lời của bạn tại đây... (Enter để gửi)"
+                onkeydown="handleKeyDown(event)"
+                onkeypress="handleKeyPress(event)"
+                rows="2"
+                disabled
+                aria-label="Câu trả lời của bạn"
+              ></textarea>
+              <div class="ir-response-actions">
+                <button
+                  type="button"
+                  id="btn-console-mic"
+                  class="ir-btn-console-mic off"
+                  onclick="toggleMic()"
+                  title="Nói để trả lời (Bật microphone)"
+                  aria-label="Nói để trả lời"
+                  disabled
+                >
+                  <svg class="console-mic-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                  </svg>
+                  <span id="console-mic-label">Nói để trả lời</span>
+                </button>
+                <button
+                  type="button"
+                  onclick="sendMessage()"
+                  class="ir-btn-send-dialogue"
+                  id="btn-send"
+                  title="Gửi câu trả lời của bạn (Enter)"
+                  aria-label="Gửi câu trả lời của bạn"
+                  disabled
+                >
+                  <span>Gửi trả lời</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Auxiliary Guidance & Hotkeys -->
+            <div class="ir-response-helper-bar">
+              <span class="ir-helper-tip">
+                Mẹo: Nhấn "Nói để trả lời" hoặc nhập trực tiếp • Kiểm tra microphone trước khi gửi
+              </span>
+              <span class="ir-key-hint">Enter để gửi • Shift + Enter xuống dòng</span>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right: Slide-over Dialogue & Transcript Drawer -->
+        <aside
+          class="ir-dialogue-panel ir-transcript-drawer panel-collapsed"
+          id="ir-transcript-drawer"
+          aria-label="Biên bản đối thoại phỏng vấn"
+        >
+          <div class="ir-card-header-bar">
+            <div class="drawer-title-group">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span class="drawer-title">Biên bản Đối thoại</span>
+              <span id="ai-mode-badge-conv" class="badge-direct"
+                >Thời gian thực</span
+              >
+            </div>
+            <button
+              type="button"
+              onclick="toggleTranscriptDrawer()"
+              class="btn-close-drawer"
+              title="Thu gọn biên bản (Esc)"
+              aria-label="Đóng biên bản"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <!-- Smart Quick Filters -->
+          <div class="transcript-filters">
+            <button
+              type="button"
+              class="filter-chip active"
+              onclick="filterTranscript('all', this)"
+            >
+              Tất cả
+            </button>
+            <button
+              type="button"
+              class="filter-chip"
+              onclick="filterTranscript('ai', this)"
+            >
+              Người phỏng vấn
+            </button>
+            <button
+              type="button"
+              class="filter-chip"
+              onclick="filterTranscript('user', this)"
+            >
+              Trả lời của bạn
+            </button>
+          </div>
+
+          <!-- Live Conversation Bubble Feed -->
+          <div class="chat-box" id="chat-box">
+            <div class="msg ai-msg">
+              <div class="msg-avatar-thumb">
+                <div class="msg-avatar-badge interviewer-badge">
+                  <span>MV</span>
+                </div>
+              </div>
+              <div class="msg-body">
+                <div class="ai-msg-header">
+                  <span>Trần Minh Vũ (Người phỏng vấn)</span>
+                  <span class="msg-timestamp">Chuẩn bị</span>
+                </div>
+                <div class="msg-text">
+                  Xin chào bạn! Tôi là Trần Minh Vũ, người đồng hành cùng bạn
+                  trong buổi phỏng vấn hôm nay. Bạn hãy kiểm tra lại góc máy
+                  camera, âm thanh micro và nhấn nút
+                  <strong>"Bắt đầu"</strong> ở góc trên bên phải khi đã sẵn sàng
+                  nhé!
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <!-- ==========================================================================
+         CONFIRM START MODAL: Zoom Desktop Pre-Flight Readiness Chamber
+         ========================================================================== -->
+    <div
+      id="zoom-start-confirm-modal"
+      class="zoom-modal-backdrop hidden"
+      style="display: none"
+    >
+      <div class="zoom-confirm-card start-dialog">
+        <div class="zoom-dialog-header">
+          <div class="zoom-header-icon-box">
+            <span class="zoom-shield-large">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </span>
+          </div>
+          <div class="zoom-header-titles">
+            <h3>Xác nhận Bắt đầu Phỏng vấn</h3>
+            <p>
+              Kiểm tra thông tin vị trí và trạng thái thiết bị trước khi bắt đầu
+            </p>
+          </div>
+          <button
+            type="button"
+            class="zoom-close-btn"
+            onclick="closeStartConfirmModal()"
+            title="Đóng"
+            aria-label="Đóng bảng xác nhận"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="zoom-dialog-body">
+          <!-- Session Meta Card -->
+          <div class="zoom-meta-summary-card">
+            <div class="meta-row">
+              <span class="meta-label">Vị trí ứng tuyển:</span>
+              <strong class="meta-value" id="confirm-modal-job-title"
+                >Đang tải vị trí...</strong
+              >
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Vòng phỏng vấn:</span>
+              <span class="meta-value badge-round" id="confirm-modal-round"
+                >Vòng 1 • Phỏng vấn Chuyên môn</span
+              >
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Người phỏng vấn:</span>
+              <span class="meta-value interviewer-lead-name" id="confirm-modal-interviewer"
+                >Trần Minh Vũ (Giám đốc Chuyên môn)</span
+              >
+            </div>
+          </div>
+
+          <!-- Device Readiness Checklist -->
+          <div class="zoom-device-section">
+            <h4 class="device-section-title">Trạng thái thiết bị phòng họp:</h4>
+            <div class="zoom-device-checklist">
+              <div class="checklist-item ready" id="chk-cam-status">
+                <div class="chk-icon-wrap" id="chk-cam-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                </div>
+                <div class="chk-info">
+                  <div class="chk-name">Camera / Webcam</div>
+                  <div class="chk-desc" id="chk-cam-text">
+                    Đang kiểm tra trạng thái camera...
+                  </div>
+                </div>
+                <span class="chk-badge ready" id="chk-cam-badge">Sẵn sàng</span>
+              </div>
+              <div class="checklist-item ready" id="chk-mic-status">
+                <div class="chk-icon-wrap" id="chk-mic-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                </div>
+                <div class="chk-info">
+                  <div class="chk-name">Microphone</div>
+                  <div class="chk-desc" id="chk-mic-text">
+                    Sẵn sàng nhận giọng nói và chuyển đổi thành văn bản
+                  </div>
+                </div>
+                <span class="chk-badge ready" id="chk-mic-badge">Sẵn sàng</span>
+              </div>
+              <div class="checklist-item ready" id="chk-audio-status">
+                <div class="chk-icon-wrap" id="chk-audio-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                </div>
+                <div class="chk-info">
+                  <div class="chk-name">Âm thanh phỏng vấn (Loa)</div>
+                  <div class="chk-desc" id="chk-audio-text">
+                    Sẵn sàng phát âm thanh câu hỏi phỏng vấn
+                  </div>
+                </div>
+                <span class="chk-badge ready" id="chk-audio-badge"
+                  >Sẵn sàng</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Tip Note -->
+          <div class="zoom-tip-box">
+            <span class="tip-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </span>
+            <div class="tip-text">
+              <strong>Quy trình trả lời:</strong> Sau khi người phỏng vấn đọc
+              xong câu hỏi, đồng hồ đếm ngược 2 phút sẽ bắt đầu tính giờ để bạn
+              trình bày câu trả lời. Bạn có thể bấm <em>Nhắc lại</em> hoặc
+              <em>Xin 30s</em> khi cần.
+            </div>
+          </div>
+        </div>
+
+        <div class="zoom-dialog-actions">
+          <button
+            type="button"
+            class="btn-zoom-cancel"
+            onclick="closeStartConfirmModal()"
+          >
+            Kiểm tra lại
+          </button>
+          <button
+            type="button"
+            class="btn-zoom-confirm-start"
+            onclick="confirmAndStartInterview()"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Bắt đầu phỏng vấn ngay</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+         FINISH MODAL: Executive Post-Interview Debrief Chamber
+         ========================================================================== -->
+    <div id="finish-modal" class="modal hidden">
+      <div class="modal-content" style="max-width: 860px">
+        <div class="modal-header">
+          <div>
+            <h3 style="font-size: 18px; margin: 0 0 4px">
+              Báo cáo Phân tích Phỏng vấn Chuyên sâu
+            </h3>
+            <span style="font-size: 12px; color: var(--ir-text-muted)"
+              >Đánh giá toàn diện theo chuẩn STAR và kiến thức chuyên
+              ngành</span
+            >
+          </div>
+          <button type="button" onclick="closeFinishModal()" class="close-btn" aria-label="Đóng báo cáo">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="finish-content">
+            <div class="finish-score-display">
+              <div class="finish-score-circle" id="finish-score-value">...</div>
+              <p
+                style="
+                  font-weight: 700;
+                  letter-spacing: 0.5px;
+                  text-transform: uppercase;
+                  font-size: 12px;
+                  color: var(--ir-text-muted);
+                  margin: 0 0 8px;
+                "
+              >
+                Điểm Năng lực Tổng thể
+              </p>
+              <div id="finish-score-verdict" class="finish-verdict-pill"></div>
+            </div>
+            <p id="finish-message" class="finish-message">
+              Hệ thống đang tổng hợp và đánh giá buổi phỏng vấn của bạn...
+            </p>
+            <div
+              id="finish-summary"
+              class="finish-summary-box"
+              style="background: transparent; border: none; padding: 0"
+            ></div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button
+            type="button"
+            id="btn-resume-interview"
+            class="btn btn-primary"
+            style="display: none; align-items: center; justify-content: center; gap: 8px;"
+            onclick="resumeInterviewFromFinishModal()"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Tiếp tục phỏng vấn</span>
+          </button>
+          <a
+            id="btn-view-deep-report"
+            href="../report/report.html"
+            class="btn btn-primary"
+            style="
+              text-decoration: none;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+            "
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span>Xem Báo cáo Đánh giá Chi tiết →</span>
+          </a>
+          <a
+            href="../../features/dashboard/dashboard.html"
+            class="btn btn-outline"
+            style="
+              text-decoration: none;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 6px;
+            "
+          >
+            Về Dashboard
+          </a>
+          <a
+            href="../../features/interview/interview-info.html"
+            class="btn btn-outline"
+            style="
+              text-decoration: none;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            Luyện tập buổi khác
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PrepMate Engine Scripts -->
+    <!-- Shared / common dependencies FIRST -->
+    <script src="../../shared/js/components.js?v=29"></script>
+
+    <!-- Feature dependencies -->
+    <script src="../../features/auth/auth.js?v=29"></script>
+    <script src="../../features/dashboard/dashboard.js?v=29"></script>
+    <script src="../../features/interview/avatar.js?v=29"></script>
+
+    <!-- Main app initializer -->
+    <script src="../../shared/js/main.js?v=29"></script>
+
+    <!-- Interviewer Persona Manifest SSOT -->
+    <script src="../../features/interview/interview-persona-manifest.js"></script>
+
+    <!-- Interview icons module -->
+    <script src="../../features/interview/interview-icons.js"></script>
+
+    <!-- Interview stage agenda module -->
+    <script src="../../features/interview/interview-agenda.js"></script>
+
+    <!-- Interview response parser module -->
+    <script src="../../features/interview/interview-parser.js"></script>
+
+    <!-- Interview API client module -->
+    <script src="../../features/interview/interview-api.js"></script>
+
+    <!-- Interview chat box & message rendering module -->
+    <script src="../../features/interview/interview-chat.js"></script>
+
+    <!-- Interview session restore module -->
+    <script src="../../features/interview/interview-restore.js"></script>
+
+    <!-- Interview camera subsystem module -->
+    <script src="../../features/interview/interview-visual-snapshots.js"></script>
+    <script src="../../features/interview/visual-coaching-engine.js"></script>
+    <script src="../../features/interview/interview-camera.js"></script>
+
+    <!-- Interview timer subsystem module -->
+    <script src="../../features/interview/interview-timer.js"></script>
+
+    <!-- Interview confirmation modals module -->
+    <script src="../../features/interview/interview-modals.js"></script>
+
+    <!-- Interview text-to-speech (TTS) subsystem module -->
+    <script src="../../features/interview/interview-tts.js"></script>
+
+    <!-- Interview speech recognition (STT) subsystem module -->
+    <script src="../../features/interview/interview-audio-recorder.js"></script>
+    <script src="../../features/interview/interview-audio-player.js"></script>
+    <script src="../../features/interview/interview-stt.js"></script>
+
+    <!-- Interview finish and report subsystem module -->
+    <script src="../../features/interview/interview-finish.js"></script>
+
+    <!-- Interview pause and resume subsystem module -->
+    <script src="../../features/interview/interview-pause.js"></script>
+
+    <!-- Interview engine LAST -->
+    <script src="../../features/interview/interview.js?v=29"></script>
+    <script>
+      // Synchronize target role, company name, and interviewer persona
+      window.addEventListener("DOMContentLoaded", () => {
+        const configStr = sessionStorage.getItem("interview_init_data");
+        let jobTitle = "Chuyên viên";
+        let companyName = "";
+        let persona = "professional";
+        let roundText = "Vòng 1 • Phỏng vấn Chuyên môn";
+
+        if (configStr) {
+          try {
+            const config = JSON.parse(configStr);
+            if (config.jobTitle) jobTitle = config.jobTitle;
+            if (config.companyName) companyName = config.companyName;
+            if (config.interviewerPersona) persona = config.interviewerPersona;
+            if (config.ttsVoice && typeof window.setTtsVoiceConfig === "function") {
+              window.setTtsVoiceConfig(config.ttsVoice);
+            }
+            if (config.interviewRound) {
+              const r = config.interviewRound.toLowerCase();
+              if (r.includes("round1") || r.includes("technical") || r.includes("chuyên môn")) {
+                roundText = "Vòng 1 • Phỏng vấn Chuyên môn Trọng tâm";
+              } else if (r.includes("round2") || r.includes("behavioral") || r.includes("star")) {
+                roundText = "Vòng 2 • Tác phong & Hành vi (STAR)";
+              } else if (r.includes("round3") || r.includes("culture") || r.includes("văn hóa")) {
+                roundText = "Vòng 3 • Văn hóa & Định hướng Doanh nghiệp";
+              } else {
+                roundText = config.interviewRound;
+              }
+            }
+          } catch (e) {}
+        }
+
+        // Determine interviewer name, title, initials based on persona
+        let interviewerName = "Trần Minh Vũ";
+        let interviewerRole = companyName ? `Giám đốc Kỹ thuật & Tuyển dụng Cấp cao • ${companyName}` : "Giám đốc Kỹ thuật & Tuyển dụng Cấp cao";
+        let interviewerInitials = "MV";
+
+        if (typeof PrepMatePersonas !== "undefined") {
+          const p = PrepMatePersonas.getPersona(persona);
+          if (p) {
+            interviewerName = p.name;
+            interviewerRole = companyName ? `${p.title} • ${companyName}` : p.title;
+            interviewerInitials = p.avatarInitials;
+          }
+        } else {
+          if (persona === "friendly") {
+            interviewerName = "Lê Lan Anh";
+            interviewerRole = companyName ? `Trưởng phòng Nhân sự & Văn hóa • ${companyName}` : "Trưởng phòng Nhân sự & Văn hóa";
+            interviewerInitials = "LA";
+          } else if (persona === "balanced") {
+            interviewerName = "Nguyễn Hoàng Nam";
+            interviewerRole = companyName ? `Quản lý Dự án & Kỹ thuật Nghiệp vụ • ${companyName}` : "Quản lý Dự án & Kỹ thuật Nghiệp vụ";
+            interviewerInitials = "HN";
+          }
+        }
+
+        // Topbar metadata
+        const topbarEl = document.getElementById("topbar-job-title");
+        if (topbarEl) {
+          let title = jobTitle;
+          if (companyName) title += ` • ${companyName}`;
+          topbarEl.textContent = title;
+        }
+
+        // Interviewer tile nameplate and avatar
+        const interviewerNameEl = document.getElementById("interviewer-name-display");
+        if (interviewerNameEl) interviewerNameEl.textContent = interviewerName;
+
+        const interviewerAvatarInitials = document.querySelector("#interviewer-avatar-preview span");
+        if (interviewerAvatarInitials) interviewerAvatarInitials.textContent = interviewerInitials;
+
+        const interviewerBadgeInitials = document.querySelector(".msg-avatar-badge.interviewer-badge span");
+        if (interviewerBadgeInitials) interviewerBadgeInitials.textContent = interviewerInitials;
+
+        const aiMsgHeaderName = document.querySelector(".ai-msg-header span:first-child");
+        if (aiMsgHeaderName) aiMsgHeaderName.textContent = `${interviewerName} (${interviewerRole})`;
+
+        const aiMsgText = document.querySelector(".msg.ai-msg .msg-text");
+        if (aiMsgText) {
+          aiMsgText.innerHTML = `Xin chào bạn! Tôi là ${interviewerName}, người đồng hành cùng bạn trong buổi phỏng vấn hôm nay. Bạn hãy kiểm tra lại góc máy camera, âm thanh micro và nhấn nút <strong>"Bắt đầu"</strong> ở góc trên bên phải khi đã sẵn sàng nhé!`;
+        }
+
+        // Start Modal fields
+        const modalJobEl = document.getElementById("confirm-modal-job-title");
+        if (modalJobEl) {
+          let title = jobTitle;
+          if (companyName) title += ` • ${companyName}`;
+          modalJobEl.textContent = title;
+        }
+
+        const modalRoundEl = document.getElementById("confirm-modal-round");
+        if (modalRoundEl) modalRoundEl.textContent = roundText;
+
+        const modalInterviewerEl = document.getElementById("confirm-modal-interviewer");
+        if (modalInterviewerEl) modalInterviewerEl.textContent = `${interviewerName} (${interviewerRole})`;
+
+        // Candidate initials from auth profile if available
+        try {
+          let authUser = null;
+          if (typeof getCurrentUser === "function") {
+            authUser = getCurrentUser();
+          }
+          if (!authUser) {
+            authUser = JSON.parse(localStorage.getItem("prepmate_current_user") || "null")
+              || JSON.parse(localStorage.getItem("prepmate_auth_user") || "null");
+          }
+          const candName = authUser ? (authUser.fullname || authUser.fullName || authUser.name || authUser.username || "") : "";
+          if (candName) {
+            const parts = candName.trim().split(/\s+/);
+            const initials = parts.length >= 2
+              ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+              : candName.substring(0, 2).toUpperCase();
+            const candInitialsEl = document.getElementById("candidate-initials");
+            if (candInitialsEl) candInitialsEl.textContent = initials;
+            const candTileName = document.getElementById("candidate-tile-name");
+            if (candTileName) candTileName.textContent = `${candName} (Bạn)`;
+          }
+        } catch (e) {}
+      });
+
+      // Toggle dialogue panel
+      function toggleTranscriptDrawer() {
+        const drawer = document.getElementById("ir-transcript-drawer");
+        const btn = document.getElementById("btn-toggle-transcript");
+        if (!drawer) return;
+        const isCollapsed = drawer.classList.contains("panel-collapsed");
+        if (isCollapsed) {
+          drawer.classList.remove("panel-collapsed");
+          drawer.classList.add("open");
+          if (btn) btn.classList.add("active");
+        } else {
+          drawer.classList.add("panel-collapsed");
+          drawer.classList.remove("open");
+          if (btn) btn.classList.remove("active");
+        }
+      }
+
+      // Filter transcript by speaker (All, AI interviewer, User candidate)
+      function filterTranscript(type, btn) {
+        const buttons = document.querySelectorAll(
+          ".transcript-filters .filter-chip",
+        );
+        buttons.forEach((b) => b.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+
+        const chatBox = document.getElementById("chat-box");
+        if (!chatBox) return;
+        const messages = chatBox.querySelectorAll(".msg");
+        messages.forEach((msg) => {
+          if (type === "all") {
+            msg.style.display = "";
+          } else if (type === "ai") {
+            msg.style.display = msg.classList.contains("ai-msg") ? "" : "none";
+          } else if (type === "user") {
+            msg.style.display = msg.classList.contains("user-msg")
+              ? ""
+              : "none";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

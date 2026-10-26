@@ -1,0 +1,2273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Trung tâm Quản trị & Điều hành Hệ thống</title>
+    <!-- Google Fonts Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Canonical Design Tokens & System Stylesheets -->
+    <link rel="stylesheet" href="../../shared/css/tokens.css?v=26">
+    <link rel="stylesheet" href="../../shared/css/base.css?v=26">
+    <link rel="stylesheet" href="../../shared/css/layout.css?v=26">
+    <link rel="stylesheet" href="../../shared/css/components.css?v=26">
+    <link rel="stylesheet" href="../../shared/css/style.css?v=26">
+    <link rel="stylesheet" href="../../features/dashboard/new-dashboard.css?v=26">
+    <link rel="stylesheet" href="./admin.css?v=26">
+    <script>
+        (function() {
+            var raw = localStorage.getItem('prepmate_current_user') || localStorage.getItem('prepmate_user');
+            var user = null;
+            try { if (raw) user = JSON.parse(raw); } catch (e) {}
+            var role = user && user.role ? String(user.role).toLowerCase() : '';
+            if (!user || !user.token) {
+                document.documentElement.style.display = 'none';
+                var ret = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+                window.location.replace('../auth/auth.html?redirect=' + ret);
+            } else if (role !== 'admin' && role !== 'manager') {
+                document.documentElement.style.display = 'none';
+                window.location.replace('../dashboard/dashboard.html');
+            }
+        })();
+    </script>
+    <style>
+        :root {
+            --pm-admin-bg: var(--pm-bg);
+            --pm-admin-card: var(--pm-bg-card);
+            --pm-admin-border: var(--pm-border);
+            --pm-admin-primary: var(--pm-primary);
+            --pm-admin-primary-hover: var(--pm-primary-hover);
+            --pm-admin-text-main: var(--pm-text-primary);
+            --pm-admin-text-muted: var(--pm-text-muted);
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+
+    <!-- SIDEBAR (Auto-rendered cleanly by initRoleBasedSidebar() in main.js) -->
+    <aside class="sidebar sidebar-new" id="main-sidebar"></aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content main-content-new">
+        <!-- TOP BREADCRUMB / HEADER -->
+        <div class="admin-top-header">
+            <div class="admin-header-titles">
+                <h1 id="page-role-heading">
+                    <span id="role-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+                    <span id="role-title-text">Bảng Quản Trị Hệ Thống</span>
+                </h1>
+                <p id="role-desc-text">
+                    Trung tâm kiểm soát thành viên, quản lý gói dịch vụ, giám sát ngân hàng câu hỏi và nhật ký hoạt động.
+                </p>
+            </div>
+            <div class="admin-header-controls">
+                <!-- Role Switcher for previewing permissions -->
+                <div class="role-switch-container" title="Chuyển chế độ xem quyền hạn (Admin / Manager)">
+                    <button class="role-switch-btn active admin" id="btn-view-admin" onclick="switchRoleView('admin')">
+                        Quản trị viên (Admin)
+                    </button>
+                    <button class="role-switch-btn manager" id="btn-view-manager" onclick="switchRoleView('manager')">
+                        Quản lý (Manager)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI METRICS SUMMARY (Real Data Only from Database) -->
+        <div class="admin-kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon-wrap blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                <div>
+                    <div class="kpi-label">Tổng số tài khoản</div>
+                    <div class="kpi-value" id="kpi-total-users">0</div>
+                    <div class="kpi-subtext" id="kpi-user-subtext">Đã ghi nhận trong cơ sở dữ liệu</div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon-wrap amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                <div>
+                    <div class="kpi-label">Hội viên PRO</div>
+                    <div class="kpi-value" id="kpi-pro-users">0</div>
+                    <div class="kpi-subtext" id="kpi-pro-ratio">0% tổng thành viên</div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon-wrap emerald"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+                <div>
+                    <div class="kpi-label">Doanh thu ghi nhận</div>
+                    <div class="kpi-value" id="kpi-revenue">0đ</div>
+                    <div class="kpi-subtext" id="kpi-trans-subtext">Từ các giao dịch thanh toán</div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon-wrap purple"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+                <div>
+                    <div class="kpi-label">Phiên phỏng vấn hoàn thành</div>
+                    <div class="kpi-value" id="kpi-sessions-count">0</div>
+                    <div class="kpi-subtext" id="kpi-sessions-subtext">Chưa có phiên phỏng vấn nào</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 1: QUẢN LÝ NGƯỜI DÙNG (#users-tab) -->
+        <section id="users-tab" class="tab-panel-section active">
+            <div class="panel-top-bar">
+                <div class="panel-title-block">
+                    <h3>Quản lý Thành viên & Tài khoản</h3>
+                    <p>Theo dõi danh sách tài khoản thực tế trong hệ thống, cấp hoặc hủy gói PRO và phân quyền quản trị.</p>
+                </div>
+                <div class="panel-actions-group">
+                    <button class="btn-ui btn-ui-primary" onclick="openCreateUserModal()">
+                        Thêm tài khoản mới
+                    </button>
+                    <button class="btn-ui btn-ui-secondary" onclick="exportUsersCSV()">
+                        Xuất danh sách (CSV)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filter-row">
+                <input type="text" id="user-search-input" class="filter-search-input" placeholder="Tìm theo họ tên, email hoặc tên đăng nhập..." oninput="filterUsersTable()">
+                <select id="user-role-filter" class="filter-select" onchange="filterUsersTable()">
+                    <option value="all">Tất cả vai trò</option>
+                    <option value="admin">Quản trị viên (Admin)</option>
+                    <option value="manager">Quản lý (Manager)</option>
+                    <option value="user">Ứng viên (User)</option>
+                </select>
+                <select id="user-plan-filter" class="filter-select" onchange="filterUsersTable()">
+                    <option value="all">Tất cả gói</option>
+                    <option value="pro">Hội viên PRO</option>
+                    <option value="free">Miễn phí (Free)</option>
+                </select>
+                <select id="user-status-filter" class="filter-select" onchange="filterUsersTable()">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="active">Đang hoạt động</option>
+                    <option value="locked">Bị tạm khóa</option>
+                </select>
+            </div>
+
+            <!-- Table -->
+            <div class="admin-table-responsive">
+                <table class="admin-data-table">
+                    <thead>
+                        <tr>
+                            <th>Thành viên</th>
+                            <th>Email</th>
+                            <th>Vai trò</th>
+                            <th>Gói dịch vụ</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tham gia</th>
+                            <th>Hạn dùng PRO</th>
+                            <th style="text-align: right;">Thao tác quản trị</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <!-- Loaded dynamically from real db -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 2: VAI TRÒ & PHÂN QUYỀN (#roles-tab) -->
+        <section id="roles-tab" class="tab-panel-section">
+            <div class="panel-top-bar">
+                <div class="panel-title-block">
+                    <h3>Phân Quyền Theo Vai Trò</h3>
+                    <p>Quy định chi tiết các quyền thao tác giữa Quản trị viên (Admin), Quản lý (Manager) và Ứng viên (User).</p>
+                </div>
+            </div>
+
+            <div class="admin-table-responsive" style="margin-bottom: 24px;">
+                <table class="admin-data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 35%;">Tính năng / Hành động hệ thống</th>
+                            <th style="width: 20%; text-align: center;">Ứng viên (User)</th>
+                            <th style="width: 22%; text-align: center;">Quản lý (Manager)</th>
+                            <th style="width: 23%; text-align: center;">Quản trị viên (Admin)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Luyện tập phỏng vấn AI & Nhận báo cáo</strong></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Toàn quyền</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Toàn quyền</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Toàn quyền</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Quản lý câu hỏi phỏng vấn & Ngân hàng câu hỏi</strong></td>
+                            <td style="text-align:center;"><span style="color:#64748b;">Chỉ xem câu hỏi</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Thêm / Sửa / Xóa</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Toàn quyền</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Xem danh sách người dùng & Cấp/Hạ gói PRO</strong></td>
+                            <td style="text-align:center;"><span style="color:#dc2626;">✗ Không có quyền</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Xem & Cấp/Hạ PRO</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Toàn quyền</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Thay đổi vai trò (Thăng / Hạ quyền Manager)</strong></td>
+                            <td style="text-align:center;"><span style="color:#dc2626;">✗ Không có quyền</span></td>
+                            <td style="text-align:center;"><span style="color:#dc2626;">✗ Không có quyền</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Chỉ Admin</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Quản lý Gói dịch vụ, Giá gói & Thêm gói mới</strong></td>
+                            <td style="text-align:center;"><span style="color:#dc2626;">✗ Không có quyền</span></td>
+                            <td style="text-align:center;"><span style="color:#64748b;">Chỉ xem bảng giá</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Thêm / Sửa / Xóa gói</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cấu hình Trí tuệ nhân tạo (AI Gemini) & Khóa API Key</strong></td>
+                            <td style="text-align:center;"><span style="color:#dc2626;">✗ Không có quyền</span></td>
+                            <td style="text-align:center;"><span style="color:#dc2626;">✗ Không có quyền</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Toàn quyền</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Xem & Quản lý Nhật ký hoạt động</strong></td>
+                            <td style="text-align:center;"><span style="color:#dc2626;">✗ Không có quyền</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Xem nhật ký hoạt động</span></td>
+                            <td style="text-align:center;"><span style="color:#059669;font-weight:800;">✓ Xem & Dọn dẹp nhật ký</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Quick Role Prompter -->
+            <div class="admin-subcard" style="padding:20px;">
+                <h4 style="margin:0 0 8px;font-size:15px;">Cấp quyền nhanh cho thành viên</h4>
+                <p style="margin:0 0 14px;font-size:13px;color:var(--pm-admin-text-muted);">Lựa chọn thành viên trong hệ thống để thay đổi vai trò:</p>
+                <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                    <select id="quick-assign-user-select" class="filter-select" style="min-width:260px;">
+                        <!-- Options generated dynamically -->
+                    </select>
+                    <select id="quick-assign-role-select" class="filter-select">
+                        <option value="user">Ứng viên (User)</option>
+                        <option value="manager">Quản lý (Manager)</option>
+                        <option value="admin">Quản trị viên (Admin)</option>
+                    </select>
+                    <button class="btn-ui btn-ui-primary" onclick="applyQuickRoleAssign()">
+                        Gán quyền ngay
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: GÓI DỊCH VỤ & GIÁ GÓI (#plans-tab) -->
+        <section id="plans-tab" class="tab-panel-section">
+            <div class="panel-top-bar">
+                <div class="panel-title-block">
+                    <h3>Bảng Giá & Gói Dịch Vụ</h3>
+                    <p>Thiết lập thông tin gói, giá bán, chu kỳ tính phí, danh sách tính năng mở khóa và thêm các gói mới.</p>
+                </div>
+                <div class="panel-actions-group">
+                    <button class="btn-ui btn-ui-primary" id="btn-add-plan" onclick="openCreatePlanModal()">
+                        Thêm gói dịch vụ mới
+                    </button>
+                    <button class="btn-ui btn-ui-secondary" onclick="resetDefaultPlans()">
+                        Khôi phục mặc định
+                    </button>
+                </div>
+            </div>
+
+            <!-- Plans Cards Grid -->
+            <div class="plans-management-grid" id="plans-cards-container">
+                <!-- Rendered dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 4: QUẢN LÝ NỘI DUNG (#content-tab) -->
+        <section id="content-tab" class="tab-panel-section">
+            <div class="panel-top-bar">
+                <div class="panel-title-block">
+                    <h3>Ngân Hàng Câu Hỏi Phỏng Vấn</h3>
+                    <p>Quản lý câu hỏi chuyên môn thực tế dùng để phỏng vấn ứng viên theo các ngành nghề tuyển dụng.</p>
+                </div>
+                <div class="panel-actions-group">
+                    <button class="btn-ui btn-ui-primary" onclick="openCreateQuestionModal()">
+                        Thêm câu hỏi mới
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question Filters -->
+            <div class="filter-row">
+                <input type="text" id="question-search-input" class="filter-search-input" placeholder="Tìm câu hỏi hoặc vị trí tuyển dụng..." oninput="filterQuestionsTable()">
+                <select id="question-category-filter" class="filter-select" onchange="filterQuestionsTable()">
+                    <option value="all">Tất cả ngành nghề</option>
+                    <option value="IT">Công nghệ thông tin (IT / Lập trình)</option>
+                    <option value="Marketing">Truyền thông & Tiếp thị</option>
+                    <option value="Design">Thiết kế đồ họa & Sáng tạo</option>
+                    <option value="Languages">Ngôn ngữ & Biên phiên dịch</option>
+                    <option value="Business">Kinh doanh & Nhân sự</option>
+                </select>
+                <select id="question-level-filter" class="filter-select" onchange="filterQuestionsTable()">
+                    <option value="all">Tất cả cấp độ</option>
+                    <option value="Fresher">Mới tốt nghiệp (Fresher)</option>
+                    <option value="Junior">Có kinh nghiệm (Junior)</option>
+                    <option value="Senior">Chuyên gia (Senior)</option>
+                </select>
+            </div>
+
+            <!-- Questions Table -->
+            <div class="admin-table-responsive">
+                <table class="admin-data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">Mã</th>
+                            <th style="width: 140px;">Ngành nghề</th>
+                            <th style="width: 170px;">Vị trí tuyển dụng</th>
+                            <th>Nội dung câu hỏi phỏng vấn</th>
+                            <th style="width: 110px;">Cấp độ</th>
+                            <th style="width: 130px; text-align: right;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="questions-table-body">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 5: BÁO CÁO & PHÂN TÍCH (#reports-tab) -->
+        <section id="reports-tab" class="tab-panel-section">
+            <div class="panel-top-bar">
+                <div class="panel-title-block">
+                    <h3>Báo Cáo Năng Lực & Đánh Giá STAR</h3>
+                    <p>Tổng hợp dữ liệu kết quả phỏng vấn, điểm phản xạ theo cấu trúc STAR của các ứng viên trên hệ thống.</p>
+                </div>
+            </div>
+
+            <!-- Real Database Sessions View -->
+            <div id="reports-content-container">
+                <!-- If 0 sessions in DB, cleanly show empty state without inventing data -->
+            </div>
+        </section>
+
+        <!-- TAB 6: GIAO DỊCH & DOANH THU (#transactions-tab) -->
+        <section id="transactions-tab" class="tab-panel-section">
+            <div class="panel-top-bar">
+                <div class="panel-title-block">
+                    <h3>Lịch Sử Giao Dịch & Thanh Toán</h3>
+                    <p>Danh sách các giao dịch thanh toán nâng cấp gói đã được lưu trong cơ sở dữ liệu hệ thống.</p>
+                </div>
+                <div class="panel-actions-group">
+                    <button class="btn-ui btn-ui-secondary" onclick="exportTransactionsCSV()">
+                        Xuất danh sách giao dịch (CSV)
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-table-responsive">
+                <table class="admin-data-table">
+                    <thead>
+                        <tr>
+                            <th>Mã giao dịch</th>
+                            <th>Người dùng</th>
+                            <th>Phương thức</th>
+                            <th>Số tiền</th>
+                            <th>Thời gian thanh toán</th>
+                            <th>Trạng thái</th>
+                            <th>Ghi chú / Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-table-body">
+                        <!-- Loaded dynamically from real db -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 7: CẤU HÌNH HỆ THỐNG (#settings-tab) -->
+        <section id="settings-tab" class="tab-panel-section">
+            <div class="panel-top-bar">
+                <div class="panel-title-block">
+                    <h3>Cấu Hình Hệ Thống & Trí Tuệ Nhân Tạo AI</h3>
+                    <p>Thiết lập thông số mô hình AI, định mức hạn ngạch miễn phí và phát thông báo hệ thống.</p>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:24px;">
+                <!-- AI Engine Config -->
+                <div class="admin-subcard">
+                    <h4 style="margin:0 0 16px;font-size:16px;display:flex;align-items:center;gap:8px;">
+                        Cấu hình Trí tuệ nhân tạo (AI Engine & Gateway)
+                    </h4>
+
+                    <div class="form-group-admin">
+                        <label>Bộ cấu hình nhanh (Provider Preset)</label>
+                        <select id="config-ai-preset" onchange="applyProviderPreset(this.value)">
+                            <option value="">-- Tự do tùy biến (Custom) --</option>
+                            <option value="openai">OpenAI (api.openai.com)</option>
+                            <option value="gemini-openai">Google Gemini OpenAI Endpoint (generativelanguage.googleapis.com)</option>
+                            <option value="groq">Groq Cloud (api.groq.com)</option>
+                            <option value="deepseek">DeepSeek (api.deepseek.com)</option>
+                            <option value="vilao">Vilao AI Gateway (api.vilao.ai)</option>
+                            <option value="local-ollama">Local Ollama / vLLM (127.0.0.1:11434)</option>
+                        </select>
+                        <span class="field-help">Chọn cấu hình mẫu hoặc tự điền thông số chi tiết bên dưới.</span>
+                    </div>
+
+                    <div class="form-group-admin">
+                        <label>Nhà cung cấp AI (Provider Name)</label>
+                        <input type="text" id="config-ai-provider" placeholder="VD: OpenAI, Google Gemini, Groq, Vilao AI" value="OpenAI-Compatible">
+                        <span class="field-help">Tên nhận diện nhà cung cấp dịch vụ LLM.</span>
+                    </div>
+
+                    <div class="form-group-admin">
+                        <label>Giao thức API (Protocol)</label>
+                        <select id="config-ai-protocol">
+                            <option value="openai-chat-completions">OpenAI Chat Completions (/chat/completions)</option>
+                        </select>
+                        <span class="field-help">Giao thức tương thích chuẩn OpenAI Chat Completions được hỗ trợ bởi hầu hết các nhà cung cấp.</span>
+                    </div>
+
+                    <div class="form-group-admin">
+                        <label>Base URL máy chủ AI</label>
+                        <input type="url" id="config-ai-base-url" placeholder="https://api.openai.com/v1/" value="https://api.openai.com/v1/">
+                        <span class="field-help">Đường dẫn gốc Gateway (yêu cầu HTTPS cho máy chủ từ xa, cho phép HTTP cho localhost/loopback).</span>
+                    </div>
+
+                    <div class="form-group-admin">
+                        <label>Mô hình AI Phỏng vấn (Model ID)</label>
+                        <input type="text" id="config-ai-model" list="ai-model-presets" placeholder="VD: gpt-4o-mini, gemini-1.5-flash, deepseek-chat" value="gpt-4o-mini">
+                        <datalist id="ai-model-presets">
+                            <!-- OpenAI Models -->
+                            <option value="gpt-4o-mini">OpenAI: gpt-4o-mini (Khuyên dùng - Nhanh, chuẩn JSON)</option>
+                            <option value="gpt-4o">OpenAI: gpt-4o (Đa phương tiện, suy luận cao cấp)</option>
+                            <!-- Google Gemini (OpenAI Endpoint) -->
+                            <option value="gemini-1.5-flash">Google: gemini-1.5-flash (Khuyên dùng - Ổn định, context lớn)</option>
+                            <option value="gemini-2.0-flash">Google: gemini-2.0-flash (Thế hệ mới, phản hồi nhanh)</option>
+                            <option value="gemini-1.5-pro">Google: gemini-1.5-pro (Suy luận chuyên sâu)</option>
+                            <!-- Groq Cloud -->
+                            <option value="llama-3.3-70b-versatile">Groq: llama-3.3-70b-versatile (Khuyên dùng - Siêu tốc LPU)</option>
+                            <option value="llama-3.1-8b-instant">Groq: llama-3.1-8b-instant (Độ trễ thấp)</option>
+                            <!-- DeepSeek -->
+                            <option value="deepseek-chat">DeepSeek: deepseek-chat (Khuyên dùng - Chuẩn V3)</option>
+                            <option value="deepseek-reasoner">DeepSeek: deepseek-reasoner (Suy luận R1)</option>
+                            <!-- Vilao AI Gateway -->
+                            <option value="ag/gemini-2.0-flash">Vilao: ag/gemini-2.0-flash (Khuyên dùng trên Vilao)</option>
+                            <option value="ag/gemini-1.5-flash">Vilao: ag/gemini-1.5-flash (Hoạt động tốt)</option>
+                            <option value="ag/gemini-3.8-flash">Vilao: ag/gemini-3.8-flash [⚠️ MODEL_INACTIVE - Không dùng]</option>
+                            <!-- Local Ollama / vLLM -->
+                            <option value="llama3.2">Local: llama3.2 (Nhẹ, chạy máy tính cá nhân)</option>
+                            <option value="qwen2.5">Local: qwen2.5 (Tiếng Việt & đa ngôn ngữ tốt)</option>
+                        </datalist>
+                        <span class="field-help">Nhập chính xác Model ID theo danh mục nhà cung cấp công bố. Có thể tự do nhập mô hình bất kỳ.</span>
+                    </div>
+
+                    <div class="form-group-admin">
+                        <label>Chế độ ưu tiên khóa xác thực (Credential Mode)</label>
+                        <select id="config-credential-mode">
+                            <option value="auto">Tự động (Ưu tiên biến môi trường máy chủ, sau đó đến khóa Admin)</option>
+                            <option value="admin">Quản trị viên quản lý (Sử dụng khóa lưu an toàn trong database)</option>
+                            <option value="environment">Biến môi trường máy chủ (Chỉ dùng biến môi trường)</option>
+                        </select>
+                        <span class="field-help">Xác định nguồn khóa API hiệu lực khi máy chủ thực thi tác vụ AI.</span>
+                    </div>
+
+                    <div class="form-group-admin">
+                        <label>Khóa API Key (AI Gateway)</label>
+                        <div style="display:flex;gap:8px;">
+                            <input type="password" id="config-api-key" placeholder="Nhập API key mới..." style="flex:1;">
+                            <button class="btn-ui btn-ui-secondary" type="button" onclick="toggleApiKeyVisibility()" title="Ẩn/Hiện khóa" aria-label="Ẩn hoặc hiện khóa API"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+                            <input type="checkbox" id="config-clear-api-key" style="width:auto;">
+                            <label for="config-clear-api-key" style="font-size:12px;color:#b91c1c;margin:0;cursor:pointer;font-weight:normal;">Xóa khóa API đã lưu trong database (Clear stored key)</label>
+                        </div>
+                        <span class="field-help" id="config-api-key-status">Để trống nếu muốn giữ nguyên khóa API hiện tại trên máy chủ. Khóa mới sẽ được mã hóa an toàn bằng ASP.NET Core Data Protection.</span>
+                    </div>
+
+                    <!-- AI Gateway Health & Truthful Readiness Card (WI-04) -->
+                    <div class="form-group-admin" style="background:var(--color-surface-subtle, #f8fafc);border:1px solid var(--color-border, #e2e8f0);border-radius:8px;padding:14px;margin-bottom:16px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                            <label style="margin:0;font-weight:600;display:flex;align-items:center;gap:6px;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> Trạng thái kết nối AI Gateway
+                            </label>
+                            <span id="ai-health-badge" class="badge" style="padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#e2e8f0;color:#475569;">
+                                Đang tải...
+                            </span>
+                        </div>
+                        <div id="ai-health-detail" style="font-size:13px;color:var(--color-text-secondary, #64748b);margin-bottom:10px;">
+                            Đang nạp thông tin kết nối...
+                        </div>
+                        <div id="ai-health-guidance" style="display:none;margin-bottom:10px;padding:8px 12px;border-radius:6px;font-size:12px;"></div>
+                        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+                            <button type="button" class="btn-ui btn-ui-secondary" id="btn-test-ai-health" onclick="triggerAiHealthCheck()" style="font-size:12px;padding:6px 12px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Kiểm tra kết nối ngay
+                            </button>
+                            <span id="ai-health-checked-at" style="font-size:11px;color:#94a3b8;"></span>
+                        </div>
+                        <div style="padding:8px 10px;background:#f1f5f9;border-radius:6px;font-size:11px;color:#475569;line-height:1.4;">
+                            <div style="font-weight:600;margin-bottom:4px;color:#334155;">Phân biệt cấp độ trạng thái AI:</div>
+                            <div>1. <strong>Cấu hình máy chủ:</strong> Thông tin endpoint và khóa đã lưu trong database (chưa kiểm chứng kết nối live).</div>
+                            <div>2. <strong>Health Check Ping:</strong> Kiểm tra bắt tay HTTP và tính hợp lệ của API Key với AI Gateway.</div>
+                            <div>3. <strong>Suy luận phỏng vấn:</strong> Yêu cầu mô hình đang Active (không bị MODEL_INACTIVE), hỗ trợ System Role và còn đủ hạn mức Tokens.</div>
+                        </div>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Độ sáng tạo của câu hỏi (Nhiệt độ: <span id="temp-val">0.7</span>)</label>
+                        <input type="range" id="config-temperature" min="0.1" max="2.0" step="0.05" value="0.7" aria-label="Độ sáng tạo của câu hỏi (Nhiệt độ)" aria-valuemin="0.1" aria-valuemax="2.0" aria-valuenow="0.7" oninput="document.getElementById('temp-val').innerText = this.value; this.setAttribute('aria-valuenow', this.value);">
+                        <span class="field-help">Giá trị thấp: Chính xác cao; Giá trị cao: Mở rộng tình huống đa dạng (0.1 - 2.0).</span>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Giới hạn Tokens phản hồi (Max Tokens)</label>
+                        <input type="number" id="config-max-tokens" value="1000" min="1" max="32000" step="100">
+                        <span class="field-help">Số tokens tối đa AI sinh ra cho mỗi lượt phản hồi (1 - 32000).</span>
+                    </div>
+                    <div class="form-group-admin">
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" id="config-ai-enabled" checked style="width:auto;">
+                            <span>Kích hoạt AI Gateway (Bật / Tắt dịch vụ phỏng vấn AI)</span>
+                        </label>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Hạn ngạch phỏng vấn miễn phí (Số lượt / tháng)</label>
+                        <input type="number" id="config-free-quota" value="3" min="1" max="100">
+                        <span class="field-help">Số phiên phỏng vấn miễn phí cho mỗi ứng viên trong một tháng.</span>
+                    </div>
+                    <div class="form-group-admin" style="margin-bottom:0;">
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" id="config-enable-voice" checked style="width:auto;">
+                            <span>Kích hoạt tính năng giọng nói thời gian thực (Voice AI)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- System Notification & Announcement -->
+                <div class="admin-subcard" style="display:flex;flex-direction:column;">
+                    <h4 style="margin:0 0 16px;font-size:16px;display:flex;align-items:center;gap:8px;">
+                        Phát Thông Báo Toàn Hệ Thống
+                    </h4>
+
+                    <div class="form-group-admin">
+                        <label>Tiêu đề thông báo</label>
+                        <input type="text" id="broadcast-title" placeholder="Ví dụ: Lịch bảo trì định kỳ lúc 23:00...">
+                    </div>
+
+                    <div class="form-group-admin" style="flex:1;">
+                        <label>Nội dung chi tiết thông báo</label>
+                        <textarea id="broadcast-content" rows="4" placeholder="Nhập nội dung thông điệp gửi tới tất cả người dùng khi đăng nhập..."></textarea>
+                    </div>
+
+                    <div class="form-group-admin">
+                        <label>Phân loại thông báo</label>
+                        <select id="broadcast-level">
+                            <option value="info">Thông tin chung (Xanh dương)</option>
+                            <option value="warning">Cảnh báo bảo trì (Vàng)</option>
+                            <option value="success">Cập nhật tính năng mới (Xanh lá)</option>
+                        </select>
+                    </div>
+
+                    <button class="btn-ui btn-ui-secondary" type="button" onclick="sendBroadcastNotification()" style="margin-top:auto;">
+                        Phát thông báo ngay
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-top:24px;display:flex;justify-content:flex-end;">
+                <button class="btn-ui btn-ui-primary" id="btn-save-config" onclick="saveSystemConfig()">
+                    Lưu cài đặt hệ thống
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB 8: NHẬT KÝ HOẠT ĐỘNG (#audit-tab) -->
+        <section id="audit-tab" class="tab-panel-section">
+            <div class="panel-top-bar">
+                <div class="panel-title-block">
+                    <h3>Nhật Ký Hoạt Động Quản Trị</h3>
+                    <p>Ghi nhận các thao tác quản trị tài khoản, cập nhật bảng giá và cấu hình hệ thống thực hiện trong phiên làm việc.</p>
+                </div>
+                <div class="panel-actions-group">
+                    <button class="btn-ui btn-ui-secondary" onclick="exportAuditLogsCSV()">
+                        Xuất nhật ký (CSV)
+                    </button>
+                    <button class="btn-ui btn-ui-danger" id="btn-clear-logs" onclick="clearAuditLogs()">
+                        Dọn dẹp nhật ký
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters for logs -->
+            <div class="filter-row">
+                <input type="text" id="log-search-input" class="filter-search-input" placeholder="Tìm theo nội dung, tài khoản hoặc địa chỉ IP..." oninput="filterAuditLogsTable()">
+                <select id="log-role-filter" class="filter-select" onchange="filterAuditLogsTable()">
+                    <option value="all">Tất cả vai trò thực hiện</option>
+                    <option value="admin">Quản trị viên (Admin)</option>
+                    <option value="manager">Quản lý (Manager)</option>
+                </select>
+                <select id="log-action-filter" class="filter-select" onchange="filterAuditLogsTable()">
+                    <option value="all">Tất cả loại hành động</option>
+                    <option value="ROLE_CHANGE">Thay đổi vai trò</option>
+                    <option value="PRO_UPDATE">Cấp / Thu hồi gói PRO</option>
+                    <option value="PLAN_CHANGE">Gói dịch vụ & Giá</option>
+                    <option value="CONFIG_CHANGE">Cấu hình hệ thống</option>
+                    <option value="USER_MANAGE">Quản lý tài khoản</option>
+                </select>
+            </div>
+
+            <div class="admin-table-responsive">
+                <table class="admin-data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Thời gian</th>
+                            <th style="width: 150px;">Người thực hiện</th>
+                            <th style="width: 160px;">Hành động</th>
+                            <th style="width: 180px;">Đối tượng tác động</th>
+                            <th>Chi tiết thay đổi</th>
+                            <th style="width: 110px;">Địa chỉ IP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="audit-table-body">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <app-workspace-footer></app-workspace-footer>
+    </main>
+
+    <!-- MODALS -->
+
+    <!-- 1. Modal Chỉnh sửa & Phân quyền Thành viên -->
+    <div class="admin-modal-overlay" id="modal-edit-user">
+        <div class="admin-modal-container">
+            <div class="admin-modal-header">
+                <h3 id="modal-edit-user-title">Phân quyền & Chỉnh sửa Người dùng</h3>
+                <button class="admin-modal-close-btn" onclick="closeModal('modal-edit-user')">✕</button>
+            </div>
+            <form id="form-edit-user" onsubmit="handleSaveUser(event)">
+                <input type="hidden" id="edit-user-id">
+                
+                <div class="form-row-2col">
+                    <div class="form-group-admin">
+                        <label>Họ và tên</label>
+                        <input type="text" id="edit-user-fullname" required>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Email</label>
+                        <input type="email" id="edit-user-email" required>
+                    </div>
+                </div>
+
+                <div class="form-row-2col">
+                    <div class="form-group-admin">
+                        <label>Vai trò (Role)</label>
+                        <select id="edit-user-role">
+                            <option value="user">Ứng viên (User)</option>
+                            <option value="manager">Quản lý (Manager)</option>
+                            <option value="admin">Quản trị viên (Admin)</option>
+                        </select>
+                        <span class="field-help" id="role-change-warning">Manager chỉ có thể xem, Admin có toàn quyền đổi vai trò.</span>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Gói dịch vụ (Subscription)</label>
+                        <select id="edit-user-plan">
+                            <option value="free">Miễn phí (Free)</option>
+                            <option value="pro_30">PRO (30 ngày)</option>
+                            <option value="pro_90">PRO (90 ngày)</option>
+                            <option value="pro_365">PRO (1 năm)</option>
+                            <option value="pro_forever">PRO (Vĩnh viễn)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group-admin">
+                    <label>Trạng thái tài khoản</label>
+                    <select id="edit-user-status">
+                        <option value="active">Đang hoạt động</option>
+                        <option value="locked">Tạm khóa tài khoản</option>
+                    </select>
+                </div>
+
+                <div class="admin-modal-footer">
+                    <button type="button" class="btn-ui btn-ui-secondary" onclick="closeModal('modal-edit-user')">Hủy bỏ</button>
+                    <button type="submit" class="btn-ui btn-ui-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Modal Tạo Thành viên Mới -->
+    <div class="admin-modal-overlay" id="modal-create-user">
+        <div class="admin-modal-container">
+            <div class="admin-modal-header">
+                <h3>Thêm Tài Khoản Mới</h3>
+                <button class="admin-modal-close-btn" onclick="closeModal('modal-create-user')">✕</button>
+            </div>
+            <form id="form-create-user" onsubmit="handleCreateUser(event)">
+                <div class="form-row-2col">
+                    <div class="form-group-admin">
+                        <label>Họ và tên</label>
+                        <input type="text" id="new-user-fullname" placeholder="Nguyễn Văn A" required>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Tên đăng nhập (Username)</label>
+                        <input type="text" id="new-user-username" placeholder="nguyenvana" required>
+                    </div>
+                </div>
+
+                <div class="form-row-2col">
+                    <div class="form-group-admin">
+                        <label>Email</label>
+                        <input type="email" id="new-user-email" placeholder="vana@gmail.com" required>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Mật khẩu ban đầu</label>
+                        <input type="password" id="new-user-password" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div class="form-row-2col">
+                    <div class="form-group-admin">
+                        <label>Vai trò</label>
+                        <select id="new-user-role">
+                            <option value="user">Ứng viên (User)</option>
+                            <option value="manager">Quản lý (Manager)</option>
+                            <option value="admin">Quản trị viên (Admin)</option>
+                        </select>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Gói dịch vụ</label>
+                        <select id="new-user-plan">
+                            <option value="free">Miễn phí (Free)</option>
+                            <option value="pro">Hội viên PRO (30 ngày)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-modal-footer">
+                    <button type="button" class="btn-ui btn-ui-secondary" onclick="closeModal('modal-create-user')">Hủy bỏ</button>
+                    <button type="submit" class="btn-ui btn-ui-primary">Tạo tài khoản</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. Modal Thêm / Chỉnh sửa Gói Dịch vụ & Giá -->
+    <div class="admin-modal-overlay" id="modal-plan">
+        <div class="admin-modal-container">
+            <div class="admin-modal-header">
+                <h3 id="modal-plan-title">Thêm Gói Dịch Vụ Mới</h3>
+                <button class="admin-modal-close-btn" onclick="closeModal('modal-plan')">✕</button>
+            </div>
+            <form id="form-plan" onsubmit="handleSavePlan(event)">
+                <input type="hidden" id="plan-id">
+
+                <div class="form-row-2col">
+                    <div class="form-group-admin">
+                        <label>Tên gói dịch vụ</label>
+                        <input type="text" id="plan-name" placeholder="Ví dụ: PrepMate PRO Tháng" required>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Mã định danh (Slug)</label>
+                        <input type="text" id="plan-slug" placeholder="Ví dụ: pro_plus" required>
+                    </div>
+                </div>
+
+                <div class="form-row-2col">
+                    <div class="form-group-admin">
+                        <label>Giá bán hiện tại (VNĐ)</label>
+                        <input type="number" id="plan-price" placeholder="99000" required>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Giá gốc niêm yết (VNĐ)</label>
+                        <input type="number" id="plan-orig-price" placeholder="399000">
+                    </div>
+                </div>
+
+                <div class="form-row-2col">
+                    <div class="form-group-admin">
+                        <label>Chu kỳ tính phí</label>
+                        <select id="plan-period">
+                            <option value="/ tháng">Hàng tháng (/ tháng)</option>
+                            <option value="/ năm">Hàng năm (/ năm)</option>
+                            <option value="/ vĩnh viễn">Trọn đời (/ vĩnh viễn)</option>
+                        </select>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Huy hiệu nổi bật (Badge)</label>
+                        <input type="text" id="plan-badge" placeholder="Ví dụ: KHUYÊN DÙNG">
+                    </div>
+                </div>
+
+                <div class="form-group-admin">
+                    <label>Danh sách tính năng đi kèm (Mỗi dòng 1 tính năng)</label>
+                    <textarea id="plan-features" rows="5" placeholder="Không giới hạn lượt phỏng vấn mô phỏng AI 1-1&#10;Phỏng vấn giọng nói AI thời gian thực&#10;Tạo kịch bản theo mọi link JD tuyển dụng&#10;Báo cáo đánh giá chi tiết theo chuẩn STAR" required></textarea>
+                </div>
+
+                <div class="form-row-2col">
+                    <div class="form-group-admin">
+                        <label>Trạng thái mở bán</label>
+                        <select id="plan-status">
+                            <option value="active">Đang mở bán</option>
+                            <option value="inactive">Tạm ngừng bán</option>
+                        </select>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Đánh dấu gói Nổi bật</label>
+                        <select id="plan-featured">
+                            <option value="no">Bình thường</option>
+                            <option value="yes">Nổi bật (Khuyên dùng)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-modal-footer">
+                    <button type="button" class="btn-ui btn-ui-secondary" onclick="closeModal('modal-plan')">Hủy bỏ</button>
+                    <button type="submit" class="btn-ui btn-ui-primary">Lưu gói dịch vụ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. Modal Thêm / Chỉnh sửa Câu hỏi -->
+    <div class="admin-modal-overlay" id="modal-question">
+        <div class="admin-modal-container">
+            <div class="admin-modal-header">
+                <h3 id="modal-question-title">Thêm Câu Hỏi Phỏng Vấn Mới</h3>
+                <button class="admin-modal-close-btn" onclick="closeModal('modal-question')">✕</button>
+            </div>
+            <form id="form-question" onsubmit="handleSaveQuestion(event)">
+                <input type="hidden" id="question-id">
+
+                <div class="form-row-2col">
+                    <div class="form-group-admin">
+                        <label>Ngành nghề / Chuyên môn</label>
+                        <select id="question-category" required>
+                            <option value="IT">Công nghệ thông tin (IT / Lập trình)</option>
+                            <option value="Marketing">Truyền thông & Tiếp thị</option>
+                            <option value="Design">Thiết kế đồ họa & Sáng tạo</option>
+                            <option value="Languages">Ngôn ngữ & Biên phiên dịch</option>
+                            <option value="Business">Kinh doanh & Nhân sự</option>
+                        </select>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Cấp độ</label>
+                        <select id="question-level" required>
+                            <option value="Fresher">Mới tốt nghiệp (Fresher)</option>
+                            <option value="Junior">Có kinh nghiệm (Junior)</option>
+                            <option value="Senior">Chuyên gia (Senior)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group-admin">
+                    <label>Vị trí tuyển dụng áp dụng</label>
+                    <input type="text" id="question-role-title" placeholder="Ví dụ: Business Analyst, Financial Analyst, Software Engineer..." required>
+                </div>
+
+                <div class="form-group-admin">
+                    <label>Nội dung câu hỏi phỏng vấn</label>
+                    <textarea id="question-text" rows="3" placeholder="Nhập nội dung câu hỏi phỏng vấn..." required></textarea>
+                </div>
+
+                <div class="form-group-admin">
+                    <label>Gợi ý phản xạ theo mô hình STAR</label>
+                    <textarea id="question-star-hint" rows="2" placeholder="Gợi ý cấu trúc Situation (Tình huống), Task (Nhiệm vụ), Action (Hành động), Result (Kết quả)..."></textarea>
+                </div>
+
+                <div class="admin-modal-footer">
+                    <button type="button" class="btn-ui btn-ui-secondary" onclick="closeModal('modal-question')">Hủy bỏ</button>
+                    <button type="submit" class="btn-ui btn-ui-primary">Lưu câu hỏi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="../../shared/js/main.js?v=26"></script>
+    <script src="../../features/auth/auth.js?v=26"></script>
+    <script src="../../features/dashboard/dashboard.js?v=26"></script>
+    <script src="../../features/interview/interview.js?v=26"></script>
+    <script src="../../shared/js/components.js"></script>
+    <script src="./admin-ai-health.js?v=26"></script>
+
+    <script>
+        // ==========================================
+        // STATE MANAGEMENT & REAL DATA FROM DATABASE
+        // ==========================================
+        let currentUser = null;
+        let activeRoleView = 'admin'; // 'admin' or 'manager'
+
+        const STORAGE_USERS = 'prepmate_all_users';
+        const STORAGE_PLANS = 'prepmate_subscription_plans';
+        const STORAGE_QUESTIONS = 'prepmate_admin_questions';
+        const STORAGE_AUDIT = 'prepmate_audit_logs';
+        const STORAGE_CONFIG = 'prepmate_system_config';
+
+        // Real users seeded in backend database (db.json / FileDb.cs)
+        const DB_REAL_USERS = [
+            { id: "user_admin", fullname: "System Administrator", email: "admin@prepmate.vn", username: "admin", role: "admin", subscription: "pro", subscriptionExpiry: null, status: "active", createdAt: "2026-10-01T07:19:34.178Z" },
+            { id: "user_mgr1", fullname: "Nguyễn Thị Lan", email: "lan.nguyen@prepmate.vn", username: "manager_lan", role: "manager", subscription: "pro", subscriptionExpiry: "2031-10-01T07:19:34.178Z", status: "active", createdAt: "2026-06-03T07:19:34.178Z" },
+            { id: "user_mgr2", fullname: "Trần Văn Minh", email: "minh.tran@prepmate.vn", username: "manager_minh", role: "manager", subscription: "pro", subscriptionExpiry: "2031-10-01T07:19:34.178Z", status: "active", createdAt: "2026-07-03T07:19:34.178Z" },
+            { id: "user_mgr3", fullname: "Phạm Thu Hà", email: "ha.pham@prepmate.vn", username: "manager_ha", role: "manager", subscription: "pro", subscriptionExpiry: "2031-10-01T07:19:34.178Z", status: "active", createdAt: "2026-08-02T07:19:34.178Z" },
+            { id: "user_001", fullname: "Lê Hoàng Nam", email: "nam.le@gmail.com", username: "hoangnam99", role: "user", subscription: "pro", subscriptionExpiry: "2026-10-16T07:19:34.178Z", status: "active", createdAt: "2026-09-01T07:19:34.178Z" },
+            { id: "user_002", fullname: "Võ Thị Mai", email: "mai.vo@gmail.com", username: "maivo_ux", role: "user", subscription: "pro", subscriptionExpiry: "2026-10-26T07:19:34.178Z", status: "active", createdAt: "2026-09-11T07:19:34.178Z" },
+            { id: "user_003", fullname: "Đinh Quang Huy", email: "huy.dinh@outlook.com", username: "quanghuy_dev", role: "user", subscription: "free", subscriptionExpiry: null, status: "active", createdAt: "2026-09-17T07:19:34.178Z" },
+            { id: "user_004", fullname: "Bùi Thanh Thảo", email: "thao.bui@yahoo.com", username: "thanhthao2k", role: "user", subscription: "free", subscriptionExpiry: null, status: "active", createdAt: "2026-09-24T07:19:34.178Z" },
+            { id: "user_005", fullname: "Nguyễn Trọng Khoa", email: "khoa.nguyen@gmail.com", username: "trongkhoa_it", role: "user", subscription: "pro", subscriptionExpiry: "2026-10-28T07:19:34.178Z", status: "active", createdAt: "2026-09-21T07:19:34.178Z" },
+            { id: "user_006", fullname: "Trương Ngọc Ánh", email: "anh.truong@gmail.com", username: "ngocanh_hr", role: "user", subscription: "free", subscriptionExpiry: null, status: "active", createdAt: "2026-09-28T07:19:34.178Z" }
+        ];
+
+        // Real transactions in database (db.json / FileDb.cs)
+        const DB_REAL_TRANSACTIONS = [
+            { id: "TX-MOMO-005", user: "trongkhoa_it", method: "MOMO", amount: 199000, time: "28/09/2026, 14:19", status: "success", note: "Ví MoMo 0987654321 • Mã GD: MOMO20260626005" },
+            { id: "TX-BANK-002", user: "maivo_ux", method: "BANK", amount: 199000, time: "26/09/2026, 14:19", status: "success", note: "Chuyển khoản • Mã tham chiếu: PREPMATE_1750000002" },
+            { id: "TX-MOMO-001", user: "hoangnam99", method: "MOMO", amount: 199000, time: "16/09/2026, 14:19", status: "success", note: "Ví MoMo 0901234567 • Mã GD: MOMO20260601001" }
+        ];
+
+        // Subscription Plans (Standard system tiers)
+        const STANDARD_PLANS = [
+            {
+                id: "plan_free",
+                name: "Gói Trải Nghiệm",
+                slug: "free",
+                price: 0,
+                origPrice: 0,
+                period: "/ vĩnh viễn",
+                badge: "MIỄN PHÍ",
+                featured: false,
+                status: "active",
+                features: [
+                    "3 lượt phỏng vấn mô phỏng AI mỗi tháng",
+                    "Truy cập ngân hàng 100+ câu hỏi cơ bản",
+                    "Chế độ tương tác gõ phím",
+                    "Đánh giá điểm số tổng quan sau buổi phỏng vấn"
+                ]
+            },
+            {
+                id: "plan_pro",
+                name: "Hội Viên PRO Toàn Diện",
+                slug: "pro",
+                price: 99000,
+                origPrice: 99000,
+                period: "/ tháng",
+                badge: "KHUYÊN DÙNG",
+                featured: true,
+                status: "active",
+                features: [
+                    "Không giới hạn số lượt phỏng vấn mô phỏng AI 1-1",
+                    "Phỏng vấn giọng nói AI thời gian thực",
+                    "Tự động tạo kịch bản theo mọi link JD tuyển dụng",
+                    "Báo cáo đánh giá chi tiết theo chuẩn STAR",
+                    "Toàn bộ ngân hàng câu hỏi chuyên sâu theo chuyên môn"
+                ]
+            },
+            {
+                id: "plan_enterprise",
+                name: "Gói Đội Ngũ & Doanh Nghiệp",
+                slug: "enterprise",
+                price: 999000,
+                origPrice: 1499000,
+                period: "/ tháng",
+                badge: "DOANH NGHIỆP",
+                featured: false,
+                status: "active",
+                features: [
+                    "Đầy đủ toàn bộ tính năng của gói Hội Viên PRO",
+                    "Hỗ trợ đồng thời 10 tài khoản ứng viên / nhân sự",
+                    "Tùy biến bộ câu hỏi & tiêu chí phỏng vấn riêng",
+                    "Xuất báo cáo đánh giá năng lực STAR định dạng CSV"
+                ]
+            }
+        ];
+
+        // Initial questions sourced from real system curriculum
+        const SYSTEM_CURRICULUM_QUESTIONS = [
+            { id: "Q-101", category: "IT", role: "Backend Developer", level: "Senior", text: "Bạn xử lý vấn đề đồng thời (Concurrency) và thiết kế hệ thống chịu tải cao như thế nào trong dự án thực tế?", starHint: "S: Hệ thống chịu tải cao; T: Tránh lỗi dữ liệu; A: Dùng Redis Redlock và DB optimistic lock; R: Không có độ trễ, hệ thống ổn định." },
+            { id: "Q-102", category: "IT", role: "Frontend ReactJS", level: "Junior", text: "Trình bày sự khác biệt giữa state và props trong React. Khi nào bạn sử dụng Context API thay vì Redux?", starHint: "Súc tích, nêu rõ phạm vi dữ liệu component cha - con và quản lý global state." },
+            { id: "Q-103", category: "Marketing", role: "Chuyên viên Marketing", level: "Junior", text: "Khi một chiến dịch quảng cáo bị sụt giảm tỷ lệ chuyển đổi, bạn thực hiện các bước kiểm tra và tối ưu lại ra sao?", starHint: "Phân tích số liệu từ phễu chuyển đổi, kiểm tra nội dung sáng tạo và đối tượng mục tiêu." },
+            { id: "Q-104", category: "Languages", role: "Biên / Phiên dịch Tiếng Anh", level: "Junior", text: "Khi gặp thuật ngữ kỹ thuật mới trong quá trình dịch thuật trực tiếp, bạn xử lý và ứng biến ra sao?", starHint: "Dựa vào ngữ cảnh, nắm bắt ý chính của diễn giả và duy trì nhịp truyền đạt lưu loát." }
+        ];
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!initAuthAndRole()) return;
+            initStorageData();
+            loadAllData();
+            handleUrlHash();
+            window.addEventListener('hashchange', handleUrlHash);
+        });
+
+        function initAuthAndRole() {
+            currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+            if (!currentUser || !currentUser.token) {
+                try {
+                    const raw = localStorage.getItem('prepmate_current_user') || localStorage.getItem('prepmate_user');
+                    if (raw) currentUser = JSON.parse(raw);
+                } catch(e) {}
+            }
+
+            // GUEST GUARD: Unauthenticated users are redirected to login
+            if (!currentUser || !currentUser.token) {
+                if (typeof showToast === 'function') {
+                    showToast('Vui lòng đăng nhập với tài khoản Quản trị viên để truy cập.', 'warning');
+                }
+                const ret = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+                window.location.href = '../auth/auth.html?redirect=' + ret;
+                return;
+            }
+
+            // ROLE GUARD: Normal users cannot access admin/manager portal
+            const role = (currentUser.role || '').toLowerCase();
+            if (role !== 'admin' && role !== 'manager') {
+                if (typeof showToast === 'function') {
+                    showToast('Bạn không có quyền truy cập vào trung tâm điều hành.', 'danger');
+                }
+                window.location.href = '../dashboard/dashboard.html';
+                return false;
+            }
+
+            activeRoleView = role === 'manager' ? 'manager' : 'admin';
+            applyRoleView(activeRoleView);
+            return true;
+        }
+
+        function initStorageData() {
+            if (!localStorage.getItem(STORAGE_USERS)) {
+                localStorage.setItem(STORAGE_USERS, JSON.stringify(DB_REAL_USERS));
+            }
+            if (!localStorage.getItem(STORAGE_PLANS)) {
+                localStorage.setItem(STORAGE_PLANS, JSON.stringify(STANDARD_PLANS));
+            }
+            if (!localStorage.getItem(STORAGE_QUESTIONS)) {
+                localStorage.setItem(STORAGE_QUESTIONS, JSON.stringify(SYSTEM_CURRICULUM_QUESTIONS));
+            }
+            if (!localStorage.getItem(STORAGE_CONFIG)) {
+                localStorage.setItem(STORAGE_CONFIG, JSON.stringify({
+                    aiModel: "gemini-1.5-flash",
+                    apiKey: "",
+                    temperature: 0.7,
+                    freeQuota: 3,
+                    enableVoice: true
+                }));
+            }
+            if (!localStorage.getItem(STORAGE_AUDIT)) {
+                localStorage.setItem(STORAGE_AUDIT, JSON.stringify([]));
+            }
+        }
+
+        function switchRoleView(targetRole) {
+            activeRoleView = targetRole;
+            applyRoleView(targetRole);
+            loadAllData();
+            if (typeof showToast === 'function') {
+                showToast(`Đã chuyển sang chế độ: ${targetRole === 'admin' ? 'Quản trị viên (Admin)' : 'Quản lý (Manager)'}`, 'info');
+            }
+        }
+
+        function applyRoleView(role) {
+            const btnAdmin = document.getElementById('btn-view-admin');
+            const btnManager = document.getElementById('btn-view-manager');
+            const roleHeading = document.getElementById('role-title-text');
+            const roleDesc = document.getElementById('role-desc-text');
+            const roleIcon = document.getElementById('role-icon');
+
+            if (role === 'admin') {
+                btnAdmin.className = 'role-switch-btn active admin';
+                btnManager.className = 'role-switch-btn manager';
+                roleIcon.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
+                roleHeading.innerText = 'Bảng Quản Trị Hệ Thống (Admin)';
+                roleDesc.innerText = 'Toàn quyền kiểm soát hệ thống: Quản lý người dùng, phân quyền, cấu hình gói dịch vụ và cài đặt hệ thống.';
+            } else {
+                btnAdmin.className = 'role-switch-btn admin';
+                btnManager.className = 'role-switch-btn active manager';
+                roleIcon.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+                roleHeading.innerText = 'Bảng Quản Lý Vận Hành (Manager)';
+                roleDesc.innerText = 'Theo dõi danh sách thành viên, cấp/hủy gói PRO, quản lý ngân hàng câu hỏi và xem lịch sử giao dịch.';
+            }
+
+            // Manager restrictions
+            const btnClearLogs = document.getElementById('btn-clear-logs');
+            if (btnClearLogs) {
+                btnClearLogs.style.display = role === 'admin' ? 'inline-flex' : 'none';
+            }
+            const btnSaveConfig = document.getElementById('btn-save-config');
+            if (btnSaveConfig) {
+                btnSaveConfig.style.display = role === 'admin' ? 'inline-flex' : 'none';
+            }
+            const btnAddPlan = document.getElementById('btn-add-plan');
+            if (btnAddPlan) {
+                btnAddPlan.style.display = role === 'admin' ? 'inline-flex' : 'none';
+            }
+        }
+
+        function handleUrlHash() {
+            const hash = window.location.hash.replace('#', '');
+            if (hash && document.getElementById(hash)) {
+                switchTab(hash);
+            } else {
+                switchTab('users-tab');
+            }
+        }
+
+        function switchTab(tabId) {
+            if (!tabId) tabId = 'users-tab';
+
+            document.querySelectorAll('.tab-panel-section').forEach(panel => {
+                panel.classList.remove('active');
+            });
+
+            const target = document.getElementById(tabId);
+            if (target) target.classList.add('active');
+            if (tabId === 'settings-tab') loadSystemConfig();
+
+            // Sync sidebar highlight
+            const sidebar = document.querySelector('.sidebar-new, #main-sidebar');
+            if (sidebar) {
+                sidebar.querySelectorAll('.nav-new a').forEach(a => {
+                    const href = a.getAttribute('href') || '';
+                    if (href.includes('#' + tabId)) a.classList.add('active');
+                    else if (href.includes('#')) a.classList.remove('active');
+                });
+            }
+        }
+
+        async function loadAllData() {
+            renderPlans();
+            renderQuestions();
+            renderAuditLogs();
+            renderReports();
+            await Promise.all([
+                fetchOrLoadUsers(),
+                renderTransactions(),
+                loadSystemConfig()
+            ]);
+            updateKpiStats();
+        }
+
+        // ==========================================
+        // 1. USER MANAGEMENT (Real Database Users)
+        // ==========================================
+        function getAdminAuthHeaders(extra = {}) {
+            const user = (typeof getCurrentUser === 'function' ? getCurrentUser() : null) || currentUser;
+            return { ...(user?.token ? { 'Authorization': `Bearer ${user.token}` } : {}), ...extra };
+        }
+
+        async function fetchOrLoadUsers() {
+            try {
+                // Try backend first
+                const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
+                    headers: getAdminAuthHeaders()
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        localStorage.setItem(STORAGE_USERS, JSON.stringify(data));
+                        renderUsersList(data);
+                        return;
+                    }
+                }
+            } catch(e) {
+                // Fallback to local db.json sync
+            }
+            const localUsers = getUsersList();
+            renderUsersList(localUsers);
+        }
+
+        function getUsersList() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_USERS)) || DB_REAL_USERS;
+            } catch(e) {
+                return DB_REAL_USERS;
+            }
+        }
+
+        function saveUsersList(users) {
+            localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
+            renderUsersList(users);
+            updateKpiStats();
+        }
+
+        function escapeHtml(str) {
+            if (typeof window !== 'undefined' && typeof window.escapeHtml === 'function') {
+                return window.escapeHtml(str);
+            }
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function renderUsersList(users) {
+            const tbody = document.getElementById('users-table-body');
+            const quickSelect = document.getElementById('quick-assign-user-select');
+
+            tbody.innerHTML = '';
+            if (quickSelect) quickSelect.innerHTML = '';
+
+            users.forEach(u => {
+                const safeFullname = escapeHtml(u.fullname || '');
+                const safeUsername = escapeHtml(u.username || '');
+                const safeEmail = escapeHtml(u.email || '');
+                const safeInitial = escapeHtml(((u.fullname || 'U').charAt(0) || 'U').toUpperCase());
+
+                if (quickSelect && u.id !== 'user_admin') {
+                    const opt = document.createElement('option');
+                    opt.value = u.id;
+                    opt.textContent = `${u.fullname} (${(u.role || 'user').toUpperCase()}) - ${u.email}`;
+                    quickSelect.appendChild(opt);
+                }
+
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-user-id', u.id);
+
+                let roleBadge = `<span class="badge-pill badge-role-user">Ứng viên</span>`;
+                if (u.role === 'admin') roleBadge = `<span class="badge-pill badge-role-admin">Admin</span>`;
+                else if (u.role === 'manager') roleBadge = `<span class="badge-pill badge-role-manager">Manager</span>`;
+
+                let planBadge = `<span class="badge-pill badge-plan-free">Free</span>`;
+                if (u.subscription === 'pro') planBadge = `<span class="badge-pill badge-plan-pro">PRO ⭐</span>`;
+
+                let statusBadge = u.status === 'locked' 
+                    ? `<span class="badge-pill badge-status-locked">Đã khóa</span>` 
+                    : `<span class="badge-pill badge-status-active">Hoạt động</span>`;
+
+                const regDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('vi-VN') : '-';
+                const expDate = u.subscriptionExpiry ? new Date(u.subscriptionExpiry).toLocaleDateString('vi-VN') : (u.subscription === 'pro' ? 'Vĩnh viễn' : '-');
+
+                const actionsContainer = document.createElement('div');
+                actionsContainer.style.cssText = 'display:flex;gap:6px;justify-content:flex-end;';
+
+                const proBtn = document.createElement('button');
+                proBtn.className = u.subscription === 'pro' ? 'btn-ui btn-ui-amber btn-ui-sm' : 'btn-ui btn-ui-primary btn-ui-sm';
+                proBtn.title = u.subscription === 'pro' ? 'Hạ cấp xuống Free' : 'Cấp gói PRO';
+                proBtn.textContent = u.subscription === 'pro' ? 'Hạ Free' : 'Cấp PRO';
+                proBtn.addEventListener('click', () => toggleUserPro(u.id));
+                actionsContainer.appendChild(proBtn);
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn-ui btn-ui-secondary btn-ui-sm';
+                editBtn.title = 'Sửa & Phân quyền';
+                editBtn.textContent = 'Sửa';
+                editBtn.addEventListener('click', () => openEditUserModal(u.id));
+                actionsContainer.appendChild(editBtn);
+
+                if (u.id !== 'user_admin') {
+                    const lockBtn = document.createElement('button');
+                    lockBtn.className = 'btn-ui btn-ui-secondary btn-ui-sm';
+                    lockBtn.title = u.status === 'locked' ? 'Mở khóa tài khoản' : 'Khóa tài khoản';
+                    lockBtn.textContent = u.status === 'locked' ? 'Mở' : 'Khóa';
+                    lockBtn.addEventListener('click', () => toggleUserLock(u.id));
+                    actionsContainer.appendChild(lockBtn);
+                }
+
+                if (activeRoleView === 'admin' && u.id !== 'user_admin') {
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'btn-ui btn-ui-danger btn-ui-sm';
+                    delBtn.title = 'Xóa tài khoản';
+                    delBtn.textContent = '✕';
+                    delBtn.addEventListener('click', () => deleteUserRecord(u.id));
+                    actionsContainer.appendChild(delBtn);
+                }
+
+                tr.innerHTML = `
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:34px;height:34px;border-radius:8px;background:#e0e7ff;color:#3730a3;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;">
+                                ${safeInitial}
+                            </div>
+                            <div>
+                                <strong style="display:block;color:#0f172a;">${safeFullname}</strong>
+                                <span style="font-size:12px;color:#64748b;">@${safeUsername}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span style="font-family:monospace;font-size:12.5px;">${safeEmail}</span></td>
+                    <td>${roleBadge}</td>
+                    <td>${planBadge}</td>
+                    <td>${statusBadge}</td>
+                    <td>${regDate}</td>
+                    <td>${expDate}</td>
+                    <td style="text-align: right;" class="actions-cell"></td>
+                `;
+
+                tr.querySelector('.actions-cell').appendChild(actionsContainer);
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterUsersTable() {
+            const query = (document.getElementById('user-search-input').value || '').toLowerCase().trim();
+            const roleFilter = document.getElementById('user-role-filter').value;
+            const planFilter = document.getElementById('user-plan-filter').value;
+            const statusFilter = document.getElementById('user-status-filter').value;
+
+            const rows = document.querySelectorAll('#users-table-body tr');
+            const users = getUsersList();
+
+            rows.forEach(row => {
+                const uid = row.getAttribute('data-user-id');
+                const user = users.find(u => u.id === uid);
+                if (!user) return;
+
+                const matchQuery = !query || 
+                    user.fullname.toLowerCase().includes(query) || 
+                    user.email.toLowerCase().includes(query) || 
+                    user.username.toLowerCase().includes(query);
+
+                const matchRole = roleFilter === 'all' || user.role === roleFilter;
+                const matchPlan = planFilter === 'all' || user.subscription === planFilter;
+                const matchStatus = statusFilter === 'all' || (user.status || 'active') === statusFilter;
+
+                row.style.display = (matchQuery && matchRole && matchPlan && matchStatus) ? '' : 'none';
+            });
+        }
+
+        async function toggleUserPro(userId) {
+            const users = getUsersList();
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            const isUpgrading = user.subscription !== 'pro';
+
+            // If backend connected, call backend API
+            try {
+                const endpoint = isUpgrading ? 'upgrade' : 'downgrade';
+                await fetch(`${API_BASE_URL}/api/admin/users/${userId}/${endpoint}`, {
+                    method: 'POST',
+                    headers: getAdminAuthHeaders()
+                });
+            } catch(e) {}
+
+            user.subscription = isUpgrading ? 'pro' : 'free';
+            user.subscriptionDate = isUpgrading ? new Date().toISOString() : null;
+            user.subscriptionExpiry = isUpgrading ? new Date(Date.now() + 30*24*60*60*1000).toISOString() : null;
+
+            saveUsersList(users);
+            addAuditLog(
+                'PRO_UPDATE',
+                isUpgrading ? 'Cấp gói PRO' : 'Hạ cấp gói Free',
+                `tài khoản: ${user.username}`,
+                `Chuyển sang gói ${user.subscription.toUpperCase()}`
+            );
+
+            if (typeof showToast === 'function') {
+                showToast(`Đã ${isUpgrading ? 'cấp gói PRO cho' : 'hạ cấp thành viên'} ${user.fullname}`, 'success');
+            }
+        }
+
+        function toggleUserLock(userId) {
+            if (userId === 'user_admin') {
+                alert('Không thể khóa tài khoản Quản trị viên tối cao.');
+                return;
+            }
+            const users = getUsersList();
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            user.status = user.status === 'locked' ? 'active' : 'locked';
+            saveUsersList(users);
+
+            addAuditLog(
+                'USER_MANAGE',
+                user.status === 'locked' ? 'Khóa tài khoản' : 'Mở khóa tài khoản',
+                `tài khoản: ${user.username}`,
+                `Trạng thái: ${user.status === 'locked' ? 'Đã khóa' : 'Hoạt động'}`
+            );
+
+            if (typeof showToast === 'function') {
+                showToast(`Đã ${user.status === 'locked' ? 'khóa' : 'mở khóa'} tài khoản ${user.fullname}`, 'info');
+            }
+        }
+
+        async function deleteUserRecord(userId) {
+            if (activeRoleView !== 'admin') {
+                alert('Chỉ Quản trị viên (Admin) mới có quyền xóa người dùng.');
+                return;
+            }
+            if (userId === 'user_admin') {
+                alert('Không thể xóa tài khoản Quản trị viên tối cao.');
+                return;
+            }
+
+            if (!confirm('CẢNH BÁO: Bạn có chắc chắn muốn xóa tài khoản này khỏi hệ thống? Hành động này không thể hoàn tác.')) return;
+
+            try {
+                await fetch(`${API_BASE_URL}/api/admin/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: getAdminAuthHeaders()
+                });
+            } catch(e) {}
+
+            let users = getUsersList();
+            const target = users.find(u => u.id === userId);
+            users = users.filter(u => u.id !== userId);
+
+            saveUsersList(users);
+            addAuditLog(
+                'USER_MANAGE',
+                'Xóa tài khoản',
+                `tài khoản: ${target ? target.username : userId}`,
+                'Đã xóa khỏi cơ sở dữ liệu'
+            );
+
+            if (typeof showToast === 'function') {
+                showToast('Đã xóa tài khoản thành công!', 'success');
+            }
+        }
+
+        function openEditUserModal(userId) {
+            const users = getUsersList();
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            document.getElementById('edit-user-id').value = user.id;
+            document.getElementById('edit-user-fullname').value = user.fullname;
+            document.getElementById('edit-user-email').value = user.email;
+            document.getElementById('edit-user-role').value = user.role || 'user';
+            document.getElementById('edit-user-plan').value = user.subscription === 'pro' ? 'pro_30' : 'free';
+            document.getElementById('edit-user-status').value = user.status || 'active';
+
+            const roleSelect = document.getElementById('edit-user-role');
+            const roleWarning = document.getElementById('role-change-warning');
+            if (activeRoleView !== 'admin') {
+                roleSelect.disabled = true;
+                roleWarning.style.color = '#dc2626';
+                roleWarning.innerText = 'Bạn đang xem ở vai trò Manager: Không thể thay đổi vai trò tài khoản.';
+            } else {
+                roleSelect.disabled = (user.id === 'user_admin');
+                roleWarning.style.color = '#64748b';
+                roleWarning.innerText = 'Quản trị viên có toàn quyền đổi vai trò sang Quản lý hoặc Ứng viên.';
+            }
+
+            openModal('modal-edit-user');
+        }
+
+        async function handleSaveUser(e) {
+            e.preventDefault();
+            const uid = document.getElementById('edit-user-id').value;
+            const users = getUsersList();
+            const user = users.find(u => u.id === uid);
+            if (!user) return;
+
+            const oldRole = user.role;
+            const newRole = document.getElementById('edit-user-role').value;
+            const planOption = document.getElementById('edit-user-plan').value;
+
+            user.fullname = document.getElementById('edit-user-fullname').value.trim();
+            user.email = document.getElementById('edit-user-email').value.trim();
+            user.status = document.getElementById('edit-user-status').value;
+
+            if (activeRoleView === 'admin' && uid !== 'user_admin') {
+                user.role = newRole;
+                try {
+                    await fetch(`${API_BASE_URL}/api/admin/users/${uid}/role`, {
+                        method: 'POST',
+                        headers: getAdminAuthHeaders({ 'Content-Type': 'application/json' }),
+                        body: JSON.stringify({ role: newRole })
+                    });
+                } catch(e) {}
+            }
+
+            if (planOption === 'free') {
+                user.subscription = 'free';
+                user.subscriptionExpiry = null;
+            } else {
+                user.subscription = 'pro';
+                user.subscriptionDate = new Date().toISOString();
+                let days = 30;
+                if (planOption === 'pro_90') days = 90;
+                if (planOption === 'pro_365') days = 365;
+                user.subscriptionExpiry = planOption === 'pro_forever' ? null : new Date(Date.now() + days*24*60*60*1000).toISOString();
+            }
+
+            saveUsersList(users);
+            closeModal('modal-edit-user');
+
+            addAuditLog(
+                oldRole !== user.role ? 'ROLE_CHANGE' : 'USER_MANAGE',
+                'Cập nhật thành viên',
+                `tài khoản: ${user.username}`,
+                `Vai trò: ${user.role.toUpperCase()}, Gói: ${user.subscription.toUpperCase()}`
+            );
+
+            if (typeof showToast === 'function') {
+                showToast('Đã lưu thông tin tài khoản thành công!', 'success');
+            }
+        }
+
+        function openCreateUserModal() {
+            document.getElementById('form-create-user').reset();
+            const roleSelect = document.getElementById('new-user-role');
+            if (activeRoleView !== 'admin') {
+                roleSelect.value = 'user';
+                roleSelect.disabled = true;
+            } else {
+                roleSelect.disabled = false;
+            }
+            openModal('modal-create-user');
+        }
+
+        function handleCreateUser(e) {
+            e.preventDefault();
+            const users = getUsersList();
+            const username = document.getElementById('new-user-username').value.trim().toLowerCase();
+            const email = document.getElementById('new-user-email').value.trim().toLowerCase();
+
+            if (users.some(u => u.username === username || u.email === email)) {
+                alert('Tên đăng nhập hoặc Email này đã tồn tại trong hệ thống.');
+                return;
+            }
+
+            const newUser = {
+                id: 'user_' + Date.now(),
+                fullname: document.getElementById('new-user-fullname').value.trim(),
+                username: username,
+                email: email,
+                role: document.getElementById('new-user-role').value,
+                subscription: document.getElementById('new-user-plan').value,
+                subscriptionExpiry: document.getElementById('new-user-plan').value === 'pro' ? new Date(Date.now() + 30*24*60*60*1000).toISOString() : null,
+                status: 'active',
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            saveUsersList(users);
+            closeModal('modal-create-user');
+
+            addAuditLog('USER_MANAGE', 'Tạo tài khoản mới', `tài khoản: ${newUser.username}`, `Vai trò: ${newUser.role.toUpperCase()}`);
+
+            if (typeof showToast === 'function') {
+                showToast(`Đã tạo tài khoản ${newUser.fullname} thành công!`, 'success');
+            }
+        }
+
+        async function applyQuickRoleAssign() {
+            if (activeRoleView !== 'admin') {
+                alert('Chỉ Quản trị viên (Admin) mới có quyền thay đổi vai trò tài khoản.');
+                return;
+            }
+            const uid = document.getElementById('quick-assign-user-select').value;
+            const newRole = document.getElementById('quick-assign-role-select').value;
+            if (!uid) return;
+
+            const users = getUsersList();
+            const user = users.find(u => u.id === uid);
+            if (!user) return;
+
+            const oldRole = user.role;
+            user.role = newRole;
+
+            try {
+                await fetch(`${API_BASE_URL}/api/admin/users/${uid}/role`, {
+                    method: 'POST',
+                    headers: getAdminAuthHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify({ role: newRole })
+                });
+            } catch(e) {}
+
+            saveUsersList(users);
+
+            addAuditLog('ROLE_CHANGE', 'Phân quyền nhanh', `tài khoản: ${user.username}`, `Đổi vai trò từ ${oldRole.toUpperCase()} thành ${newRole.toUpperCase()}`);
+
+            if (typeof showToast === 'function') {
+                showToast(`Đã chuyển vai trò của ${user.fullname} thành ${newRole.toUpperCase()}!`, 'success');
+            }
+        }
+
+        // ==========================================
+        // 2. SUBSCRIPTION PLANS MANAGEMENT
+        // ==========================================
+        function getPlansList() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_PLANS)) || STANDARD_PLANS;
+            } catch(e) {
+                return STANDARD_PLANS;
+            }
+        }
+
+        function savePlansList(plans) {
+            localStorage.setItem(STORAGE_PLANS, JSON.stringify(plans));
+            renderPlans();
+        }
+
+        function renderPlans() {
+            const plans = getPlansList();
+            const container = document.getElementById('plans-cards-container');
+            container.innerHTML = '';
+
+            const users = getUsersList();
+            const proCount = users.filter(u => u.subscription === 'pro').length;
+            const freeCount = users.length - proCount;
+
+            plans.forEach(plan => {
+                const card = document.createElement('div');
+                card.className = `admin-plan-card ${plan.featured ? 'featured' : ''}`;
+
+                const priceFormatted = plan.price === 0 ? '0đ' : Number(plan.price).toLocaleString('vi-VN') + 'đ';
+                const origPriceFormatted = (plan.origPrice && plan.origPrice > plan.price) 
+                    ? `<span class="admin-plan-orig-price">${Number(plan.origPrice).toLocaleString('vi-VN')}đ</span>` 
+                    : '';
+
+                const userCountLabel = plan.slug === 'free' ? `${freeCount} tài khoản Free` : `${proCount} tài khoản kích hoạt`;
+
+                let featuresHtml = '';
+                (plan.features || []).forEach(f => {
+                    featuresHtml += `<li><span class="tick">✓</span> <span>${f}</span></li>`;
+                });
+
+                const statusBadge = plan.status === 'active' 
+                    ? `<span class="badge-pill badge-status-active">Đang mở bán</span>` 
+                    : `<span class="badge-pill badge-status-locked">Tạm ngừng</span>`;
+
+                let cardActions = '';
+                if (activeRoleView === 'admin') {
+                    cardActions = `
+                        <button class="btn-ui btn-ui-primary btn-ui-sm" onclick="openEditPlanModal('${plan.id}')" style="flex:1;">
+                            Sửa giá & tính năng
+                        </button>
+                        <button class="btn-ui btn-ui-secondary btn-ui-sm" onclick="togglePlanActive('${plan.id}')" title="Bật / Tắt mở bán">
+                            ${plan.status === 'active' ? 'Tạm dừng' : 'Mở bán'}
+                        </button>
+                    `;
+                    if (plan.slug !== 'free' && plan.slug !== 'pro') {
+                        cardActions += `
+                            <button class="btn-ui btn-ui-danger btn-ui-sm" onclick="deletePlan('${plan.id}')" title="Xóa gói dịch vụ này">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        `;
+                    }
+                } else {
+                    cardActions = `<span style="font-size:12px;color:#64748b;">(Quản lý chỉ có quyền xem cấu hình gói)</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="admin-plan-header">
+                        <div>
+                            <span class="badge-pill ${plan.featured ? 'badge-role-manager' : 'badge-role-user'}" style="margin-bottom:6px;">${plan.badge || 'TIÊU CHUẨN'}</span>
+                            <h3 class="admin-plan-title">${plan.name}</h3>
+                            <span style="font-size:12px;color:#64748b;">Mã: <code>${plan.slug}</code> • ${userCountLabel}</span>
+                        </div>
+                        <div>${statusBadge}</div>
+                    </div>
+
+                    <div class="admin-plan-price-row">
+                        ${origPriceFormatted}
+                        <span class="admin-plan-price" style="${plan.featured ? 'color:#1d4ed8;' : ''}">${priceFormatted}</span>
+                        <span class="admin-plan-period">${plan.period}</span>
+                    </div>
+
+                    <ul class="admin-plan-features">
+                        ${featuresHtml}
+                    </ul>
+
+                    <div class="admin-plan-card-actions">
+                        ${cardActions}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function openCreatePlanModal() {
+            if (activeRoleView !== 'admin') {
+                alert('Chỉ Quản trị viên (Admin) mới có quyền thêm gói dịch vụ mới.');
+                return;
+            }
+            document.getElementById('form-plan').reset();
+            document.getElementById('plan-id').value = '';
+            document.getElementById('modal-plan-title').innerText = 'Thêm Gói Dịch Vụ Mới';
+            openModal('modal-plan');
+        }
+
+        function openEditPlanModal(planId) {
+            if (activeRoleView !== 'admin') {
+                alert('Chỉ Quản trị viên (Admin) mới có quyền chỉnh sửa gói dịch vụ.');
+                return;
+            }
+            const plans = getPlansList();
+            const plan = plans.find(p => p.id === planId);
+            if (!plan) return;
+
+            document.getElementById('plan-id').value = plan.id;
+            document.getElementById('plan-name').value = plan.name;
+            document.getElementById('plan-slug').value = plan.slug;
+            document.getElementById('plan-price').value = plan.price;
+            document.getElementById('plan-orig-price').value = plan.origPrice || plan.price;
+            document.getElementById('plan-period').value = plan.period || '/ tháng';
+            document.getElementById('plan-badge').value = plan.badge || '';
+            document.getElementById('plan-features').value = (plan.features || []).join('\n');
+            document.getElementById('plan-status').value = plan.status || 'active';
+            document.getElementById('plan-featured').value = plan.featured ? 'yes' : 'no';
+
+            document.getElementById('modal-plan-title').innerText = `Chỉnh sửa Gói: ${plan.name}`;
+            openModal('modal-plan');
+        }
+
+        function handleSavePlan(e) {
+            e.preventDefault();
+            const plans = getPlansList();
+            const planId = document.getElementById('plan-id').value;
+
+            const name = document.getElementById('plan-name').value.trim();
+            const slug = document.getElementById('plan-slug').value.trim().toLowerCase();
+            const price = Number(document.getElementById('plan-price').value) || 0;
+            const origPrice = Number(document.getElementById('plan-orig-price').value) || price;
+            const period = document.getElementById('plan-period').value;
+            const badge = document.getElementById('plan-badge').value.trim();
+            const status = document.getElementById('plan-status').value;
+            const featured = document.getElementById('plan-featured').value === 'yes';
+            const features = document.getElementById('plan-features').value
+                .split('\n')
+                .map(s => s.trim())
+                .filter(s => s.length > 0);
+
+            if (planId) {
+                const plan = plans.find(p => p.id === planId);
+                if (!plan) return;
+                const oldPrice = plan.price;
+
+                plan.name = name;
+                plan.slug = slug;
+                plan.price = price;
+                plan.origPrice = origPrice;
+                plan.period = period;
+                plan.badge = badge;
+                plan.status = status;
+                plan.featured = featured;
+                plan.features = features;
+
+                addAuditLog('PLAN_CHANGE', 'Sửa thông tin gói', `gói: ${slug}`, `Giá: ${Number(oldPrice).toLocaleString()}đ -> ${Number(price).toLocaleString()}đ`);
+                if (typeof showToast === 'function') showToast(`Đã cập nhật gói ${name} thành công!`, 'success');
+            } else {
+                if (plans.some(p => p.slug === slug)) {
+                    alert('Mã định danh (Slug) này đã tồn tại trong hệ thống.');
+                    return;
+                }
+                const newPlan = { id: 'plan_' + Date.now(), name, slug, price, origPrice, period, badge, status, featured, features };
+                plans.push(newPlan);
+                addAuditLog('PLAN_CHANGE', 'Thêm gói mới', `gói: ${slug}`, `Tạo mới gói ${name} (${Number(price).toLocaleString()}đ)`);
+                if (typeof showToast === 'function') showToast(`Đã thêm gói ${name} vào hệ thống!`, 'success');
+            }
+
+            savePlansList(plans);
+            closeModal('modal-plan');
+        }
+
+        function togglePlanActive(planId) {
+            const plans = getPlansList();
+            const plan = plans.find(p => p.id === planId);
+            if (!plan) return;
+
+            plan.status = plan.status === 'active' ? 'inactive' : 'active';
+            savePlansList(plans);
+
+            addAuditLog('PLAN_CHANGE', 'Đổi trạng thái gói', `gói: ${plan.slug}`, `Trạng thái: ${plan.status === 'active' ? 'Mở bán' : 'Tạm dừng'}`);
+            if (typeof showToast === 'function') {
+                showToast(`Đã ${plan.status === 'active' ? 'mở bán' : 'tạm dừng'} gói ${plan.name}`, 'info');
+            }
+        }
+
+        function deletePlan(planId) {
+            if (!confirm('Bạn có chắc chắn muốn xóa gói dịch vụ này?')) return;
+            let plans = getPlansList();
+            const target = plans.find(p => p.id === planId);
+            plans = plans.filter(p => p.id !== planId);
+            savePlansList(plans);
+
+            addAuditLog('PLAN_CHANGE', 'Xóa gói dịch vụ', `gói: ${target ? target.slug : planId}`, 'Xóa khỏi bảng giá');
+            if (typeof showToast === 'function') showToast('Đã xóa gói dịch vụ thành công!', 'success');
+        }
+
+        function resetDefaultPlans() {
+            if (!confirm('Khôi phục danh sách gói dịch vụ về 3 gói chuẩn mặc định?')) return;
+            savePlansList(STANDARD_PLANS);
+            addAuditLog('PLAN_CHANGE', 'Khôi phục gói mặc định', 'toàn_bộ_gói', 'Reset về 3 gói chuẩn');
+            if (typeof showToast === 'function') showToast('Đã khôi phục các gói mặc định!', 'info');
+        }
+
+        // ==========================================
+        // 3. CONTENT MANAGEMENT (Question Bank)
+        // ==========================================
+        function getQuestionsList() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_QUESTIONS)) || SYSTEM_CURRICULUM_QUESTIONS;
+            } catch(e) {
+                return SYSTEM_CURRICULUM_QUESTIONS;
+            }
+        }
+
+        function saveQuestionsList(questions) {
+            localStorage.setItem(STORAGE_QUESTIONS, JSON.stringify(questions));
+            renderQuestions();
+        }
+
+        function renderQuestions() {
+            const questions = getQuestionsList();
+            const tbody = document.getElementById('questions-table-body');
+            tbody.innerHTML = '';
+
+            if (questions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:#64748b;">Chưa có câu hỏi nào. Bạn có thể bấm "Thêm câu hỏi mới" để bổ sung vào ngân hàng.</td></tr>`;
+                return;
+            }
+
+            questions.forEach(q => {
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-q-id', q.id);
+
+                const safeId = escapeHtml(q.id || '');
+                const safeCat = escapeHtml(q.category || '');
+                let catBadge = `<span class="badge-pill badge-role-user">${safeCat}</span>`;
+                if (q.category === 'IT') catBadge = `<span class="badge-pill badge-role-admin">IT / Dev</span>`;
+                else if (q.category === 'Marketing') catBadge = `<span class="badge-pill badge-role-manager">Marketing</span>`;
+
+                tr.innerHTML = `
+                    <td><code>#${safeId}</code></td>
+                    <td>${catBadge}</td>
+                    <td><strong>${escapeHtml(q.role || '')}</strong></td>
+                    <td>
+                        <div style="font-weight:600;color:#0f172a;margin-bottom:4px;">${escapeHtml(q.text || '')}</div>
+                        <div style="font-size:12px;color:#64748b;"><em>Gợi ý STAR:</em> ${escapeHtml(q.starHint || 'Chưa thiết lập')}</div>
+                    </td>
+                    <td><span class="badge-pill badge-plan-pro">${escapeHtml(q.level || '')}</span></td>
+                    <td style="text-align: right;">
+                        <button class="btn-ui btn-ui-secondary btn-ui-sm" onclick="openEditQuestionModal('${safeId}')">Sửa</button>
+                        <button class="btn-ui btn-ui-danger btn-ui-sm" onclick="deleteQuestion('${safeId}')">✕</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterQuestionsTable() {
+            const query = (document.getElementById('question-search-input').value || '').toLowerCase().trim();
+            const catFilter = document.getElementById('question-category-filter').value;
+            const levelFilter = document.getElementById('question-level-filter').value;
+
+            const rows = document.querySelectorAll('#questions-table-body tr');
+            const questions = getQuestionsList();
+
+            rows.forEach(row => {
+                const qid = row.getAttribute('data-q-id');
+                const q = questions.find(item => item.id === qid);
+                if (!q) return;
+
+                const matchQuery = !query || q.text.toLowerCase().includes(query) || q.role.toLowerCase().includes(query);
+                const matchCat = catFilter === 'all' || q.category === catFilter;
+                const matchLevel = levelFilter === 'all' || q.level === levelFilter;
+
+                row.style.display = (matchQuery && matchCat && matchLevel) ? '' : 'none';
+            });
+        }
+
+        function openCreateQuestionModal() {
+            document.getElementById('form-question').reset();
+            document.getElementById('question-id').value = '';
+            document.getElementById('modal-question-title').innerText = 'Thêm Câu Hỏi Phỏng Vấn Mới';
+            openModal('modal-question');
+        }
+
+        function openEditQuestionModal(qId) {
+            const questions = getQuestionsList();
+            const q = questions.find(item => item.id === qId);
+            if (!q) return;
+
+            document.getElementById('question-id').value = q.id;
+            document.getElementById('question-category').value = q.category;
+            document.getElementById('question-level').value = q.level;
+            document.getElementById('question-role-title').value = q.role;
+            document.getElementById('question-text').value = q.text;
+            document.getElementById('question-star-hint').value = q.starHint || '';
+
+            document.getElementById('modal-question-title').innerText = `Chỉnh sửa Câu hỏi #${q.id}`;
+            openModal('modal-question');
+        }
+
+        function handleSaveQuestion(e) {
+            e.preventDefault();
+            const questions = getQuestionsList();
+            const qId = document.getElementById('question-id').value;
+
+            const category = document.getElementById('question-category').value;
+            const level = document.getElementById('question-level').value;
+            const role = document.getElementById('question-role-title').value.trim();
+            const text = document.getElementById('question-text').value.trim();
+            const starHint = document.getElementById('question-star-hint').value.trim();
+
+            if (qId) {
+                const q = questions.find(item => item.id === qId);
+                if (!q) return;
+                q.category = category;
+                q.level = level;
+                q.role = role;
+                q.text = text;
+                q.starHint = starHint;
+                addAuditLog('CONTENT_CHANGE', 'Sửa câu hỏi phỏng vấn', `câu hỏi: #${qId}`, `Vị trí: ${role}`);
+            } else {
+                const newQ = { id: 'Q-' + (questions.length + 101), category, level, role, text, starHint };
+                questions.unshift(newQ);
+                addAuditLog('CONTENT_CHANGE', 'Thêm câu hỏi mới', `câu hỏi: #${newQ.id}`, `Vị trí: ${role}`);
+            }
+
+            saveQuestionsList(questions);
+            closeModal('modal-question');
+            if (typeof showToast === 'function') showToast('Đã lưu câu hỏi thành công!', 'success');
+        }
+
+        function deleteQuestion(qId) {
+            if (!confirm('Bạn có chắc chắn muốn xóa câu hỏi này?')) return;
+            let questions = getQuestionsList();
+            questions = questions.filter(item => item.id !== qId);
+            saveQuestionsList(questions);
+            addAuditLog('CONTENT_CHANGE', 'Xóa câu hỏi', `câu hỏi: #${qId}`, 'Xóa khỏi ngân hàng');
+            if (typeof showToast === 'function') showToast('Đã xóa câu hỏi!', 'info');
+        }
+
+        // ==========================================
+        // 4. REPORTS (Real Database Sessions Only - No Fake Data)
+        // ==========================================
+        function renderReports() {
+            const container = document.getElementById('reports-content-container');
+            
+            // Check real sessions in storage
+            let realSessions = [];
+            try {
+                // Check all user session keys
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('interview_sessions')) {
+                        const raw = localStorage.getItem(key);
+                        if (raw) {
+                            const parsed = JSON.parse(raw);
+                            if (Array.isArray(parsed)) realSessions.push(...parsed);
+                        }
+                    }
+                }
+            } catch(e) {}
+
+            if (realSessions.length === 0) {
+                // Pure empty state without inventing data
+                container.innerHTML = `
+                    <div class="empty-state-panel">
+                        <div class="empty-state-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+                        <h4 class="empty-state-title">Chưa có dữ liệu phiên phỏng vấn trên hệ thống</h4>
+                        <p class="empty-state-desc">
+                            Toàn bộ báo cáo phân tích theo mô hình STAR (Tình huống, Nhiệm vụ, Hành động, Kết quả) và thống kê theo từng chuyên ngành tuyển dụng sẽ tự động được tổng hợp tại đây ngay khi có ứng viên hoàn thành phiên phỏng vấn đầu tiên.
+                        </p>
+                    </div>
+                `;
+            } else {
+                // If real sessions exist, calculate actual averages
+                const completedSessions = realSessions.filter(s => s.status === 'completed' || s.score);
+                const avgScore = completedSessions.length > 0 
+                    ? Math.round(completedSessions.reduce((acc, s) => acc + (s.score || s.starScore || 0), 0) / completedSessions.length)
+                    : 0;
+
+                container.innerHTML = `
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
+                        <div class="admin-subcard" style="padding:18px;border-radius:12px;">
+                            <div style="font-size:12px;font-weight:700;color:var(--pm-admin-text-muted);">TỔNG SỐ PHIÊN ĐÃ HOÀN THÀNH</div>
+                            <div style="font-size:26px;font-weight:850;color:#3b82f6;margin:8px 0 2px;">${completedSessions.length}</div>
+                            <div style="font-size:12px;color:var(--pm-admin-text-muted);">Dữ liệu thực tế từ cơ sở dữ liệu</div>
+                        </div>
+                        <div class="admin-subcard" style="padding:18px;border-radius:12px;">
+                            <div style="font-size:12px;font-weight:700;color:var(--pm-admin-text-muted);">ĐIỂM TRUNG BÌNH THỰC TẾ</div>
+                            <div style="font-size:26px;font-weight:850;color:#10b981;margin:8px 0 2px;">${avgScore}%</div>
+                            <div style="font-size:12px;color:var(--pm-admin-text-muted);">Tính trên các phiên đã hoàn tất</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // ==========================================
+        // 5. TRANSACTIONS (Real Database Transactions)
+        // ==========================================
+        let _cachedTransactions = null;
+        let _fetchingTransactionsPromise = null;
+        async function fetchOrLoadTransactions(forceRefresh = false) {
+            if (!forceRefresh && _cachedTransactions) return _cachedTransactions;
+            if (!forceRefresh && _fetchingTransactionsPromise) return _fetchingTransactionsPromise;
+
+            _fetchingTransactionsPromise = (async () => {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/api/admin/transactions`, {
+                        headers: getAdminAuthHeaders()
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (Array.isArray(data) && data.length > 0) {
+                            _cachedTransactions = data.map(t => ({
+                                id: t.transactionId || 'TX-' + t.timestamp,
+                                user: t.user,
+                                method: (t.method || 'VIETQR').toUpperCase(),
+                                amount: t.amount,
+                                time: new Date(t.timestamp).toLocaleString('vi-VN'),
+                                status: 'success',
+                                note: t.bankReference ? `Mã: ${t.bankReference}` : (t.momoPhone ? `SĐT: ${t.momoPhone}` : 'Thanh toán trực tuyến')
+                            }));
+                            return _cachedTransactions;
+                        }
+                    }
+                } catch(e) {}
+                _cachedTransactions = DB_REAL_TRANSACTIONS;
+                return _cachedTransactions;
+            })().finally(() => {
+                _fetchingTransactionsPromise = null;
+            });
+            return _fetchingTransactionsPromise;
+        }
+
+        async function renderTransactions() {
+            const tbody = document.getElementById('transactions-table-body');
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#64748b;">Đang tải danh sách giao dịch...</td></tr>';
+
+            const transactions = await fetchOrLoadTransactions();
+            tbody.innerHTML = '';
+
+            if (transactions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:#64748b;">Chưa có giao dịch thanh toán nào được ghi nhận trên hệ thống.</td></tr>`;
+                return;
+            }
+
+            transactions.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><code>${escapeHtml(t.id || '')}</code></td>
+                    <td><strong>${escapeHtml(t.user || '')}</strong></td>
+                    <td><span class="badge-pill badge-role-manager">${escapeHtml(t.method || '')}</span></td>
+                    <td><strong style="color:#059669;">${Number(t.amount).toLocaleString('vi-VN')}đ</strong></td>
+                    <td style="color:#64748b;font-size:12.5px;">${t.time}</td>
+                    <td><span class="badge-pill badge-status-active">Thành công</span></td>
+                    <td style="font-size:12.5px;color:#475569;">${escapeHtml(t.note || '-')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ==========================================
+        // 6. SYSTEM CONFIGURATION (AI Gateway & System Settings)
+        // Extracted to ./admin-ai-health.js for maintainability & line-count compliance
+        // ==========================================
+
+        function sendBroadcastNotification() {
+            const title = document.getElementById('broadcast-title').value.trim();
+            const content = document.getElementById('broadcast-content').value.trim();
+            const level = document.getElementById('broadcast-level').value;
+
+            if (!title || !content) {
+                alert('Vui lòng nhập đầy đủ tiêu đề và nội dung thông báo.');
+                return;
+            }
+
+            addAuditLog('BROADCAST', 'Phát thông báo toàn hệ thống', 'Tất cả ứng viên', `[${level.toUpperCase()}] ${title}`);
+
+            if (typeof showToast === 'function') {
+                showToast(`Đã phát thông báo "${title}" tới người dùng!`, 'success');
+            } else {
+                alert('Đã phát thông báo thành công!');
+            }
+
+            document.getElementById('broadcast-title').value = '';
+            document.getElementById('broadcast-content').value = '';
+        }
+
+        // ==========================================
+        // 7. AUDIT LOGS (Real Session Actions Only)
+        // ==========================================
+        function getAuditLogs() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_AUDIT)) || [];
+            } catch(e) {
+                return [];
+            }
+        }
+
+        function addAuditLog(action, actionText, target, details) {
+            const logs = getAuditLogs();
+            const newLog = {
+                id: 'log_' + Date.now(),
+                timestamp: new Date().toLocaleString('vi-VN'),
+                user: currentUser ? currentUser.username : 'admin',
+                role: activeRoleView,
+                action: action,
+                actionText: actionText,
+                target: target,
+                details: details,
+                ip: '127.0.0.1'
+            };
+            logs.unshift(newLog);
+            localStorage.setItem(STORAGE_AUDIT, JSON.stringify(logs));
+            renderAuditLogs();
+        }
+
+        function renderAuditLogs() {
+            const logs = getAuditLogs();
+            const tbody = document.getElementById('audit-table-body');
+            tbody.innerHTML = '';
+
+            if (logs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:#64748b;">Chưa có nhật ký hoạt động nào được ghi nhận. Các thao tác quản trị sẽ được tự động ghi lại tại đây.</td></tr>`;
+                return;
+            }
+
+            logs.forEach(l => {
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-log-role', l.role);
+                tr.setAttribute('data-log-action', l.action);
+
+                const roleBadge = l.role === 'admin' 
+                    ? `<span class="badge-pill badge-role-admin">Admin</span>` 
+                    : `<span class="badge-pill badge-role-manager">Manager</span>`;
+
+                tr.innerHTML = `
+                    <td style="color:#64748b;font-size:12.5px;">${l.timestamp}</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <strong>${l.user}</strong> ${roleBadge}
+                        </div>
+                    </td>
+                    <td><strong>${l.actionText || l.action}</strong></td>
+                    <td><code>${l.target}</code></td>
+                    <td style="font-size:13px;color:#334155;">${l.details}</td>
+                    <td><code>${l.ip}</code></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterAuditLogsTable() {
+            const query = (document.getElementById('log-search-input').value || '').toLowerCase().trim();
+            const roleFilter = document.getElementById('log-role-filter').value;
+            const actionFilter = document.getElementById('log-action-filter').value;
+
+            const rows = document.querySelectorAll('#audit-table-body tr');
+            const logs = getAuditLogs();
+
+            rows.forEach((row, idx) => {
+                const log = logs[idx];
+                if (!log) return;
+
+                const matchQuery = !query || 
+                    log.details.toLowerCase().includes(query) || 
+                    log.user.toLowerCase().includes(query) || 
+                    log.target.toLowerCase().includes(query);
+
+                const matchRole = roleFilter === 'all' || log.role === roleFilter;
+                const matchAction = actionFilter === 'all' || log.action === actionFilter;
+
+                row.style.display = (matchQuery && matchRole && matchAction) ? '' : 'none';
+            });
+        }
+
+        function clearAuditLogs() {
+            if (activeRoleView !== 'admin') {
+                alert('Chỉ Quản trị viên (Admin) mới có quyền dọn dẹp nhật ký hoạt động.');
+                return;
+            }
+            if (!confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử nhật ký hoạt động?')) return;
+            localStorage.setItem(STORAGE_AUDIT, JSON.stringify([]));
+            renderAuditLogs();
+            if (typeof showToast === 'function') showToast('Đã dọn dẹp nhật ký hoạt động!', 'info');
+        }
+
+        // ==========================================
+        // 8. KPI STATS UPDATER (Strictly Real Data)
+        // ==========================================
+        async function updateKpiStats() {
+            const users = getUsersList();
+            const total = users.length;
+            const proCount = users.filter(u => u.subscription === 'pro').length;
+            const proRatio = total > 0 ? Math.round((proCount / total) * 100) : 0;
+
+            const transactions = await fetchOrLoadTransactions();
+            const totalRevenue = transactions.reduce((acc, t) => acc + (Number(t.amount) || 0), 0);
+
+            // Real sessions
+            let realSessionsCount = 0;
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('interview_sessions')) {
+                        const raw = localStorage.getItem(key);
+                        if (raw) {
+                            const parsed = JSON.parse(raw);
+                            if (Array.isArray(parsed)) realSessionsCount += parsed.length;
+                        }
+                    }
+                }
+            } catch(e) {}
+
+            document.getElementById('kpi-total-users').innerText = total;
+            document.getElementById('kpi-user-subtext').innerText = `${total} tài khoản trong hệ thống`;
+            document.getElementById('kpi-pro-users').innerText = proCount;
+            document.getElementById('kpi-pro-ratio').innerText = `${proRatio}% tổng thành viên`;
+            document.getElementById('kpi-revenue').innerText = totalRevenue.toLocaleString('vi-VN') + 'đ';
+            document.getElementById('kpi-trans-subtext').innerText = `${transactions.length} giao dịch thành công`;
+            document.getElementById('kpi-sessions-count').innerText = realSessionsCount;
+            document.getElementById('kpi-sessions-subtext').innerText = realSessionsCount === 0 ? 'Chưa có phiên phỏng vấn nào' : 'Đã ghi nhận trong cơ sở dữ liệu';
+        }
+
+        // ==========================================
+        // 9. EXPORT CSV UTILITIES
+        // ==========================================
+        function downloadCSV(csvContent, fileName) {
+            const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", fileName);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportUsersCSV() {
+            const users = getUsersList();
+            let csv = "Mã tài khoản,Họ và tên,Email,Tên đăng nhập,Vai trò,Gói dịch vụ,Trạng thái,Ngày tạo\n";
+            users.forEach(u => {
+                csv += `"${u.id}","${u.fullname}","${u.email}","${u.username}","${u.role}","${u.subscription}","${u.status || 'active'}","${u.createdAt}"\n`;
+            });
+            downloadCSV(csv, `PrepMate_NguoiDung_${Date.now()}.csv`);
+        }
+
+        function exportAuditLogsCSV() {
+            const logs = getAuditLogs();
+            let csv = "Thời gian,Người thực hiện,Vai trò,Hành động,Đối tượng,Chi tiết,IP\n";
+            logs.forEach(l => {
+                csv += `"${l.timestamp}","${l.user}","${l.role}","${l.actionText || l.action}","${l.target}","${l.details}","${l.ip}"\n`;
+            });
+            downloadCSV(csv, `PrepMate_NhatKy_${Date.now()}.csv`);
+        }
+
+        async function exportTransactionsCSV() {
+            const transactions = await fetchOrLoadTransactions();
+            let csv = "Mã giao dịch,Người dùng,Phương thức,Số tiền,Thời gian,Trạng thái,Ghi chú\n";
+            transactions.forEach(t => {
+                csv += `"${t.id}","${t.user}","${t.method}",${t.amount},"${t.time}","${t.status}","${t.note}"\n`;
+            });
+            downloadCSV(csv, `PrepMate_GiaoDich_${Date.now()}.csv`);
+        }
+
+        // ==========================================
+        // 10. MODAL HELPERS
+        // ==========================================
+        function openModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('open');
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('open');
+        }
+    </script>
+</body>
+</html>

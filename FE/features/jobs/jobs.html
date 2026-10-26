@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Khám phá Cơ hội Việc làm</title>
+    <meta name="description" content="Tìm kiếm vị trí tuyển dụng thực tế và chuẩn bị phỏng vấn mô phỏng AI theo đúng yêu cầu công việc (JD).">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../shared/css/tokens.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/base.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/layout.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/components.css?v=27">
+    <link rel="stylesheet" href="./jobs.css?v=27">
+    <style>
+        :root {
+            --prep-bg: var(--pm-bg);
+            --prep-card-bg: var(--pm-bg-card);
+            --prep-border: var(--pm-border);
+            --prep-border-hover: var(--pm-border-hover);
+            --prep-text-primary: var(--pm-text-primary);
+            --prep-text-secondary: var(--pm-text-secondary);
+            --prep-text-muted: var(--pm-text-muted);
+            --prep-accent-blue: var(--pm-accent-blue);
+            --prep-accent-dark: var(--pm-primary);
+            --prep-shadow-sm: var(--pm-shadow-sm);
+            --prep-shadow-md: var(--pm-shadow-md);
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+
+    <!-- SIDEBAR (Auto-rendered by initRoleBasedSidebar() in main.js) -->
+    <aside class="sidebar sidebar-new" id="main-sidebar">
+        <!-- Rendered dynamically by initRoleBasedSidebar() based on user role -->
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content main-content-new">
+        <div class="jobs-container">
+
+            <!-- Breadcrumb Navigation -->
+            <div class="jobs-breadcrumb">
+                <a href="../../features/dashboard/dashboard.html">Tổng quan</a>
+                <span class="sep">/</span>
+                <span>Chuẩn bị</span>
+                <span class="sep">/</span>
+                <span class="current">Cơ hội việc làm</span>
+            </div>
+
+            <!-- Discovery Hero Dock -->
+            <div class="jobs-hero">
+                <div class="jobs-badge-pill">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                    <span>Thị trường Tuyển dụng & Xu hướng Kỹ năng</span>
+                    <span style="color:#2563eb;">•</span>
+                    <span style="color:#059669;">Dữ liệu TopCV, LinkedIn & ITviec</span>
+                </div>
+                <h1>Khám phá Cơ hội Việc làm</h1>
+                <p>
+                    Tìm kiếm và theo dõi các vị trí tuyển dụng thực tế từ các doanh nghiệp hàng đầu. Nắm bắt yêu cầu chuyên môn, kỹ năng trọng yếu và mức lương thị trường để định hướng lộ trình nghề nghiệp phù hợp.
+                </p>
+
+                <!-- Search Bar -->
+                <div class="jobs-search-bar">
+                    <input type="text" id="search-keyword" placeholder="Vị trí, kỹ năng, công ty tuyển dụng..." value="" onkeydown="if(event.key==='Enter') searchJobs()">
+                    <select id="search-location" onchange="searchJobs()" aria-label="Chọn địa điểm">
+                        <option value="">Tất cả địa điểm</option>
+                        <option value="hanoi">Hà Nội</option>
+                        <option value="hcm">TP. Hồ Chí Minh</option>
+                        <option value="danang">Đà Nẵng</option>
+                        <option value="remote">Remote (Làm việc từ xa)</option>
+                    </select>
+                    <select id="search-category" onchange="searchJobs()" aria-label="Chọn ngành nghề">
+                        <option value="">Tất cả ngành nghề</option>
+                        <option value="tech">Công nghệ thông tin (IT / Dev)</option>
+                        <option value="data">Dữ liệu & AI (Data / AI / Analytics)</option>
+                        <option value="business">Phân tích nghiệp vụ (Business Analysis)</option>
+                        <option value="finance">Tài chính & Kế toán (Finance / Accounting)</option>
+                        <option value="marketing">Marketing & Truyền thông</option>
+                        <option value="sales">Kinh doanh & Bán hàng (Sales / BD)</option>
+                        <option value="hr">Nhân sự & Tuyển dụng (HR / People)</option>
+                        <option value="design">Thiết kế UI/UX & Đồ họa</option>
+                        <option value="pm">Quản lý dự án (Product / PM)</option>
+                        <option value="operations">Vận hành & Chuỗi cung ứng (Operations)</option>
+                    </select>
+                    <button class="btn-search-jobs" onclick="searchJobs()">
+                        <span>Tìm việc</span>
+                    </button>
+                </div>
+
+                <!-- Quick Keywords -->
+                <div class="quick-chips-row">
+                    <span>Gợi ý tìm nhanh:</span>
+                    <span class="quick-chip" onclick="quickSearch('Business Analyst')">Business Analyst</span>
+                    <span class="quick-chip" onclick="quickSearch('Marketing')">Marketing</span>
+                    <span class="quick-chip" onclick="quickSearch('Tài chính')">Tài chính</span>
+                    <span class="quick-chip" onclick="quickSearch('Software Engineer')">Software Engineer</span>
+                    <span class="quick-chip" onclick="quickSearch('UI/UX')">UI/UX</span>
+                    <span class="quick-chip" onclick="quickSearch('Nhân sự')">Nhân sự</span>
+                    <span class="quick-chip" onclick="quickSearch('Data')">Data</span>
+                    <span class="quick-chip" onclick="quickSearch('Remote')">Remote</span>
+                </div>
+            </div>
+
+            <!-- 2-Column Content Layout -->
+            <div class="jobs-layout">
+                <!-- Filters Column -->
+                <aside>
+                    <div class="jobs-filters-card">
+                        <div class="filters-header">
+                            <h3 class="filters-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                                <span>Bộ lọc tuyển dụng</span>
+                            </h3>
+                            <button class="btn-reset-filters" onclick="resetFilters()">Đặt lại</button>
+                        </div>
+
+                        <!-- Loại hình làm việc -->
+                        <div class="filter-section">
+                            <span class="filter-section-title">Loại hình</span>
+                            <div class="filter-chips-grid">
+                                <span class="filter-chip active" onclick="toggleFilter(this,'type','all')">Tất cả</span>
+                                <span class="filter-chip" onclick="toggleFilter(this,'type','Full-time')">Full-time</span>
+                                <span class="filter-chip" onclick="toggleFilter(this,'type','Part-time')">Part-time</span>
+                                <span class="filter-chip" onclick="toggleFilter(this,'type','Remote')">Remote</span>
+                            </div>
+                        </div>
+
+                        <!-- Kinh nghiệm -->
+                        <div class="filter-section">
+                            <span class="filter-section-title">Kinh nghiệm</span>
+                            <div class="filter-chips-grid">
+                                <span class="filter-chip active" onclick="toggleFilter(this,'exp','any')">Tất cả</span>
+                                <span class="filter-chip" onclick="toggleFilter(this,'exp','fresher')">Fresher / Mới tốt nghiệp</span>
+                                <span class="filter-chip" onclick="toggleFilter(this,'exp','1-2')">1–2 năm</span>
+                                <span class="filter-chip" onclick="toggleFilter(this,'exp','3-5')">3–5 năm</span>
+                            </div>
+                        </div>
+
+                        <!-- Nguồn tuyển dụng -->
+                        <div class="filter-section">
+                            <span class="filter-section-title">Nguồn tuyển dụng</span>
+                            <div class="filter-chips-grid">
+                                <span class="filter-chip active" onclick="toggleFilter(this,'source','all')">Tất cả nguồn</span>
+                                <span class="filter-chip" onclick="toggleFilter(this,'source','topcv')">TopCV</span>
+                                <span class="filter-chip" onclick="toggleFilter(this,'source','linkedin')">LinkedIn</span>
+                                <span class="filter-chip" onclick="toggleFilter(this,'source','itviec')">ITviec</span>
+                            </div>
+                        </div>
+
+                        <!-- Mức lương tối thiểu -->
+                        <div class="filter-section">
+                            <span class="filter-section-title">Mức lương tối thiểu</span>
+                            <input type="range" class="filter-range" id="salary-range" min="0" max="60" value="0" aria-label="Mức lương tối thiểu" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0" oninput="updateSalaryDisplay(this.value)">
+                            <div class="salary-display" id="salary-display">Không giới hạn mức lương</div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Job Listings Main Column -->
+                <div class="jobs-main-col">
+                    <div class="jobs-header-row">
+                        <span class="jobs-count" id="jobs-count">Đang tải danh sách việc làm...</span>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span style="font-size:13px;color:var(--prep-text-muted);">Sắp xếp:</span>
+                            <select class="jobs-sort" id="jobs-sort" onchange="sortJobs(this.value)" aria-label="Sắp xếp danh sách việc làm">
+                                <option value="match">Độ phù hợp cao nhất</option>
+                                <option value="newest">Tin mới đăng</option>
+                                <option value="salary">Mức lương cao nhất</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Job Cards Container -->
+                    <div id="jobs-grid" style="display:flex;flex-direction:column;gap:14px;"></div>
+
+                    <!-- Pagination -->
+                    <div class="jobs-pagination" id="jobs-pagination"></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Shared Workspace Footer -->
+    <app-workspace-footer></app-workspace-footer>
+
+    <!-- Modal Chi tiết JD -->
+    <div class="modal-overlay" id="job-detail-modal-overlay" onclick="closeJobModal(event)">
+        <div class="job-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <div class="modal-company-logo" id="m-logo">P</div>
+                    <div class="modal-header-meta">
+                        <h3 id="m-title">Tiêu đề vị trí tuyển dụng</h3>
+                        <span id="m-company">Tên công ty</span>
+                    </div>
+                </div>
+                <button class="modal-close-btn" onclick="closeJobModal()" aria-label="Đóng">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-meta-grid">
+                    <div class="modal-meta-item">
+                        <span class="modal-meta-label">Mức lương</span>
+                        <span class="modal-meta-val" id="m-salary" style="color:#059669;">$2,000 - $3,500</span>
+                    </div>
+                    <div class="modal-meta-item">
+                        <span class="modal-meta-label">Địa điểm / Hình thức</span>
+                        <span class="modal-meta-val" id="m-location">TP. HCM (Full-time)</span>
+                    </div>
+                    <div class="modal-meta-item">
+                        <span class="modal-meta-label">Nguồn tuyển dụng</span>
+                        <span class="modal-meta-val" id="m-source">TopCV</span>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h4>Mô tả công việc (Job Description)</h4>
+                    <p id="m-desc">Chi tiết mô tả công việc...</p>
+                </div>
+
+                <div class="modal-section">
+                    <h4>Kỹ năng &amp; Công nghệ yêu cầu</h4>
+                    <div id="m-tags" class="job-tags-row"></div>
+                </div>
+
+                <div class="ai-mock-box">
+                    <div class="ai-mock-title">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>Đề xuất từ PrepMate AI</span>
+                    </div>
+                    <p class="ai-mock-desc" id="m-ai-tip">
+                        Vị trí này đòi hỏi kiến thức chuyên sâu và khả năng xử lý tình huống thực tế. Bấm nút bên dưới để AI tự động nạp JD này vào phòng phỏng vấn giả lập.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-practice-jd" id="m-btn-practice">
+                    <span>Phỏng vấn Giả lập theo JD này</span>
+                </button>
+                <button class="btn-close-modal" onclick="closeJobModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="../../shared/js/main.js?v=24"></script>
+    <script src="../../features/auth/auth.js?v=24"></script>
+    <script src="../../features/dashboard/dashboard.js?v=24"></script>
+    <script src="../../features/interview/interview.js?v=24"></script>
+    <script>
+    // ══════════════ DỮ LIỆU THỊ TRƯỜNG VIỆC LÀM THỰC TẾ ══════════════
+    const JOB_DATABASE = [
+        {
+            id: 1, featured: true,
+            title: 'Senior Frontend Developer (React/Next.js)',
+            company: 'VNG Corporation',
+            logo: 'V', location: 'TP. HCM', type: 'Full-time', remote: false,
+            experience: '3-5', category: 'tech',
+            salaryMin: 2000, salaryMax: 3500, currency: 'USD',
+            tags: ['React', 'TypeScript', 'Next.js', 'Redux Toolkit', 'Performance'],
+            description: 'Phát triển và tối ưu giao diện người dùng cho nền tảng giải trí và gaming với hàng chục triệu người dùng hoạt động hàng ngày.',
+            postedDays: 2, source: 'topcv', matchScore: 95
+        },
+        {
+            id: 2, featured: true,
+            title: 'Full Stack Engineer (.NET 8 + React)',
+            company: 'FPT Software',
+            logo: 'F', location: 'Hà Nội', type: 'Full-time', remote: false,
+            experience: '3-5', category: 'tech',
+            salaryMin: 1800, salaryMax: 3000, currency: 'USD',
+            tags: ['.NET 8', 'C#', 'React', 'SQL Server', 'Azure', 'Microservices'],
+            description: 'Tham gia thiết kế kiến trúc và phát triển hệ thống Enterprise quy mô lớn cho các đối tác tài chính & viễn thông quốc tế.',
+            postedDays: 1, source: 'linkedin', matchScore: 91
+        },
+        {
+            id: 3, featured: false,
+            title: 'Product UI/UX Designer',
+            company: 'Tiki Corporation',
+            logo: 'T', location: 'TP. HCM', type: 'Full-time', remote: false,
+            experience: '1-2', category: 'design',
+            salaryMin: 1200, salaryMax: 2200, currency: 'USD',
+            tags: ['Figma', 'User Research', 'Design System', 'Usability Testing'],
+            description: 'Thiết kế trải nghiệm mua sắm mượt mà trên Mobile App & Web E-commerce, tối ưu tỷ lệ chuyển đổi cho 20 triệu người dùng.',
+            postedDays: 5, source: 'topcv', matchScore: 84
+        },
+        {
+            id: 4, featured: false,
+            title: 'Backend Engineer (Python / FastAPI / Cloud)',
+            company: 'Sky Mavis',
+            logo: 'S', location: 'Remote', type: 'Remote', remote: true,
+            experience: '3-5', category: 'tech',
+            salaryMin: 3000, salaryMax: 5000, currency: 'USD',
+            tags: ['Python', 'FastAPI', 'PostgreSQL', 'Redis', 'AWS', 'Docker'],
+            description: 'Xây dựng dịch vụ backend hiệu năng cao, chịu tải hàng triệu giao dịch tức thời mỗi ngày với độ trễ cực thấp.',
+            postedDays: 3, source: 'linkedin', matchScore: 88
+        },
+        {
+            id: 5, featured: false,
+            title: 'Data Platform Engineer',
+            company: 'MoMo E-Wallet',
+            logo: 'M', location: 'TP. HCM', type: 'Full-time', remote: false,
+            experience: '1-2', category: 'data',
+            salaryMin: 1500, salaryMax: 2800, currency: 'USD',
+            tags: ['Python', 'Apache Spark', 'Kafka', 'Airflow', 'BigQuery'],
+            description: 'Vận hành Data Lakehouse và phát triển các streaming pipelines phục vụ tính năng phân tích giao dịch thanh toán theo thời gian thực.',
+            postedDays: 7, source: 'itviec', matchScore: 79
+        },
+        {
+            id: 6, featured: false,
+            title: 'Mobile App Developer (React Native / Flutter)',
+            company: 'Shopee Vietnam',
+            logo: 'S', location: 'TP. HCM', type: 'Full-time', remote: false,
+            experience: '1-2', category: 'tech',
+            salaryMin: 1800, salaryMax: 3200, currency: 'USD',
+            tags: ['React Native', 'Flutter', 'TypeScript', 'Redux', 'CI/CD'],
+            description: 'Phát triển các module chức năng trọng yếu trên ứng dụng mua sắm hàng đầu Đông Nam Á, đảm bảo tốc độ và trải nghiệm mượt mà.',
+            postedDays: 4, source: 'topcv', matchScore: 87
+        },
+        {
+            id: 7, featured: false,
+            title: 'DevOps / Cloud Infrastructure Engineer',
+            company: 'Techcombank',
+            logo: 'T', location: 'Hà Nội', type: 'Full-time', remote: false,
+            experience: '3-5', category: 'tech',
+            salaryMin: 2500, salaryMax: 4000, currency: 'USD',
+            tags: ['Kubernetes', 'Docker', 'AWS', 'Terraform', 'CI/CD Pipelines'],
+            description: 'Quản trị hạ tầng điện toán đám mây và tối ưu hóa hệ thống container hóa cho ngân hàng số, cam kết độ khả dụng 99.99%.',
+            postedDays: 6, source: 'linkedin', matchScore: 72
+        },
+        {
+            id: 8, featured: false,
+            title: 'Technical Product Manager (TPM)',
+            company: 'Grab Vietnam',
+            logo: 'G', location: 'TP. HCM', type: 'Full-time', remote: false,
+            experience: '3-5', category: 'pm',
+            salaryMin: 2800, salaryMax: 4500, currency: 'USD',
+            tags: ['Product Strategy', 'Agile Scrum', 'Data Driven', 'API Design'],
+            description: 'Định hình chiến lược phát triển sản phẩm công nghệ vận tải và logistics, làm việc chặt chẽ cùng các Tech Lead quốc tế.',
+            postedDays: 10, source: 'linkedin', matchScore: 68
+        },
+        {
+            id: 9, featured: true,
+            title: 'Junior Frontend Developer (Mentorship)',
+            company: 'KMS Technology',
+            logo: 'K', location: 'TP. HCM', type: 'Full-time', remote: false,
+            experience: 'fresher', category: 'tech',
+            salaryMin: 600, salaryMax: 1200, currency: 'USD',
+            tags: ['HTML5', 'CSS3', 'JavaScript ES6+', 'React Basics', 'Git'],
+            description: 'Chương trình phát triển tài năng trẻ, tham gia dự án thực tế cho khách hàng Mỹ với sự dẫn dắt trực tiếp từ các Senior Architect.',
+            postedDays: 2, source: 'itviec', matchScore: 93
+        },
+        {
+            id: 10, featured: true,
+            title: 'Senior Business Analyst',
+            company: 'Viettel Telecom',
+            logo: 'V', location: 'Hà Nội', type: 'Full-time', remote: false,
+            experience: '3-5', category: 'business',
+            salaryMin: 1800, salaryMax: 3200, currency: 'USD',
+            tags: ['BPMN', 'User Stories', 'Requirement Engineering', 'SQL', 'Stakeholder Management'],
+            description: 'Phân tích quy trình kinh doanh và làm cầu nối nghiệp vụ giữa khối viễn thông số và đội ngũ kỹ thuật sản phẩm.',
+            postedDays: 1, source: 'topcv', matchScore: 96
+        },
+        {
+            id: 11, featured: true,
+            title: 'Financial Planning & Analysis (FP&A) Lead',
+            company: 'Masan Group',
+            logo: 'M', location: 'TP. HCM', type: 'Full-time', remote: false,
+            experience: '3-5', category: 'finance',
+            salaryMin: 2200, salaryMax: 3800, currency: 'USD',
+            tags: ['Financial Modeling', 'OPEX Forecast', 'Cash Flow Analysis', 'Budget Planning', 'PowerBI'],
+            description: 'Chịu trách nhiệm mô hình hóa tài chính, dự báo dòng tiền và phân tích hiệu quả vốn đầu tư cho chuỗi bán lẻ toàn quốc.',
+            postedDays: 3, source: 'linkedin', matchScore: 92
+        },
+        {
+            id: 12, featured: false,
+            title: 'B2B Enterprise Account Executive',
+            company: 'Base.vn',
+            logo: 'B', location: 'Hà Nội', type: 'Full-time', remote: false,
+            experience: '1-2', category: 'sales',
+            salaryMin: 1000, salaryMax: 2500, currency: 'USD',
+            tags: ['Consultative Selling', 'SaaS', 'B2B Sales', 'Negotiation', 'CRM Pipelines'],
+            description: 'Tư vấn chuyển đổi số và phát triển tệp khách hàng doanh nghiệp quy mô lớn cho hệ sinh thái quản trị Base Platform.',
+            postedDays: 4, source: 'topcv', matchScore: 89
+        },
+        {
+            id: 13, featured: false,
+            title: 'HR Business Partner (HRBP)',
+            company: 'Samsung Electronics',
+            logo: 'S', location: 'Hà Nội', type: 'Full-time', remote: false,
+            experience: '3-5', category: 'hr',
+            salaryMin: 1600, salaryMax: 2800, currency: 'USD',
+            tags: ['Talent Strategy', 'Employee Relations', 'Performance Management', 'Labor Law', 'Culture'],
+            description: 'Đồng hành cùng lãnh đạo khối R&D về hoạch định nhân sự, phát triển năng lực đội ngũ và tối ưu môi trường làm việc.',
+            postedDays: 2, source: 'linkedin', matchScore: 90
+        },
+        {
+            id: 14, featured: false,
+            title: 'Supply Chain & Operations Specialist',
+            company: 'Unilever Vietnam',
+            logo: 'U', location: 'TP. HCM', type: 'Full-time', remote: false,
+            experience: '1-2', category: 'operations',
+            salaryMin: 1200, salaryMax: 2200, currency: 'USD',
+            tags: ['Demand Planning', 'Logistics', 'Inventory Control', 'SAP ERP', 'Process Optimization'],
+            description: 'Quản lý chuỗi cung ứng đầu cuối, tối ưu hóa mức tồn kho an toàn và nâng cao độ chính xác trong dự báo nhu cầu thị trường.',
+            postedDays: 5, source: 'itviec', matchScore: 85
+        }
+    ];
+
+    let filteredJobs = [...JOB_DATABASE];
+    let currentPage = 1;
+    const JOBS_PER_PAGE = 5;
+
+    let currentFilters = {
+        type: 'all',
+        exp: 'any',
+        source: 'all',
+        minSalary: 0
+    };
+
+    function formatSalary(min, max, curr) {
+        if (!min && !max) return 'Thỏa thuận';
+        if (min && !max) return `Từ $${min.toLocaleString()} ${curr}`;
+        return `$${min.toLocaleString()} - $${max.toLocaleString()} ${curr}`;
+    }
+
+    function getSourceBadge(source) {
+        const map = {
+            topcv:    '<span class="source-badge source-topcv">TopCV</span>',
+            linkedin: '<span class="source-badge source-linkedin">LinkedIn</span>',
+            itviec:   '<span class="source-badge source-itviec">ITviec</span>'
+        };
+        return map[source] || '<span class="source-badge source-topcv">Tuyển dụng</span>';
+    }
+
+    function renderJobCard(job) {
+        const postedText = job.postedDays === 1 ? '1 ngày trước' : `${job.postedDays} ngày trước`;
+        const expText = job.experience === 'fresher' ? 'Fresher' : `${job.experience} năm`;
+
+        return `
+        <div class="job-card${job.featured ? ' featured' : ''}">
+            <div class="job-logo">${job.logo}</div>
+            <div class="job-info">
+                <div class="job-title-row">
+                    <h3 class="job-title" onclick="openJobDetail(${job.id})">${job.title}</h3>
+                    ${getSourceBadge(job.source)}
+                    ${job.featured ? '<span class="featured-badge">Nổi bật</span>' : ''}
+                </div>
+                <div class="job-company-row">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22.01"/><line x1="15" y1="22" x2="15" y2="22.01"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="9" y2="18.01"/><line x1="15" y1="18" x2="15" y2="18.01"/></svg>
+                    <span>${job.company}</span>
+                </div>
+                <div class="job-meta-row">
+                    <span class="meta-pill">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span>${job.location}</span>
+                    </span>
+                    <span class="meta-pill">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span>${job.type}</span>
+                    </span>
+                    <span class="meta-pill">
+                        <span>${expText}</span>
+                    </span>
+                    <span class="meta-pill match-score">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Phù hợp ${job.matchScore}%</span>
+                    </span>
+                    <span style="font-size:12px;color:var(--prep-text-muted);margin-left:auto;">${postedText}</span>
+                </div>
+                <p class="job-desc-snippet">${job.description}</p>
+                <div class="job-tags-row">
+                    ${job.tags.slice(0, 5).map(t => `<span class="job-tag">${t}</span>`).join('')}
+                </div>
+            </div>
+            <div class="job-actions">
+                <div class="job-salary-box">
+                    <div class="job-salary-val">${formatSalary(job.salaryMin, job.salaryMax, job.currency)}</div>
+                    <div class="job-salary-sub">(Mức lương thị trường)</div>
+                </div>
+                <button class="btn-practice-jd" onclick="practiceForJob(event, ${job.id})" title="Luyện phỏng vấn mô phỏng theo JD này">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Luyện tập theo JD</span>
+                </button>
+                <div class="btn-secondary-group">
+                    <button class="btn-view-jd" onclick="openJobDetail(${job.id})" title="Xem chi tiết yêu cầu & mô tả công việc">
+                        <span>Chi tiết JD</span>
+                    </button>
+                    <button class="btn-save-job" id="btn-save-${job.id}" onclick="saveJob(event, ${job.id})" title="Lưu tin tuyển dụng">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        <span>Lưu</span>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function renderJobs() {
+        const grid = document.getElementById('jobs-grid');
+        const start = (currentPage - 1) * JOBS_PER_PAGE;
+        const paginated = filteredJobs.slice(start, start + JOBS_PER_PAGE);
+
+        document.getElementById('jobs-count').textContent = `${filteredJobs.length} vị trí phù hợp`;
+
+        if (paginated.length === 0) {
+            grid.innerHTML = `
+                <div class="no-jobs-card">
+                    <div class="no-jobs-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </div>
+                    <h3>Không tìm thấy vị trí tuyển dụng phù hợp</h3>
+                    <p>Thử điều chỉnh từ khóa tìm kiếm hoặc bấm đặt lại các bộ lọc kinh nghiệm và mức lương.</p>
+                    <button class="btn-search-jobs" onclick="resetFilters()" style="margin:0 auto;">Đặt lại bộ lọc</button>
+                </div>`;
+        } else {
+            grid.innerHTML = paginated.map(renderJobCard).join('');
+        }
+        renderPagination();
+    }
+
+    function renderPagination() {
+        const total = Math.ceil(filteredJobs.length / JOBS_PER_PAGE);
+        const pg = document.getElementById('jobs-pagination');
+        if (total <= 1) { pg.innerHTML = ''; return; }
+
+        let html = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goPage(${currentPage - 1})">← Trước</button>`;
+        for (let i = 1; i <= total; i++) {
+            html += `<button class="page-btn${i === currentPage ? ' active' : ''}" onclick="goPage(${i})">${i}</button>`;
+        }
+        html += `<button class="page-btn" ${currentPage === total ? 'disabled' : ''} onclick="goPage(${currentPage + 1})">Sau →</button>`;
+        pg.innerHTML = html;
+    }
+
+    function goPage(n) {
+        currentPage = n;
+        renderJobs();
+        window.scrollTo({ top: 380, behavior: 'smooth' });
+    }
+
+    function searchJobs() {
+        const keyword = (document.getElementById('search-keyword')?.value || '').trim().toLowerCase();
+        const loc = document.getElementById('search-location')?.value || '';
+        const cat = document.getElementById('search-category')?.value || '';
+
+        filteredJobs = JOB_DATABASE.filter(job => {
+            const matchKw = !keyword ||
+                job.title.toLowerCase().includes(keyword) ||
+                job.company.toLowerCase().includes(keyword) ||
+                job.tags.some(t => t.toLowerCase().includes(keyword));
+
+            const matchLoc = !loc ||
+                (loc === 'hanoi' && job.location.includes('Hà Nội')) ||
+                (loc === 'hcm' && job.location.includes('TP. HCM')) ||
+                (loc === 'danang' && job.location.includes('Đà Nẵng')) ||
+                (loc === 'remote' && job.remote);
+
+            const matchCat = !cat || job.category === cat;
+            const matchType = currentFilters.type === 'all' || job.type === currentFilters.type;
+            const matchExp = currentFilters.exp === 'any' || job.experience === currentFilters.exp;
+            const matchSource = currentFilters.source === 'all' || job.source === currentFilters.source;
+            const matchSal = job.salaryMax >= currentFilters.minSalary;
+
+            return matchKw && matchLoc && matchCat && matchType && matchExp && matchSource && matchSal;
+        });
+
+        currentPage = 1;
+        renderJobs();
+    }
+
+    function quickSearch(kw) {
+        const input = document.getElementById('search-keyword');
+        if (input) {
+            input.value = kw;
+            searchJobs();
+        }
+    }
+
+    function toggleFilter(el, key, val) {
+        el.closest('.filter-chips-grid').querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        currentFilters[key] = val;
+        searchJobs();
+    }
+
+    function updateSalaryDisplay(val) {
+        const usd = parseInt(val) * 50;
+        currentFilters.minSalary = usd;
+        const slider = document.getElementById('salary-range');
+        if (slider) slider.setAttribute('aria-valuenow', val);
+        const display = document.getElementById('salary-display');
+        if (display) {
+            display.textContent = usd === 0 ? 'Không giới hạn mức lương' : `Từ $${usd.toLocaleString()} USD/tháng`;
+        }
+        searchJobs();
+    }
+
+    function resetFilters() {
+        currentFilters = { type: 'all', exp: 'any', source: 'all', minSalary: 0 };
+        document.getElementById('search-keyword').value = '';
+        document.getElementById('search-location').value = '';
+        document.getElementById('search-category').value = '';
+        const range = document.getElementById('salary-range');
+        if (range) {
+            range.value = 0;
+            range.setAttribute('aria-valuenow', '0');
+        }
+        document.getElementById('salary-display').textContent = 'Không giới hạn mức lương';
+        document.querySelectorAll('.filter-chips-grid').forEach(grid => {
+            grid.querySelectorAll('.filter-chip').forEach((c, idx) => {
+                c.classList.toggle('active', idx === 0);
+            });
+        });
+        filteredJobs = [...JOB_DATABASE];
+        currentPage = 1;
+        renderJobs();
+    }
+
+    function sortJobs(by) {
+        if (by === 'match')  filteredJobs.sort((a, b) => b.matchScore - a.matchScore);
+        if (by === 'newest') filteredJobs.sort((a, b) => a.postedDays - b.postedDays);
+        if (by === 'salary') filteredJobs.sort((a, b) => b.salaryMax - a.salaryMax);
+        renderJobs();
+    }
+
+    // ── MODAL CHI TIẾT JD ──
+    function openJobDetail(id) {
+        const job = JOB_DATABASE.find(j => j.id === id);
+        if (!job) return;
+
+        document.getElementById('m-logo').textContent = job.logo;
+        document.getElementById('m-title').textContent = job.title;
+        document.getElementById('m-company').textContent = job.company;
+        document.getElementById('m-salary').textContent = formatSalary(job.salaryMin, job.salaryMax, job.currency);
+        document.getElementById('m-location').textContent = `${job.location} • ${job.type}`;
+        document.getElementById('m-source').textContent = job.source.toUpperCase();
+        document.getElementById('m-desc').textContent = job.description;
+
+        const tagsContainer = document.getElementById('m-tags');
+        if (tagsContainer) {
+            tagsContainer.innerHTML = job.tags.map(t => `<span class="job-tag">${t}</span>`).join('');
+        }
+
+        const tip = document.getElementById('m-ai-tip');
+        if (tip) {
+            tip.innerHTML = `Vị trí <strong>${job.title}</strong> tại <strong>${job.company}</strong> đòi hỏi kỹ năng cốt lõi: <em>${job.tags.slice(0, 3).join(', ')}</em>. Bấm "Phỏng vấn Giả lập" để AI thiết lập câu hỏi phỏng vấn theo đúng JD này.`;
+        }
+
+        const btnPractice = document.getElementById('m-btn-practice');
+        if (btnPractice) {
+            btnPractice.onclick = (e) => practiceForJob(e, job.id);
+        }
+
+        document.getElementById('job-detail-modal-overlay')?.classList.add('active');
+    }
+
+    function closeJobModal(e) {
+        if (!e || e.target === document.getElementById('job-detail-modal-overlay') || e.target.classList.contains('modal-close-btn') || e.target.classList.contains('btn-close-modal')) {
+            document.getElementById('job-detail-modal-overlay')?.classList.remove('active');
+        }
+    }
+
+    function practiceForJob(event, id) {
+        if (event && event.stopPropagation) event.stopPropagation();
+        const job = JOB_DATABASE.find(j => j.id === id);
+        if (!job) return;
+
+        localStorage.setItem('prefill_job_title', job.title);
+        localStorage.setItem('prefill_company_name', job.company);
+        localStorage.setItem('prefill_jd', `Vị trí: ${job.title}\nCông ty: ${job.company}\nĐịa điểm: ${job.location}\nMức lương: $${job.salaryMin} - $${job.salaryMax} ${job.currency}\nKỹ năng yêu cầu: ${job.tags.join(', ')}\nMô tả công việc:\n${job.description}`);
+
+        window.location.href = '../../features/interview/interview-info.html';
+    }
+
+    function saveJob(event, id) {
+        if (event && event.stopPropagation) event.stopPropagation();
+        const btn = document.getElementById(`btn-save-${id}`);
+        const saved = JSON.parse(localStorage.getItem('saved_jobs') || '[]');
+        if (!saved.includes(id)) {
+            saved.push(id);
+            localStorage.setItem('saved_jobs', JSON.stringify(saved));
+            if (btn) {
+                btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> <span>Đã lưu</span>`;
+                btn.style.color = '#059669';
+                btn.style.borderColor = '#a7f3d0';
+            }
+        } else {
+            const index = saved.indexOf(id);
+            saved.splice(index, 1);
+            localStorage.setItem('saved_jobs', JSON.stringify(saved));
+            if (btn) {
+                btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> <span>Lưu tin</span>`;
+                btn.style.color = '';
+                btn.style.borderColor = '';
+            }
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        renderJobs();
+    });
+    </script>
+    <script src="../../shared/js/components.js"></script>
+</body>
+</html>

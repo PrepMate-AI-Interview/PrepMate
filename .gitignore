@@ -1,0 +1,55 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+node_modules/
+
+# FileDb Persistent Data
+BE/data/*.json
+BE/data/*.tmp
+BE/data/*.corrupt.*
+BE/data/*.migration_backup.*
+!BE/data/.gitkeep
+!BE/data/db.example.json
+
+# Data Protection & Cryptographic Keys
+keys/
+[Dd]ata[Pp]rotection-[Kk]eys/
+**/keys/
+*.pem
+*.key
+*.pfx
+*.p12
+*.crt
+*.cer
+
+# Ephemeral artifacts, test outputs & caches
+scratch/
+backups/
+tmp/
+temp/
+*.log
+tests/e2e/screenshots/
+artifacts/
+
+# Secrets & Local Environment Overrides
+.env
+.env.*
+!.env.example
+*.local
+appsettings*.local.json

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Cài đặt hệ thống & Trải nghiệm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../shared/css/tokens.css">
+    <link rel="stylesheet" href="../../shared/css/base.css">
+    <link rel="stylesheet" href="../../shared/css/layout.css">
+    <link rel="stylesheet" href="../../shared/css/components.css">
+    <link rel="stylesheet" href="../../shared/css/style.css?v=26">
+    <link rel="stylesheet" href="../../features/dashboard/new-dashboard.css?v=26">
+    <link rel="stylesheet" href="./settings.css?v=26">
+</head>
+<body class="dashboard-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar sidebar-new" id="main-sidebar">
+        <!-- Rendered by initRoleBasedSidebar() -->
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content main-content-new">
+        <!-- Top Hero -->
+        <div class="dashboard-hero" style="margin-bottom: 24px;">
+            <div class="hero-left">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                    <span style="font-size:12px;font-weight:700;color:#1d4ed8;background:#eff6ff;padding:3px 10px;border-radius:100px;border:1px solid #bfdbfe;">Thiết lập cá nhân</span>
+                    <span id="role-sync-badge" style="font-size:12px;font-weight:700;color:#059669;background:#ecfdf5;padding:3px 10px;border-radius:100px;border:1px solid #a7f3d0;">Tất cả vai trò</span>
+                </div>
+                <h1 style="font-size:24px;margin-bottom:8px;">Cài đặt cá nhân & Trải nghiệm</h1>
+                <p style="font-size:14px;color:var(--text-secondary);margin-bottom:0;max-width:650px;">
+                    Tùy chỉnh chế độ hiển thị sáng/tối, ngôn ngữ hệ thống, âm thanh người phỏng vấn ảo và tần suất thông báo. Cấu hình tự động lưu và áp dụng nhất quán trên toàn bộ nền tảng.
+                </p>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat-item">
+                    <span class="num" id="current-lang-stat">🇻🇳 VN</span>
+                    <span class="lbl">Ngôn ngữ</span>
+                </div>
+                <div class="hero-stat-item">
+                    <span class="num" id="current-theme-stat" style="color:#1d4ed8;">Sáng</span>
+                    <span class="lbl">Giao diện</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-grid">
+            <!-- 1. Giao diện (Theme) - ICON ONLY CHO SÁNG/TỐI/TỰ ĐỘNG -->
+            <div class="pref-card">
+                <div class="pref-card-header">
+                    <div class="pref-icon-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10c0 2.5-1.5 3.5-3 3.5h-1.5a1.5 1.5 0 0 0-1.5 1.5c0 .8.7 1.5.7 2.5 0 1.5-1 2.5-2.7 2.5A10 10 0 0 1 12 2z"/></svg></div>
+                    <div>
+                        <h3 style="margin:0;font-size:16px;">Giao diện hiển thị</h3>
+                        <span style="font-size:12px;color:var(--text-secondary);">Chuyển đổi nhanh phong cách hiển thị sáng, tối hoặc tự động theo hệ điều hành</span>
+                    </div>
+                </div>
+
+                <div class="pref-row">
+                    <div class="pref-row-info">
+                        <h4>Chế độ sáng / tối</h4>
+                        <p id="theme-status-text">Đang sử dụng chế độ Sáng (Tối ưu cho làm việc ban ngày)</p>
+                    </div>
+
+                    <!-- Icon-only theme switcher -->
+                    <div class="theme-icon-group" role="group" aria-label="Lựa chọn giao diện sáng tối">
+                        <button type="button" class="theme-icon-btn active" id="theme-btn-light" onclick="setThemePreference('light', true)" title="Chế độ Sáng (Light Mode)" aria-label="Chế độ Sáng">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                        </button>
+                        <button type="button" class="theme-icon-btn" id="theme-btn-dark" onclick="setThemePreference('dark', true)" title="Chế độ Tối (Dark Mode)" aria-label="Chế độ Tối">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                        </button>
+                        <button type="button" class="theme-icon-btn" id="theme-btn-auto" onclick="setThemePreference('auto', true)" title="Tự động theo thiết bị" aria-label="Tự động theo hệ thống">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Ngôn ngữ hệ thống (Language) -->
+            <div class="pref-card">
+                <div class="pref-card-header">
+                    <div class="pref-icon-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+                    <div>
+                        <h3 style="margin:0;font-size:16px;">Ngôn ngữ hiển thị</h3>
+                        <span style="font-size:12px;color:var(--text-secondary);">Ngôn ngữ hiển thị cho toàn bộ bảng điều khiển, thanh điều hướng và báo cáo</span>
+                    </div>
+                </div>
+
+                <div class="pref-row">
+                    <div class="pref-row-info">
+                        <h4>Ngôn ngữ giao diện</h4>
+                        <p>Chọn ngôn ngữ hiển thị mặc định của PrepMate</p>
+                    </div>
+                    <select id="lang-select" class="pref-select" onchange="setLanguagePreference(this.value)">
+                        <option value="vi" selected>🇻🇳 Tiếng Việt (Mặc định)</option>
+                        <option value="en">🇺🇸 English</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 3. Âm thanh & Micro (Audio & Voice) -->
+            <div class="pref-card">
+                <div class="pref-card-header">
+                    <div class="pref-icon-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+                    <div>
+                        <h3 style="margin:0;font-size:16px;">Âm thanh & Người phỏng vấn AI</h3>
+                        <span style="font-size:12px;color:var(--text-secondary);">Cấu hình giọng đọc và micro thu âm trong buồng mô phỏng</span>
+                    </div>
+                </div>
+
+                <div class="pref-row">
+                    <div class="pref-row-info">
+                        <h4>Tốc độ đọc của AI</h4>
+                        <p>Điều chỉnh nhịp nói của người phỏng vấn ảo</p>
+                    </div>
+                    <select id="voice-speed-select" class="pref-select" onchange="setVoiceSpeedPreference(this.value)">
+                        <option value="0.9">Chậm rãi (0.9x)</option>
+                        <option value="1.0" selected>Tự nhiên (1.0x - Chuẩn)</option>
+                        <option value="1.15">Nhanh & Thử thách (1.15x)</option>
+                    </select>
+                </div>
+
+                <div class="pref-row">
+                    <div class="pref-row-info">
+                        <h4>Tự động phát âm thanh câu hỏi</h4>
+                        <p>AI sẽ đọc câu hỏi thành tiếng ngay khi xuất hiện đề bài</p>
+                    </div>
+                    <label class="toggle-switch" for="auto-play-voice">
+                        <input type="checkbox" id="auto-play-voice" role="switch" aria-checked="true" aria-label="Tự động phát âm thanh câu hỏi" checked onchange="saveToggleSetting('autoPlayVoice', this.checked)">
+                        <span class="slider-round"></span>
+                    </label>
+                </div>
+
+                <div class="pref-row">
+                    <div class="pref-row-info">
+                        <h4>Khử tiếng ồn Micro</h4>
+                        <p>Lọc tạp âm phòng để AI nghe rõ câu trả lời của bạn</p>
+                    </div>
+                    <label class="toggle-switch" for="noise-cancel">
+                        <input type="checkbox" id="noise-cancel" role="switch" aria-checked="true" aria-label="Khử tiếng ồn Micro" checked onchange="saveToggleSetting('noiseCancel', this.checked)">
+                        <span class="slider-round"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 4. Thông báo & Nhắc nhở (Notifications) -->
+            <div class="pref-card">
+                <div class="pref-card-header">
+                    <div class="pref-icon-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+                    <div>
+                        <h3 style="margin:0;font-size:16px;">Thông báo & Nhắc nhở luyện tập</h3>
+                        <span style="font-size:12px;color:var(--text-secondary);">Duy trì nhịp phản xạ và nhắc nhở duy trì lịch trình phỏng vấn</span>
+                    </div>
+                </div>
+
+                <div class="pref-row">
+                    <div class="pref-row-info">
+                        <h4>Nhắc lịch luyện phỏng vấn tuần</h4>
+                        <p>Thông báo nhắc nhở duy trì chuỗi phản xạ (3 buổi/tuần)</p>
+                    </div>
+                    <label class="toggle-switch" for="notif-streak">
+                        <input type="checkbox" id="notif-streak" role="switch" aria-checked="true" aria-label="Nhắc lịch luyện phỏng vấn tuần" checked onchange="saveToggleSetting('notifStreak', this.checked)">
+                        <span class="slider-round"></span>
+                    </label>
+                </div>
+
+                <div class="pref-row">
+                    <div class="pref-row-info">
+                        <h4>Gợi ý việc làm & câu hỏi phỏng vấn mới</h4>
+                        <p>Cập nhật câu hỏi và vị trí mới phù hợp với hồ sơ của bạn</p>
+                    </div>
+                    <label class="toggle-switch" for="notif-jobs">
+                        <input type="checkbox" id="notif-jobs" role="switch" aria-checked="true" aria-label="Gợi ý việc làm và câu hỏi phỏng vấn mới" checked onchange="saveToggleSetting('notifJobs', this.checked)">
+                        <span class="slider-round"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 5. Nút Cập Nhật Toàn Bộ -->
+            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:4px;">
+                <button type="button" class="btn-save-pref" onclick="saveAllSettingsManual()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Lưu và cập nhật cài đặt</span>
+                </button>
+            </div>
+        </div>
+
+        <app-workspace-footer></app-workspace-footer>
+    </main>
+
+    <script src="../../shared/js/main.js?v=21"></script>
+    <script src="../../shared/js/components.js?v=21"></script>
+    <script src="../../features/auth/auth.js?v=21"></script>
+    <script src="../../features/dashboard/dashboard.js?v=21"></script>
+    <script>
+        function setThemePreference(mode, isUserAction = false) {
+            document.querySelectorAll('.theme-icon-btn').forEach(b => b.classList.remove('active'));
+            const el = document.getElementById('theme-btn-' + mode);
+            if (el) el.classList.add('active');
+            
+            localStorage.setItem('prepmate_theme', mode);
+
+            // Apply global theme
+            if (typeof applyGlobalTheme === 'function') {
+                applyGlobalTheme(mode);
+            }
+
+            // Update status text
+            const statusMap = {
+                light: 'Đang sử dụng chế độ Sáng (Tối ưu cho làm việc ban ngày)',
+                dark: 'Đang sử dụng chế độ Tối (Dịu mắt ban đêm)',
+                auto: 'Đang sử dụng chế độ Tự động (Đồng bộ theo hệ điều hành máy tính)'
+            };
+            const statTextEl = document.getElementById('theme-status-text');
+            if (statTextEl) statTextEl.textContent = statusMap[mode] || statusMap.light;
+
+            const currentThemeStat = document.getElementById('current-theme-stat');
+            if (currentThemeStat) {
+                currentThemeStat.textContent = mode === 'dark' ? 'Tối' : mode === 'auto' ? 'Tự động' : 'Sáng';
+            }
+
+            if (isUserAction && typeof showToast === 'function') {
+                showToast('Đã chuyển giao diện sang: ' + (mode === 'dark' ? 'Tối' : mode === 'auto' ? 'Tự động' : 'Sáng'), 'success');
+            }
+        }
+
+        function setLanguagePreference(lang) {
+            localStorage.setItem('prepmate_lang', lang);
+            
+            // Sync with dashboard.js translations
+            if (typeof applyLanguage === 'function') {
+                applyLanguage(lang);
+            }
+
+            const langStat = document.getElementById('current-lang-stat');
+            if (langStat) {
+                langStat.textContent = lang === 'en' ? '🇺🇸 EN' : '🇻🇳 VN';
+            }
+
+            if (typeof showToast === 'function') {
+                showToast(lang === 'en' ? 'System language changed to English!' : 'Đã cập nhật ngôn ngữ hệ thống sang Tiếng Việt!', 'success');
+            }
+        }
+
+        function setVoiceSpeedPreference(speed) {
+            localStorage.setItem('prepmate_voice_speed', speed);
+            if (typeof showToast === 'function') {
+                showToast('Đã cập nhật tốc độ giọng đọc AI: ' + speed + 'x', 'success');
+            }
+        }
+
+        function saveToggleSetting(key, val) {
+            localStorage.setItem('prepmate_' + key, val);
+            const inputId = key === 'autoPlayVoice' ? 'auto-play-voice' :
+                            key === 'noiseCancel' ? 'noise-cancel' :
+                            key === 'notifStreak' ? 'notif-streak' :
+                            key === 'notifJobs' ? 'notif-jobs' : null;
+            if (inputId) {
+                const el = document.getElementById(inputId);
+                if (el) el.setAttribute('aria-checked', val ? 'true' : 'false');
+            }
+            if (typeof showToast === 'function') {
+                showToast('Đã lưu tùy chọn: ' + (val ? 'Bật' : 'Tắt'), 'success');
+            }
+        }
+
+        function saveAllSettingsManual() {
+            const savedTheme = localStorage.getItem('prepmate_theme') || 'light';
+            const langEl = document.getElementById('lang-select');
+            const voiceEl = document.getElementById('voice-speed-select');
+            const autoVoice = document.getElementById('auto-play-voice');
+            const noise = document.getElementById('noise-cancel');
+            const streak = document.getElementById('notif-streak');
+            const jobs = document.getElementById('notif-jobs');
+
+            if (langEl) localStorage.setItem('prepmate_lang', langEl.value);
+            if (voiceEl) localStorage.setItem('prepmate_voice_speed', voiceEl.value);
+            if (autoVoice) {
+                localStorage.setItem('prepmate_autoPlayVoice', autoVoice.checked);
+                autoVoice.setAttribute('aria-checked', autoVoice.checked ? 'true' : 'false');
+            }
+            if (noise) {
+                localStorage.setItem('prepmate_noiseCancel', noise.checked);
+                noise.setAttribute('aria-checked', noise.checked ? 'true' : 'false');
+            }
+            if (streak) {
+                localStorage.setItem('prepmate_notifStreak', streak.checked);
+                streak.setAttribute('aria-checked', streak.checked ? 'true' : 'false');
+            }
+            if (jobs) {
+                localStorage.setItem('prepmate_notifJobs', jobs.checked);
+                jobs.setAttribute('aria-checked', jobs.checked ? 'true' : 'false');
+            }
+
+            if (typeof showToast === 'function') {
+                showToast('Đã lưu toàn bộ thiết lập cá nhân thành công!', 'success');
+            }
+        }
+
+        // Restore settings on load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Role detection
+            let currentUser = null;
+            if (typeof getCurrentUser === 'function') {
+                currentUser = getCurrentUser();
+            } else {
+                try {
+                    currentUser = JSON.parse(localStorage.getItem('prepmate_current_user') || localStorage.getItem('user'));
+                } catch(e) {}
+            }
+
+            const roleBadge = document.getElementById('role-sync-badge');
+            if (roleBadge && currentUser) {
+                if (currentUser.role === 'admin') {
+                    roleBadge.textContent = 'Vai trò: Quản trị viên';
+                    roleBadge.style.color = '#7c3aed';
+                    roleBadge.style.background = '#f5f3ff';
+                    roleBadge.style.borderColor = '#ddd6fe';
+                } else if (currentUser.role === 'manager') {
+                    roleBadge.textContent = 'Vai trò: Quản lý';
+                    roleBadge.style.color = '#4338ca';
+                    roleBadge.style.background = '#eef2ff';
+                    roleBadge.style.borderColor = '#c7d2fe';
+                } else {
+                    roleBadge.textContent = 'Vai trò: Ứng viên';
+                }
+            }
+
+            const savedTheme = localStorage.getItem('prepmate_theme') || 'light';
+            setThemePreference(savedTheme);
+
+            const savedLang = localStorage.getItem('prepmate_lang') || 'vi';
+            const langEl = document.getElementById('lang-select');
+            if (langEl) langEl.value = savedLang;
+            const langStat = document.getElementById('current-lang-stat');
+            if (langStat) langStat.textContent = savedLang === 'en' ? '🇺🇸 EN' : '🇻🇳 VN';
+
+            const savedSpeed = localStorage.getItem('prepmate_voice_speed') || '1.0';
+            const speedEl = document.getElementById('voice-speed-select');
+            if (speedEl) speedEl.value = savedSpeed;
+
+            const autoVoice = document.getElementById('auto-play-voice');
+            if (autoVoice && localStorage.getItem('prepmate_autoPlayVoice') !== null) {
+                autoVoice.checked = localStorage.getItem('prepmate_autoPlayVoice') === 'true';
+                autoVoice.setAttribute('aria-checked', autoVoice.checked ? 'true' : 'false');
+            }
+
+            const noise = document.getElementById('noise-cancel');
+            if (noise && localStorage.getItem('prepmate_noiseCancel') !== null) {
+                noise.checked = localStorage.getItem('prepmate_noiseCancel') === 'true';
+                noise.setAttribute('aria-checked', noise.checked ? 'true' : 'false');
+            }
+
+            const streak = document.getElementById('notif-streak');
+            if (streak && localStorage.getItem('prepmate_notifStreak') !== null) {
+                streak.checked = localStorage.getItem('prepmate_notifStreak') === 'true';
+                streak.setAttribute('aria-checked', streak.checked ? 'true' : 'false');
+            }
+
+            const jobs = document.getElementById('notif-jobs');
+            if (jobs && localStorage.getItem('prepmate_notifJobs') !== null) {
+                jobs.checked = localStorage.getItem('prepmate_notifJobs') === 'true';
+                jobs.setAttribute('aria-checked', jobs.checked ? 'true' : 'false');
+            }
+        });
+    </script>
+</body>
+</html>
+

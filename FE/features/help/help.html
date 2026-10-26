@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Trung tâm hỗ trợ</title>
+    <meta name="description" content="Trung tâm hỗ trợ PrepMate: Hướng dẫn sử dụng tài khoản, luyện phỏng vấn AI, phân tích CV chuẩn STAR, bảng giá và kênh liên hệ hỗ trợ trực tiếp.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Canonical Design Tokens & System Stylesheets -->
+    <link rel="stylesheet" href="../../shared/css/tokens.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/base.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/layout.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/components.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/style.css?v=27">
+    <link rel="stylesheet" href="./help.css?v=27">
+</head>
+<body>
+    <!-- Top Global Header -->
+    <app-header></app-header>
+
+    <main class="help-page-wrap">
+        <!-- Hero Header (Streamlined for Support Center) -->
+        <header class="help-hero">
+            <h1>Trung tâm hỗ trợ</h1>
+            <p>Hướng dẫn giải đáp thắc mắc và kết nối trực tiếp với đội ngũ PrepMate.</p>
+        </header>
+
+        <!-- Section A: Khu vực liên hệ hỗ trợ (4 kênh chính thức + Thông tin LinkedIn) -->
+        <section class="support-channels-section" id="contact-section" aria-labelledby="contact-heading">
+
+            <!-- 4 Kênh liên hệ theo chuẩn Work Item SUPPORT-CONTACT-06 -->
+            <div class="support-channels-grid">
+                <!-- Group 1: Điện thoại & Zalo (Gộp chung do cùng số 096 487 10 54) -->
+                <div class="channel-card" id="channel-phone-zalo">
+                    <div class="channel-top">
+                        <div class="channel-icon-wrap phone-zalo" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        </div>
+                        <h3>Điện thoại & Zalo</h3>
+                        <p class="channel-desc"><span class="contact-value">096 487 10 54</span><br>Hotline thoại và hỗ trợ trực tuyến qua tin nhắn Zalo.</p>
+                        <span class="channel-status-pill active" id="status-phone-zalo">
+                            <span class="status-dot"></span> Đang hoạt động
+                        </span>
+                    </div>
+                    <div class="channel-action-wrap">
+                        <div class="channel-dual-actions">
+                            <a href="tel:+84964871054" class="btn-channel-action active btn-half" title="Gọi trực tiếp tới số 096 487 10 54">
+                                <span>Gọi điện</span>
+                            </a>
+                            <a href="https://zalo.me/0964871054" target="_blank" rel="noopener noreferrer" class="btn-channel-action active btn-half" title="Mở liên kết nhắn tin Zalo 096 487 10 54">
+                                <span>Nhắn Zalo →</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 2: Facebook -->
+                <div class="channel-card" id="channel-facebook">
+                    <div class="channel-top">
+                        <div class="channel-icon-wrap facebook" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.312h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+                        </div>
+                        <h3>Facebook</h3>
+                        <p class="channel-desc">Fanpage cộng đồng & nhắn tin hỗ trợ.</p>
+                        <span class="channel-status-pill active" id="status-facebook">
+                            <span class="status-dot"></span> Đang hoạt động
+                        </span>
+                    </div>
+                    <div class="channel-action-wrap">
+                        <a href="https://www.facebook.com/profile.php?id=61594859141620" target="_blank" rel="noopener noreferrer" class="btn-channel-action active" title="Mở fanpage Facebook PrepMate chính thức">
+                            <span>Trang Facebook →</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Group 3: Email -->
+                <div class="channel-card" id="channel-email">
+                    <div class="channel-top">
+                        <div class="channel-icon-wrap email" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </div>
+                        <h3>Email hỗ trợ</h3>
+                        <p class="channel-desc"><span class="contact-value">interviewprepmate@gmail.com</span><br>Tiếp nhận yêu cầu 24/7.</p>
+                        <span class="channel-status-pill active" id="status-email">
+                            <span class="status-dot"></span> Đang hoạt động
+                        </span>
+                    </div>
+                    <div class="channel-action-wrap">
+                        <a href="mailto:interviewprepmate@gmail.com" class="btn-channel-action active" title="Gửi email hỗ trợ đến interviewprepmate@gmail.com">
+                            <span>Gửi email →</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kênh bổ sung: LinkedIn (Trạng thái Đang cập nhật, không giả dạng nút CTA đang hoạt động) -->
+            <div class="channel-aux-status" id="channel-linkedin">
+                <div class="aux-status-inner">
+                    <div class="aux-status-info">
+                        <span class="aux-icon linkedin" aria-hidden="true">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </span>
+                        <div class="aux-text-wrap">
+                            <span class="aux-title">LinkedIn</span>
+                            <span class="aux-desc">Mạng lưới kết nối nghề nghiệp & đối tác tuyển dụng PrepMate</span>
+                        </div>
+                    </div>
+                    <div class="aux-status-badge">
+                        <span class="channel-status-pill unconfigured" id="status-linkedin">
+                            <span class="status-dot"></span> Đang cập nhật
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section B: Câu hỏi thường gặp (FAQ) -->
+        <section class="support-faq-section" id="faq-section" aria-labelledby="faq-heading">
+            <div class="support-section-header">
+                <h2 id="faq-heading">Câu hỏi thường gặp</h2>
+                <p>Tra cứu câu trả lời theo từng nhóm chức năng cụ thể của PrepMate.</p>
+            </div>
+
+            <!-- Realtime Search bar -->
+            <div class="help-search-box">
+                <svg class="help-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input 
+                    type="text" 
+                    id="faq-search-input" 
+                    class="help-search-input" 
+                    placeholder="Tìm câu hỏi bạn cần hỗ trợ..."
+                    oninput="handleFaqSearch()"
+                    aria-label="Tìm kiếm câu hỏi thường gặp"
+                >
+            </div>
+
+            <!-- Category Navigation Pills -->
+            <nav class="help-tabs-nav" aria-label="Danh mục hướng dẫn">
+                <button type="button" class="help-tab-btn active" onclick="switchFaqCategory('all', this)">Tất cả câu hỏi</button>
+                <button type="button" class="help-tab-btn" onclick="switchFaqCategory('account', this)">Tài khoản & Đăng nhập</button>
+                <button type="button" class="help-tab-btn" onclick="switchFaqCategory('interview', this)">Luyện phỏng vấn AI</button>
+                <button type="button" class="help-tab-btn" onclick="switchFaqCategory('cv', this)">CV & Báo cáo STAR</button>
+                <button type="button" class="help-tab-btn" onclick="switchFaqCategory('payment', this)">Thanh toán & Gói cước</button>
+            </nav>
+
+            <!-- FAQ View Indicator -->
+            <div class="faq-view-indicator" id="faq-view-indicator">
+                <span class="indicator-badge">Nổi bật</span> Đang hiển thị 5 câu hỏi nổi bật. Nhập từ khóa để tra cứu toàn bộ danh sách câu hỏi.
+            </div>
+
+            <!-- Empty Search State -->
+            <div id="faq-empty-state" class="empty-search-state">
+                <p style="font-size: 16px; font-weight: 750; color: var(--help-primary); margin-bottom: 6px;">Không tìm thấy nội dung hướng dẫn phù hợp</p>
+                <p style="font-size: 14px; color: var(--help-text-muted); margin: 0;">Thử tìm kiếm với từ khóa khác hoặc liên hệ trực tiếp qua email <strong>interviewprepmate@gmail.com</strong> / Hotline: <strong>096 487 10 54</strong>.</p>
+            </div>
+
+            <!-- FAQ Accordion List -->
+            <div class="faq-accordion-list" id="faq-list">
+
+                <!-- ── NHÓM 1: TÀI KHOẢN & ĐĂNG NHẬP (ACCOUNT) ── -->
+                <article class="faq-card" data-featured="true" data-category="account" id="faq-account-login">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Tài khoản & Đăng nhập</span>
+                            <h3 class="faq-question-title">Làm thế nào để tạo tài khoản hoặc đăng nhập vào PrepMate?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>Bạn có thể truy cập mục <strong>Đăng nhập / Đăng ký</strong> ở góc trên bên phải thanh điều hướng. PrepMate hỗ trợ đăng ký nhanh bằng địa chỉ email hoặc tài khoản Google. Sau khi đăng nhập, toàn bộ lịch sử phỏng vấn, hồ sơ CV và báo cáo đánh giá năng lực của bạn sẽ được đồng bộ an toàn.</p>
+                    </div>
+                </article>
+
+                <article class="faq-card" data-featured="true" data-category="account" id="faq-view-history">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Tài khoản & Đăng nhập</span>
+                            <h3 class="faq-question-title">Tôi có thể xem lại các bài phỏng vấn cũ và biên bản phân tích ở đâu?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>Toàn bộ các phiên phỏng vấn đã hoàn tất đều được lưu trữ đầy đủ tại <strong>Tổng quan (Dashboard)</strong> trong bảng <em>Lịch sử phỏng vấn gần đây</em>. Bạn chỉ cần nhấn vào từng phiên để xem lại chi tiết điểm số, biên bản đối thoại và các gợi ý cải thiện câu trả lời.</p>
+                    </div>
+                </article>
+
+                <!-- ── NHÓM 2: LUYỆN PHỎNG VẤN AI (INTERVIEW) ── -->
+                <article class="faq-card" data-featured="true" data-category="interview" id="faq-system-how">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Luyện phỏng vấn AI</span>
+                            <h3 class="faq-question-title">AI của PrepMate hoạt động như thế nào trong buổi phỏng vấn?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>PrepMate ứng dụng mô hình trí tuệ nhân tạo đàm thoại thích ứng (Adaptive Conversational AI):</p>
+                        <ol>
+                            <li><strong>Lắng nghe & Bóc tách:</strong> Tiếp nhận giọng nói hoặc câu trả lời bằng văn bản của ứng viên, phân tích cấu trúc ý tứ theo thời gian thực.</li>
+                            <li><strong>Đào sâu tự nhiên (Follow-up Questions):</strong> Thay vì đọc câu hỏi trong danh sách cố định, người phỏng vấn AI sẽ căn cứ vào chi tiết bạn vừa chia sẻ để đặt câu hỏi xoáy, hỏi bẫy hoặc kiểm chứng kinh nghiệm thực tế.</li>
+                            <li><strong>Đánh giá toàn diện:</strong> Sau khi hoàn thành phiên đối thoại, hệ thống đối soát phản hồi của bạn với tiêu chuẩn tuyển dụng của vị trí mục tiêu.</li>
+                        </ol>
+                    </div>
+                </article>
+
+                <article class="faq-card hidden" data-featured="false" data-category="interview" id="faq-mic-cam">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Luyện phỏng vấn AI</span>
+                            <h3 class="faq-question-title">Tôi có bắt buộc phải bật Microphone và Camera khi phỏng vấn không?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p><strong>Không bắt buộc.</strong> Bạn hoàn toàn có quyền lựa chọn phương thức luyện tập phù hợp với không gian:</p>
+                        <ul>
+                            <li><strong>Chế độ Text Chat:</strong> Gõ câu trả lời bằng bàn phím nếu bạn đang ở nơi công cộng hoặc chưa sẵn sàng đàm thoại giọng nói.</li>
+                            <li><strong>Camera tự quan sát (Client-side):</strong> Khung hiển thị camera là tính năng hỗ trợ bạn tự chỉnh đốn phong thái, ánh mắt và góc ngồi. Video camera chạy cục bộ trên trình duyệt của bạn và <strong>không bao giờ được ghi hình hay lưu trữ</strong> trên máy chủ.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="faq-card hidden" data-featured="false" data-category="interview" id="faq-interview-english">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Luyện phỏng vấn AI</span>
+                            <h3 class="faq-question-title">PrepMate có hỗ trợ phỏng vấn bằng Tiếng Anh (English Interview) không?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>Có. PrepMate hỗ trợ song ngữ hoàn hảo giữa <strong>Tiếng Việt</strong> và <strong>Tiếng Anh</strong>. Trước khi bắt đầu, bạn có thể chọn ngôn ngữ phỏng vấn mong muốn. Giọng đọc AI và báo cáo phân tích ngữ pháp, thuật ngữ chuyên ngành sẽ được cá nhân hóa tương ứng.</p>
+                    </div>
+                </article>
+
+                <article class="faq-card hidden" data-featured="false" data-category="interview" id="faq-star-method">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Luyện phỏng vấn AI</span>
+                            <h3 class="faq-question-title">Phương pháp STAR Rubric là gì và tại sao PrepMate chấm điểm theo tiêu chuẩn này?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p><strong>STAR</strong> là khung phỏng vấn hành vi chuẩn quốc tế được áp dụng tại các tập đoàn công nghệ và công ty đa quốc gia hàng đầu:</p>
+                        <ul>
+                            <li><strong>Situation (Bối cảnh):</strong> Hoàn cảnh, quy mô dự án và thách thức bạn gặp phải.</li>
+                            <li><strong>Task (Nhiệm vụ):</strong> Trách nhiệm cụ thể của bạn trong tình huống đó.</li>
+                            <li><strong>Action (Hành động):</strong> Những quyết định chuyên môn hoặc giải pháp thực thi bạn đã trực tiếp áp dụng.</li>
+                            <li><strong>Result (Kết quả):</strong> Thành quả đo lường được bằng số liệu định lượng cụ thể (% tăng trưởng, thời gian tối ưu, chi phí tiết kiệm).</li>
+                        </ul>
+                        <p>PrepMate phân tích câu trả lời của bạn theo đúng 4 thành tố này để chỉ ra bạn đang thiếu phần nào và gợi ý cách bổ sung dẫn chứng thuyết phục hơn.</p>
+                    </div>
+                </article>
+
+                <!-- ── NHÓM 3: CV & BÁO CÁO STAR (CV) ── -->
+                <article class="faq-card" data-featured="true" data-category="cv" id="faq-cv-analysis">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">CV & Báo cáo STAR</span>
+                            <h3 class="faq-question-title">Tính năng Phân tích CV bằng AI giúp ích gì cho quá trình luyện tập?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>Khi bạn tải lên CV định dạng PDF hoặc văn bản tại mục <em>CV của tôi</em>, AI sẽ:</p>
+                        <ul>
+                            <li>Quét và liệt kê các kỹ năng cốt lõi (Core Competencies) có trong hồ sơ.</li>
+                            <li>Tìm ra các lỗ hổng (gap) hoặc điểm chưa rõ ràng mà nhà tuyển dụng có thể bắt bẻ.</li>
+                            <li>Tạo sẵn kịch bản các câu hỏi phỏng vấn đào sâu dành riêng cho những dự án và công nghệ bạn đã ghi trong CV.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="faq-card hidden" data-featured="false" data-category="cv" id="faq-interview-jd">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">CV & Báo cáo STAR</span>
+                            <h3 class="faq-question-title">Tôi có thể phỏng vấn giả lập theo đúng bản mô tả công việc (JD) thực tế không?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>Có. Bạn chỉ cần dán nội dung tin tuyển dụng hoặc đường dẫn JD vào trang <em>Chuẩn bị phỏng vấn</em>. AI Engine sẽ tự động trích xuất các yêu cầu công nghệ (tech stack), năm kinh nghiệm yêu cầu và các tình huống thực tế mà vị trí đó đòi hỏi để phỏng vấn bạn bám sát yêu cầu thực tế.</p>
+                    </div>
+                </article>
+
+                <!-- ── NHÓM 4: THANH TOÁN & GÓI CƯỚC (PAYMENT) ── -->
+                <article class="faq-card hidden" data-featured="false" data-category="payment" id="faq-payment-methods">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Thanh toán & Gói cước</span>
+                            <h3 class="faq-question-title">Những hình thức thanh toán nào được PrepMate hỗ trợ?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>PrepMate hỗ trợ 3 hình thức thanh toán thông dụng, an toàn và tức thì tại Việt Nam:</p>
+                        <ul>
+                            <li><strong>Chuyển khoản VietQR tức thì (24/7):</strong> Quét mã QR bằng ứng dụng của bất kỳ ngân hàng nào tại Việt Nam (Vietcombank, Techcombank, MB Bank, ACB, VPBank,...). Tiền vào tài khoản và kích hoạt ngay lập tức.</li>
+                            <li><strong>Ví điện tử (ZaloPay / MoMo):</strong> Thanh toán nhanh gọn thông qua quét mã thanh toán ví điện tử tích hợp.</li>
+                            <li><strong>Thẻ quốc tế Visa / MasterCard:</strong> Hỗ trợ thẻ tín dụng và thẻ ghi nợ quốc tế có cổng mã hóa bảo mật chuẩn SSL 256-bit.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="faq-card hidden" data-featured="false" data-category="payment" id="faq-activation-time">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Thanh toán & Gói cước</span>
+                            <h3 class="faq-question-title">Sau khi thanh toán, tài khoản PRO được kích hoạt trong bao lâu?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>Gói dịch vụ <strong>PrepMate PRO</strong> được kích hoạt <strong>hoàn toàn tự động trong vòng 10 - 30 giây</strong> ngay sau khi hệ thống ngân hàng ghi nhận giao dịch thành công.</p>
+                        <p>Màn hình thanh toán sẽ tự động chuyển sang trạng thái <em>"Thanh toán thành công"</em> và đồng bộ quyền hạn hội viên PRO vào tài khoản cá nhân của bạn.</p>
+                    </div>
+                </article>
+
+                <article class="faq-card" data-featured="true" data-category="payment" id="faq-free-vs-pro">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Thanh toán & Gói cước</span>
+                            <h3 class="faq-question-title">Gói Trải Nghiệm (Free) khác biệt gì so với Gói PRO (99.000đ)?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>Bảng phân định quyền lợi rõ ràng giữa 2 gói:</p>
+                        <ul>
+                            <li><strong>Gói Trải Nghiệm (Miễn phí):</strong> 3 lượt phỏng vấn mô phỏng/tháng, chế độ gõ phím Text Chat, ngân hàng 100 câu hỏi cơ bản, chấm điểm tổng quan.</li>
+                            <li><strong>Gói PrepMate PRO:</strong> Không giới hạn số lượt phỏng vấn; đàm thoại <strong>Voice AI thời gian thực</strong>; tự động tạo kịch bản bám sát <strong>bất kỳ link JD tuyển dụng</strong>; báo cáo <strong>Debrief STAR chuyên sâu</strong> phân tích từng luận điểm; và ưu tiên tài nguyên máy chủ phản hồi tức thì.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="faq-card hidden" data-featured="false" data-category="payment" id="faq-cancel-refund">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Thanh toán & Gói cước</span>
+                            <h3 class="faq-question-title">Tôi có thể hủy gia hạn hoặc yêu cầu hoàn tiền không?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>Hoàn toàn chủ động và minh bạch:</p>
+                        <ul>
+                            <li><strong>Thời hạn & Gia hạn:</strong> Gói dịch vụ có thời hạn 30 ngày. PrepMate <strong>không tự động trừ tiền gia hạn</strong> trên tài khoản ngân hàng của bạn; bạn hoàn toàn chủ động thanh toán khi muốn tiếp tục sử dụng.</li>
+                            <li><strong>Chính sách hoàn tiền:</strong> Nếu xảy ra sự cố kỹ thuật từ hệ thống PrepMate khiến bạn không thể sử dụng dịch vụ trong vòng 48 giờ đầu tiên, chúng tôi cam kết hoàn tiền 100% qua cùng phương thức bạn đã thanh toán. Xem chi tiết tại <a href="../legal/legal-center.html#payment-policy" style="color: var(--help-accent); font-weight: 600;">Quy định thanh toán & Hoàn tiền</a>.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="faq-card hidden" data-featured="false" data-category="payment" id="faq-invoice-vat">
+                    <button type="button" class="faq-header-btn" onclick="toggleFaqCard(this)">
+                        <div>
+                            <span class="faq-category-badge">Thanh toán & Gói cước</span>
+                            <h3 class="faq-question-title">PrepMate có xuất hóa đơn giá trị gia tăng (VAT) không?</h3>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-body-content">
+                        <p>Có. PrepMate hỗ trợ xuất hóa đơn điện tử VAT cho các doanh nghiệp, tổ chức hoặc cá nhân có nhu cầu hoàn ứng. Vui lòng gửi email đến <strong>interviewprepmate@gmail.com</strong> kèm theo Mã giao dịch và Thông tin công ty (Tên công ty, MST, Địa chỉ) trong vòng 7 ngày làm việc kể từ thời điểm thanh toán.</p>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- Section D: Cross-Link to Legal Center -->
+        <section class="legal-referral-banner" aria-label="Liên kết trung tâm pháp lý">
+            <div class="legal-referral-text">
+                <h3>Tra cứu văn bản pháp lý & chính sách bảo vệ dữ liệu?</h3>
+                <p>Tìm hiểu chi tiết về Chính sách bảo mật dữ liệu cá nhân theo Luật 91/2025/QH15, Điều khoản sử dụng dịch vụ và Quy định thanh toán & hoàn tiền chính thức của PrepMate.</p>
+            </div>
+            <div class="legal-referral-links">
+                <a href="../legal/legal-center.html" class="btn-legal-jump">
+                    <span>Xem Trung tâm pháp lý →</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Global Footer -->
+    <app-footer></app-footer>
+
+    <!-- Scripts -->
+    <script src="../../shared/js/main.js?v=27"></script>
+    <script src="../../features/auth/auth.js?v=27"></script>
+    <script src="../../shared/js/components.js?v=27"></script>
+    <script>
+        // Central Contact Channels Configuration (GLOBAL-CONSISTENCY-07)
+        const PREPMATE_CONTACT_CHANNELS = {
+            phoneZalo: {
+                name: 'Điện thoại & Zalo',
+                number: '096 487 10 54',
+                phoneUrl: 'tel:+84964871054',
+                zaloUrl: 'https://zalo.me/0964871054',
+                status: 'active',
+                description: 'Hotline thoại và hỗ trợ trực tuyến qua tin nhắn Zalo.'
+            },
+            facebook: {
+                name: 'Facebook',
+                url: 'https://www.facebook.com/profile.php?id=61594859141620',
+                status: 'active',
+                description: 'Fanpage chính thức kết nối và giải đáp cộng đồng.'
+            },
+            email: {
+                name: 'Email hỗ trợ',
+                address: 'interviewprepmate@gmail.com',
+                url: 'mailto:interviewprepmate@gmail.com',
+                status: 'active',
+                description: 'Tiếp nhận yêu cầu hỗ trợ 24/7.'
+            },
+            linkedin: {
+                name: 'LinkedIn',
+                status: 'updating',
+                description: 'Mạng lưới kết nối nghề nghiệp & đối tác tuyển dụng PrepMate (Đang cập nhật).'
+            }
+        };
+
+        // Reset FAQ view to 5 featured questions
+        function resetFaqToFeatured() {
+            const cards = document.querySelectorAll('.faq-card');
+            cards.forEach(card => {
+                if (card.getAttribute('data-featured') === 'true') {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            const indicator = document.getElementById('faq-view-indicator');
+            if (indicator) {
+                indicator.style.display = 'block';
+                indicator.innerHTML = '<span class="indicator-badge">Nổi bật</span> Đang hiển thị 5 câu hỏi nổi bật. Nhập từ khóa để tra cứu toàn bộ danh sách câu hỏi.';
+            }
+            const emptyEl = document.getElementById('faq-empty-state');
+            if (emptyEl) emptyEl.style.display = 'none';
+        }
+
+        // Toggle Accordion Card (Single Expand & Keyboard accessible)
+        function toggleFaqCard(button) {
+            const card = button.closest('.faq-card');
+            if (!card) return;
+            const isOpen = card.classList.contains('open');
+
+            // Close other cards for clean, clutter-free scanning
+            document.querySelectorAll('.faq-card.open').forEach(c => {
+                if (c !== card) {
+                    c.classList.remove('open');
+                    const btn = c.querySelector('.faq-header-btn');
+                    if (btn) btn.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            if (isOpen) {
+                card.classList.remove('open');
+                button.setAttribute('aria-expanded', 'false');
+            } else {
+                card.classList.add('open');
+                button.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        function switchFaqCategory(category, buttonEl) {
+            const buttons = document.querySelectorAll('.help-tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            if (buttonEl) buttonEl.classList.add('active');
+
+            const searchInput = document.getElementById('faq-search-input');
+            if (searchInput) searchInput.value = '';
+
+            const indicator = document.getElementById('faq-view-indicator');
+            const emptyEl = document.getElementById('faq-empty-state');
+            const cards = document.querySelectorAll('.faq-card');
+
+            if (category === 'all') {
+                resetFaqToFeatured();
+                return;
+            }
+
+            let visibleCount = 0;
+            cards.forEach(card => {
+                const cardCat = card.getAttribute('data-category');
+                if (cardCat === category) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            if (indicator) {
+                indicator.style.display = 'block';
+                indicator.innerHTML = `<span class="indicator-badge">Danh mục</span> Đang hiển thị ${visibleCount} câu hỏi trong danh mục được chọn.`;
+            }
+
+            if (emptyEl) {
+                emptyEl.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+        }
+
+        // Realtime Search filter across ALL questions
+        function handleFaqSearch() {
+            const input = document.getElementById('faq-search-input');
+            const query = (input.value || '').trim().toLowerCase();
+            const cards = document.querySelectorAll('.faq-card');
+            const indicator = document.getElementById('faq-view-indicator');
+            const emptyEl = document.getElementById('faq-empty-state');
+
+            // Reset active button to "Tất cả câu hỏi"
+            const allBtn = document.querySelector('.help-tab-btn');
+            if (allBtn && !allBtn.classList.contains('active')) {
+                document.querySelectorAll('.help-tab-btn').forEach(b => b.classList.remove('active'));
+                allBtn.classList.add('active');
+            }
+
+            if (!query) {
+                resetFaqToFeatured();
+                return;
+            }
+
+            let matchCount = 0;
+            cards.forEach(card => {
+                const title = card.querySelector('.faq-question-title')?.textContent.toLowerCase() || '';
+                const content = card.querySelector('.faq-body-content')?.textContent.toLowerCase() || '';
+                const isMatch = title.includes(query) || content.includes(query);
+
+                if (isMatch) {
+                    card.classList.remove('hidden');
+                    matchCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            if (indicator) {
+                indicator.style.display = 'block';
+                indicator.innerHTML = `<span class="indicator-badge">Tìm kiếm</span> Tìm thấy <strong>${matchCount}</strong> câu hỏi phù hợp với từ khóa "${query}".`;
+            }
+
+            if (emptyEl) {
+                if (matchCount === 0) {
+                    emptyEl.style.display = 'block';
+                    emptyEl.innerHTML = `
+                        <p style="font-size: 16px; font-weight: 750; color: var(--help-primary); margin-bottom: 6px;">Không tìm thấy câu hỏi phù hợp với "${query}"</p>
+                        <p style="font-size: 14px; color: var(--help-text-muted); margin: 0 0 12px;">Bạn có thể liên hệ trực tiếp với chúng tôi để được giải đáp:</p>
+                        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                            <a href="tel:+84964871054" class="btn-channel-action active" style="min-height:40px; padding:6px 14px; font-size:12.5px; width:auto; text-decoration:none;">Gọi Hotline: 096 487 10 54</a>
+                            <a href="mailto:interviewprepmate@gmail.com" class="btn-channel-action active" style="min-height:40px; padding:6px 14px; font-size:12.5px; width:auto; text-decoration:none;">Email: interviewprepmate@gmail.com</a>
+                        </div>
+                    `;
+                } else {
+                    emptyEl.style.display = 'none';
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set initial aria-expanded on all buttons
+            document.querySelectorAll('.faq-header-btn').forEach(btn => {
+                btn.setAttribute('aria-expanded', 'false');
+            });
+
+            const hash = window.location.hash.toLowerCase();
+            if (hash.includes('payment')) {
+                const payBtn = Array.from(document.querySelectorAll('.help-tab-btn')).find(b => b.textContent.includes('Thanh toán'));
+                if (payBtn) switchFaqCategory('payment', payBtn);
+                const firstCard = document.querySelector('.faq-card[data-category="payment"]');
+                if (firstCard) {
+                    firstCard.classList.add('open');
+                    const btn = firstCard.querySelector('.faq-header-btn');
+                    if (btn) btn.setAttribute('aria-expanded', 'true');
+                }
+            } else if (hash) {
+                const targetCard = document.querySelector(hash);
+                if (targetCard && targetCard.classList.contains('faq-card')) {
+                    targetCard.classList.remove('hidden');
+                    targetCard.classList.add('open');
+                    const btn = targetCard.querySelector('.faq-header-btn');
+                    if (btn) btn.setAttribute('aria-expanded', 'true');
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Tổng quan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../shared/css/tokens.css?v=25">
+    <link rel="stylesheet" href="../../shared/css/base.css?v=25">
+    <link rel="stylesheet" href="../../shared/css/layout.css?v=25">
+    <link rel="stylesheet" href="../../shared/css/components.css?v=25">
+    <link rel="stylesheet" href="../../shared/css/style.css?v=25">
+    <link rel="stylesheet" href="../../features/dashboard/new-dashboard.css?v=25">
+</head>
+
+<body class="dashboard-body">
+
+    <!-- SIDEBAR (Auto-rendered by initRoleBasedSidebar() in main.js) -->
+    <aside class="sidebar sidebar-new" id="main-sidebar">
+        <!-- Rendered dynamically by initRoleBasedSidebar() based on user role -->
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content main-content-new">
+        <!-- Free Tier Banner -->
+        <section id="free-tier-banner" class="free-tier-banner" style="display:none;">
+            <div class="banner-copy">
+                <span id="free-tier-banner-text"></span>
+            </div>
+            <a href="../../features/payment/pricing.html" class="banner-action">Nâng cấp PRO</a>
+        </section>
+
+        <!-- Dashboard Hero -->
+        <div class="dashboard-hero">
+            <div class="hero-left">
+                <h1>Chào mừng trở lại, <span id="current-user-name-welcome">Người dùng</span> 👋</h1>
+                <p>Mô phỏng chân thực cảm giác đối mặt nhà tuyển dụng. Luyện tập phản xạ, rèn luyện tư duy STAR và làm chủ mọi câu hỏi đào sâu.</p>
+                <div class="hero-cta-group">
+                    <a href="../../features/interview/interview-info.html" class="btn-start-interview">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Bắt đầu phỏng vấn mới
+                    </a>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat-item">
+                    <span class="num" id="stat-sessions-total">0</span>
+                    <span class="lbl">Tổng phỏng vấn</span>
+                </div>
+                <div class="hero-stat-item">
+                    <span class="num" id="stat-sessions">0</span>
+                    <span class="lbl">Đã hoàn thành</span>
+                </div>
+                <div class="hero-stat-item">
+                    <span class="num"><span id="stat-avg-score">—</span> <span class="num-unit">/ 100</span></span>
+                    <span class="lbl" id="stat-avg-score-lbl">Điểm đánh giá TB</span>
+                </div>
+                <div class="hero-stat-item">
+                    <span class="num" id="stat-time">0 phút</span>
+                    <span class="lbl">Thời gian luyện</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Executive Readiness Grid (Mức độ sẵn sàng phỏng vấn) -->
+        <div class="readiness-grid">
+            <div class="readiness-card glass-card">
+                <div class="readiness-icon-box blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </div>
+                <div class="readiness-content">
+                    <span class="readiness-tag">Chuyên môn</span>
+                    <div class="readiness-title">Đánh giá tư duy giải quyết vấn đề</div>
+                </div>
+            </div>
+
+            <div class="readiness-card glass-card">
+                <div class="readiness-icon-box green">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <div class="readiness-content">
+                    <span class="readiness-tag">Giao tiếp & Thuyết phục</span>
+                    <div class="readiness-title">Rèn luyện diễn đạt súc tích & tự tin</div>
+                </div>
+            </div>
+
+            <div class="readiness-card glass-card">
+                <div class="readiness-icon-box amber">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div class="readiness-content">
+                    <span class="readiness-tag">Mô hình STAR</span>
+                    <div class="readiness-title">Chuẩn hóa Situation, Task, Action, Result</div>
+                </div>
+            </div>
+
+            <div class="readiness-card glass-card">
+                <div class="readiness-icon-box purple">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+                <div class="readiness-content">
+                    <span class="readiness-tag">Phản xạ Đào sâu (Follow-up)</span>
+                    <div class="readiness-title">Ứng biến câu hỏi phản biện từ AI</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards (secondary) -->
+        <div class="stats-grid-new" style="display:none;">
+            <!-- Hidden - data shown in hero-stats above -->
+            <div class="stat-card-new" style="display:none;"><span class="stat-number" id="stat-sessions-total-hidden">0</span></div>
+        </div>
+
+        <!-- Plan Status Card (hidden, populated by JS) -->
+        <div id="plan-status-card" style="display:none;">
+            <div id="plan-icon"></div>
+            <h4 id="plan-title"></h4>
+            <p id="plan-desc"></p>
+            <div id="plan-action"></div>
+        </div>
+
+        <!-- MASTER 2-COLUMN DASHBOARD MIDDLE SECTION -->
+        <div class="dashboard-mid-grid">
+            <!-- Left Column: History Section -->
+            <div class="dashboard-mid-left" id="history">
+                <div class="section-title">
+                    <div class="section-title-group">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="section-title-icon" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <h3>Lịch sử phỏng vấn gần đây</h3>
+                    </div>
+                    <div class="section-actions-group">
+                        <span id="history-total-count" class="badge-realtime">Thời gian thực</span>
+                        <a href="../interview/history.html" class="history-view-all-link" title="Xem toàn bộ lịch sử phỏng vấn">Xem tất cả →</a>
+                    </div>
+                </div>
+                <div class="history-list" id="history-list">
+                    <div class="empty-state-new">
+                        <div class="empty-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        </div>
+                        <h4 class="empty-title">Bạn chưa có buổi phỏng vấn nào</h4>
+                        <p class="empty-desc">Bắt đầu buổi phỏng vấn đầu tiên để hệ thống phân tích năng lực và lập báo cáo chi tiết.</p>
+                        <a href="../../features/interview/interview-info.html" class="btn-empty-cta">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            Tạo phiên phỏng vấn mới
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Goals, Streaks & Mock Insights -->
+            <div class="dashboard-mid-right">
+                <!-- Card 1: Mục tiêu luyện tập tuần & Streak -->
+                <div class="dash-widget-card glass-card">
+                    <div class="widget-header">
+                        <div class="widget-title-group">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="widget-icon text-blue" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                            <h4 class="widget-title">Mục tiêu tuần & Nhịp phản xạ</h4>
+                        </div>
+                        <span id="dash-streak-badge" class="badge-streak">Chưa có chuỗi</span>
+                    </div>
+                    <p id="dash-week-desc" class="widget-desc">Duy trì ít nhất 3 buổi phỏng vấn mô phỏng mỗi tuần để tăng 40% tốc độ phản xạ và cấu trúc câu trả lời STAR.</p>
+                    <div class="widget-progress-row">
+                        <span>Tiến độ tuần này</span>
+                        <span id="dash-week-text" class="text-blue font-bold">0 / 3 buổi (0%)</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div id="dash-week-bar" class="progress-bar-fill" style="width:0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Lời khuyên phỏng vấn thực chiến (AI Mock Tip) -->
+                <div class="dash-widget-card glass-card">
+                    <div class="widget-header">
+                        <div class="widget-title-group">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="widget-icon text-amber" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>
+                            <h4 class="widget-title">Mẹo ứng biến câu hỏi đào sâu (Follow-up)</h4>
+                        </div>
+                    </div>
+                    <p class="widget-desc">
+                        Khi nhà tuyển dụng hỏi xoáy vào chi tiết chuyên môn hoặc số liệu, hãy <strong>thừa nhận giả định (assumptions)</strong> và nêu rõ <strong>Trade-off</strong> (sự đánh đổi giữa hiệu quả, độ phức tạp và chi phí).
+                    </p>
+                    <div class="widget-tag-group">
+                        <span class="tag-pill blue">#STAR_Method</span>
+                        <span class="tag-pill green">#Tradeoff</span>
+                        <span class="tag-pill purple">#ProblemSolving</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden elements JS needs -->
+        <div id="career-roadmap-list" style="display:none;"></div>
+        <div id="job-suggestions-list" style="display:none;"></div>
+
+        <app-workspace-footer></app-workspace-footer>
+    </main>
+
+    <script src="../../shared/js/main.js?v=25"></script>
+    <script src="../../features/auth/auth.js?v=25"></script>
+    <script src="../../features/dashboard/dashboard.js?v=25"></script>
+    <script src="../../features/interview/interview.js?v=25"></script>
+    <script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const user = getCurrentUser();
+
+        // Personalize welcome greeting if available
+        const welcomeEl = document.getElementById('current-user-name-welcome');
+        if (welcomeEl && user && user.fullname) {
+            welcomeEl.textContent = user.fullname;
+        }
+
+        // Free Tier Banner: only display for registered trial users, guest does not show clutter
+        const tierStatus = getFreeTierStatus();
+        const banner = document.getElementById('free-tier-banner');
+        const bannerText = document.getElementById('free-tier-banner-text');
+        if (user && tierStatus.isFree && bannerText) {
+            banner.style.display = 'flex';
+            if (tierStatus.remaining <= 0) {
+                bannerText.innerHTML = 'Gói Free: Đã dùng hết <strong>3/3 lượt phỏng vấn</strong> tháng này.';
+            } else {
+                bannerText.innerHTML = `Gói Free: Còn <strong>${tierStatus.remaining} lượt</strong> phỏng vấn miễn phí tháng này.`;
+            }
+        } else if (banner) {
+            banner.style.display = 'none';
+        }
+
+        if (typeof fetchUserQuota === 'function') {
+            fetchUserQuota().then(quota => {
+                if (quota) {
+                    const b = document.getElementById('free-tier-banner');
+                    const bt = document.getElementById('free-tier-banner-text');
+                    if (user && quota.tier === 'free' && bt) {
+                        b.style.display = 'flex';
+                        if (quota.remaining <= 0) {
+                            bt.innerHTML = 'Gói Free: Đã dùng hết <strong>3/3 lượt phỏng vấn</strong> tháng này.';
+                        } else {
+                            bt.innerHTML = `Gói Free: Còn <strong>${quota.remaining} lượt</strong> phỏng vấn miễn phí tháng này.`;
+                        }
+                    } else if (b && quota.tier !== 'free') {
+                        b.style.display = 'none';
+                    }
+                }
+            }).catch(() => {});
+        }
+
+        // Plan Status
+        const iconEl = document.getElementById('plan-icon');
+        const titleEl = document.getElementById('plan-title');
+        const descEl = document.getElementById('plan-desc');
+        const actionEl = document.getElementById('plan-action');
+        if (iconEl && titleEl) {
+            if (!tierStatus.isFree) {
+                const label = user && user.role === 'admin' ? 'Quản trị viên' : user && user.role === 'manager' ? 'Quản lý' : 'PRO';
+                iconEl.innerText = '✓';
+                titleEl.innerHTML = `Gói <span style="color:var(--pm-primary);font-weight:700;">${label}</span> — Không giới hạn`;
+                descEl.innerText = 'Bạn đang tận hưởng toàn bộ tính năng PrepMate.';
+                actionEl.innerHTML = `<span style="background:var(--pm-emerald-subtle);color:var(--pm-emerald);border:1px solid var(--pm-emerald-border);padding:6px 16px;border-radius:8px;font-size:13px;font-weight:600;">Đang hoạt động</span>`;
+            }
+        }
+    });
+    </script>
+    <script src="../../shared/js/components.js"></script>
+</body>
+
+</html>

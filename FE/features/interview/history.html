@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Lịch sử phỏng vấn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../shared/css/tokens.css">
+    <link rel="stylesheet" href="../../shared/css/base.css">
+    <link rel="stylesheet" href="../../shared/css/layout.css">
+    <link rel="stylesheet" href="../../shared/css/components.css">
+    <link rel="stylesheet" href="../../shared/css/style.css?v=20">
+    <link rel="stylesheet" href="../../features/dashboard/new-dashboard.css?v=20">
+    <link rel="stylesheet" href="./history.css">
+    <script>
+        (function() {
+            var raw = localStorage.getItem('prepmate_current_user') || localStorage.getItem('prepmate_user');
+            var user = null;
+            try { if (raw) user = JSON.parse(raw); } catch (e) {}
+            if (!user || !user.token) {
+                document.documentElement.style.display = 'none';
+                var ret = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+                window.location.replace('../auth/auth.html?redirect=' + ret);
+            }
+        })();
+    </script>
+</head>
+
+<body class="dashboard-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar sidebar-new" id="main-sidebar">
+        <!-- Rendered dynamically by initRoleBasedSidebar() -->
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content main-content-new">
+        <!-- Page Header -->
+        <div class="history-page-header">
+            <div>
+                <h1>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Lịch sử phỏng vấn
+                </h1>
+                <p>
+                    Hồ sơ chi tiết và báo cáo đánh giá của toàn bộ các phiên phỏng vấn mô phỏng đã hoàn thành
+                </p>
+            </div>
+            <a href="interview-info.html" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;font-weight:700;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Bắt đầu buổi mới
+            </a>
+        </div>
+
+        <!-- Metrics Overview -->
+        <div class="history-metrics-row">
+            <div class="metric-mini-card">
+                <div class="val" id="hist-total-count">0</div>
+                <div class="lbl">Tổng số buổi phỏng vấn</div>
+            </div>
+            <div class="metric-mini-card">
+                <div class="val val-primary" id="hist-avg-score">—</div>
+                <div class="lbl">Điểm trung bình (Thang 100)</div>
+            </div>
+            <div class="metric-mini-card">
+                <div class="val val-success" id="hist-completed-count">0</div>
+                <div class="lbl">Buổi có báo cáo hoàn chỉnh</div>
+            </div>
+            <div class="metric-mini-card">
+                <div class="val" id="hist-total-minutes">0</div>
+                <div class="lbl">Tổng phút thực chiến</div>
+            </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="history-filter-bar">
+            <div class="filter-search-wrapper">
+                <span class="filter-search-icon" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </span>
+                <input type="text" id="hist-search-input" class="filter-search-input" placeholder="Tìm kiếm theo vị trí tuyển dụng hoặc doanh nghiệp..." aria-label="Tìm kiếm theo vị trí tuyển dụng hoặc doanh nghiệp" oninput="filterHistoryList()">
+            </div>
+            
+            <select id="hist-status-filter" class="filter-select" aria-label="Lọc theo trạng thái phỏng vấn" onchange="filterHistoryList()">
+                <option value="all">Tất cả trạng thái</option>
+                <option value="completed">Đã hoàn thành</option>
+                <option value="incomplete">Chưa hoàn thành</option>
+            </select>
+
+            <select id="hist-level-filter" class="filter-select" aria-label="Lọc theo cấp bậc ứng tuyển" onchange="filterHistoryList()">
+                <option value="all">Tất cả cấp bậc</option>
+                <option value="Intern">Intern / Thực tập</option>
+                <option value="Fresher">Fresher</option>
+                <option value="Junior">Junior</option>
+                <option value="Middle">Mid-level</option>
+                <option value="Senior">Senior</option>
+                <option value="Lead">Lead</option>
+            </select>
+        </div>
+
+        <!-- History Records Container -->
+        <div class="history-list" id="history-full-list">
+            <div class="empty-state-new">
+                <div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                <h4>Đang tải lịch sử phỏng vấn...</h4>
+                <p>Vui lòng đợi giây lát.</p>
+            </div>
+        </div>
+
+        <app-workspace-footer></app-workspace-footer>
+    </main>
+
+    <script src="../../shared/js/main.js?v=20"></script>
+    <script src="../../shared/js/components.js?v=20"></script>
+    <script src="../../features/auth/auth.js?v=20"></script>
+    <script src="../../features/dashboard/dashboard.js?v=20"></script>
+    <script src="../../features/interview/interview-persona-manifest.js"></script>
+    <script>
+        let _allSessions = [];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadAllHistory();
+        });
+
+        const sortHistorySessions = (list) => [...list].sort((a, b) => {
+            const tA = new Date(a.createdAt || a.date || a.startTime || 0).getTime() || 0;
+            const tB = new Date(b.createdAt || b.date || b.startTime || 0).getTime() || 0;
+            if (tB !== tA) return tB - tA;
+            const idA = String(a.id || a.backendSessionId || a.sessionId || '');
+            const idB = String(b.id || b.backendSessionId || b.sessionId || '');
+            return idB.localeCompare(idA);
+        });
+
+        async function loadAllHistory() {
+            const currentUser = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            let localList = [];
+            if (currentUser && typeof getUserSessions === 'function') {
+                localList = getUserSessions() || [];
+
+                if (!localList || localList.length === 0) {
+                    try {
+                        localList = JSON.parse(localStorage.getItem('interview_sessions')) || [];
+                    } catch (e) {
+                        localList = [];
+                    }
+                }
+            } else {
+                try {
+                    localList = JSON.parse(localStorage.getItem('interview_sessions')) || [];
+                } catch (e) {
+                    localList = [];
+                }
+            }
+
+            _allSessions = sortHistorySessions(localList);
+            updateMetrics(_allSessions);
+            renderFullHistoryList(_allSessions);
+
+            if (typeof syncUserInterviewSessions === 'function') {
+                try {
+                    const synced = await syncUserInterviewSessions();
+                    if (Array.isArray(synced)) {
+                        _allSessions = sortHistorySessions(synced);
+                        updateMetrics(_allSessions);
+                        renderFullHistoryList(_allSessions);
+                    }
+                } catch (err) {
+                    console.warn('[HISTORY UI] Failed to sync sessions via syncUserInterviewSessions:', err);
+                }
+            } else if (currentUser && currentUser.id) {
+                try {
+                    const apiBase = (typeof window !== 'undefined' && typeof window.PREPMATE_API_BASE_URL === 'string')
+                        ? window.PREPMATE_API_BASE_URL
+                        : (typeof API_BASE_URL === 'string' ? API_BASE_URL : '');
+                    const headers = {};
+                    if (currentUser.token) {
+                        headers['Authorization'] = `Bearer ${currentUser.token}`;
+                    }
+                    const res = await fetch(`${apiBase}/api/sessions/user/${encodeURIComponent(currentUser.id)}`, { headers });
+                    if (res.ok) {
+                        const backendSessions = await res.json();
+                        if (Array.isArray(backendSessions)) {
+                            const mergedMap = new Map();
+                            backendSessions.forEach(s => {
+                                const id = s.id || s.sessionId || s.backendSessionId;
+                                if (id) mergedMap.set(String(id), s);
+                            });
+                            localList.forEach(s => {
+                                const id = s.backendSessionId || s.id || s.sessionId;
+                                if (id && !mergedMap.has(String(id))) {
+                                    mergedMap.set(String(id), s);
+                                }
+                            });
+                            _allSessions = sortHistorySessions(Array.from(mergedMap.values()));
+                            if (typeof saveUserSessions === 'function') {
+                                saveUserSessions(_allSessions);
+                            }
+                            updateMetrics(_allSessions);
+                            renderFullHistoryList(_allSessions);
+                        }
+                    }
+                } catch (err) {
+                    console.warn('[HISTORY UI] Failed to sync sessions from backend:', err);
+                }
+            }
+        }
+
+        function updateMetrics(sessions) {
+            const total = sessions.length;
+            const completed = sessions.filter(s => s.status === 'completed' || s.overallScore || s.score || s.report);
+            
+            const scores = completed.map(s => {
+                if (typeof s.overallScore === 'number' && s.overallScore > 0) return s.overallScore <= 10 ? s.overallScore * 10 : s.overallScore;
+                if (typeof s.score === 'number' && s.score > 0) return s.score <= 10 ? s.score * 10 : s.score;
+                if (s.report?.overallEvaluation?.normalizedScore) return s.report.overallEvaluation.normalizedScore;
+                if (s.report?.overallEvaluation?.score) return s.report.overallEvaluation.score <= 10 ? s.report.overallEvaluation.score * 10 : s.report.overallEvaluation.score;
+                return 0;
+            }).filter(x => x > 0);
+
+            const avg = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : '—';
+            const totalMins = sessions.reduce((acc, s) => acc + (s.duration || 15), 0);
+
+            document.getElementById('hist-total-count').innerText = total;
+            document.getElementById('hist-avg-score').innerText = avg;
+            document.getElementById('hist-completed-count').innerText = completed.length;
+            document.getElementById('hist-total-minutes').innerText = totalMins;
+        }
+
+        function filterHistoryList() {
+            const q = (document.getElementById('hist-search-input').value || '').trim().toLowerCase();
+            const statusFilter = document.getElementById('hist-status-filter').value;
+            const levelFilter = document.getElementById('hist-level-filter').value;
+
+            const filtered = _allSessions.filter(session => {
+                const job = (session.jobTitle || '').toLowerCase();
+                const comp = (session.company || session.companyName || '').toLowerCase();
+                const matchesQuery = !q || job.includes(q) || comp.includes(q);
+
+                const isCompleted = session.status === 'completed' || !!session.report || !!session.overallEvaluation || (typeof session.score === 'number' && session.score > 0);
+                let matchesStatus = true;
+                if (statusFilter === 'completed') matchesStatus = isCompleted;
+                if (statusFilter === 'incomplete') matchesStatus = !isCompleted;
+
+                const lvl = session.level || session.targetLevel || '';
+                let matchesLevel = true;
+                if (levelFilter !== 'all') {
+                    matchesLevel = lvl.toLowerCase() === levelFilter.toLowerCase();
+                }
+
+                return matchesQuery && matchesStatus && matchesLevel;
+            });
+
+            renderFullHistoryList(filtered);
+        }
+
+        function renderFullHistoryList(sessions) {
+            const container = document.getElementById('history-full-list');
+            if (!container) return;
+
+            if (sessions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state-new">
+                        <div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+                        <h4>Không tìm thấy phiên phỏng vấn phù hợp</h4>
+                        <p>Hãy thử điều chỉnh bộ lọc hoặc bắt đầu một buổi phỏng vấn mô phỏng mới.</p>
+                        <a href="interview-info.html" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;padding:9px 18px;border-radius:var(--pm-radius-btn-md, 8px);text-decoration:none;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Bắt đầu phỏng vấn ngay
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            const displayList = [...sessions];
+
+            displayList.forEach((session) => {
+                const originalIdx = _allSessions.indexOf(session);
+                const isCompleted = session.status === 'completed' || !!session.report || !!session.overallEvaluation || (typeof session.score === 'number' && session.score > 0);
+                const isInProgress = session.status === 'in_progress' || session.status === 'active';
+
+                let displayScore = '—';
+                let scoreClass = 'score-null';
+
+                if (isCompleted) {
+                    let numericScore = 0;
+                    if (typeof session.score === 'number') numericScore = session.score;
+                    else if (typeof session.overallScore === 'number') numericScore = session.overallScore;
+                    else if (session.report?.overallEvaluation?.normalizedScore) numericScore = session.report.overallEvaluation.normalizedScore;
+                    else if (session.report?.overallEvaluation?.score) numericScore = session.report.overallEvaluation.score <= 10 ? session.report.overallEvaluation.score * 10 : session.report.overallEvaluation.score;
+
+                    const normalized = Math.round(numericScore <= 10 && numericScore > 0 ? numericScore * 10 : numericScore);
+                    displayScore = String(normalized);
+                    scoreClass = normalized >= 80 ? 'score-high' : normalized >= 60 ? 'score-mid' : 'score-low';
+                }
+
+                const jobTitle = session.jobTitle || 'Buổi phỏng vấn';
+                const jobIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
+                const companyIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="16" y1="18" x2="16.01" y2="18"/></svg>';
+
+                const sessionDate = session.date ? new Date(session.date).toLocaleDateString('vi-VN') : (session.createdAt ? new Date(session.createdAt).toLocaleDateString('vi-VN') : 'Gần đây');
+                const compName = session.company || session.companyName || session.targetCompany || 'Doanh nghiệp';
+                const lang = session.language === 'en' || session.language === 'English' ? 'English' : 'Tiếng Việt';
+                const flag = lang === 'English' ? '🇬🇧' : '🇻🇳';
+                const level = session.level || session.targetLevel || 'Middle';
+                const diffClass = level === 'Senior' || level === 'Lead' ? 'hard' : level === 'Junior' || level === 'Fresher' ? 'basic' : 'medium';
+                const diffDots = level === 'Senior' || level === 'Lead' ? '●●●' : level === 'Junior' || level === 'Fresher' ? '●○○' : '●●○';
+
+                const rawPersona = session.interviewerPersona || session.persona || (session.config && session.config.interviewerPersona) || 'professional';
+                const interviewerDisplayName = (typeof PrepMatePersonas !== 'undefined' && typeof PrepMatePersonas.getPersona === 'function')
+                    ? PrepMatePersonas.getPersona(rawPersona).name
+                    : (rawPersona === 'friendly' ? 'Lê Lan Anh' : rawPersona === 'balanced' ? 'Nguyễn Hoàng Nam' : 'Trần Minh Vũ');
+
+                let statusBadgeHtml = '';
+                let actionButtonsHtml = '';
+                const sessId = session.backendSessionId || session.id || session.sessionId;
+
+                if (isCompleted) {
+                    statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Hoàn thành</span>`;
+                    const reportUrl = sessId ? `../report/report.html?sessionId=${encodeURIComponent(sessId)}` : `../report/report.html?index=${originalIdx}`;
+                    actionButtonsHtml = `
+                        <a href="${reportUrl}" class="btn-action-report">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Xem báo cáo
+                        </a>
+                        <button onclick="repracticeFromHistory(${originalIdx})" class="btn-action-repractice">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> Luyện tập lại
+                        </button>
+                    `;
+                } else if (isInProgress) {
+                    statusBadgeHtml = `<span class="pm-status-pill in-progress"><span class="pm-status-dot"></span> Đang phỏng vấn</span>`;
+                    const resumeUrl = sessId ? `interview-practice.html?resume=${encodeURIComponent(sessId)}` : `interview-practice.html`;
+                    actionButtonsHtml = `
+                        <a href="${resumeUrl}" class="btn-action-resume">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Tiếp tục phỏng vấn
+                        </a>
+                    `;
+                } else {
+                    statusBadgeHtml = `<span class="pm-status-pill incomplete"><span class="pm-status-dot"></span> Chưa hoàn thành</span>`;
+                    actionButtonsHtml = `
+                        <button onclick="repracticeFromHistory(${originalIdx})" class="btn-action-repractice">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> Luyện tập lại
+                        </button>
+                    `;
+                }
+
+                const qaCount = (session.qaHub && Array.isArray(session.qaHub)) ? session.qaHub.length : (session.questionsAnswered != null ? session.questionsAnswered : (session.currentQuestionIndex || 0));
+
+                const card = document.createElement('div');
+                card.className = 'history-item';
+                card.innerHTML = `
+                    <div class="history-item-score ${scoreClass}">
+                        ${displayScore}
+                    </div>
+                    <div class="history-item-info">
+                        <div class="history-item-title">
+                            <span class="history-item-role">${jobIcon} ${jobTitle}</span>
+                            <span class="pm-company-pill">${companyIcon} ${compName}</span>
+                        </div>
+                        <div class="pm-meta-row">
+                            <span class="pm-flag-badge"><span class="flag-icon">${flag}</span> ${lang}</span>
+                            <span class="pm-time-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${session.duration || 15} phút</span>
+                            <span class="pm-tag-pill blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> ${qaCount} câu hỏi</span>
+                            <span class="pm-diff-badge ${diffClass}"><span class="pm-diff-dots">${diffDots}</span> ${level}</span>
+                            <span class="pm-interviewer-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${interviewerDisplayName}</span>
+                            ${statusBadgeHtml}
+                            <span class="history-item-date"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ${sessionDate}</span>
+                        </div>
+                    </div>
+                    <div class="history-item-actions">
+                        ${actionButtonsHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function repracticeFromHistory(originalIdx) {
+            const s = _allSessions[originalIdx];
+            if (!s) return;
+
+            const repracticeConfig = {
+                role: s.jobTitle || '',
+                company: s.company || s.companyName || '',
+                level: s.level || s.targetLevel || '',
+                language: s.language || 'vi',
+                focus: s.interviewFocus || ''
+            };
+            sessionStorage.setItem('prepmate_repractice_config', JSON.stringify(repracticeConfig));
+            window.location.href = `interview-info.html?from=repractice&role=${encodeURIComponent(repracticeConfig.role)}&company=${encodeURIComponent(repracticeConfig.company)}`;
+        }
+    </script>
+</body>
+
+</html>

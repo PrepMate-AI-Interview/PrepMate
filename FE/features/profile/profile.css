@@ -1,0 +1,282 @@
+/* ==========================================================================
+   PREPMATE — PROFILE & ACCOUNT MANAGEMENT STYLESHEET (WI-REMED-01)
+   Canonical Design System: Light-first, Executive, Professional, Accessible
+   ========================================================================== */
+
+:root {
+    --profile-bg: var(--pm-bg, #f8fafc);
+    --profile-surface: var(--pm-surface, #ffffff);
+    --profile-card-bg: var(--pm-surface, #ffffff);
+    --profile-border: var(--pm-border, #BDC1C6);
+    --profile-border-subtle: var(--pm-border-subtle, #cbd5e1);
+    --profile-text-primary: var(--pm-text-primary, #0f172a);
+    --profile-text-secondary: var(--pm-text-secondary, #334155);
+    --profile-text-muted: var(--pm-text-muted, #64748b);
+    --profile-primary: var(--pm-primary, #1d4ed8);
+    --profile-primary-hover: var(--pm-primary-hover, #1e40af);
+    --profile-primary-subtle: var(--pm-primary-soft, #eff6ff);
+    --profile-shadow-sm: var(--pm-shadow-sm, 0 1px 3px rgba(15, 23, 42, 0.04));
+    --profile-shadow-md: var(--pm-shadow-md, 0 4px 16px -2px rgba(15, 23, 42, 0.06));
+}
+
+body.dashboard-body {
+    background-color: var(--profile-bg);
+    color: var(--profile-text-secondary);
+    font-family: var(--pm-font-family, 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* ==========================================================================
+   PROFILE HERO COMPONENT
+   ========================================================================== */
+.dashboard-hero {
+    background: var(--profile-card-bg);
+    border: 1px solid var(--profile-border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    box-shadow: var(--profile-shadow-sm);
+}
+
+.hero-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.hero-left h1 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--profile-text-primary);
+    margin: 0 0 6px;
+    letter-spacing: -0.5px;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.hero-stat-item {
+    background: var(--pm-surface-subtle, #f1f5f9);
+    border: 1px solid var(--profile-border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+}
+
+.hero-stat-item .num {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--profile-primary);
+    line-height: 1.2;
+}
+
+.hero-stat-item .lbl {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--profile-text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* ==========================================================================
+   PROFILE SECTION & CARD CONTAINERS
+   ========================================================================== */
+.settings-section.pm-card,
+.settings-section.glass-card {
+    background: var(--profile-card-bg);
+    border: 1px solid var(--profile-border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    box-shadow: var(--profile-shadow-sm);
+    margin-bottom: 24px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-section.pm-card:hover,
+.settings-section.glass-card:hover {
+    border-color: var(--profile-border-subtle);
+    box-shadow: var(--profile-shadow-md);
+}
+
+.pref-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--profile-primary-subtle);
+    border: 1px solid var(--pm-primary-border, #bfdbfe);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--profile-primary);
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   FORM CONTROLS & 2-COLUMN GRID
+   ========================================================================== */
+.form-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.settings-form .form-group {
+    margin-bottom: 16px;
+}
+
+.settings-form .form-control {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--profile-card-bg);
+    border: 1px solid var(--pm-border-subtle, #cbd5e1);
+    border-radius: var(--pm-radius-input, 8px);
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--profile-text-primary);
+    font-family: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.settings-form .form-control:focus {
+    outline: none;
+    border-color: var(--pm-primary, #1d4ed8);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.settings-select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 14px;
+    padding-right: 36px !important;
+    appearance: none;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADAPTATION
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .dashboard-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .hero-stats {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-grid-2col {
+        grid-template-columns: 1fr;
+    }
+    .settings-section.pm-card,
+    .settings-section.glass-card {
+        padding: 18px 16px;
+    }
+    .dashboard-hero {
+        padding: 18px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-stats {
+        flex-direction: column;
+        width: 100%;
+    }
+    .hero-stat-item {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+/* ==========================================================================
+   DARK THEME OVERRIDES (MODERN DARK CANONICAL PALETTE)
+   ========================================================================== */
+body.dark-mode,
+html[data-theme="dark"] body {
+    --profile-bg: #202124;
+    --profile-card-bg: #292A2D;
+    --profile-border: #3C4043;
+    --profile-border-subtle: #5F6368;
+    --profile-text-primary: #E8EAED;
+    --profile-text-secondary: #BDC1C6;
+    --profile-text-muted: #9AA0A6;
+    background-color: #202124 !important;
+    color: #BDC1C6 !important;
+}
+
+body.dark-mode .dashboard-hero,
+html[data-theme="dark"] .dashboard-hero,
+body.dark-mode .settings-section.pm-card,
+html[data-theme="dark"] .settings-section.pm-card,
+body.dark-mode .settings-section.glass-card,
+html[data-theme="dark"] .settings-section.glass-card {
+    background: #292A2D !important;
+    border-color: #3C4043 !important;
+}
+
+body.dark-mode .hero-stat-item,
+html[data-theme="dark"] .hero-stat-item {
+    background: #252629 !important;
+    border-color: #3C4043 !important;
+}
+
+body.dark-mode .settings-form .form-control,
+html[data-theme="dark"] .settings-form .form-control {
+    background: #202124 !important;
+    border-color: #3C4043 !important;
+    color: #E8EAED !important;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+body.dark-mode #account-hubs > div > div,
+html[data-theme="dark"] #account-hubs > div > div {
+  background: #202124 !important;
+  border-color: #3C4043 !important;
+}
+
+body.dark-mode #account-hubs > div > div h4,
+html[data-theme="dark"] #account-hubs > div > div h4 {
+  color: #E8EAED !important;
+}
+
+body.dark-mode #account-hubs > div > div p,
+html[data-theme="dark"] #account-hubs > div > div p {
+  color: #BDC1C6 !important;
+}
+
+body.dark-mode .btn.btn-primary,
+html[data-theme="dark"] .btn.btn-primary {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+body.dark-mode .btn.btn-primary:hover,
+html[data-theme="dark"] .btn.btn-primary:hover {
+  background: #1d4ed8 !important;
+}

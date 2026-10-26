@@ -1,0 +1,541 @@
+/**
+ * PREPMATE CANONICAL DESIGN TOKENS (SSOT)
+ * Work Item: WI-DESIGN-01 — Canonical Design Tokens Foundation
+ * Philosophy: Refined B2B Interview Intelligence
+ * Aesthetic: Professional, Light-first, High Hierarchy, Low Visual Noise
+ * Architecture: Three-tier token hierarchy (Primitive -> Canonical Semantic -> Backward-compatible Aliases)
+ */
+
+:root {
+  /* ========================================================
+     0. MOBBIN GETDESIGN CANONICAL FOUNDATION (SSOT)
+     Authoritative Brand Specification from DESIGN.md
+     ======================================================== */
+  --mobbin-ink:             #141414; /* Near-black primary brand color */
+  --mobbin-ink-soft:        #262626; /* Secondary lockups & headings */
+  --mobbin-text-muted:      #707070; /* Secondary copy & supporting paragraphs */
+  --mobbin-text-faint:      #adadad; /* Tertiary text & placeholders */
+  --mobbin-canvas:          #ffffff; /* Gallery-white pure canvas */
+  --mobbin-canvas-soft:     #f3f3f3; /* 6% ink wash for floating nav, featured cards, FAQs */
+  --mobbin-field:           #f0f0f0; /* 8% ink wash for form inputs */
+  --mobbin-hairline-soft:   #f0f0f0; /* Faintest 1px separator edge */
+  --mobbin-hairline:        #e0e0e0; /* 16% control hairline border */
+  --mobbin-accent:          #0066ff; /* Electric Blue — strictly commercial decision signal */
+
+  /* Mobbin Typography Weights */
+  --mobbin-weight-display:  652;    /* Chunky display & heading-1..4 weight */
+  --mobbin-weight-title:    600;    /* Titles & button links */
+  --mobbin-weight-body:     456;    /* Standard running text */
+  --mobbin-weight-lead:     300;    /* Airy hero subtitles */
+
+  /* Mobbin Action Primitives */
+  --pm-cta-ink:             var(--mobbin-ink);
+  --pm-cta-ink-hover:       var(--mobbin-ink-soft);
+  --pm-cta-ink-text:        #ffffff;
+  --pm-cta-outline-bg:      var(--mobbin-canvas);
+  --pm-cta-outline-border:  var(--mobbin-hairline);
+  --pm-cta-outline-text:    var(--mobbin-ink);
+
+  /* ========================================================
+     1. CANONICAL PREPMATE SEMANTIC COLOR TOKENS (--pm-*)
+     Authoritative single source of truth for all surfaces
+     ======================================================== */
+
+  /* 1.1 Canvas & Surfaces (Mobbin Tint Ladder + Slate Harmony) */
+  --pm-canvas: #ffffff;             /* Pure white content canvas */
+  --pm-canvas-subtle: #f8fafc;      /* Very-light neutral background wash */
+  --pm-bg: #f8fafc;                 /* Default body page background */
+  --pm-bg-body: #f8fafc;            /* Viewport body background */
+  --pm-bg-white: #ffffff;           /* Absolute white utility fill */
+  --pm-bg-card: #ffffff;            /* Content card background */
+  --pm-surface: #ffffff;            /* Primary container surface */
+  --pm-surface-subtle: #f1f5f9;     /* Soft utility surface / resting input tint */
+  --pm-surface-soft: #f1f5f9;       /* 6% ink tint for featured/soft containers */
+  --pm-surface-field: #f1f5f9;      /* Form input resting background fill */
+  --pm-surface-hover: #f8fafc;      /* Interactive row/card hover state */
+  --pm-surface-selected: #eff6ff;   /* Active/selected item soft blue wash */
+  --pm-surface-active: #e2e8f0;     /* Pressed control surface fill */
+
+  /* 1.2 Borders, Hairlines & Separators (Print-Flat Precision) */
+  --pm-hairline-soft: #f1f5f9;      /* Ultra-faint 1px separator */
+  --pm-hairline: #e2e8f0;           /* Canonical 1px perimeter border */
+  --pm-hairline-strong: #cbd5e1;    /* Emphasized border for inputs/cards */
+  --pm-border: #e2e8f0;             /* Default container border */
+  --pm-border-subtle: #cbd5e1;      /* Subdued divider / inactive border */
+  --pm-border-hover: #bfdbfe;       /* Interactive control hover border */
+  --pm-border-focus: #2563eb;       /* Active input focus border ring */
+  --pm-focus-ring: #2563eb;         /* Accessible keyboard focus indicator */
+
+  /* 1.3 Typography & Ink Roles (WCAG AA/AAA Slate System) */
+  --pm-ink: #0f172a;                /* Slate 900 — Maximum contrast display ink (17.8:1) */
+  --pm-ink-soft: #334155;           /* Slate 700 — Secondary section headers (10.3:1) */
+  --pm-text-primary: #0f172a;       /* High-contrast body copy and headings */
+  --pm-text-secondary: #334155;     /* Supporting descriptions and form labels */
+  --pm-text-muted: #64748b;         /* Metadata, timestamps, helper copy (4.7:1 AA) */
+  --pm-text-faint: #94a3b8;         /* Placeholder text and inactive tabs */
+  --pm-text-disabled: #cbd5e1;      /* Disabled action text and icons */
+  --pm-text-inverse: #ffffff;       /* White text on high-contrast backgrounds */
+
+  /* 1.4 Primary Action & Brand Blues (Executive Cobalt) */
+  --pm-primary: #1d4ed8;            /* Blue 700 — Authoritative executive CTA */
+  --pm-primary-hover: #1e40af;      /* Blue 800 — Hover state (8.7:1 contrast) */
+  --pm-primary-active: #172554;     /* Blue 950 — Pressed button active state */
+  --pm-primary-soft: #eff6ff;       /* Blue 50 — Active sidebar row & badge tint */
+  --pm-primary-border: #bfdbfe;     /* Blue 200 — Soft border for blue highlights */
+
+  /* 1.5 Commercial & Pro Accent (Mobbin Electric Blue) */
+  --pm-accent-blue:        #2563eb; /* Blue 600 — Commercial decision accent */
+  --pm-accent-pro:         #2563eb; /* "Nâng cấp PRO" / savings callout chip */
+  --pm-accent-pro-soft:    #dbeafe; /* Blue 100 — Pro pill badge background */
+  --pm-accent-dark:        #1d4ed8; /* Blue 700 — High-contrast accent variation */
+
+  /* 1.6 Evaluative Semantic Status Colors (UI/UX Pro Max) */
+  /* Emerald (Success / High Readiness / STAR Pass) */
+  --pm-emerald:            #059669; /* Emerald 600 — Primary success signal */
+  --pm-emerald-hover:      #047857; /* Emerald 700 — Interactive success hover */
+  --pm-emerald-soft:       #ecfdf5; /* Emerald 50 — Success alert/pill fill */
+  --pm-emerald-border:     #a7f3d0; /* Emerald 200 — Success border */
+  --pm-emerald-text:       #065f46; /* Emerald 800 — Accessible text on soft fill (7.3:1 AAA) */
+  --pm-success:            var(--pm-emerald);
+  --pm-success-hover:      var(--pm-emerald-hover);
+  --pm-success-soft:       var(--pm-emerald-soft);
+  --pm-success-border:     var(--pm-emerald-border);
+  --pm-success-text:       var(--pm-emerald-text);
+
+  /* Amber (Warning / Need Practice / Medium Score) */
+  --pm-amber:              #d97706; /* Amber 600 — Primary warning signal */
+  --pm-amber-hover:        #b45309; /* Amber 700 — Interactive warning hover */
+  --pm-amber-soft:         #fffbeb; /* Amber 50 — Warning alert/pill fill */
+  --pm-amber-border:       #fde68a; /* Amber 200 — Warning border */
+  --pm-amber-text:         #92400e; /* Amber 800 — Accessible text on soft fill (6.8:1 AA) */
+  --pm-warning:            var(--pm-amber);
+  --pm-warning-hover:      var(--pm-amber-hover);
+  --pm-warning-soft:       var(--pm-amber-soft);
+  --pm-warning-border:     var(--pm-amber-border);
+  --pm-warning-text:       var(--pm-amber-text);
+
+  /* Red (Danger / Low Score / Destructive Action) */
+  --pm-red:                #dc2626; /* Red 600 — Primary danger/error signal */
+  --pm-red-hover:          #b91c1c; /* Red 700 — Destructive button hover */
+  --pm-red-soft:           #fef2f2; /* Red 50 — Danger alert/pill fill */
+  --pm-red-border:         #fecaca; /* Red 200 — Danger border */
+  --pm-red-text:           #991b1b; /* Red 800 — Accessible text on soft fill (7.6:1 AAA) */
+  --pm-danger:             var(--pm-red);
+  --pm-danger-hover:       var(--pm-red-hover);
+  --pm-danger-soft:        var(--pm-red-soft);
+  --pm-danger-border:      var(--pm-red-border);
+  --pm-danger-text:        var(--pm-red-text);
+
+  /* Sky / Info & Indigo (Informational / Taxonomy) */
+  --pm-info:               #0284c7; /* Sky 600 — Informational notice trigger */
+  --pm-info-hover:         #0369a1; /* Sky 700 — Info hover */
+  --pm-info-soft:          #f0f9ff; /* Sky 50 — Info banner fill */
+  --pm-info-border:        #bae6fd; /* Sky 200 — Info border */
+  --pm-info-text:          #075985; /* Sky 800 — Accessible info text (7.1:1 AAA) */
+  --pm-indigo:             #4338ca; /* Indigo 700 — Specialized taxonomy badge */
+  --pm-indigo-soft:        #eef2ff; /* Indigo 50 — Taxonomy badge fill */
+  --pm-indigo-border:      #c7d2fe; /* Indigo 200 — Taxonomy badge border */
+
+  /* Feature-specific legacy aliases */
+  --ii-red-soft:           var(--pm-red-soft);
+  --ii-red-border:         var(--pm-red-border);
+
+  /* ========================================================
+     2. CANONICAL GEOMETRY & RADIUS
+     Standardized button, container, and squircle hierarchy
+     ======================================================== */
+  --pm-radius-btn-sm:   6px;    /* Micro buttons, compact table row triggers */
+  --pm-radius-btn-md:   8px;    /* Canonical action buttons & standard controls */
+  --pm-radius-btn-lg:   10px;   /* Hero CTA buttons & primary onboarding triggers */
+  --pm-radius-btn-pill: 9999px; /* Floating immersive / audio media controls */
+
+  --pm-radius-input:       8px;    /* Form inputs, textareas, and select dropdowns */
+  --pm-radius-control:     8px;    /* Generic interactive controls */
+  --pm-radius-card-sm:     12px;   /* Mini stats cards, widget panels */
+  --pm-radius-card:        16px;   /* Standard content panels, dialogs, containers */
+  --pm-radius-modal:       16px;   /* Modal dialogs, bottom sheets */
+  --pm-radius-squircle:    30%;    /* iOS-style squircle for persona avatars & icons */
+  --pm-radius-pill:        9999px; /* Status badges, meta tags, segmented pills */
+  --pm-radius-full:        9999px; /* Full circular avatars & pill shapes */
+
+  /* ========================================================
+     3. CANONICAL SHADOWS & ELEVATION
+     Hybrid Print-Flat: Hairlines for resting, diffused for floating
+     ======================================================== */
+  --pm-shadow-none:        none;
+  --pm-shadow-xs:          0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --pm-shadow-sm:          0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --pm-shadow-md:          0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  --pm-shadow-lg:          0 12px 32px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+  --pm-shadow-float:       0 12px 32px -4px rgba(15, 23, 42, 0.10); /* Sticky floating docks & modals */
+  --pm-shadow-focus:       0 0 0 3px rgba(37, 99, 235, 0.16);
+  --pm-shadow-focus-danger:0 0 0 3px rgba(220, 38, 38, 0.16);
+
+  /* ========================================================
+     4. BACKWARD COMPATIBLE SEMANTIC ALIASES (--color-*)
+     Mapped 1:1 to canonical --pm-* tokens for existing views
+     ======================================================== */
+    /* Feature Stylesheet Backward-Compatible Aliases */
+  --pm-surface-secondary:   var(--pm-surface-subtle);
+  --pm-primary-subtle:      var(--pm-primary-soft);
+  --pm-success-subtle:      var(--pm-emerald-soft);
+  --pm-warning-subtle:      var(--pm-amber-soft);
+  --pm-danger-subtle:       var(--pm-red-soft);
+
+  --color-bg:               var(--pm-bg);
+  --color-surface:          var(--pm-surface);
+  --color-surface-muted:    var(--pm-surface-subtle);
+  --color-surface-hover:    var(--pm-surface-hover);
+  --color-surface-selected: var(--pm-surface-selected);
+
+  --color-border:           var(--pm-border);
+  --color-border-subtle:    var(--pm-surface-subtle);
+  --color-border-strong:    var(--pm-border-subtle);
+  --color-border-focus:     var(--pm-border-focus);
+
+  --color-text:             var(--pm-text-primary);
+  --color-text-secondary:   var(--pm-text-secondary);
+  --color-text-muted:       var(--pm-text-muted);
+  --color-text-disabled:    var(--pm-text-disabled);
+  --color-text-inverse:     var(--pm-text-inverse);
+
+  --color-primary:          var(--pm-primary);
+  --color-primary-hover:    var(--pm-primary-hover);
+  --color-primary-active:   var(--pm-primary-active);
+  --color-primary-light:    var(--pm-primary-soft);
+  --color-primary-border:   var(--pm-primary-border);
+
+  --color-success:          var(--pm-emerald);
+  --color-success-hover:    var(--pm-emerald-hover);
+  --color-success-light:    var(--pm-emerald-soft);
+  --color-success-border:   var(--pm-emerald-border);
+  --color-success-text:     var(--pm-emerald-text);
+
+  --color-warning:          var(--pm-amber);
+  --color-warning-hover:    var(--pm-amber-hover);
+  --color-warning-light:    var(--pm-amber-soft);
+  --color-warning-border:   var(--pm-amber-border);
+  --color-warning-text:     var(--pm-amber-text);
+
+  --color-danger:           var(--pm-red);
+  --color-danger-hover:     var(--pm-red-hover);
+  --color-danger-light:     var(--pm-red-soft);
+  --color-danger-border:    var(--pm-red-border);
+  --color-danger-text:      var(--pm-red-text);
+
+  --color-info:             var(--pm-info);
+  --color-info-hover:       var(--pm-info-hover);
+  --color-info-light:       var(--pm-info-soft);
+  --color-info-border:      var(--pm-info-border);
+  --color-info-text:        var(--pm-info-text);
+
+  --color-neutral:          var(--pm-text-muted);
+  --color-neutral-light:    var(--pm-bg);
+  --color-neutral-border:   var(--pm-border);
+  --color-neutral-text:     var(--pm-text-secondary);
+
+  /* Radius Aliases */
+  --radius-sm:              var(--pm-radius-btn-sm);
+  --radius-md:              var(--pm-radius-btn-md);
+  --radius-lg:              var(--pm-radius-card);
+  --radius-pill:            var(--pm-radius-pill);
+
+  /* Shadow Aliases */
+  --shadow-none:            var(--pm-shadow-none);
+  --shadow-xs:              var(--pm-shadow-xs);
+  --shadow-sm:              var(--pm-shadow-sm);
+  --shadow-md:              var(--pm-shadow-md);
+  --shadow-lg:              var(--pm-shadow-lg);
+  --shadow-focus:           var(--pm-shadow-focus);
+  --shadow-focus-danger:    var(--pm-shadow-focus-danger);
+
+  /* ========================================================
+     5. TYPOGRAPHY SCALE (HIERARCHY-DRIVEN)
+     ======================================================== */
+  /* 5.1 Canonical Font Families */
+  --pm-font-sans:           'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --pm-font-display:        'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --pm-font-mono:           'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  /* Backward-compatible Font Family Aliases */
+  --font-sans:              'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono:              var(--pm-font-mono);
+  --pm-font-family:         var(--pm-font-sans);
+
+  /* 5.2 Canonical Typography Scale (Modular Ratio ~1.2) */
+  --pm-font-size-display:   2.25rem;   /* 36px — Hero statements and major milestones */
+  --pm-font-size-h1:        1.75rem;   /* 28px — Page primary heroes */
+  --pm-font-size-h2:        1.375rem;  /* 22px — Major section headings */
+  --pm-font-size-h3:        1.125rem;  /* 18px — Card titles, question headers */
+  --pm-font-size-h4:        0.9375rem; /* 15px — Sub-card headers, item titles */
+  --pm-font-size-body:      0.875rem;  /* 14px — Standard UI body copy */
+  --pm-font-size-body-sm:   0.8125rem; /* 13px — Supporting descriptions, table cells */
+  --pm-font-size-caption:   0.75rem;   /* 12px — Timestamps, badges, metadata */
+  --pm-font-size-micro:     0.6875rem; /* 11px — Dense table tags, category badges */
+
+  /* Backward-compatible Font Size Aliases */
+  --font-size-display:      var(--pm-font-size-display);
+  --font-size-h1:           var(--pm-font-size-h1);
+  --font-size-h2:           var(--pm-font-size-h2);
+  --font-size-h3:           var(--pm-font-size-h3);
+  --font-size-h4:           var(--pm-font-size-h4);
+  --font-size-body:         var(--pm-font-size-body);
+  --font-size-body-sm:      var(--pm-font-size-body-sm);
+  --font-size-caption:      var(--pm-font-size-caption);
+  --font-size-micro:        var(--pm-font-size-micro);
+
+  /* 5.3 Canonical Line Heights */
+  --pm-line-height-compact: 1.15;      /* Tight leading for Display, H1, H2 (Mobbin) */
+  --pm-line-height-tight:   1.25;      /* Leading for H3, H4 */
+  --pm-line-height-snug:    1.35;      /* Leading for H5, lead paragraphs, buttons */
+  --pm-line-height-normal:  1.5;       /* Relaxed leading for standard body copy */
+  --pm-line-height-relaxed: 1.625;     /* Extended reading copy */
+
+  /* Backward-compatible Line Height Aliases */
+  --line-height-compact:    var(--pm-line-height-compact);
+  --line-height-tight:      var(--pm-line-height-tight);
+  --line-height-snug:       var(--pm-line-height-snug);
+  --line-height-normal:     var(--pm-line-height-normal);
+  --line-height-relaxed:    var(--pm-line-height-relaxed);
+
+  /* 5.4 Canonical Font Weights (Mobbin Variable Weights: 652 display/headings, 600 title/link, 456 body, 300 lead) */
+  --pm-font-weight-light:    300;      /* Light subtitle counterpoint (Mobbin 300) */
+  --pm-font-weight-regular:  456;      /* Default body copy (Mobbin 456) */
+  --pm-font-weight-medium:   500;      /* Emphasized table data & secondary actions */
+  --pm-font-weight-semibold: 600;      /* Card titles, button labels, badges (Mobbin 600) */
+  --pm-font-weight-bold:     652;      /* Major headings, display metrics (Mobbin 652) */
+
+  /* Backward-compatible Font Weight Aliases */
+  --font-weight-light:       var(--pm-font-weight-light);
+  --font-weight-regular:     var(--pm-font-weight-regular);
+  --font-weight-medium:      var(--pm-font-weight-medium);
+  --font-weight-semibold:    var(--pm-font-weight-semibold);
+  --font-weight-bold:        var(--pm-font-weight-bold);
+
+  /* 5.5 Canonical Tracking / Letter Spacing */
+  --pm-tracking-tight:      -0.02em;   /* Display & H1 */
+  --pm-tracking-snug:       -0.01em;   /* H2 & H3 */
+  --pm-tracking-normal:     0;         /* Body copy (natural grotesque fit) */
+  --pm-tracking-wide:       0.05em;    /* Eyebrows, uppercase chips, labels */
+
+  /* Backward-compatible Tracking Aliases */
+  --tracking-tight:         var(--pm-tracking-tight);
+  --tracking-snug:          var(--pm-tracking-snug);
+  --tracking-normal:        var(--pm-tracking-normal);
+  --tracking-wide:          var(--pm-tracking-wide);
+
+  /* ========================================================
+     6. SPACING SCALE (MATHEMATICAL 8PT HARMONY)
+     ======================================================== */
+  --space-1:                4px;
+  --space-2:                8px;
+  --space-3:                12px;
+  --space-4:                16px;
+  --space-5:                20px;
+  --space-6:                24px;
+  --space-8:                32px;
+  --space-10:               40px;
+  --space-12:               48px;
+  --space-16:               64px;
+
+  /* Canonical --pm-space-* tokens */
+  --pm-space-1:             var(--space-1);
+  --pm-space-2:             var(--space-2);
+  --pm-space-3:             var(--space-3);
+  --pm-space-4:             var(--space-4);
+  --pm-space-5:             var(--space-5);
+  --pm-space-6:             var(--space-6);
+  --pm-space-8:             var(--space-8);
+  --pm-space-10:            var(--space-10);
+  --pm-space-12:            var(--space-12);
+  --pm-space-16:            var(--space-16);
+
+  /* ========================================================
+     7. LAYOUT DIMENSIONS & BREAKPOINTS
+     ======================================================== */
+  --header-height:          64px;
+  --sidebar-width:          240px;
+  --sidebar-collapsed:      68px;
+  --content-max-width:      1200px;
+  --content-narrow-width:   840px;
+
+  /* Canonical --pm-layout-* tokens */
+  --pm-header-height:       var(--header-height);
+  --pm-sidebar-width:       var(--sidebar-width);
+  --pm-sidebar-collapsed:   var(--sidebar-collapsed);
+  --pm-content-max-width:   var(--content-max-width);
+  --pm-content-narrow-width:var(--content-narrow-width);
+
+  /* Z-Index Hierarchy (7-tier strict stratification) */
+  --z-base:                 1;
+  --z-sticky:               50;
+  --z-header:               100;
+  --z-sidebar:              110;
+  --z-dropdown:             200;
+  --z-backdrop:             300;
+  --z-modal:                310;
+  --z-toast:                400;
+
+  --pm-z-base:              var(--z-base);
+  --pm-z-sticky:            var(--z-sticky);
+  --pm-z-header:            var(--z-header);
+  --pm-z-sidebar:           var(--z-sidebar);
+  --pm-z-dropdown:          var(--z-dropdown);
+  --pm-z-backdrop:          var(--z-backdrop);
+  --pm-z-modal:             var(--z-modal);
+  --pm-z-toast:             var(--z-toast);
+
+  /* Transitions */
+  --transition-fast:        150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal:      200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow:        300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --pm-transition-fast:     var(--transition-fast);
+  --pm-transition-normal:   var(--transition-normal);
+  --pm-transition-slow:     var(--transition-slow);
+}
+
+/* ========================================================
+   8. CANONICAL DARK MODE THEME INVERSION (SSOT - STEP 1D-R21)
+   Google Material-Inspired Neutral Charcoal Gray System
+   ======================================================== */
+:root[data-theme="dark"],
+html[data-theme="dark"],
+body.dark-mode {
+  color-scheme: dark;
+
+  /* ========================================================
+     GOOGLE MATERIAL-INSPIRED NEUTRAL CHARCOAL PALETTE (R21)
+     Role-based distribution:
+       Page background:                          #202124
+       Header surface:                           #242528
+       Section background:                       #252629
+       Card / content surface:                   #292A2D
+       Raised surface (modal, dropdown, popover):#303134
+       Hover / active surface:                   #3C4043
+       Input / inset surface:                    #252629
+       Border / divider:                         #3C4043
+       Border nổi bật:                           #5F6368
+       Primary text:                             #E8EAED
+       Secondary text:                           #BDC1C6
+       Muted text:                               #9AA0A6
+       Brand accent:                             #2563eb
+     ======================================================== */
+
+  /* Mobbin Dark Canvas Foundation (Google Material Neutral Charcoal) */
+  --mobbin-ink:             #E8EAED; /* Primary text */
+  --mobbin-ink-soft:        #BDC1C6; /* Secondary text */
+  --mobbin-text-muted:      #9AA0A6; /* Supporting / muted text */
+  --mobbin-text-faint:      #80868B; /* Tertiary / placeholder text */
+  --mobbin-canvas:          #202124; /* Page Background: #202124 */
+  --mobbin-canvas-soft:     #292A2D; /* Card Surface: #292A2D */
+  --mobbin-field:           #252629; /* Input / inset surface: #252629 */
+  --mobbin-hairline-soft:   #3C4043; /* Subtle divider: #3C4043 */
+  --mobbin-hairline:        #3C4043; /* Standard border: #3C4043 */
+  --mobbin-accent:          #8ab4f8; /* Accessible Sky Blue signal */
+
+  /* Mobbin Action Primitives */
+  --pm-cta-ink:             #ffffff;
+  --pm-cta-ink-hover:       #f1f5f9;
+  --pm-cta-ink-text:        #202124;
+  --pm-cta-outline-bg:      #292A2D;
+  --pm-cta-outline-border:  #3C4043;
+  --pm-cta-outline-text:    #E8EAED;
+
+  /* Canonical PrepMate Semantic Surfaces (Exact R21 Specifications) */
+  --pm-canvas:              #202124; /* Page background: #202124 */
+  --pm-canvas-subtle:       #252629; /* Section background: #252629 */
+  --pm-bg:                  #202124; /* Default body page background: #202124 */
+  --pm-bg-body:             #202124;
+  --pm-bg-white:            #292A2D; /* Converted white surfaces to Card surface: #292A2D */
+  --pm-bg-card:             #292A2D; /* Card & container surface: #292A2D */
+
+  /* Clear 5-Tier Surface Hierarchy */
+  --pm-surface-header:      #242528; /* Header surface: #242528 */
+  --pm-surface-header-alpha:rgba(36, 37, 40, 0.95); /* Sticky blurred header */
+  --pm-surface:             #292A2D; /* Card / content surface: #292A2D */
+  --pm-surface-raised-1:    #292A2D;
+  --pm-surface-subtle:      #303134; /* Raised surface: modal, dropdown, popover: #303134 */
+  --pm-surface-raised-2:    #303134;
+  --pm-surface-soft:        #303134;
+  --pm-surface-field:       #252629; /* Input / inset surface: #252629 */
+  --pm-surface-hover:       #3C4043; /* Hover / active surface: #3C4043 */
+  --pm-surface-selected:    rgba(37, 99, 235, 0.16); /* Selected item brand tint */
+  --pm-surface-active:      #3C4043; /* Pressed state */
+
+  /* Backward-Compatible Feature Aliases */
+  --pm-surface-secondary:   #252629;
+  --pm-primary-subtle:      rgba(37, 99, 235, 0.16);
+  --pm-success-subtle:      rgba(16, 185, 129, 0.14);
+  --pm-warning-subtle:      rgba(245, 158, 11, 0.14);
+  --pm-danger-subtle:       rgba(239, 68, 68, 0.14);
+
+  /* Structural Borders & Dividers */
+  --pm-hairline-soft:       #3C4043; /* Border / divider: #3C4043 */
+  --pm-hairline:            #3C4043; /* Canonical 1px perimeter border */
+  --pm-hairline-strong:     #5F6368; /* Border nổi bật: #5F6368 */
+  --pm-border:              #3C4043; /* Default container border */
+  --pm-border-subtle:       #3C4043; /* Subdued divider */
+  --pm-border-highlight:    #5F6368; /* Border nổi bật */
+  --pm-border-hover:        #5F6368; /* Hover border */
+  --pm-border-focus:        #8ab4f8; /* Accessible focus indicator */
+  --pm-focus-ring:          #8ab4f8;
+
+  /* Typography System */
+  --pm-ink:                 #E8EAED; /* Primary text: #E8EAED */
+  --pm-ink-soft:            #BDC1C6; /* Secondary text: #BDC1C6 */
+  --pm-text-primary:        #E8EAED;
+  --pm-text-secondary:      #BDC1C6;
+  --pm-text-muted:          #9AA0A6; /* Muted text: #9AA0A6 */
+  --pm-text-faint:          #80868B; /* Tertiary labels & inactive tabs */
+  --pm-text-disabled:       #5F6368; /* Disabled text */
+  --pm-text-inverse:        #202124;
+
+  /* Brand Accents */
+  --pm-primary:             #2563eb; /* PrepMate Brand Royal Blue */
+  --pm-primary-hover:       #1d4ed8;
+  --pm-primary-active:      #172554;
+  --pm-primary-soft:        rgba(37, 99, 235, 0.16);
+  --pm-primary-border:      rgba(59, 130, 246, 0.4);
+
+  --pm-accent-blue:         #8ab4f8; /* Accessible Sky Blue accent */
+  --pm-accent-pro:          #8ab4f8;
+  --pm-accent-pro-soft:     rgba(37, 99, 235, 0.18);
+  --pm-accent-dark:         #8ab4f8;
+
+  /* Semantic Feedback Fills & Text */
+  --pm-emerald-soft:        rgba(16, 185, 129, 0.14);
+  --pm-emerald-border:      rgba(52, 211, 153, 0.35);
+  --pm-emerald-text:        #81c995;
+
+  --pm-amber-soft:          rgba(245, 158, 11, 0.14);
+  --pm-amber-border:        rgba(251, 191, 36, 0.35);
+  --pm-amber-text:          #fdd663;
+
+  --pm-red-soft:            rgba(239, 68, 68, 0.14);
+  --pm-red-border:          rgba(248, 113, 113, 0.35);
+  --pm-red-text:            #f28b82;
+
+  --pm-info-soft:           rgba(56, 189, 248, 0.14);
+  --pm-info-border:         rgba(56, 189, 248, 0.35);
+  --pm-info-text:           #8ab4f8;
+
+  /* Shadows */
+  --pm-shadow-sm:           0 1px 3px rgba(0, 0, 0, 0.45);
+  --pm-shadow-md:           0 4px 16px -2px rgba(0, 0, 0, 0.55);
+  --pm-shadow-lg:           0 12px 32px -4px rgba(0, 0, 0, 0.65);
+  --pm-shadow-float:        0 16px 40px -4px rgba(0, 0, 0, 0.75);
+
+  /* Landing specific variables in dark mode */
+  --lp-bg:                  #202124;
+  --lp-surface:             #292A2D;
+  --lp-border:              #3C4043;
+  --lp-text-primary:        #E8EAED;
+  --lp-text-body:           #BDC1C6;
+  --lp-text-muted:          #9AA0A6;
+  --lp-primary:             #2563eb;
+  --lp-primary-hover:       #1d4ed8;
+  --lp-primary-soft:        rgba(37, 99, 235, 0.16);
+  --lp-primary-border:      rgba(59, 130, 246, 0.4);
+  --lp-text-dark:           #E8EAED;
+}

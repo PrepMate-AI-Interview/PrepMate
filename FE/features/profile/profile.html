@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Hồ sơ năng lực cá nhân</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../shared/css/tokens.css">
+    <link rel="stylesheet" href="../../shared/css/base.css">
+    <link rel="stylesheet" href="../../shared/css/layout.css">
+    <link rel="stylesheet" href="../../shared/css/components.css">
+    <link rel="stylesheet" href="../../shared/css/style.css?v=26">
+    <link rel="stylesheet" href="./profile.css?v=26">
+    <script>
+        (function() {
+            var raw = localStorage.getItem('prepmate_current_user') || localStorage.getItem('prepmate_user');
+            var user = null;
+            try { if (raw) user = JSON.parse(raw); } catch (e) {}
+            if (!user || !user.token) {
+                document.documentElement.style.display = 'none';
+                var ret = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+                window.location.replace('../auth/auth.html?redirect=' + ret);
+            }
+        })();
+    </script>
+</head>
+
+<body class="dashboard-body">
+
+    <!-- SIDEBAR (Auto-rendered by initRoleBasedSidebar() in main.js) -->
+    <aside class="sidebar sidebar-new" id="main-sidebar">
+        <!-- Rendered dynamically by initRoleBasedSidebar() based on user role -->
+    </aside>
+
+    <main class="main-content main-content-new">
+        <!-- Top Profile Hero Section -->
+        <div class="dashboard-hero" style="margin-bottom: 24px;">
+            <div class="hero-left">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                    <span style="font-size:12px;font-weight:700;color:#1d4ed8;background:#eff6ff;padding:3px 10px;border-radius:100px;border:1px solid #bfdbfe;">Hồ sơ ứng viên</span>
+                    <span id="profile-sub-badge" style="font-size:12px;font-weight:700;color:#059669;background:#ecfdf5;padding:3px 10px;border-radius:100px;border:1px solid #a7f3d0;">Tài khoản cá nhân</span>
+                </div>
+                <h1 style="font-size:24px;margin-bottom:8px;">Hồ sơ năng lực cá nhân</h1>
+                <p style="font-size:14px;color:var(--text-secondary);margin-bottom:0;max-width:650px;">
+                    Quản lý thông tin định danh, mục tiêu nghề nghiệp và liên kết các tài liệu CV phục vụ phỏng vấn mô phỏng cùng PrepMate AI.
+                </p>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat-item">
+                    <span class="num" id="profile-exp-stat">—</span>
+                    <span class="lbl">Cấp độ mục tiêu</span>
+                </div>
+                <div class="hero-stat-item">
+                    <span class="num" id="profile-status-stat" style="color:#059669;">Hoạt động</span>
+                    <span class="lbl">Trạng thái</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. ACCOUNT SECTION (Tài khoản / Hồ sơ) -->
+        <div class="settings-section pm-card" id="account">
+            <div class="section-header">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <div>
+                        <h3 data-i18n-key="profilePersonalInfo" style="margin:0;">Thông tin cá nhân & Tài khoản</h3>
+                        <p style="margin:2px 0 0;font-size:12px;color:var(--text-secondary);">Quản lý hồ sơ định danh, email và bảo mật tài khoản cá nhân</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-form">
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label for="fullname" data-i18n-key="profileFullName" class="form-label" style="font-weight:600;font-size:13.5px;color:var(--pm-text-primary);display:block;margin-bottom:6px;">Họ và tên</label>
+                        <input type="text" id="fullname" class="form-control" placeholder="Nhập tên của bạn" data-i18n-placeholder="profileFullNamePlaceholder">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" data-i18n-key="profileEmail" class="form-label" style="font-weight:600;font-size:13.5px;color:var(--pm-text-primary);display:block;margin-bottom:6px;">Địa chỉ Email</label>
+                        <input type="email" id="email" class="form-control" placeholder="your.email@example.com">
+                    </div>
+                </div>
+
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label for="phone" data-i18n-key="profilePhone" class="form-label" style="font-weight:600;font-size:13.5px;color:var(--pm-text-primary);display:block;margin-bottom:6px;">Số điện thoại</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="+84 (0) 123 456 789">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="target-role" class="form-label" style="font-weight:600;font-size:13.5px;color:var(--pm-text-primary);display:block;margin-bottom:6px;">Vị trí ứng tuyển mục tiêu</label>
+                        <input type="text" id="target-role" class="form-control" placeholder="Marketing Manager, Financial Analyst, Software Engineer">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience-level" class="form-label" style="font-weight:600;font-size:13.5px;color:var(--pm-text-primary);display:block;margin-bottom:6px;">Cấp độ kinh nghiệm</label>
+                    <select id="experience-level" class="form-control settings-select" style="width: 100%;">
+                        <option value="">-- Chưa chọn --</option>
+                        <option value="Intern">Intern / Thực tập sinh</option>
+                        <option value="Fresher">Fresher / Mới tốt nghiệp</option>
+                        <option value="Junior">Junior (Dưới 2 năm)</option>
+                        <option value="Mid-level">Mid-level (2 – 4 năm)</option>
+                        <option value="Senior">Senior (5+ năm)</option>
+                        <option value="Lead">Lead / Quản lý chuyên môn</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="bio" data-i18n-key="profileBio" class="form-label" style="font-weight:600;font-size:13.5px;color:var(--pm-text-primary);display:block;margin-bottom:6px;">Giới thiệu ngắn / Mục tiêu nghề nghiệp</label>
+                    <textarea id="bio" class="form-control" rows="4" placeholder="Mô tả ngắn về bạn và vị trí bạn đang hướng tới..." data-i18n-placeholder="profileBioPlaceholder"></textarea>
+                </div>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--pm-border);">
+                    <span style="font-size:12.5px;color:var(--pm-text-muted);">Cập nhật gần nhất: Hôm nay</span>
+                    <button onclick="saveProfile()" class="btn btn-primary btn-sm" style="display:inline-flex;align-items:center;gap:6px;padding:8px 20px;font-weight:700;" data-i18n-key="profileSaveInfo">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Lưu thông tin</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. CONNECTED ACCOUNT HUBS (Chuyên trang Quản lý & Cài đặt) -->
+        <div class="settings-section pm-card" id="account-hubs" style="margin-top: 24px;">
+            <div class="section-header">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-accent-blue);"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    <div>
+                        <h3 style="margin:0;">Trung tâm Quản lý & Cài đặt Tài khoản</h3>
+                        <p style="margin:2px 0 0;font-size:12px;color:var(--text-secondary);">Truy cập nhanh các chuyên trang quản lý CV, thiết bị mô phỏng và gói dịch vụ chuyên sâu</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;padding:16px 20px;">
+                <!-- Hub Card 1: CV Management -->
+                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;box-shadow:0 1px 3px rgba(15,23,42,0.02);">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-accent-blue);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <h4 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Hồ sơ năng lực & Quản lý CV</h4>
+                        </div>
+                        <p style="margin:0;font-size:12.5px;color:#64748b;line-height:1.5;">
+                            Tải lên tệp CV, bóc tách kỹ năng tự động và xem các câu hỏi AI dự đoán từ kinh nghiệm thực chiến của bạn.
+                        </p>
+                    </div>
+                    <a href="cv.html" class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:700;text-decoration:none;">
+                        <span>Quản lý CV & Kỹ năng</span> →
+                    </a>
+                </div>
+
+                <!-- Hub Card 2: System Settings -->
+                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;box-shadow:0 1px 3px rgba(15,23,42,0.02);">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-accent-blue);"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                            <h4 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Cài đặt hệ thống & Trải nghiệm</h4>
+                        </div>
+                        <p style="margin:0;font-size:12.5px;color:#64748b;line-height:1.5;">
+                            Tùy chỉnh giao diện Sáng / Tối, ngôn ngữ hiển thị, micro / camera và tốc độ giọng nói người phỏng vấn.
+                        </p>
+                    </div>
+                    <a href="settings.html" class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:700;text-decoration:none;">
+                        <span>Cài đặt hệ thống</span> →
+                    </a>
+                </div>
+
+                <!-- Hub Card 3: Billing & Plans -->
+                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;box-shadow:0 1px 3px rgba(15,23,42,0.02);">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            <h4 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Gói dịch vụ & Nâng cấp PRO</h4>
+                        </div>
+                        <p style="margin:0;font-size:12.5px;color:#64748b;line-height:1.5;">
+                            Xem chi tiết các quyền lợi phỏng vấn không giới hạn, phân tích STAR và so sánh các gói tài khoản PrepMate.
+                        </p>
+                    </div>
+                    <a href="../payment/pricing.html" class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:700;text-decoration:none;">
+                        <span>Bảng giá & Gói dịch vụ</span> →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <app-workspace-footer></app-workspace-footer>
+    </main>
+
+    <script src="../../shared/js/main.js?v=17"></script>
+    <script src="../../features/auth/auth.js?v=17"></script>
+    <script src="../../features/dashboard/dashboard.js?v=17"></script>
+    <script src="../../features/interview/interview.js?v=17"></script>
+    <script>
+        // Profile Page Specific Functions
+
+        async function initProfilePage() {
+            await syncUserFromServer();
+            updateUserAuthUI();
+            applyUserSettings();
+
+            const currentUser = getCurrentUser();
+            if (currentUser) {
+                const userNameEl = document.getElementById('current-user-name');
+                if (userNameEl) {
+                    userNameEl.innerText = currentUser.fullname;
+                }
+                
+                const sbUserName = document.getElementById('sidebar-user-name');
+                const sbUserEmail = document.getElementById('sidebar-user-email');
+                const ddUserName = document.getElementById('dropdown-user-name');
+                const ddUserEmail = document.getElementById('dropdown-user-email');
+                
+                if (sbUserName) sbUserName.innerText = currentUser.fullname;
+                if (sbUserEmail) sbUserEmail.innerText = currentUser.email;
+                if (ddUserName) ddUserName.innerText = currentUser.fullname;
+                if (ddUserEmail) ddUserEmail.innerText = currentUser.email;
+            }
+
+            // Sync dropdowns with saved settings
+            const settings = getUserSettings();
+            const currentGlobalTheme = (typeof getGlobalTheme === 'function') ? getGlobalTheme() : (localStorage.getItem('prepmate_theme') || settings.themeMode || 'light');
+            if (document.getElementById('theme-mode')) document.getElementById('theme-mode').value = currentGlobalTheme;
+            if (settings.language && document.getElementById('language')) document.getElementById('language').value = settings.language;
+
+            loadProfileData();
+            loadSubscriptionInfo();
+
+            // Forward legacy hash routes to new dedicated pages
+            if (window.location.hash === '#cv') {
+                window.location.replace('cv.html');
+                return;
+            }
+            if (window.location.hash === '#system-settings') {
+                window.location.replace('settings.html');
+                return;
+            }
+            if (window.location.hash === '#billing') {
+                window.location.replace('../payment/pricing.html');
+                return;
+            }
+
+            function scrollToCurrentHash() {
+                const h = window.location.hash;
+                if (h) {
+                    const el = document.querySelector(h);
+                    if (el) {
+                        setTimeout(() => {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 120);
+                    }
+                }
+            }
+            scrollToCurrentHash();
+            window.addEventListener('hashchange', scrollToCurrentHash);
+        }
+
+        async function handleProfileCvUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const fileNameEl = document.getElementById('cv-file-name');
+            const metaEl = document.getElementById('cv-meta-info');
+            if (fileNameEl) fileNameEl.innerText = file.name;
+            if (metaEl) metaEl.innerText = `Đang tải lên và trích xuất bằng AI (${(file.size / 1024).toFixed(1)} KB)...`;
+
+            let rawText = '';
+            try {
+                if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                    rawText = await file.text();
+                } else {
+                    rawText = `CV Document: ${file.name} (Tệp đính kèm hồ sơ)`;
+                }
+            } catch (err) {
+                rawText = `CV Document: ${file.name}`;
+            }
+
+            const token = (typeof getAuthToken === 'function' ? getAuthToken() : (typeof getCurrentUser === 'function' ? getCurrentUser()?.token : null)) || localStorage.getItem('prepmate_auth_token') || sessionStorage.getItem('prepmate_auth_token');
+            if (token) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/api/cv`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            fileName: file.name,
+                            fileSize: file.size,
+                            fileType: file.name.split('.').pop() || 'pdf',
+                            rawText: rawText || file.name
+                        })
+                    });
+                    if (res.ok) {
+                        const cvData = await res.json();
+                        if (metaEl) metaEl.innerText = `Đã đồng bộ máy chủ • Độ sẵn sàng: ${cvData.readinessScore}%`;
+                        localStorage.setItem('prepmate_uploaded_cv_name', file.name);
+                        showToast('CV đã được lưu thành công trên hệ thống!', 'success');
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('[CV] Upload to server failed:', e);
+                }
+            }
+
+            if (metaEl) metaEl.innerText = `Đã lưu tạm (${(file.size / 1024).toFixed(1)} KB)`;
+            localStorage.setItem('prepmate_uploaded_cv_name', file.name);
+            showToast('Đã tải lên và cập nhật CV!', 'success');
+        }
+
+        function loadProfileData() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                if (typeof showToast === 'function') {
+                    showToast('Vui lòng đăng nhập để xem hồ sơ của bạn.', 'warning');
+                }
+                setTimeout(() => {
+                    window.location.href = '../../features/auth/auth.html';
+                }, 400);
+                return;
+            }
+
+            // 1. Initial render from local cache
+            const userProfile = JSON.parse(localStorage.getItem(getUserStorageKey('user_profile'))) || {
+                fullname: currentUser.fullname,
+                email: currentUser.email,
+                phone: currentUser.phone || '',
+                bio: currentUser.bio || '',
+                targetRole: currentUser.targetRole || '',
+                experienceLevel: currentUser.experienceLevel || ''
+            };
+            document.getElementById('fullname').value = userProfile.fullname || '';
+            document.getElementById('email').value = userProfile.email || '';
+            document.getElementById('phone').value = userProfile.phone || '';
+            document.getElementById('bio').value = userProfile.bio || '';
+            if (document.getElementById('target-role')) document.getElementById('target-role').value = userProfile.targetRole || '';
+            if (document.getElementById('experience-level')) document.getElementById('experience-level').value = userProfile.experienceLevel || '';
+
+            // 2. Fetch authoritative SSOT from server
+            const token = (typeof getAuthToken === 'function' ? getAuthToken() : (typeof getCurrentUser === 'function' ? getCurrentUser()?.token : null)) || localStorage.getItem('prepmate_auth_token') || sessionStorage.getItem('prepmate_auth_token');
+            if (token) {
+                fetch(`${API_BASE_URL}/api/profile`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                .then(res => res.ok ? res.json() : null)
+                .then(serverProfile => {
+                    if (serverProfile) {
+                        document.getElementById('fullname').value = serverProfile.fullname || '';
+                        document.getElementById('email').value = serverProfile.email || '';
+                        document.getElementById('phone').value = serverProfile.phone || '';
+                        document.getElementById('bio').value = serverProfile.bio || '';
+                        if (document.getElementById('target-role')) document.getElementById('target-role').value = serverProfile.targetRole || '';
+                        if (document.getElementById('experience-level')) document.getElementById('experience-level').value = serverProfile.experienceLevel || '';
+                        localStorage.setItem(getUserStorageKey('user_profile'), JSON.stringify(serverProfile));
+                    }
+                })
+                .catch(err => console.warn('[PROFILE] Failed to fetch server profile:', err));
+
+                // Also fetch authoritative CV status from server
+                fetch(`${API_BASE_URL}/api/cv`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                .then(res => res.ok ? res.json() : null)
+                .then(cv => {
+                    if (cv && cv.fileName) {
+                        const fileNameEl = document.getElementById('cv-file-name');
+                        const metaEl = document.getElementById('cv-meta-info');
+                        if (fileNameEl) fileNameEl.innerText = cv.fileName;
+                        if (metaEl) {
+                            const sizeKb = (cv.fileSize / 1024).toFixed(1);
+                            metaEl.innerText = `Đã đồng bộ máy chủ • ${sizeKb} KB • Độ sẵn sàng: ${cv.readinessScore}%`;
+                        }
+                    }
+                })
+                .catch(err => console.warn('[CV] Failed to fetch server CV:', err));
+            }
+
+            const settings = JSON.parse(localStorage.getItem(getUserStorageKey('user_settings'))) || {};
+            if (document.getElementById('difficulty')) document.getElementById('difficulty').value = settings.difficulty || 'medium';
+            if (document.getElementById('num-questions')) document.getElementById('num-questions').value = settings.numQuestions || '4';
+            if (document.getElementById('enable-recording')) document.getElementById('enable-recording').checked = settings.enableRecording || false;
+            const activeGlobalTheme = (typeof getGlobalTheme === 'function') ? getGlobalTheme() : (localStorage.getItem('prepmate_theme') || settings.themeMode || 'light');
+            if (document.getElementById('theme-mode')) document.getElementById('theme-mode').value = activeGlobalTheme;
+            document.getElementById('language').value = settings.language || 'vi';
+
+            if (settings.goal) {
+                const goalEl = document.getElementById('selected-goal');
+                if (goalEl) goalEl.value = settings.goal;
+                document.querySelectorAll('.goal-card').forEach(card => {
+                    if (card.getAttribute('onclick') && card.getAttribute('onclick').includes(settings.goal)) {
+                        card.classList.add('selected');
+                    }
+                });
+            }
+        }
+
+        async function saveProfile() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                showToast('Vui lòng đăng nhập để lưu hồ sơ.', 'warning');
+                window.location.href = '../../features/auth/auth.html';
+                return;
+            }
+
+            const profile = {
+                fullname: document.getElementById('fullname').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                bio: document.getElementById('bio').value.trim(),
+                targetRole: document.getElementById('target-role')?.value.trim() || '',
+                experienceLevel: document.getElementById('experience-level')?.value || ''
+            };
+
+            const token = (typeof getAuthToken === 'function' ? getAuthToken() : (typeof getCurrentUser === 'function' ? getCurrentUser()?.token : null)) || localStorage.getItem('prepmate_auth_token') || sessionStorage.getItem('prepmate_auth_token');
+            if (token) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/api/profile`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(profile)
+                    });
+                    if (res.ok) {
+                        const updated = await res.json();
+                        localStorage.setItem(getUserStorageKey('user_profile'), JSON.stringify(updated));
+                        showToast('Thông tin cá nhân đã được lưu thành công vào hệ thống!', 'success');
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('[PROFILE] Server save failed, falling back to local cache:', e);
+                }
+            }
+
+            // Local fallback
+            localStorage.setItem(getUserStorageKey('user_profile'), JSON.stringify(profile));
+            const users = JSON.parse(localStorage.getItem('prepmate_users')) || {};
+            if (users[currentUser.id]) {
+                users[currentUser.id].profile = profile;
+                localStorage.setItem('prepmate_users', JSON.stringify(users));
+            }
+            showToast('Thông tin cá nhân đã được lưu thành công!', 'success');
+        }
+
+
+        function selectGoal(element, goal) {
+            document.querySelectorAll('.goal-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('selected-goal').value = goal;
+        }
+
+        function saveGoals() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                showToast('Vui lòng đăng nhập để lưu mục tiêu.', 'warning');
+                window.location.href = '../../features/auth/auth.html';
+                return;
+            }
+            const goal = document.getElementById('selected-goal').value;
+            if (!goal) {
+                showToast('Vui lòng chọn mục tiêu!', 'warning');
+                return;
+            }
+            const settings = JSON.parse(localStorage.getItem(getUserStorageKey('user_settings'))) || {};
+            settings.goal = goal;
+            localStorage.setItem(getUserStorageKey('user_settings'), JSON.stringify(settings));
+            showToast('Mục tiêu đã được lưu!', 'success');
+        }
+
+        function savePracticeSettings() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                showToast('Vui lòng đăng nhập để lưu cài đặt luyện tập.', 'warning');
+                window.location.href = '../../features/auth/auth.html';
+                return;
+            }
+            const settings = JSON.parse(localStorage.getItem(getUserStorageKey('user_settings'))) || {};
+            settings.difficulty = document.getElementById('difficulty').value;
+            settings.numQuestions = document.getElementById('num-questions').value;
+            settings.enableRecording = document.getElementById('enable-recording').checked;
+            settings.enableNotifications = document.getElementById('enable-notifications').checked;
+            localStorage.setItem(getUserStorageKey('user_settings'), JSON.stringify(settings));
+            showToast('Cài đặt luyện tập đã được lưu!', 'success');
+        }
+
+        function saveSinglePreference(key, value) {
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                showToast('Vui lòng đăng nhập để thay đổi cài đặt.', 'warning');
+                window.location.href = '../../features/auth/auth.html';
+                return;
+            }
+            const settings = JSON.parse(localStorage.getItem(getUserStorageKey('user_settings'))) || {};
+            settings[key] = value;
+            localStorage.setItem(getUserStorageKey('user_settings'), JSON.stringify(settings));
+
+            if (key === 'themeMode') {
+                localStorage.setItem('prepmate_theme', value);
+                if (typeof applyGlobalTheme === 'function') {
+                    applyGlobalTheme(value);
+                }
+            }
+            if (key === 'language') {
+                applyLanguage(value);
+                // Update dynamic texts
+                if (typeof loadSubscriptionInfo === 'function') loadSubscriptionInfo();
+
+                // Sync dropdowns if changed from elsewhere (like footer)
+                const langSelect = document.getElementById('language');
+                if (langSelect && langSelect.value !== value) langSelect.value = value;
+
+                const footerLangSelect = document.getElementById('footer-lang-select');
+                if (footerLangSelect && footerLangSelect.value !== value) footerLangSelect.value = value;
+            }
+        }
+
+        async function clearHistory() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                showToast('Vui lòng đăng nhập để xóa lịch sử.', 'warning');
+                return;
+            }
+            const confirmed = typeof showConfirmDialog === 'function'
+                ? await showConfirmDialog('Bạn chắc chắn muốn xóa toàn bộ lịch sử phỏng vấn? Hành động này không thể hoàn tác!')
+                : confirm('Bạn chắc chắn muốn xóa toàn bộ lịch sử phỏng vấn?');
+            if (confirmed) {
+                localStorage.removeItem(getUserStorageKey('interview_sessions'));
+                showToast('Lịch sử đã được xóa!', 'success');
+                setTimeout(() => window.location.reload(), 1000);
+            }
+        }
+
+        async function resetAllSettings() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                showToast('Vui lòng đăng nhập để đặt lại cài đặt.', 'warning');
+                return;
+            }
+
+            const confirmed = typeof showConfirmDialog === 'function'
+                ? await showConfirmDialog('Bạn chắc chắn muốn đặt lại tất cả cài đặt? Hành động này không thể hoàn tác!')
+                : confirm('Bạn chắc chắn muốn đặt lại tất cả cài đặt?');
+            if (confirmed) {
+                const keysToRemove = [
+                    getUserStorageKey('user_profile'),
+                    getUserStorageKey('user_settings'),
+                    getUserStorageKey('interview_sessions')
+                ];
+                keysToRemove.forEach(key => localStorage.removeItem(key));
+                showToast('Tất cả cài đặt người dùng đã được đặt lại!', 'success');
+                setTimeout(() => location.reload(), 1000);
+            }
+        }
+
+        function loadSubscriptionInfo() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) return;
+
+            const isProActive = currentUser.subscription === 'pro' && (!currentUser.subscriptionExpiry || new Date(currentUser.subscriptionExpiry) > new Date());
+            const isPro = isProActive
+                || currentUser.role === 'admin'
+                || currentUser.role === 'manager';
+
+            const planEl = document.getElementById('current-plan');
+            const descEl = document.getElementById('plan-description');
+            const expiryBox = document.getElementById('subscription-expiry');
+            const upgradeBtn = document.getElementById('upgrade-btn');
+            const lang = getUserSettings().language || 'vi';
+
+            if (isPro) {
+                if (planEl) {
+                    planEl.innerText = lang === 'en' ? 'Pro Plan' : 'Gói Pro';
+                    planEl.style.background = 'rgba(34, 197, 94, 0.15)';
+                    planEl.style.color = 'var(--success-color, #22c55e)';
+                }
+                if (descEl) {
+                    descEl.innerText = lang === 'en'
+                        ? 'You are using the Pro plan with full advanced AI features.'
+                        : 'Bạn đang sử dụng gói Pro với đầy đủ tính năng AI nâng cao.';
+                    descEl.style.color = 'var(--success-color, #22c55e)';
+                }
+                const planCardBg = document.getElementById('plan-card-bg');
+                if (planCardBg) {
+                    planCardBg.style.background = 'rgba(34, 197, 94, 0.05)';
+                    planCardBg.style.border = '1px solid rgba(34, 197, 94, 0.2)';
+                }
+                if (currentUser.subscriptionExpiry && expiryBox) {
+                    const expiryDate = new Date(currentUser.subscriptionExpiry).toLocaleDateString(lang === 'en' ? 'en-US' : 'vi-VN');
+                    document.getElementById('expiry-date').innerText = expiryDate;
+                    expiryBox.style.display = 'block';
+                    expiryBox.style.background = 'rgba(34, 197, 94, 0.05)';
+                    expiryBox.style.border = '1px solid rgba(34, 197, 94, 0.2)';
+                }
+                if (upgradeBtn) upgradeBtn.style.display = 'none';
+            } else {
+                if (planEl) {
+                    planEl.innerText = lang === 'en' ? 'Free Plan' : 'Gói Free';
+                    planEl.style.background = 'rgba(59, 130, 246, 0.15)';
+                    planEl.style.color = 'var(--primary-color, #3b82f6)';
+                }
+                if (descEl) {
+                    descEl.innerText = lang === 'en'
+                        ? 'You are using the Free plan with basic features'
+                        : 'Bạn đang sử dụng gói Free với các tính năng cơ bản';
+                    descEl.style.color = 'var(--text-secondary)';
+                }
+                const planCardBg = document.getElementById('plan-card-bg');
+                if (planCardBg) {
+                    planCardBg.style.background = 'rgba(59, 130, 246, 0.05)';
+                    planCardBg.style.border = '1px solid rgba(59, 130, 246, 0.2)';
+                }
+                if (expiryBox) expiryBox.style.display = 'none';
+                if (upgradeBtn) upgradeBtn.style.display = '';
+            }
+
+            loadPaymentHistory();
+        }
+
+        function loadPaymentHistory() {
+            const transactions = JSON.parse(localStorage.getItem('prepmate_transactions')) || [];
+            const currentUser = getCurrentUser();
+            const userTransactions = transactions.filter(t => t.user === currentUser.id);
+            const lang = getUserSettings().language || 'vi';
+
+            const historyEl = document.getElementById('payment-history');
+
+            if (userTransactions.length === 0) {
+                historyEl.innerHTML = `<div style="color: var(--text-secondary); font-size: 13px; text-align: center; padding: 20px;">${lang === 'en' ? 'No transactions yet' : 'Chưa có giao dịch'}</div>`;
+                return;
+            }
+
+            historyEl.innerHTML = userTransactions.map(transaction => {
+                const date = new Date(transaction.timestamp).toLocaleDateString(lang === 'en' ? 'en-US' : 'vi-VN');
+                const methodLabels = lang === 'en' ? {
+                    'card': 'Credit Card',
+                    'momo': 'Momo',
+                    'zalopay': 'ZaloPay',
+                    'bank': 'Bank Transfer',
+                    'paypal': 'PayPal',
+                    'stripe': 'Stripe'
+                } : {
+                    'card': 'Thẻ tín dụng',
+                    'momo': 'Momo',
+                    'zalopay': 'ZaloPay',
+                    'bank': 'Chuyển khoản',
+                    'paypal': 'PayPal',
+                    'stripe': 'Stripe'
+                };
+                const methodLabel = methodLabels[transaction.method] || transaction.method;
+                const successText = lang === 'en' ? 'Success' : 'Thành công';
+
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+                        <div>
+                            <div style="color: var(--text-primary); font-size: 13px;">${methodLabel}</div>
+                            <div style="color: var(--text-secondary); font-size: 12px;">${date}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="color: var(--success-color, #22c55e); font-size: 13px; font-weight: 600;">+${transaction.amount.toLocaleString('vi-VN')}</div>
+                            <div style="color: var(--text-secondary); font-size: 11px;">${successText}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initProfilePage();
+            const user = getCurrentUser();
+            const adminLink = document.getElementById('admin-nav-link');
+            const isStaff = user && (user.role === 'admin' || user.role === 'manager');
+            if (isStaff && adminLink) {
+                adminLink.style.display = 'flex';
+            }
+        });
+    </script>
+    <script src="../../shared/js/components.js?v=3"></script>
+</body>
+
+</html>

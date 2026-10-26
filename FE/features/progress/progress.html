@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate - Theo dõi Tiến trình</title>
+    <meta name="description" content="Theo dõi quá trình phát triển kỹ năng phỏng vấn của bạn qua biểu đồ và phân tích AI.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../shared/css/tokens.css">
+    <link rel="stylesheet" href="../../shared/css/base.css">
+    <link rel="stylesheet" href="../../shared/css/layout.css">
+    <link rel="stylesheet" href="../../shared/css/components.css">
+    <link rel="stylesheet" href="../../shared/css/style.css?v=20">
+    <link rel="stylesheet" href="../../features/dashboard/new-dashboard.css?v=20">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="./progress.css?v=20">
+    <script>
+        (function() {
+            var raw = localStorage.getItem('prepmate_current_user') || localStorage.getItem('prepmate_user');
+            var user = null;
+            try { if (raw) user = JSON.parse(raw); } catch (e) {}
+            if (!user || !user.token) {
+                document.documentElement.style.display = 'none';
+                var ret = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+                window.location.replace('../auth/auth.html?redirect=' + ret);
+            }
+        })();
+    </script>
+</head>
+<body class="dashboard-body">
+
+    <!-- SIDEBAR (Auto-rendered by initRoleBasedSidebar() in main.js) -->
+    <aside class="sidebar sidebar-new" id="main-sidebar">
+        <!-- Rendered dynamically by initRoleBasedSidebar() based on user role -->
+    </aside>
+
+    <main class="main-content main-content-new">
+        <div class="progress-hero">
+            <h1><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px;color:var(--pm-primary,#2563eb);"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Theo dõi Tiến trình & Điểm số</h1>
+            <p>Phân tích chi tiết quá trình phát triển năng lực phỏng vấn và phản xạ STAR của bạn.</p>
+        </div>
+
+        <!-- Empty State Notice (Shown when user has 0 interview sessions) -->
+        <div id="progress-empty-alert" class="progress-empty-alert" role="status" aria-live="polite" style="display:none;">
+            <div class="empty-alert-main">
+                <div class="empty-alert-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                </div>
+                <div class="empty-alert-text">
+                    <h3>Chưa có dữ liệu đánh giá phỏng vấn</h3>
+                    <p>Bạn chưa hoàn thành buổi phỏng vấn nào. Vui lòng thực hiện buổi phỏng vấn đầu tiên để hệ thống PrepMate AI tiến hành phân tích điểm số, đo lường năng lực chuẩn STAR và theo dõi tiến trình thực tế của bạn.</p>
+                </div>
+            </div>
+            <a href="../../features/interview/interview-info.html" class="empty-alert-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Thực hiện phỏng vấn đầu tiên
+            </a>
+        </div>
+
+        <!-- Key Stats (Color-Harmonized, Authentic User Data) -->
+        <div class="progress-grid" id="stats-grid">
+            <div class="progress-stat stat-primary">
+                <span class="stat-num" id="stat-total">0</span>
+                <span class="stat-lbl">Tổng buổi luyện</span>
+                <span class="stat-delta primary-pill" id="stat-total-delta">0 buổi</span>
+            </div>
+            <div class="progress-stat stat-success">
+                <span class="stat-num" id="stat-best">0</span>
+                <span class="stat-lbl">Điểm cao nhất</span>
+                <span class="stat-delta neutral" id="stat-best-delta">Chưa có lượt</span>
+            </div>
+            <div class="progress-stat stat-info">
+                <span class="stat-num" id="stat-avg">0</span>
+                <span class="stat-lbl">Điểm trung bình</span>
+                <span class="stat-delta neutral" id="stat-avg-delta">Chưa có lượt</span>
+            </div>
+            <div class="progress-stat stat-growth">
+                <span class="stat-num" id="stat-improve">0%</span>
+                <span class="stat-lbl">Cải thiện so với đầu</span>
+                <span class="stat-delta neutral" id="stat-improve-delta">Chưa có lượt</span>
+            </div>
+            <div class="progress-stat stat-streak">
+                <span class="stat-num" id="stat-streak">0🔥</span>
+                <span class="stat-lbl">Streak hiện tại</span>
+                <span class="stat-delta streak-pill" id="stat-streak-label">0 ngày liên tiếp</span>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+            <!-- Score Trend -->
+            <div class="chart-card">
+                <h3>
+                    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Xu hướng điểm số qua các buổi luyện</span>
+                </h3>
+                <div class="chart-canvas-wrap">
+                    <canvas id="trend-chart"></canvas>
+                    <div id="trend-empty-state" class="chart-empty-state" role="status" aria-live="polite" style="display:none;">
+                        <div class="chart-empty-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"/>
+                                <line x1="12" y1="20" x2="12" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
+                        </div>
+                        <h4>Chưa có dữ liệu xu hướng</h4>
+                        <p>Biểu đồ theo dõi sẽ được vẽ tự động sau khi bạn hoàn thành buổi phỏng vấn đầu tiên.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Radar -->
+            <div class="chart-card">
+                <h3>
+                    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Phân tích năng lực chuẩn STAR</span>
+                </h3>
+                <div class="chart-canvas-wrap">
+                    <canvas id="radar-chart"></canvas>
+                    <div id="radar-empty-state" class="chart-empty-state" role="status" aria-live="polite" style="display:none;">
+                        <div class="chart-empty-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="12 2 2 8.5 2 15.5 12 22 22 15.5 22 8.5 12 2"/>
+                                <line x1="12" y1="22" x2="12" y2="15.5"/>
+                                <polyline points="22 8.5 12 15.5 2 8.5"/>
+                                <polyline points="2 15.5 12 8.5 22 15.5"/>
+                                <line x1="12" y1="2" x2="12" y2="8.5"/>
+                            </svg>
+                        </div>
+                        <h4>Chưa có dữ liệu năng lực STAR</h4>
+                        <p>Hệ thống AI sẽ phân tích 5 tiêu chí năng lực dựa trên câu trả lời thực tế của bạn.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Heatmap - 1 Month View with Month/Year Selectors -->
+        <div class="heatmap-section">
+            <div class="heatmap-card">
+                <div class="heatmap-header">
+                    <div class="heatmap-title-wrap">
+                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Hoạt động luyện tập theo tháng</h3>
+                        <span id="heatmap-month-summary" class="heatmap-summary-badge">0 buổi trong tháng</span>
+                    </div>
+                    <div class="heatmap-controls">
+                        <button type="button" id="heatmap-prev-btn" class="heatmap-nav-btn" title="Tháng trước">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <select id="heatmap-month-select" class="heatmap-select" aria-label="Chọn tháng">
+                            <option value="0">Tháng 1</option>
+                            <option value="1">Tháng 2</option>
+                            <option value="2">Tháng 3</option>
+                            <option value="3">Tháng 4</option>
+                            <option value="4">Tháng 5</option>
+                            <option value="5">Tháng 6</option>
+                            <option value="7">Tháng 7</option>
+                            <option value="7">Tháng 8</option>
+                            <option value="8">Tháng 9</option>
+                            <option value="9">Tháng 10</option>
+                            <option value="10">Tháng 11</option>
+                            <option value="11">Tháng 12</option>
+                        </select>
+                        <select id="heatmap-year-select" class="heatmap-select" aria-label="Chọn năm"></select>
+                        <button type="button" id="heatmap-next-btn" class="heatmap-nav-btn" title="Tháng sau">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                        <button type="button" id="heatmap-today-btn" class="heatmap-today-btn" title="Về tháng hiện tại">Hôm nay</button>
+                    </div>
+                </div>
+
+                <!-- Weekday Headers (Monday to Sunday) -->
+                <div class="heatmap-weekdays">
+                    <span class="heatmap-weekday">T2</span>
+                    <span class="heatmap-weekday">T3</span>
+                    <span class="heatmap-weekday">T4</span>
+                    <span class="heatmap-weekday">T5</span>
+                    <span class="heatmap-weekday">T6</span>
+                    <span class="heatmap-weekday">T7</span>
+                    <span class="heatmap-weekday text-weekend">CN</span>
+                </div>
+
+                <!-- Month Grid -->
+                <div class="heatmap-month-grid" id="heatmap-grid"></div>
+            </div>
+        </div>
+
+        <!-- Streak + Badges -->
+        <div class="streak-badges-row">
+            <div class="streak-card">
+                <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;color:#f59e0b;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>Streak Luyện tập</h3>
+                <div class="streak-display">
+                    <span class="streak-fire">🔥</span>
+                    <div>
+                        <div class="streak-count" id="streak-count">0</div>
+                        <div class="streak-label">Ngày luyện tập liên tiếp</div>
+                    </div>
+                </div>
+                <div style="margin-top:20px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+                    <div id="streak-bar" style="height:6px;background:linear-gradient(90deg,#f59e0b,#d97706);border-radius:10px;width:0%;transition:width 1s;"></div>
+                </div>
+                <p style="font-size:13px;color:#64748b;margin-top:8px;" id="streak-next">Luyện tập hôm nay để bắt đầu streak!</p>
+            </div>
+            <div class="streak-card">
+                <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;color:#f59e0b;"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>Thành tích đạt được</h3>
+                <div class="badges-grid" id="badges-grid"></div>
+            </div>
+        </div>
+
+        <!-- AI Improvement Suggestions -->
+        <div class="improvements-section">
+            <div class="improvements-card">
+                <div class="improvements-header">
+                    <div class="improvements-header-left">
+                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;color:#7c3aed;"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>Kế hoạch Cải thiện Năng lực từ AI</h3>
+                        <p class="improvements-subtitle">Chẩn đoán chuyên sâu từ các buổi phỏng vấn thực tế và đề xuất hành động cụ thể để nâng cao điểm số.</p>
+                    </div>
+                    <div class="improvements-badge">
+                        <span class="ai-sparkle">✨</span> Phân tích theo năng lực thực tế
+                    </div>
+                </div>
+                <div id="improvements-list" class="improvements-grid"></div>
+            </div>
+        </div>
+
+        <!-- AI Improvement Plan Modal (Detail Popup) -->
+        <div id="improvement-modal-overlay" class="imp-modal-overlay" onclick="handleModalOverlayClick(event)">
+            <div class="imp-modal-container" role="dialog" aria-modal="true" aria-labelledby="imp-modal-title">
+                <div class="imp-modal-header">
+                    <div class="imp-modal-header-info">
+                        <div class="imp-modal-meta">
+                            <span id="imp-modal-tag" class="imp-tag"></span>
+                            <span id="imp-modal-score" class="imp-score-pill"></span>
+                        </div>
+                        <h3 id="imp-modal-title" class="imp-modal-title"></h3>
+                    </div>
+                    <button type="button" class="imp-modal-close" onclick="closeImprovementModal()" aria-label="Đóng popup">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+
+                <div class="imp-modal-body">
+                    <div class="imp-modal-section">
+                        <div class="imp-modal-section-title">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            Chẩn đoán chuyên sâu từ PrepMate AI
+                        </div>
+                        <div id="imp-modal-diagnosis" class="imp-modal-diagnosis-text"></div>
+                    </div>
+
+                    <div class="imp-modal-section">
+                        <div class="imp-modal-section-title">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            Kế hoạch hành động cụ thể từng bước
+                        </div>
+                        <ul id="imp-modal-steps" class="imp-modal-steps-list"></ul>
+                    </div>
+                </div>
+
+                <div class="imp-modal-footer">
+                    <button type="button" class="imp-modal-btn-close" onclick="closeImprovementModal()">Đóng</button>
+                    <a id="imp-modal-action-btn" href="#" class="imp-modal-btn-action">
+                        <span id="imp-modal-action-text">Bắt đầu thực hiện ngay</span>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <app-workspace-footer></app-workspace-footer>
+    </main>
+
+    <script src="../../shared/js/main.js?v=20"></script>
+    <script src="../../features/auth/auth.js?v=20"></script>
+    <script>
+    function getChartColors() {
+        const isDark = document.body.classList.contains('dark-mode') ||
+                       document.body.classList.contains('dark-theme') ||
+                       document.documentElement.getAttribute('data-theme') === 'dark';
+        return {
+            purple: '#2563eb',
+            purpleLight: isDark ? 'rgba(37, 99, 235, 0.25)' : 'rgba(29, 78, 216, 0.1)',
+            indigo: '#4f46e5',
+            green: '#059669',
+            blue: isDark ? '#60a5fa' : '#2563eb',
+            yellow: '#d97706',
+            red: '#dc2626',
+            grid: isDark ? '#334155' : '#f1f5f9',
+            text: isDark ? '#94a3b8' : '#64748b'
+        };
+    }
+
+    const BADGES_DEFINITION = [
+        { id:'first',  icon:'🎯', name:'Bước đầu',    desc:'Hoàn thành buổi đầu',   condition: s => s.length >= 1 },
+        { id:'five',   icon:'⭐', name:'Cần mẫn',     desc:'5 buổi luyện',           condition: s => s.length >= 5 },
+        { id:'ten',    icon:'💎', name:'Chuyên tâm',  desc:'10 buổi luyện',          condition: s => s.length >= 10 },
+        { id:'score80',icon:'🎖️', name:'Xuất sắc',   desc:'Đạt 80+ điểm',           condition: s => s.some(x => (x.overallScore||0) >= 80) },
+        { id:'score90',icon:'🏆', name:'Đỉnh cao',   desc:'Đạt 90+ điểm',           condition: s => s.some(x => (x.overallScore||0) >= 90) },
+        { id:'streak3',icon:'🔥', name:'On Fire',    desc:'3 ngày liên tiếp',        condition: (s,streak) => streak >= 3 },
+        { id:'streak7',icon:'⚡', name:'Unstoppable',desc:'7 ngày liên tiếp',        condition: (s,streak) => streak >= 7 },
+        { id:'jobs3',  icon:'💼', name:'Đa dạng',    desc:'Luyện 3 vị trí khác nhau',condition: s => new Set(s.map(x=>x.jobTitle)).size >= 3 },
+        { id:'night',  icon:'🌙', name:'Cú đêm',     desc:'Luyện sau 10 giờ tối',   condition: s => s.some(x => { const d = new Date(x.date||0); const h = d.getHours(); return !isNaN(d.getTime()) && (h >= 22 || h <= 4); }) },
+        { id:'perfect',icon:'💯', name:'Hoàn hảo',   desc:'100 điểm',               condition: s => s.some(x => (x.overallScore||0) >= 100) }
+    ];
+
+    function normalizeSession(s) {
+        if (!s) return null;
+        let overallRaw = s.overallScore ?? s.score ?? s.scores?.overall ?? s.report?.overallEvaluation?.normalizedScore ?? s.report?.overallEvaluation?.score ?? s.report?.overallScore ?? s.report?.score ?? 0;
+        let overall = Number(overallRaw);
+        if (overall <= 10 && overall > 0) overall = overall * 10;
+        overall = Math.round(overall);
+
+        let techRaw = s.techScore ?? s.scores?.tech ?? s.scores?.technical ?? s.report?.techScore ?? 0;
+        let tech = Number(techRaw);
+        if (tech <= 10 && tech > 0) tech = tech * 10;
+        tech = Math.round(tech);
+
+        let commRaw = s.commScore ?? s.scores?.comm ?? s.scores?.communication ?? s.report?.commScore ?? 0;
+        let comm = Number(commRaw);
+        if (comm <= 10 && comm > 0) comm = comm * 10;
+        comm = Math.round(comm);
+
+        let softRaw = s.softScore ?? s.scores?.soft ?? s.scores?.softSkills ?? s.report?.softScore ?? 0;
+        let soft = Number(softRaw);
+        if (soft <= 10 && soft > 0) soft = soft * 10;
+        soft = Math.round(soft);
+
+        let starRaw = s.starScore ?? s.scores?.star ?? s.report?.starScore ?? 0;
+        let star = Number(starRaw);
+        if (star <= 10 && star > 0) star = star * 10;
+        star = Math.round(star);
+
+        let rawDate = s.date || s.startTime || s.createdAt || null;
+        let validDate = rawDate ? new Date(rawDate) : new Date();
+        if (isNaN(validDate.getTime())) {
+            validDate = new Date();
+        }
+
+        const isCompleted = (s.status === 'completed') || overall > 0 || (s.report && (s.report.overallEvaluation?.normalizedScore > 0 || s.report.overallScore > 0 || s.report.score > 0));
+
+        return {
+            ...s,
+            id: s.id || s.backendSessionId || ('session_' + validDate.getTime()),
+            jobTitle: s.jobTitle || s.jobRole || s.role || 'Phỏng vấn AI',
+            status: isCompleted ? 'completed' : (s.status || 'in_progress'),
+            overallScore: overall,
+            score: overall,
+            techScore: tech,
+            commScore: comm,
+            softScore: soft,
+            starScore: star,
+            scores: {
+                tech,
+                comm,
+                soft,
+                star,
+                overall
+            },
+            date: validDate.toISOString(),
+            isCompleted: isCompleted && overall > 0
+        };
+    }
+
+    async function fetchUserCompletedSessions() {
+        const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+        let localSessions = [];
+        try {
+            if (typeof getUserSessions === 'function') {
+                localSessions = getUserSessions() || [];
+            }
+        } catch(e) {
+            localSessions = [];
+        }
+
+        if (!localSessions.length) {
+            try {
+                localSessions = JSON.parse(localStorage.getItem('interview_sessions')) || [];
+            } catch(e) {
+                localSessions = [];
+            }
+        }
+
+        let allSessions = [...localSessions];
+
+        // Attempt backend sync if user is logged in
+        if (user && (user.id || user._id || user.userId)) {
+            const uid = user.id || user._id || user.userId;
+            try {
+                const apiBase = (typeof API_BASE_URL === 'string') ? API_BASE_URL : ((typeof window !== 'undefined' && typeof window.API_BASE_URL === 'string') ? window.API_BASE_URL : '');
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2500);
+                const res = await fetch(`${apiBase}/api/sessions/user/${encodeURIComponent(uid)}`, {
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                if (res.ok) {
+                    const beSessions = await res.json();
+                    if (Array.isArray(beSessions)) {
+                        beSessions.forEach(be => {
+                            const exists = allSessions.some(ls =>
+                                (ls.id && ls.id === be.id) ||
+                                (ls.backendSessionId && ls.backendSessionId === be.id)
+                            );
+                            if (!exists) {
+                                allSessions.push(be);
+                            }
+                        });
+                    }
+                }
+            } catch(err) {
+                console.warn('[PROGRESS] Backend session sync fallback:', err.message);
+            }
+        }
+
+        const normalized = allSessions.map(normalizeSession).filter(Boolean);
+        const completedSessions = normalized.filter(s => s.isCompleted && s.overallScore > 0);
+        completedSessions.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        return completedSessions;
+    }
+
+    function calcStreak(sessions) {
+        if (!sessions.length) return 0;
+        const today = new Date(); today.setHours(0,0,0,0);
+        const days = new Set(sessions.map(s => {
+            const d = new Date(s.date || 0);
+            d.setHours(0,0,0,0);
+            return d.getTime();
+        }));
+        let streak = 0;
+        let cur = new Date(today);
+        if (!days.has(cur.getTime())) {
+            cur.setDate(cur.getDate() - 1);
+        }
+        while (true) {
+            if (days.has(cur.getTime())) {
+                streak++;
+                cur.setDate(cur.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+        return streak;
+    }
+
+    let heatmapCurrentYear = new Date().getFullYear();
+    let heatmapCurrentMonth = new Date().getMonth();
+    let heatmapSessionsCache = [];
+
+    function initMonthlyHeatmap(sessions) {
+        heatmapSessionsCache = sessions || [];
+        const monthSelect = document.getElementById('heatmap-month-select');
+        const yearSelect = document.getElementById('heatmap-year-select');
+        const prevBtn = document.getElementById('heatmap-prev-btn');
+        const nextBtn = document.getElementById('heatmap-next-btn');
+        const todayBtn = document.getElementById('heatmap-today-btn');
+
+        if (!monthSelect || !yearSelect) return;
+
+        // Build list of years based on sessions + current year
+        const currentYear = new Date().getFullYear();
+        const yearsSet = new Set([currentYear, currentYear - 1, currentYear + 1]);
+        heatmapSessionsCache.forEach(s => {
+            const d = new Date(s.date || 0);
+            if (!isNaN(d.getTime())) {
+                yearsSet.add(d.getFullYear());
+            }
+        });
+        const sortedYears = Array.from(yearsSet).sort((a,b) => a - b);
+        yearSelect.innerHTML = sortedYears.map(y => `<option value="${y}">${y}</option>`).join('');
+
+        // If user has recent sessions, default to latest session date or current date
+        if (heatmapSessionsCache.length > 0) {
+            const latest = heatmapSessionsCache[heatmapSessionsCache.length - 1];
+            const ld = new Date(latest.date || 0);
+            if (!isNaN(ld.getTime())) {
+                heatmapCurrentYear = ld.getFullYear();
+                heatmapCurrentMonth = ld.getMonth();
+            }
+        }
+
+        monthSelect.value = String(heatmapCurrentMonth);
+        yearSelect.value = String(heatmapCurrentYear);
+
+        // Event listeners
+        monthSelect.onchange = () => {
+            heatmapCurrentMonth = parseInt(monthSelect.value, 10);
+            renderMonthlyGrid();
+        };
+
+        yearSelect.onchange = () => {
+            heatmapCurrentYear = parseInt(yearSelect.value, 10);
+            renderMonthlyGrid();
+        };
+
+        if (prevBtn) {
+            prevBtn.onclick = () => {
+                heatmapCurrentMonth--;
+                if (heatmapCurrentMonth < 0) {
+                    heatmapCurrentMonth = 11;
+                    heatmapCurrentYear--;
+                    if (!sortedYears.includes(heatmapCurrentYear)) {
+                        sortedYears.unshift(heatmapCurrentYear);
+                        yearSelect.innerHTML = sortedYears.map(y => `<option value="${y}">${y}</option>`).join('');
+                    }
+                }
+                monthSelect.value = String(heatmapCurrentMonth);
+                yearSelect.value = String(heatmapCurrentYear);
+                renderMonthlyGrid();
+            };
+        }
+
+        if (nextBtn) {
+            nextBtn.onclick = () => {
+                heatmapCurrentMonth++;
+                if (heatmapCurrentMonth > 11) {
+                    heatmapCurrentMonth = 0;
+                    heatmapCurrentYear++;
+                    if (!sortedYears.includes(heatmapCurrentYear)) {
+                        sortedYears.push(heatmapCurrentYear);
+                        yearSelect.innerHTML = sortedYears.map(y => `<option value="${y}">${y}</option>`).join('');
+                    }
+                }
+                monthSelect.value = String(heatmapCurrentMonth);
+                yearSelect.value = String(heatmapCurrentYear);
+                renderMonthlyGrid();
+            };
+        }
+
+        if (todayBtn) {
+            todayBtn.onclick = () => {
+                const now = new Date();
+                heatmapCurrentYear = now.getFullYear();
+                heatmapCurrentMonth = now.getMonth();
+                monthSelect.value = String(heatmapCurrentMonth);
+                yearSelect.value = String(heatmapCurrentYear);
+                renderMonthlyGrid();
+            };
+        }
+
+        renderMonthlyGrid();
+    }
+
+    function renderMonthlyGrid() {
+        const grid = document.getElementById('heatmap-grid');
+        const summaryBadge = document.getElementById('heatmap-month-summary');
+        if (!grid) return;
+
+        const year = heatmapCurrentYear;
+        const month = heatmapCurrentMonth;
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        // Count sessions by day for this month
+        const dayCounts = {};
+        let totalMonthSessions = 0;
+        heatmapSessionsCache.forEach(s => {
+            const d = new Date(s.date || 0);
+            if (!isNaN(d.getTime())) {
+                if (d.getFullYear() === year && d.getMonth() === month) {
+                    const day = d.getDate();
+                    dayCounts[day] = (dayCounts[day] || 0) + 1;
+                    totalMonthSessions++;
+                }
+            }
+        });
+
+        if (summaryBadge) {
+            summaryBadge.textContent = `${totalMonthSessions} buổi trong tháng`;
+        }
+
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        // Calculate weekday offset for day 1 (0 = Sunday, 1 = Monday, ...)
+        const firstDayOfWeek = new Date(year, month, 1).getDay();
+        // Monday-first offset: Mon=0, Tue=1, ..., Sun=6
+        const startOffset = (firstDayOfWeek === 0) ? 6 : (firstDayOfWeek - 1);
+
+        let html = '';
+        // Leading blank cells
+        for (let i = 0; i < startOffset; i++) {
+            html += `<div class="heatmap-day-cell empty"></div>`;
+        }
+
+        // Days in month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const cnt = dayCounts[day] || 0;
+            const level = cnt === 0 ? 0 : cnt === 1 ? 1 : cnt === 2 ? 2 : cnt === 3 ? 3 : 4;
+            const cellDate = new Date(year, month, day);
+            cellDate.setHours(0,0,0,0);
+            const isToday = cellDate.getTime() === today.getTime();
+            const dateStr = `${String(day).padStart(2,'0')}/${String(month + 1).padStart(2,'0')}/${year}`;
+            const title = `Ngày ${dateStr}: ${cnt} buổi phỏng vấn`;
+
+            html += `
+                <div class="heatmap-day-cell level-${level}${isToday ? ' is-today' : ''}" title="${title}">
+                    <span class="heatmap-day-num">${day}${isToday ? ' •' : ''}</span>
+                    ${cnt > 0 ? `<span class="heatmap-day-badge">${cnt} buổi</span>` : ''}
+                </div>
+            `;
+        }
+
+        grid.innerHTML = html;
+    }
+
+    function renderBadges(sessions, streak) {
+        const grid = document.getElementById('badges-grid');
+        if (!grid) return;
+        grid.innerHTML = BADGES_DEFINITION.map(b => {
+            const earned = b.condition(sessions, streak);
+            return `<div class="badge-item${earned?' earned':' locked'}" title="${b.desc}">
+                <span class="badge-icon">${b.icon}</span>
+                <span class="badge-name">${b.name}</span>
+            </div>`;
+        }).join('');
+    }
+
+    let trendChartInstance = null;
+    function renderTrendChart(sessions) {
+        const canvas = document.getElementById('trend-chart');
+        const emptyState = document.getElementById('trend-empty-state');
+        if (!sessions || !sessions.length) {
+            if (canvas) canvas.style.display = 'none';
+            if (emptyState) emptyState.style.display = 'flex';
+            if (trendChartInstance) { trendChartInstance.destroy(); trendChartInstance = null; }
+            return;
+        }
+        if (canvas) canvas.style.display = 'block';
+        if (emptyState) emptyState.style.display = 'none';
+
+        if (trendChartInstance) trendChartInstance.destroy();
+        const ctx = canvas.getContext('2d');
+        const sorted = [...sessions].sort((a,b) => new Date(a.date||0).getTime() - new Date(b.date||0).getTime());
+        const labels = sorted.map((s,i) => {
+            const d = new Date(s.date || 0);
+            const dayMonth = !isNaN(d.getTime()) ? `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}` : '';
+            return `Buổi ${i+1}${dayMonth ? ` (${dayMonth})` : ''}`;
+        });
+        const scores = sorted.map(s => s.overallScore || 0);
+        const techScores = sorted.map(s => s.techScore || 0);
+        const chartColors = getChartColors();
+
+        trendChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Điểm tổng thể',
+                        data: scores,
+                        borderColor: chartColors.purple,
+                        backgroundColor: chartColors.purpleLight,
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: chartColors.purple,
+                        borderWidth: 2.5
+                    },
+                    {
+                        label: 'Kỹ năng chuyên môn',
+                        data: techScores,
+                        borderColor: chartColors.blue,
+                        backgroundColor: 'transparent',
+                        fill: false,
+                        tension: 0.35,
+                        pointRadius: 4,
+                        borderWidth: 1.5,
+                        borderDash: [5,3]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: chartColors.text, font: { family: 'Outfit', size: 12 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(items) {
+                                if (!items.length) return '';
+                                const idx = items[0].dataIndex;
+                                const s = sorted[idx];
+                                return `${labels[idx]}: ${s.jobTitle || 'Phỏng vấn'}`;
+                            },
+                            label: function(item) {
+                                return ` ${item.dataset.label}: ${item.parsed.y} / 100 điểm`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: chartColors.text, font: { family: 'Outfit' } },
+                        grid: { color: chartColors.grid }
+                    },
+                    y: {
+                        ticks: { color: chartColors.text, font: { family: 'Outfit' } },
+                        grid: { color: chartColors.grid },
+                        min: 0,
+                        max: 100
+                    }
+                }
+            }
+        });
+    }
+
+    let radarChartInstance = null;
+    function renderRadarChart(sessions) {
+        const canvas = document.getElementById('radar-chart');
+        const emptyState = document.getElementById('radar-empty-state');
+        if (!sessions || !sessions.length) {
+            if (canvas) canvas.style.display = 'none';
+            if (emptyState) emptyState.style.display = 'flex';
+            if (radarChartInstance) { radarChartInstance.destroy(); radarChartInstance = null; }
+            return;
+        }
+        if (canvas) canvas.style.display = 'block';
+        if (emptyState) emptyState.style.display = 'none';
+
+        if (radarChartInstance) radarChartInstance.destroy();
+        const ctx = canvas.getContext('2d');
+        const avg = arr => arr.length ? Math.round(arr.reduce((a,b)=>a+b,0) / arr.length) : 0;
+        const chartColors = getChartColors();
+
+        let datasets = [];
+        if (sessions.length === 1) {
+            const s = sessions[0];
+            const current = [
+                s.techScore || s.overallScore || 0,
+                s.commScore || s.overallScore || 0,
+                s.softScore || s.overallScore || 0,
+                s.starScore || s.overallScore || 0,
+                s.overallScore || 0
+            ];
+            datasets = [
+                {
+                    label: `Đánh giá: ${s.jobTitle || 'Buổi 1'}`,
+                    data: current,
+                    borderColor: chartColors.purple,
+                    backgroundColor: chartColors.purpleLight,
+                    pointBackgroundColor: chartColors.purple,
+                    pointRadius: 4,
+                    borderWidth: 2
+                }
+            ];
+        } else {
+            const mid = Math.floor(sessions.length / 2);
+            const firstHalf = sessions.slice(0, mid);
+            const secondHalf = sessions.slice(mid);
+            const current = [
+                avg(secondHalf.map(s => s.techScore || 0)),
+                avg(secondHalf.map(s => s.commScore || 0)),
+                avg(secondHalf.map(s => s.softScore || 0)),
+                avg(secondHalf.map(s => s.starScore || 0)),
+                avg(secondHalf.map(s => s.overallScore || 0))
+            ];
+            const baseline = [
+                avg(firstHalf.map(s => s.techScore || 0)),
+                avg(firstHalf.map(s => s.commScore || 0)),
+                avg(firstHalf.map(s => s.softScore || 0)),
+                avg(firstHalf.map(s => s.starScore || 0)),
+                avg(firstHalf.map(s => s.overallScore || 0))
+            ];
+            datasets = [
+                {
+                    label: 'Giai đoạn gần đây',
+                    data: current,
+                    borderColor: chartColors.purple,
+                    backgroundColor: chartColors.purpleLight,
+                    pointBackgroundColor: chartColors.purple,
+                    pointRadius: 4,
+                    borderWidth: 2
+                },
+                {
+                    label: 'Giai đoạn đầu',
+                    data: baseline,
+                    borderColor: '#94a3b8',
+                    backgroundColor: 'rgba(148, 163, 184, 0.12)',
+                    pointBackgroundColor: '#94a3b8',
+                    pointRadius: 3,
+                    borderWidth: 1.5,
+                    borderDash: [4, 3]
+                }
+            ];
+        }
+
+        const latestJob = (sessions && sessions.length) ? (sessions[sessions.length - 1].jobTitle || '') : '';
+        function getProgressDomainLabel(jobTitle) {
+            if (!jobTitle) return 'Chuyên môn';
+            const text = String(jobTitle).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            if (text.includes("software") || text.includes("developer") || text.includes("engineer") || text.includes("backend") || text.includes("frontend") || text.includes("fullstack") || text.includes("lap trinh") || text.includes("devops") || text.includes("cloud") || text.includes("qa") || text.includes("tester") || text.includes("kiem thu") || text.includes("security") || text.includes("mobile") || text.includes("it")) {
+                return 'Kỹ thuật';
+            }
+            if (text.includes("marketing") || text.includes("seo") || text.includes("ads") || text.includes("digital marketing") || text.includes("content") || text.includes("pr") || text.includes("truyen thong")) {
+                return 'Marketing';
+            }
+            if (text.includes("finance") || text.includes("tai chinh") || text.includes("ke toan") || text.includes("kiem toan") || text.includes("accountant") || text.includes("audit") || text.includes("ngan hang") || text.includes("bank")) {
+                return 'Tài chính';
+            }
+            if (text.includes("business analyst") || text.includes("ba") || text.includes("phan tich nghiep vu")) {
+                return 'Phân tích Nghiệp vụ';
+            }
+            if (text.includes("data") || text.includes("du lieu") || text.includes("scientist") || text.includes("analyst")) {
+                return 'Phân tích Dữ liệu';
+            }
+            if (text.includes("hr") || text.includes("nhan su") || text.includes("tuyen dung") || text.includes("talent") || text.includes("people")) {
+                return 'Nhân sự';
+            }
+            if (text.includes("operation") || text.includes("van hanh") || text.includes("supply chain") || text.includes("chuoi cung ung") || text.includes("logistics")) {
+                return 'Vận hành';
+            }
+            if (text.includes("sales") || text.includes("kinh doanh") || text.includes("ban hang")) {
+                return 'Kinh doanh';
+            }
+            if (text.includes("design") || text.includes("ui") || text.includes("ux") || text.includes("do hoa")) {
+                return 'Thiết kế';
+            }
+            if (text.includes("product") || text.includes("project") || text.includes("du an") || text.includes("san pham")) {
+                return 'Sản phẩm & Dự án';
+            }
+            return 'Chuyên môn';
+        }
+        const domainLabel = getProgressDomainLabel(latestJob);
+
+        radarChartInstance = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: [domainLabel, 'Giao tiếp', 'Kỹ năng mềm', 'STAR', 'Tổng thể'],
+                datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: chartColors.text, font: { family: 'Outfit', size: 12 } }
+                    }
+                },
+                scales: {
+                    r: {
+                        ticks: { color: chartColors.text, backdropColor: 'transparent', stepSize: 20 },
+                        grid: { color: chartColors.grid },
+                        angleLines: { color: chartColors.grid },
+                        pointLabels: { color: chartColors.text, font: { family: 'Outfit', size: 12, weight: '600' } },
+                        min: 0,
+                        max: 100
+                    }
+                }
+            }
+        });
+    }
+
+    function escapeHtml(value) {
+        if (value === null || value === undefined) return '';
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function renderImprovements(sessions) {
+        const list = document.getElementById('improvements-list');
+        if (!list) return;
+
+        if (!sessions || !sessions.length) {
+            list.innerHTML = `
+                <div class="empty-improvements-box" style="grid-column: 1 / -1;">
+                    <div class="empty-imp-main">
+                        <div class="empty-imp-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg></div>
+                        <div class="empty-imp-content">
+                            <h4>Chưa có dữ liệu đánh giá thực tế</h4>
+                            <p>Hệ thống AI sẽ tự động phân tích điểm mạnh, điểm yếu và mức độ hoàn thiện cấu trúc STAR từ buổi phỏng vấn thực tế của bạn để đưa ra những đề xuất cải thiện chuẩn xác nhất.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        const latest = sessions[sessions.length - 1];
+        const cards = [];
+
+        // 1. Phân tích cụ thể câu hỏi cần bổ sung từ buổi gần nhất (nếu có trong knowledgeAnalysis)
+        const weakQ = latest.knowledgeAnalysis && latest.knowledgeAnalysis.find(q =>
+            q.rating === 'Chưa tốt' || q.rating === 'Cần bổ sung' || q.rating === 'Trung bình'
+        );
+        if (weakQ && weakQ.question) {
+            const shortQ = weakQ.question.length > 60 ? weakQ.question.substring(0, 60) + '...' : weakQ.question;
+            cards.push({
+                cardClass: 'card-urgent',
+                tagClass: 'tag-urgent',
+                tagText: '🚨 Cần khắc phục',
+                scorePill: weakQ.rating || 'Chưa tốt',
+                title: `Khắc phục câu: "${escapeHtml(shortQ)}"`,
+                diagnosis: weakQ.analysis ? escapeHtml(weakQ.analysis) : 'Câu trả lời chưa nêu bật được giải pháp chuyên môn cụ thể và thiếu minh chứng thực tiễn.',
+                steps: [
+                    weakQ.supplement ? `Kiến thức cần bổ sung: ${escapeHtml(weakQ.supplement)}` : 'Hệ thống hóa lại khái niệm và quy trình xử lý chuẩn.',
+                    'Luyện tập trả lời lại câu hỏi này bằng cách nêu kèm tình huống thực tế bạn từng giải quyết.'
+                ],
+                btnText: 'Luyện lại câu hỏi này →',
+                link: '../../features/interview/interview-info.html'
+            });
+        }
+
+        // 2. Chẩn đoán nhận xét chuyên sâu từ chuyên gia AI trong buổi phỏng vấn gần nhất
+        if (latest && latest.analysis && (latest.analysis.improvements || latest.analysis.suggestion)) {
+            const feedbackText = latest.analysis.improvements || latest.analysis.suggestion;
+            cards.push({
+                cardClass: 'card-urgent',
+                tagClass: 'tag-urgent',
+                tagText: '🎯 Buổi gần nhất',
+                scorePill: `${latest.overallScore || 0}/100 điểm`,
+                title: `Tối ưu trọng tâm: ${escapeHtml(latest.jobTitle || 'Phỏng vấn')}`,
+                diagnosis: escapeHtml(feedbackText),
+                steps: [
+                    'Rà soát lại toàn bộ phản hồi chấm điểm của hệ thống trước khi bắt đầu lượt mới.',
+                    'Tập trung khắc phục các điểm bị trừ điểm đã được AI nêu rõ ở buổi phỏng vấn vừa qua.'
+                ],
+                btnText: 'Luyện tập lại lượt này →',
+                link: '../../features/interview/interview-info.html'
+            });
+        }
+
+        // 3. Phân tích Năng lực STAR (Behavioral & Situational Questions)
+        const avgStar = Math.round(sessions.reduce((a,s)=>a+(s.starScore||s.overallScore||0),0)/sessions.length);
+        const avgComm = Math.round(sessions.reduce((a,s)=>a+(s.commScore||s.overallScore||0),0)/sessions.length);
+
+        if (avgStar < 80 || avgComm < 80) {
+            cards.push({
+                cardClass: 'card-star',
+                tagClass: 'tag-star',
+                tagText: '💬 Chuẩn STAR',
+                scorePill: `${avgStar}/100 điểm`,
+                title: 'Chuẩn hóa cấu trúc trả lời hành vi theo STAR',
+                diagnosis: 'Câu trả lời tình huống của bạn còn mang tính liệt kê công việc, thiếu phần Hành động cá nhân (Action) và Kết quả định lượng (Result).',
+                steps: [
+                    'Situation (15s): Tóm tắt bối cảnh và quy mô dự án/vấn đề.',
+                    'Task (15s): Mục tiêu và thử thách chính bạn được giao giải quyết.',
+                    'Action (60s): Các bước cụ thể BẠN đã thực hiện (dùng "Tôi đã...", tránh nói chung chung "Team đã...").',
+                    'Result (20s): Nêu số liệu thực chứng (tiết kiệm X% thời gian, nâng cao Y% hiệu năng).'
+                ],
+                btnText: 'Xem ngân hàng câu hỏi STAR →',
+                link: '../../features/qbank/qbank.html?category=behavioral'
+            });
+        }
+
+        // 4. Phân tích Chuyên môn (Professional Competency)
+        const avgTech = Math.round(sessions.reduce((a,s)=>a+(s.techScore||s.overallScore||0),0)/sessions.length);
+        if (avgTech < 80 || cards.length < 3) {
+            cards.push({
+                cardClass: 'card-tech',
+                tagClass: 'tag-tech',
+                tagText: '🔧 Chuyên môn',
+                scorePill: `${avgTech}/100 điểm`,
+                title: 'Đào sâu nguyên lý & Case Study thực tế',
+                diagnosis: `Kỹ năng chuyên môn hiện đạt ${avgTech}/100. Khi phỏng vấn chuyên môn, hãy làm rõ bối cảnh, phương pháp thực hiện và lý do lựa chọn giải pháp thay vì chỉ đưa ra câu trả lời lý thuyết.`,
+                steps: [
+                    `Ôn tập bộ câu hỏi chuyên môn cốt lõi cho vị trí ${escapeHtml(latest.jobTitle || 'ứng tuyển')} trong Ngân hàng câu hỏi.`,
+                    'Thực hành giải thích các kiến thức nền tảng: Quy trình chuyên môn, xử lý tình huống, tối ưu hiệu quả và phương pháp luận.',
+                    'Chuẩn bị sẵn 2–3 bài toán khó trong dự án cũ để dẫn chứng khi được hỏi đào sâu.'
+                ],
+                btnText: 'Tra cứu câu hỏi chuyên môn →',
+                link: '../../features/qbank/qbank.html?category=technical'
+            });
+        }
+
+        // 5. Đồng bộ CV & Từ khóa JD
+        if (cards.length < 4) {
+            cards.push({
+                cardClass: 'card-profile',
+                tagClass: 'tag-profile',
+                tagText: '📝 Tối ưu CV',
+                scorePill: 'Khớp JD',
+                title: 'Đối chiếu từ khóa kỹ năng giữa CV và JD',
+                diagnosis: 'Hệ thống AI nhận diện câu hỏi phỏng vấn dựa trên CV của bạn. Nếu CV thiếu từ khóa chuyên môn trọng tâm, câu hỏi mô phỏng sẽ chưa sát với kỳ vọng nhà tuyển dụng.',
+                steps: [
+                    'Kiểm tra lại mục Kỹ năng và Dự án nổi bật trong CV để bổ sung các năng lực theo JD mục tiêu.',
+                    'Cập nhật thành tựu có số liệu định lượng (Metrics) giúp AI đặt câu hỏi khai thác sâu hơn.'
+                ],
+                btnText: 'Cập nhật CV của tôi →',
+                link: '../../features/profile/cv.html'
+            });
+        }
+
+        // Render Cards (Compact Bento Cards + Modal Action)
+        currentImprovementsList = cards;
+
+        list.innerHTML = cards.map((c, i) => `
+            <div class="imp-card ${c.cardClass || ''}" onclick="openImprovementModal(${i})" title="Bấm để xem kế hoạch chi tiết">
+                <div>
+                    <div class="imp-card-top">
+                        <span class="imp-tag ${c.tagClass}">${c.tagText}</span>
+                        <span class="imp-score-pill">${c.scorePill}</span>
+                    </div>
+                    <h4 class="imp-title">${c.title}</h4>
+                    <p class="imp-snippet">${c.diagnosis}</p>
+                </div>
+                <div class="imp-card-footer">
+                    <span class="imp-steps-badge">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        ${c.steps ? c.steps.length : 0} bước hành động
+                    </span>
+                    <button type="button" class="imp-open-btn" onclick="event.stopPropagation(); openImprovementModal(${i});" aria-label="Xem chi tiết kế hoạch">
+                        <span>Chi tiết kế hoạch</span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    let currentImprovementsList = [];
+
+    function openImprovementModal(index) {
+        const item = currentImprovementsList && currentImprovementsList[index];
+        if (!item) return;
+
+        const overlay = document.getElementById('improvement-modal-overlay');
+        const tagEl = document.getElementById('imp-modal-tag');
+        const scoreEl = document.getElementById('imp-modal-score');
+        const titleEl = document.getElementById('imp-modal-title');
+        const diagEl = document.getElementById('imp-modal-diagnosis');
+        const stepsEl = document.getElementById('imp-modal-steps');
+        const actionBtn = document.getElementById('imp-modal-action-btn');
+        const actionText = document.getElementById('imp-modal-action-text');
+
+        if (tagEl) {
+            tagEl.className = `imp-tag ${item.tagClass || ''}`;
+            tagEl.textContent = item.tagText || 'Gợi ý từ AI';
+        }
+        if (scoreEl) {
+            scoreEl.textContent = item.scorePill || '';
+            scoreEl.style.display = item.scorePill ? 'inline-block' : 'none';
+        }
+        if (titleEl) {
+            titleEl.textContent = item.title || 'Kế hoạch cải thiện';
+        }
+        if (diagEl) {
+            diagEl.textContent = item.diagnosis || '';
+        }
+        if (stepsEl) {
+            const steps = item.steps || [];
+            stepsEl.innerHTML = steps.map((st, i) => `
+                <li class="imp-modal-step-item">
+                    <span class="imp-modal-step-num">${i + 1}</span>
+                    <span>${escapeHtml(st)}</span>
+                </li>
+            `).join('');
+        }
+        if (actionBtn) {
+            actionBtn.href = item.link || '../../features/interview/interview-info.html';
+        }
+        if (actionText) {
+            actionText.textContent = item.btnText || 'Bắt đầu thực hiện ngay';
+        }
+
+        if (overlay) {
+            overlay.style.display = 'flex';
+            requestAnimationFrame(() => {
+                overlay.classList.add('active');
+            });
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeImprovementModal() {
+        const overlay = document.getElementById('improvement-modal-overlay');
+        if (!overlay) return;
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }, 220);
+    }
+
+    function handleModalOverlayClick(event) {
+        if (event.target && event.target.id === 'improvement-modal-overlay') {
+            closeImprovementModal();
+        }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const overlay = document.getElementById('improvement-modal-overlay');
+            if (overlay && overlay.classList.contains('active')) {
+                closeImprovementModal();
+            }
+        }
+    });
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+        const adminLink = document.getElementById('admin-nav-link');
+        if (user && (user.role==='admin'||user.role==='manager') && adminLink) adminLink.style.display='flex';
+
+        // Load authentic completed sessions
+        const sessions = await fetchUserCompletedSessions();
+        const streak = calcStreak(sessions);
+
+        // Toggle Empty Alert Notice
+        const emptyAlert = document.getElementById('progress-empty-alert');
+        if (emptyAlert) {
+            emptyAlert.style.display = sessions.length ? 'none' : 'flex';
+        }
+
+        // Stats Handling
+        if (!sessions.length) {
+            document.getElementById('stat-total').textContent = '0';
+            document.getElementById('stat-total-delta').textContent = '0 buổi';
+            document.getElementById('stat-best').textContent = '—';
+            const statBestDelta = document.getElementById('stat-best-delta');
+            statBestDelta.textContent = 'Chưa có lượt';
+            statBestDelta.className = 'stat-delta neutral';
+
+            document.getElementById('stat-avg').textContent = '—';
+            const statAvgDelta = document.getElementById('stat-avg-delta');
+            statAvgDelta.textContent = 'Chưa có lượt';
+            statAvgDelta.className = 'stat-delta neutral';
+
+            document.getElementById('stat-improve').textContent = '0%';
+            const statImpDelta = document.getElementById('stat-improve-delta');
+            statImpDelta.textContent = 'Chưa có lượt';
+            statImpDelta.className = 'stat-delta neutral';
+
+            document.getElementById('stat-streak').textContent = '0🔥';
+            document.getElementById('stat-streak-label').textContent = '0 ngày liên tiếp';
+            document.getElementById('streak-count').textContent = '0';
+            document.getElementById('streak-bar').style.width = '0%';
+            document.getElementById('streak-next').textContent = 'Thực hiện phỏng vấn đầu tiên để bắt đầu chuỗi streak!';
+        } else {
+            const scores = sessions.map(s => s.overallScore || 0);
+            const total = sessions.length;
+            const best  = scores.length ? Math.max(...scores) : 0;
+            const avgS  = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+            const first = scores[0] || 0;
+            const last  = scores[scores.length-1] || 0;
+            const imp   = (first > 0 && scores.length > 1) ? Math.round(((last-first)/first)*100) : 0;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-total-delta').textContent = `${total} buổi`;
+            document.getElementById('stat-best').textContent  = best;
+            const statBestDelta = document.getElementById('stat-best-delta');
+            statBestDelta.textContent = best >= 80 ? 'Xuất sắc' : 'Đạt';
+            statBestDelta.className = 'stat-delta ' + (best >= 80 ? 'up' : 'neutral');
+
+            document.getElementById('stat-avg').textContent   = avgS;
+            const avgDelta = scores.length >= 2 ? scores[scores.length-1] - scores[scores.length-2] : 0;
+            const avgDeltaEl = document.getElementById('stat-avg-delta');
+            avgDeltaEl.textContent = avgDelta === 0 ? '—' : (avgDelta>0 ? `▲ +${avgDelta}` : `▼ ${avgDelta}`);
+            avgDeltaEl.className = 'stat-delta ' + (avgDelta>0?'up':avgDelta<0?'down':'neutral');
+
+            document.getElementById('stat-improve').textContent = (imp>0?'+':'') + imp + '%';
+            const statImpDelta = document.getElementById('stat-improve-delta');
+            statImpDelta.textContent = scores.length <= 1 ? 'Lượt đầu tiên' : (imp > 0 ? 'Đang tăng trưởng' : (imp < 0 ? 'Cần cải thiện' : 'Ổn định'));
+            statImpDelta.className = 'stat-delta ' + (imp>0?'up':imp<0?'down':'neutral');
+
+            document.getElementById('stat-streak').textContent = streak + '🔥';
+            document.getElementById('streak-count').textContent = streak;
+            document.getElementById('stat-streak-label').textContent = `${streak} ngày liên tiếp`;
+            document.getElementById('streak-bar').style.width = Math.min(100, (streak/30)*100) + '%';
+            document.getElementById('streak-next').textContent = streak > 0 ?
+                `🔥 Streak ${streak} ngày! Tiếp tục luyện tập để giữ streak!` :
+                'Luyện tập hôm nay để bắt đầu streak!';
+        }
+
+        initMonthlyHeatmap(sessions);
+        renderBadges(sessions, streak);
+        renderTrendChart(sessions);
+        renderRadarChart(sessions);
+        renderImprovements(sessions);
+    });
+    </script>
+    <script src="../../shared/js/components.js"></script>
+</body>
+</html>

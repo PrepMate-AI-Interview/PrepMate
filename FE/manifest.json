@@ -1,0 +1,21 @@
+﻿{
+  "short_name": "PrepMate",
+  "name": "PrepMate AI Mock Interview Platform",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/192/robot.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://img.icons8.com/color/512/robot.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/index.html",
+  "background_color": "#1e1b4b",
+  "theme_color": "#7c3aed",
+  "display": "standalone",
+  "orientation": "portrait"
+}

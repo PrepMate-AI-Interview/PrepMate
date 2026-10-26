@@ -1,0 +1,6241 @@
+/* ==========================================================================
+   PREPMATE — MODERN EXECUTIVE LIGHT LANDING PAGE DESIGN SYSTEM
+   Visual Direction: Clean, Human, Trustworthy, Professional, Deep Hierarchy
+   ========================================================================== */
+
+:root {
+    --lp-bg: var(--pm-bg, #ffffff);
+    --lp-bg-white: var(--pm-surface, #ffffff);
+    --lp-surface-subtle: var(--pm-surface-subtle, #f1f5f9);
+    --lp-border: var(--pm-border, #BDC1C6);
+    --lp-border-subtle: var(--pm-border-subtle, #cbd5e1);
+    --lp-text-dark: var(--pm-text-primary, #0f172a);
+    --lp-text-body: var(--pm-text-secondary, #334155);
+    --lp-text-muted: var(--pm-text-muted, #64748b);
+    --lp-primary: var(--mobbin-ink, #141414);
+    --lp-primary-hover: var(--mobbin-ink-soft, #262626);
+    --lp-primary-soft: var(--pm-primary-subtle, #eff6ff);
+    --lp-primary-border: var(--pm-primary-border, #bfdbfe);
+    --lp-emerald: var(--pm-success, #059669);
+    --lp-emerald-soft: var(--pm-success-subtle, #ecfdf5);
+    --lp-emerald-border: var(--pm-success-border, #a7f3d0);
+    --lp-amber: var(--pm-warning, #d97706);
+    --lp-amber-soft: var(--pm-warning-subtle, #fffbeb);
+    --lp-amber-border: var(--pm-warning-border, #fde68a);
+    --lp-indigo: #4338ca;
+    --lp-indigo-soft: #eef2ff;
+    --lp-indigo-border: #c7d2fe;
+    --lp-shadow-sm: var(--pm-shadow-sm, 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02));
+    --lp-shadow-md: var(--pm-shadow-md, 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03));
+    --lp-shadow-lg: var(--pm-shadow-lg, 0 12px 32px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04));
+}
+
+/* Base Body Override for Landing */
+html.landing-html {
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+}
+
+section[id], div[id] {
+    scroll-margin-top: 80px;
+}
+
+body.landing-page {
+    background-color: var(--lp-bg);
+    color: var(--lp-text-body);
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+body.landing-page .glow-bg {
+    display: none; /* No distracting blur blobs */
+}
+
+/* Fixed Navbar pinned at top on Landing Page */
+body.landing-page header.app-header-main,
+body.landing-page app-header header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 1000 !important;
+    background: var(--pm-surface-header-alpha, rgba(255, 255, 255, 0.95));
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid var(--pm-hairline, #BDC1C6);
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.05);
+}
+
+html[data-theme="dark"] body.landing-page header.app-header-main,
+html[data-theme="dark"] body.landing-page app-header header,
+body.dark-mode.landing-page header.app-header-main,
+body.dark-mode.landing-page app-header header {
+    background: rgba(26, 27, 30, 0.95) !important;
+    border-bottom: 1px solid #3C4043 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Minimal Landing Header: Remove duplicate primary CTA to focus user attention entirely on Hero */
+body.landing-page #header-cta-btn {
+    display: none !important;
+}
+
+body.landing-page main {
+    padding-top: 80px;
+}
+
+/* Section Container Rules: Clean, content-driven vertical rhythm (Step 1D-R59 Hierarchy & Spacing) */
+.landing-page .lp-snap-section {
+    min-height: auto;
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    padding: clamp(38px, 4.2vw, 54px) 0;
+}
+
+/* Floating Screen Navigation Indicator */
+.lp-screen-nav {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 99;
+}
+
+.lp-screen-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.15);
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.lp-screen-dot:hover,
+.lp-screen-dot.active {
+    background: var(--lp-primary);
+    transform: scale(1.3);
+    border-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.35);
+}
+
+.lp-screen-dot::after {
+    content: attr(data-title);
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%) translateX(6px);
+    background: #0f172a;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.lp-screen-dot:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+@media (max-width: 900px) {
+    .lp-screen-nav {
+        display: none;
+    }
+}
+
+/* Standard Landing Container */
+.lp-container {
+    max-width: var(--content-max-width, 1200px);
+    margin: 0 auto;
+    padding: 0 var(--space-6, 24px);
+    box-sizing: border-box;
+}
+
+/* Eyebrows & Section Headers */
+.lp-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--lp-primary-soft);
+    color: var(--lp-primary);
+    border: 1px solid var(--lp-primary-border);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.lp-eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--lp-primary);
+}
+
+.lp-section-header {
+    text-align: center;
+    max-width: 740px;
+    margin: 0 auto clamp(24px, 2.8vw, 36px);
+}
+
+.lp-section-title {
+    font-size: clamp(23px, 2.0vw, 28px);
+    font-weight: 750;
+    color: var(--lp-text-dark);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin-bottom: 12px;
+}
+
+.lp-section-desc {
+    font-size: clamp(14.5px, 1.05vw, 15.5px);
+    color: var(--lp-text-muted);
+    line-height: 1.55;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   HERO SECTION: Oversized Hero with Controlled Organic Bloom Visual
+   ========================================================================== */
+.lp-hero-section.lp-oversized-hero {
+    min-height: calc(100vh - 80px);
+    min-height: calc(100svh - 80px);
+    padding: clamp(16px, 2.5vh, 40px) 0;
+    background: var(--pm-bg, #ffffff);
+    border-bottom: 1px solid var(--lp-border, #BDC1C6);
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lp-hero-section .lp-container {
+    max-width: 1280px;
+}
+
+.lp-hero-editorial-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: clamp(28px, 2.5vw, 40px);
+    align-items: center;
+    width: 100%;
+}
+
+/* Left Column: Original Size Typography & Compact CTAs */
+.lp-hero-editorial-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.lp-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2, 8px);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--mobbin-accent, #0066ff);
+    margin: 0 0 10px 0;
+}
+
+.lp-hero-title {
+    font-size: clamp(28px, 2.7vw, 37px);
+    font-weight: 750;
+    color: var(--mobbin-ink, #141414);
+    letter-spacing: -0.025em;
+    line-height: 1.22;
+    margin: 0 0 14px 0;
+    max-width: 480px;
+    text-wrap: pretty;
+}
+
+.lp-title-break {
+    display: block;
+}
+
+.lp-hero-title .highlight-text {
+    color: var(--mobbin-accent, #0066ff);
+    display: inline;
+    position: relative;
+    font-weight: 750;
+}
+
+.lp-hero-lead {
+    font-size: clamp(14.5px, 1.1vw, 16px);
+    color: var(--pm-text-secondary, #334155);
+    line-height: 1.58;
+    margin: 0 0 22px 0;
+    max-width: 460px;
+    text-wrap: pretty;
+}
+
+.lp-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0;
+}
+
+.lp-btn-primary,
+.lp-cta-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--mobbin-ink, #141414);
+    color: #ffffff !important;
+    padding: 12px 24px;
+    border-radius: var(--pm-radius-btn-md, 10px);
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    border: 1px solid var(--mobbin-ink, #141414);
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-btn-primary:hover,
+.lp-cta-primary:hover {
+    background: #262626;
+    border-color: #262626;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.lp-btn-primary:active,
+.lp-cta-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.lp-btn-primary:focus-visible,
+.lp-cta-primary:focus-visible {
+    outline: 2px solid var(--mobbin-accent, #0066ff);
+    outline-offset: 3px;
+}
+
+.lp-btn-secondary,
+.lp-cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #ffffff;
+    color: var(--mobbin-ink, #141414);
+    padding: 12px 20px;
+    border-radius: var(--pm-radius-btn-md, 10px);
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    border: 1px solid var(--pm-hairline, #e2e8f0);
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-btn-secondary:hover,
+.lp-cta-secondary:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.lp-btn-secondary:active,
+.lp-cta-secondary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.lp-btn-secondary:focus-visible,
+.lp-cta-secondary:focus-visible {
+    outline: 2px solid var(--mobbin-accent, #0066ff);
+    outline-offset: 3px;
+}
+
+/* Hero Core Values List */
+.lp-hero-values {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 500px;
+}
+
+.lp-hero-val-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.lp-hero-val-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    color: #d97706 !important;
+    margin-top: 1px;
+}
+
+.lp-hero-val-text {
+    flex: 1;
+    color: var(--pm-text-secondary, #475569);
+    font-size: 14px;
+}
+
+.lp-hero-val-title {
+    font-weight: 700;
+    color: var(--mobbin-ink, #141414);
+}
+
+.lp-hero-val-sep {
+    display: inline;
+    margin: 0 3px;
+    color: #94a3b8;
+}
+
+.lp-hero-val-desc {
+    font-weight: 400;
+}
+
+/* Right Column: Controlled Organic Bloom Visual */
+.lp-hero-editorial-right {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.lp-radial-stage-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+}
+
+/* SVG Organic Bloom Stage: Clean Original Step 1D-R2 Geometry */
+.lp-radial-stage.lp-organic-bloom-stage {
+    position: relative;
+    width: 100%;
+    max-width: 580px;
+    aspect-ratio: 580 / 430;
+    margin: 0 auto;
+}
+
+.lp-radial-svg.lp-bloom-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.lp-orbit-ring {
+    fill: none;
+    stroke: #f1f5f9;
+    stroke-width: 1.5;
+}
+
+.lp-orbit-ring.outer {
+    stroke-dasharray: 4 4;
+    stroke: #BDC1C6;
+    stroke-width: 1;
+}
+
+.lp-radial-branch {
+    fill: none;
+    stroke: #cbd5e1;
+    stroke-width: 1.5px;
+    stroke-dasharray: 3 3;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-bloom-stem {
+    stroke-width: 1.8px;
+}
+
+.lp-radial-branch.active {
+    stroke: var(--mobbin-accent, #0066ff);
+    stroke-width: 2.5px;
+    stroke-dasharray: none;
+    filter: drop-shadow(0 2px 6px rgba(0, 102, 255, 0.25));
+}
+
+.lp-radial-dot {
+    fill: #cbd5e1;
+    transition: all 0.3s ease;
+}
+
+.lp-radial-dot.active {
+    fill: var(--mobbin-accent, #0066ff);
+    r: 4.5;
+    filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.5));
+}
+
+/* Tier 1: Center PrepMate Hub */
+.lp-radial-center-hub {
+    position: absolute;
+    left: 48.3%;
+    top: 52.3%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    pointer-events: none;
+}
+
+.lp-radial-hub-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--mobbin-ink, #141414);
+    color: #ffffff;
+    padding: 9px 20px;
+    border-radius: var(--pm-radius-full, 9999px);
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.14);
+}
+
+.lp-hub-pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+    display: inline-block;
+}
+
+/* Tier 2: 6 Primary Ecosystem Feature Nodes */
+.lp-bloom-features-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+}
+
+.lp-bloom-feature-node {
+    position: absolute;
+    pointer-events: auto;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 13px;
+    border-radius: var(--pm-radius-full, 9999px);
+    background: #ffffff;
+    border: 1px solid var(--lp-border, #BDC1C6);
+    color: var(--lp-text-body, #334155);
+    font-family: var(--pm-font-family, 'Outfit', sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    transition: background 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-bloom-feature-node.node-interview {
+    left: 63.4%;
+    top: 21.0%;
+    transform: translate(-50%, -50%);
+    font-weight: 700;
+}
+
+.lp-bloom-feature-node.node-qbank {
+    left: 86.0%;
+    top: 46.0%;
+    transform: translate(-50%, -50%);
+}
+
+.lp-bloom-feature-node.node-report {
+    left: 75.0%;
+    top: 79.0%;
+    transform: translate(-50%, -50%);
+}
+
+.lp-bloom-feature-node.node-roadmap {
+    left: 31.7%;
+    top: 81.0%;
+    transform: translate(-50%, -50%);
+}
+
+.lp-bloom-feature-node.node-jobs {
+    left: 19.5%;
+    top: 53.0%;
+    transform: translate(-50%, -50%);
+}
+
+.lp-bloom-feature-node.node-cv {
+    left: 28.7%;
+    top: 23.0%;
+    transform: translate(-50%, -50%);
+}
+
+.lp-bloom-feature-node:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a;
+    transform: translate(-50%, -50%) translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.lp-bloom-feature-node.active {
+    background: var(--pm-surface, #ffffff);
+    border-color: #f59e0b;
+    color: var(--lp-text-dark, #0f172a);
+    font-weight: 700;
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22), 0 6px 20px rgba(245, 158, 11, 0.16);
+}
+
+.lp-bloom-feature-node:focus-visible {
+    outline: 2px solid var(--pm-primary, #f59e0b);
+    outline-offset: 2px;
+}
+
+/* Tier 3: 5 Industry Sub-Branches (Airy Crown atop Phỏng vấn AI) */
+.lp-industry-selector-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+}
+
+.lp-industry-tab {
+    position: absolute;
+    pointer-events: auto;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    border-radius: var(--pm-radius-full, 9999px);
+    background: #ffffff;
+    border: 1px solid var(--lp-border, #BDC1C6);
+    color: var(--lp-text-body, #475569);
+    font-family: var(--pm-font-family, 'Outfit', sans-serif);
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    transition: background 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-industry-tab.node-sub-tech {
+    left: 59.8%;
+    top: 4.5%;
+    transform: translate(-50%, -50%);
+}
+
+.lp-industry-tab.node-sub-marketing {
+    left: 78.0%;
+    top: 15.0%;
+    transform: translate(-50%, -50%);
+}
+
+.lp-industry-tab.node-sub-finance {
+    left: 91.5%;
+    top: 27.0%;
+    transform: translate(-50%, -50%);
+}
+
+.lp-industry-tab.node-sub-hr {
+    left: 19.0%;
+    top: 5.5%;
+    transform: translate(-50%, -50%);
+}
+
+.lp-industry-tab.node-sub-ba {
+    left: 36.5%;
+    top: 15.5%;
+    transform: translate(-50%, -50%);
+}
+
+.lp-industry-tab:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a;
+    transform: translate(-50%, -50%) translateY(-2px);
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+}
+
+.lp-industry-tab.active {
+    background: var(--mobbin-accent, #0066ff);
+    border-color: var(--mobbin-accent, #0066ff);
+    color: #ffffff;
+    font-weight: 700;
+    transform: translate(-50%, -50%) translateY(-1px);
+    box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.25), 0 4px 12px rgba(0, 102, 255, 0.3);
+}
+
+.lp-industry-tab:focus-visible {
+    outline: 2px solid var(--pm-primary, #f59e0b);
+    outline-offset: 2px;
+}
+
+/* Bud-to-Bloom Entrance Animation State Machine */
+.lp-bloom-bud .lp-bloom-stem,
+.lp-bloom-bud .lp-bloom-sub-branch,
+.lp-bloom-bud .lp-radial-dot,
+.lp-bloom-bud .lp-bloom-feature-node,
+.lp-bloom-bud .lp-industry-tab {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.65);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-bloom-bud .lp-radial-hub-badge {
+    transform: scale(0.9);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-bloom-blooming .lp-bloom-stem,
+.lp-bloom-blooming .lp-bloom-sub-branch,
+.lp-bloom-blooming .lp-radial-dot,
+.lp-bloom-blooming .lp-bloom-feature-node,
+.lp-bloom-blooming .lp-industry-tab {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.lp-bloom-blooming .lp-radial-hub-badge {
+    transform: scale(1);
+}
+
+.lp-bloom-open .lp-bloom-stem,
+.lp-bloom-open .lp-bloom-sub-branch,
+.lp-bloom-open .lp-radial-dot,
+.lp-bloom-open .lp-bloom-feature-node,
+.lp-bloom-open .lp-industry-tab {
+    opacity: 1;
+}
+
+/* Staggered blooming delays */
+.lp-bloom-blooming .node-interview { transition-delay: 0.05s; }
+.lp-bloom-blooming .node-qbank     { transition-delay: 0.12s; }
+.lp-bloom-blooming .node-report    { transition-delay: 0.18s; }
+.lp-bloom-blooming .node-roadmap   { transition-delay: 0.24s; }
+.lp-bloom-blooming .node-jobs      { transition-delay: 0.30s; }
+.lp-bloom-blooming .node-cv        { transition-delay: 0.36s; }
+
+.lp-bloom-blooming .node-sub-tech      { transition-delay: 0.42s; }
+.lp-bloom-blooming .node-sub-marketing { transition-delay: 0.48s; }
+.lp-bloom-blooming .node-sub-finance   { transition-delay: 0.54s; }
+.lp-bloom-blooming .node-sub-hr        { transition-delay: 0.60s; }
+.lp-bloom-blooming .node-sub-ba        { transition-delay: 0.66s; }
+
+/* Shared Compact Detail Dock */
+.lp-simulator-mockup.lp-radial-detail-dock {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid var(--lp-border, #BDC1C6);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+    padding: 13px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    text-align: left;
+    transition: all 0.25s ease;
+}
+
+.lp-dock-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.lp-dock-room-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1px solid #BDC1C6;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.lp-dock-interviewer {
+    font-size: 11.5px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.lp-dock-body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.lp-dock-q-lead {
+    display: flex;
+    align-items: center;
+}
+
+.lp-dock-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #0066ff;
+}
+
+.lp-dock-question {
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 600;
+    color: #1e3a8a;
+    background: #f0f7ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 9px 13px;
+    margin: 0;
+}
+
+.lp-dock-goal {
+    font-size: 11.5px;
+    color: #475569;
+    font-weight: 500;
+}
+
+.lp-dock-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 7px;
+}
+
+.lp-dock-telemetry {
+    font-size: 11.5px;
+    color: #64748b;
+}
+
+.lp-dock-telemetry strong {
+    color: #0f172a;
+    font-weight: 750;
+}
+
+/* Dark Mode Theme Styles for Organic Bloom */
+html[data-theme="dark"] .lp-radial-stage-card {
+    background: transparent;
+}
+
+html[data-theme="dark"] .lp-orbit-ring {
+    stroke: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .lp-orbit-ring.outer {
+    stroke: rgba(255, 255, 255, 0.12);
+}
+
+html[data-theme="dark"] .lp-radial-branch {
+    stroke: #475569;
+}
+
+html[data-theme="dark"] .lp-radial-branch.active {
+    stroke: #60a5fa;
+    filter: drop-shadow(0 2px 8px rgba(96, 165, 250, 0.4));
+}
+
+html[data-theme="dark"] .lp-radial-dot {
+    fill: #475569;
+}
+
+html[data-theme="dark"] .lp-radial-dot.active {
+    fill: #60a5fa;
+    filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.6));
+}
+
+html[data-theme="dark"] .lp-radial-hub-badge {
+    background: #0f172a;
+    border-color: #334155;
+    color: #f8fafc;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .lp-bloom-feature-node {
+    background: #1e293b;
+    border-color: #334155;
+    color: #cbd5e1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .lp-bloom-feature-node:hover {
+    background: #334155;
+    border-color: #475569;
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] .lp-bloom-feature-node.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3), 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .lp-industry-tab {
+    background: #0f172a;
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+html[data-theme="dark"] .lp-industry-tab:hover {
+    background: #1e293b;
+    border-color: #475569;
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] .lp-industry-tab.active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3), 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+html[data-theme="dark"] .lp-simulator-mockup.lp-radial-detail-dock {
+    background: #0f172a;
+    border-color: #334155;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="dark"] .lp-dock-room-badge {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] .lp-dock-interviewer {
+    color: #94a3b8;
+}
+
+html[data-theme="dark"] .lp-dock-tag {
+    color: #60a5fa;
+}
+
+html[data-theme="dark"] .lp-dock-question {
+    background: #1e293b;
+    border-color: #3b82f6;
+    color: #93c5fd;
+}
+
+html[data-theme="dark"] .lp-dock-goal {
+    color: #94a3b8;
+}
+
+html[data-theme="dark"] .lp-dock-footer {
+    border-color: #1e293b;
+}
+
+html[data-theme="dark"] .lp-dock-telemetry {
+    color: #94a3b8;
+}
+
+html[data-theme="dark"] .lp-dock-telemetry strong {
+    color: #f8fafc;
+}
+
+/* ==========================================================================
+   FACTUAL PRODUCT METRICS STRIP (Directly Below Hero - Step 1D-R49 Numeric-Only)
+   ========================================================================== */
+.lp-hero-trust-bar {
+    border-bottom: 1px solid var(--pm-hairline, #e2e8f0);
+    border-top: 1px solid var(--pm-hairline, #e2e8f0);
+    background: var(--pm-canvas, #ffffff);
+    padding: 16px 0;
+    width: 100%;
+    margin-top: -1px;
+    position: relative;
+    z-index: 10;
+    transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.lp-metrics-strip-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+}
+
+.lp-metric-strip-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 16px;
+}
+
+.lp-metric-strip-val {
+    font-family: var(--pm-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    font-size: clamp(25px, 2.3vw, 32px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--mobbin-accent, #0066ff);
+    white-space: nowrap;
+    display: block;
+}
+
+.lp-metric-strip-label,
+.lp-metric-strip-title {
+    font-family: var(--pm-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    font-size: clamp(12px, 0.95vw, 13px);
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--pm-text-muted, #475569);
+    letter-spacing: -0.01em;
+    margin-top: 4px;
+    text-align: center;
+    display: block;
+}
+
+.lp-metric-strip-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--pm-hairline, #e2e8f0);
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .lp-hero-trust-bar {
+        padding: 14px 0;
+    }
+    .lp-metric-strip-item {
+        padding: 0 10px;
+    }
+    .lp-metric-strip-val {
+        font-size: clamp(20px, 4.5vw, 24px);
+    }
+    .lp-metric-strip-label,
+    .lp-metric-strip-title {
+        font-size: 12px;
+        margin-top: 4px;
+    }
+    .lp-metric-strip-divider {
+        height: 26px;
+    }
+}
+
+@media (max-width: 540px) {
+    .lp-hero-trust-bar {
+        padding: 12px 0;
+    }
+    .lp-metrics-strip-inner {
+        gap: 0;
+    }
+    .lp-metric-strip-item {
+        padding: 0 6px;
+    }
+    .lp-metric-strip-val {
+        font-size: clamp(17px, 5.2vw, 20px);
+    }
+    .lp-metric-strip-label,
+    .lp-metric-strip-title {
+        font-size: 11px;
+        line-height: 1.25;
+        margin-top: 3px;
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+    .lp-metric-strip-divider {
+        height: 22px;
+    }
+}
+
+@media (max-width: 340px) {
+    .lp-hero-trust-bar {
+        padding: 10px 0;
+    }
+    .lp-metric-strip-item {
+        padding: 0 4px;
+    }
+    .lp-metric-strip-val {
+        font-size: 16px;
+    }
+    .lp-metric-strip-label,
+    .lp-metric-strip-title {
+        font-size: 10px;
+    }
+}
+
+.lp-trust-sep {
+    color: #cbd5e1;
+}
+
+.lp-trust-tag {
+    color: #0066ff;
+    font-weight: 600;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1040px) {
+    .lp-hero-section.lp-oversized-hero {
+        min-height: auto;
+        padding: 36px 0 44px 0;
+    }
+    .lp-hero-editorial-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+    .lp-hero-editorial-left {
+        text-align: center;
+        align-items: center;
+    }
+    .lp-hero-editorial-left .lp-hero-lead {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .lp-hero-editorial-left .lp-hero-actions {
+        justify-content: center;
+    }
+    .lp-hero-values {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+    }
+    .lp-hero-editorial-left .lp-hero-trust-bar {
+        justify-content: center;
+    }
+    .lp-industry-selector-bar {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .lp-hero-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+    .lp-btn-primary,
+    .lp-cta-primary,
+    .lp-btn-secondary,
+    .lp-cta-secondary {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 14px 20px;
+    }
+    .lp-cta-action-group {
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+    }
+    .lp-btn-cta-white,
+    .lp-btn-cta-secondary {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 14px 20px;
+    }
+    .lp-hero-values {
+        width: 100%;
+        margin-top: 24px;
+        padding-top: 18px;
+    }
+    .lp-hero-title {
+        font-size: 32px;
+        letter-spacing: -0.8px;
+    }
+    .lp-hero-lead {
+        font-size: 16px;
+    }
+    .lp-radial-stage.lp-organic-bloom-stage {
+        max-width: 100%;
+        aspect-ratio: 660 / 520;
+    }
+    .lp-bloom-feature-node {
+        padding: 5px 8px;
+        font-size: 10px;
+        gap: 4px;
+        border-radius: 12px 18px 12px 18px;
+    }
+    .lp-bloom-feature-node svg {
+        width: 11px;
+        height: 11px;
+    }
+    .lp-industry-tab {
+        padding: 4px 7px;
+        font-size: 9px;
+        gap: 3px;
+        border-radius: 10px 14px 10px 14px;
+    }
+    .lp-industry-tab svg {
+        width: 10px;
+        height: 10px;
+    }
+    .lp-radial-hub-badge {
+        padding: 6px 12px;
+        font-size: 11.5px;
+    }
+    .lp-hero-section {
+        padding: 42px 0 48px 0;
+    }
+    .lp-hero-title {
+        font-size: 28px;
+        letter-spacing: -0.6px;
+    }
+    .lp-hero-lead {
+        font-size: 15px;
+    }
+    .lp-industry-selector-bar {
+        gap: 6px;
+    }
+    .lp-industry-tab {
+        padding: 5px 10px;
+        font-size: 11.5px;
+    }
+    .lp-mockup-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    .lp-mockup-telemetry-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+}
+
+/* ==========================================================================
+   PROBLEM / REALITY GAP SECTION
+   ========================================================================== */
+.lp-reality-section {
+    padding: clamp(48px, 5.5vw, 68px) 0;
+    background: var(--pm-canvas, #ffffff);
+    border-bottom: 1px solid var(--pm-hairline, #e2e8f0);
+    box-sizing: border-box;
+}
+
+.lp-reality-section .lp-section-header {
+    margin: 0 auto 28px;
+}
+
+.lp-comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6, 24px);
+    margin-top: 0;
+}
+
+.lp-comparison-card {
+    border-radius: 16px;
+    padding: 20px 24px;
+    border: 1px solid var(--pm-hairline, #e2e8f0);
+    transition: all 0.2s ease;
+}
+
+.lp-comparison-card.old-way {
+    background: #fafaf9;
+    border-color: #e7e5e4;
+}
+
+.lp-comparison-card.prepmate-way {
+    background: #ffffff;
+    border: 2px solid var(--lp-primary);
+    box-shadow: var(--lp-shadow-md);
+    position: relative;
+}
+
+.lp-comp-badge {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.lp-comp-badge.muted {
+    background: #e7e5e4;
+    color: #57534e;
+}
+
+.lp-comp-badge.active {
+    background: var(--lp-primary-soft);
+    color: var(--lp-primary);
+    border: 1px solid var(--lp-primary-border);
+}
+
+.lp-comparison-card h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--lp-text-dark);
+    margin-bottom: 14px;
+}
+
+.lp-comp-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.lp-comp-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.lp-comp-icon-fail {
+    color: #ef4444;
+    font-size: 16px;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.lp-comp-icon-pass {
+    color: var(--lp-emerald);
+    font-size: 16px;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Reality Section Stat Banner */
+.lp-reality-stat-banner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 24px;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid var(--lp-border);
+    border-radius: 16px;
+    padding: 16px 28px;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.lp-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.lp-stat-num {
+    font-size: 26px;
+    font-weight: 850;
+    color: #dc2626;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+}
+
+.lp-stat-item.highlight .lp-stat-num {
+    color: #059669;
+}
+
+.lp-stat-lbl {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.45;
+    font-weight: 500;
+}
+
+.lp-stat-divider {
+    width: 1px;
+    height: 36px;
+    background: var(--lp-border);
+}
+
+/* ==========================================================================
+   WORKFLOW SECTION (4 Progressive Steps with bespoke visual identities)
+   ========================================================================== */
+.lp-workflow-section {
+    padding: var(--space-10, 40px) 0;
+    background: var(--pm-bg, #f8fafc);
+    border-bottom: 1px solid var(--lp-border, #e2e8f0);
+    box-sizing: border-box;
+}
+
+.lp-workflow-section .lp-section-header {
+    margin: 0 auto var(--space-8, 32px);
+}
+
+.lp-interactive-workflow {
+    background: #ffffff;
+    border: 1px solid var(--lp-border);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.05);
+    /* natural overflow */
+    margin-top: 6px;
+}
+
+.lp-workflow-nav-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: #f8fafc;
+    border-bottom: 1px solid var(--lp-border);
+    padding: 5px;
+    gap: 5px;
+}
+
+.lp-workflow-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--lp-text-muted);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-workflow-tab:hover {
+    color: var(--lp-text-dark);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.lp-workflow-tab.active {
+    background: #ffffff;
+    border-color: var(--lp-border);
+    color: var(--lp-primary);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+.lp-workflow-tab .step-badge {
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: #BDC1C6;
+    color: #475569;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+}
+
+.lp-workflow-tab.active .step-badge {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.lp-workflow-display-box {
+    padding: 24px 32px;
+    min-height: 290px;
+    display: flex;
+    align-items: center;
+}
+
+.lp-step-pane {
+    display: none;
+    width: 100%;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 48px;
+    align-items: center;
+    animation: fadeInStep 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.lp-step-pane.active {
+    display: grid;
+}
+
+@keyframes fadeInStep {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+    .lp-workflow-nav-bar {
+        grid-template-columns: 1fr 1fr;
+    }
+    .lp-step-pane {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+    .lp-workflow-display-box {
+        padding: 24px 20px;
+    }
+}
+
+.lp-workflow-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+    transform: translateY(-2px);
+}
+
+.lp-workflow-step.reverse {
+    grid-template-columns: 1.2fr 1fr;
+}
+
+.lp-workflow-step.reverse .lp-step-content {
+    order: 2;
+}
+
+.lp-workflow-step.reverse .lp-step-visual {
+    order: 1;
+}
+
+.lp-step-number {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--lp-primary);
+    background: var(--lp-primary-soft);
+    padding: 3px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.lp-step-content h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--lp-text-dark);
+    margin-bottom: 8px;
+    letter-spacing: -0.4px;
+}
+
+.lp-step-content p {
+    font-size: 14px;
+    color: var(--lp-text-body);
+    line-height: 1.55;
+    margin-bottom: 14px;
+}
+
+.lp-step-highlights {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lp-step-highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--lp-text-dark);
+    font-weight: 600;
+}
+
+.lp-step-visual {
+    background: var(--lp-surface-subtle);
+    border: 1px solid var(--lp-border);
+    border-radius: 14px;
+    padding: 24px;
+    position: relative;
+    /* natural overflow */
+}
+
+/* Workflow Step Visual 1: Setup Card */
+.lp-visual-setup {
+    background: #ffffff;
+    border: 1px solid var(--lp-border);
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: var(--lp-shadow-sm);
+}
+
+.lp-setup-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--lp-surface-subtle);
+    font-size: 13px;
+}
+
+.lp-setup-row:last-child { border: none; }
+.lp-setup-label { color: var(--lp-text-muted); font-weight: 500; }
+.lp-setup-value { color: var(--lp-text-dark); font-weight: 700; }
+
+/* Workflow Step Visual 2: Room Visual */
+.lp-visual-interview-active {
+    background: #0f172a;
+    border-radius: 12px;
+    padding: 18px;
+    color: #f1f5f9;
+}
+
+.lp-visual-room-hud {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #94a3b8;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lp-visual-room-speech {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #BDC1C6;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #10b981;
+}
+
+/* Workflow Step Visual 3: Adaptive Tree */
+.lp-visual-adaptive-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lp-tree-node {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.lp-tree-node.answer {
+    background: #ffffff;
+    border: 1px solid var(--lp-border);
+    color: var(--lp-text-dark);
+}
+
+.lp-tree-arrow {
+    text-align: center;
+    color: var(--lp-primary);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.lp-tree-node.probe {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1e40af;
+    font-weight: 600;
+}
+
+/* Workflow Step Visual 4: Debrief Scorecard */
+.lp-visual-debrief-scorecard {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 18px;
+    border: 1px solid var(--lp-border);
+}
+
+.lp-scorecard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.lp-score-badge {
+    font-size: 20px;
+    font-weight: 850;
+    color: var(--lp-emerald);
+}
+
+.lp-scorecard-metric {
+    margin-bottom: 10px;
+}
+
+.lp-metric-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.lp-metric-bar {
+    height: 6px;
+    background: var(--lp-surface-subtle);
+    border-radius: 3px;
+    /* natural overflow */
+}
+
+.lp-metric-fill {
+    height: 100%;
+    background: var(--lp-primary);
+    border-radius: 3px;
+}
+
+/* ==========================================================================
+   ADAPTIVE INTERVIEW DIFFERENTIATOR (Deep Dynamic Questioning)
+   ========================================================================== */
+.lp-adaptive-section {
+    padding: 72px 0;
+    background: #ffffff;
+    border-bottom: 1px solid var(--lp-border);
+}
+
+.lp-adaptive-flow-card {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid var(--lp-border);
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: var(--lp-shadow-md);
+    margin-top: 40px;
+}
+
+.lp-flow-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.lp-timeline-step {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.lp-timeline-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.lp-timeline-icon-box.cand {
+    background: var(--lp-primary-soft);
+    color: var(--lp-primary);
+    border: 1px solid var(--lp-primary-border);
+}
+
+.lp-timeline-icon-box.ai-listen {
+    background: var(--lp-emerald-soft);
+    color: var(--lp-emerald);
+    border: 1px solid var(--lp-emerald-border);
+}
+
+.lp-timeline-icon-box.ai-probe {
+    background: var(--lp-amber-soft);
+    color: var(--lp-amber);
+    border: 1px solid var(--lp-amber-border);
+}
+
+.lp-timeline-card-content {
+    background: #ffffff;
+    border: 1px solid var(--lp-border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    box-shadow: var(--lp-shadow-sm);
+}
+
+.lp-timeline-card-content h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--lp-text-dark);
+    margin-bottom: 6px;
+}
+
+.lp-timeline-card-content p {
+    font-size: 14px;
+    color: var(--lp-text-body);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   PREPARATION ECOSYSTEM SECTION (3 Executive Pillars)
+   ========================================================================== */
+.lp-prep-section {
+    padding: 72px 0;
+    background: var(--lp-bg);
+    border-bottom: 1px solid var(--lp-border);
+}
+
+.lp-prep-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+.lp-prep-pillar {
+    background: #ffffff;
+    border: 1px solid var(--lp-border);
+    border-radius: 18px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--lp-shadow-sm);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.lp-prep-pillar:hover {
+    border-color: var(--lp-primary-border);
+    box-shadow: var(--lp-shadow-md);
+    transform: translateY(-2px);
+}
+
+.lp-pillar-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.lp-pillar-num {
+    font-size: 20px;
+    font-weight: 850;
+    color: var(--lp-primary);
+    background: var(--lp-primary-soft);
+    border: 1px solid var(--lp-primary-border);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.lp-pillar-header h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--lp-text-dark);
+    line-height: 1.35;
+    margin-top: 6px;
+    letter-spacing: -0.3px;
+}
+
+.lp-pillar-lead {
+    font-size: 14.5px;
+    color: var(--lp-text-body);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--lp-surface-subtle);
+}
+
+.lp-pillar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 13.5px;
+    color: var(--lp-text-body);
+    line-height: 1.5;
+}
+
+.lp-pillar-list li {
+    position: relative;
+    padding-left: 18px;
+}
+
+.lp-pillar-list li::before {
+    content: '•';
+    color: var(--lp-primary);
+    font-size: 18px;
+    position: absolute;
+    left: 0;
+    top: -2px;
+}
+
+.lp-prep-badge-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--lp-primary);
+    background: var(--lp-primary-soft);
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   POST-INTERVIEW DEBRIEF SECTION
+   ========================================================================== */
+.lp-debrief-section {
+    padding: 72px 0;
+    background: #ffffff;
+    border-bottom: 1px solid var(--lp-border);
+}
+
+.lp-debrief-mock-container {
+    background: #ffffff;
+    border: 1px solid var(--lp-border);
+    border-radius: 20px;
+    box-shadow: var(--lp-shadow-lg);
+    padding: 36px;
+    max-width: 980px;
+    margin: 40px auto 0;
+}
+
+.lp-debrief-top {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 36px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--lp-border);
+    align-items: center;
+}
+
+.lp-debrief-score-display {
+    text-align: center;
+    padding: 24px;
+    background: var(--lp-surface-subtle);
+    border-radius: 14px;
+    border: 1px solid var(--lp-border);
+}
+
+.lp-debrief-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 4px solid var(--lp-primary);
+    color: var(--lp-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 850;
+    margin: 0 auto 12px;
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.15);
+}
+
+.lp-debrief-circle-lbl {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--lp-text-dark);
+}
+
+.lp-debrief-sample-turn {
+    margin-top: 32px;
+}
+
+.lp-sample-turn-card {
+    background: #f8fafc;
+    border: 1px solid var(--lp-border);
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.lp-sample-question-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.lp-sample-question-hdr h4 {
+    font-size: 15px;
+    color: var(--lp-text-dark);
+    font-weight: 700;
+    margin: 0;
+}
+
+.lp-pill-rating {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.lp-sample-missing-points {
+    background: #fef2f2;
+    border-left: 3px solid #ef4444;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: #991b1b;
+    margin: 14px 0;
+    line-height: 1.5;
+}
+
+.lp-sample-star-model {
+    background: #f0fdf4;
+    border-left: 3px solid #10b981;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: #166534;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   TRUST & KNOWLEDGE SOURCES SECTION
+   ========================================================================== */
+.lp-trust-section {
+    padding: 72px 0;
+    background: var(--lp-bg);
+    border-bottom: 1px solid var(--lp-border);
+}
+
+.lp-sources-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.lp-source-card {
+    background: #ffffff;
+    border: 1px solid var(--lp-border);
+    border-radius: 16px;
+    padding: 36px;
+    box-shadow: var(--lp-shadow-sm);
+}
+
+.lp-source-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+.lp-source-tag.official {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.lp-source-tag.community {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.lp-source-card h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--lp-text-dark);
+    margin-bottom: 12px;
+}
+
+.lp-source-card p {
+    font-size: 15px;
+    color: var(--lp-text-body);
+    line-height: 1.6;
+}
+
+/* Trust Verification Bar */
+.lp-trust-verification-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-top: 24px;
+    border-top: 1px solid var(--lp-border);
+}
+
+.lp-verify-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    border: 1px solid var(--lp-border);
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 13px;
+    color: var(--lp-text-body);
+    font-weight: 600;
+    box-shadow: var(--lp-shadow-sm);
+}
+
+.lp-verify-icon {
+    color: var(--lp-emerald);
+    font-weight: 800;
+    font-size: 14px;
+}
+
+/* ==========================================================================
+   PRICING SUMMARY SECTION
+   ========================================================================== */
+.lp-pricing-summary-section {
+    padding: 24px 0 !important;
+    background: #ffffff;
+    border-bottom: 1px solid var(--lp-border);
+    box-sizing: border-box;
+}
+
+.lp-pricing-summary-section .lp-section-header {
+    margin: 0 auto 18px;
+    max-width: 760px;
+}
+
+.lp-pricing-grid-wide {
+    display: grid;
+    grid-template-columns: 1fr 1.08fr;
+    gap: 28px;
+    max-width: 1060px;
+    margin: 0 auto;
+    width: 100%;
+    align-items: stretch;
+}
+
+.lp-plan-card {
+    border-radius: 20px;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.lp-plan-card.free {
+    background: #f8fafc;
+    border: 1px solid var(--lp-border);
+}
+
+.lp-plan-card.free:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.lp-plan-card.pro {
+    background: #ffffff;
+    border: 2px solid #1d4ed8;
+    box-shadow: 0 12px 32px -4px rgba(29, 78, 216, 0.14);
+}
+
+.lp-plan-card.pro:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 36px -4px rgba(29, 78, 216, 0.22);
+}
+
+.lp-plan-badge-ribbon {
+    position: absolute;
+    top: -11px;
+    right: 28px;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 12px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(29, 78, 216, 0.25);
+}
+
+.lp-plan-eyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.lp-plan-title {
+    font-size: 21px;
+    font-weight: 850;
+    color: var(--lp-text-dark);
+    margin: 0 0 4px;
+    letter-spacing: -0.4px;
+}
+
+.lp-plan-price-row {
+    font-size: 26px;
+    font-weight: 850;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.lp-plan-price-row span.period {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.lp-plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    color: #475569;
+}
+
+.lp-plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    line-height: 1.4;
+}
+
+.lp-plan-features li strong {
+    color: #0f172a;
+}
+
+.lp-check-icon {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #ecfdf5;
+    color: #059669;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10.5px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.lp-pricing-bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--lp-border);
+}
+
+.lp-pricing-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #475569;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   FINAL SCREEN SECTION (CONTAINED CTA + ORIGINAL LIGHT FOOTER)
+   ========================================================================== */
+.lp-final-section {
+    background: #f8fafc;
+    border-top: 1px solid var(--lp-border, #e2e8f0);
+    justify-content: space-between !important;
+    padding: var(--space-8, 32px) 0 0 !important;
+}
+
+.lp-contained-cta-box {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto var(--space-8, 32px);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #ffffff;
+    border-radius: 24px;
+    padding: 38px 48px;
+    text-align: center;
+    box-shadow: 0 16px 40px -6px rgba(15, 23, 42, 0.22);
+    position: relative;
+    /* natural overflow */
+    box-sizing: border-box;
+}
+
+.lp-cta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    padding: 4px 14px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+}
+
+.lp-contained-cta-box h2 {
+    font-size: clamp(26px, 2.8vw, 36px);
+    font-weight: 850;
+    color: #ffffff;
+    letter-spacing: -0.8px;
+    line-height: 1.28;
+    margin: 0 0 12px;
+}
+
+.lp-contained-cta-box p {
+    font-size: 16.5px;
+    color: #cbd5e1;
+    line-height: 1.6;
+    margin: 0 auto 24px;
+    max-width: 780px;
+}
+
+.lp-cta-action-group {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.lp-btn-cta-white {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #ffffff;
+    color: #0f172a !important;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 15.5px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-btn-cta-white:hover {
+    background: #f1f5f9;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.lp-btn-cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 13px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.lp-btn-cta-secondary:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Original Light Footer Styling preserved on final screen */
+.landing-page .lp-final-section .app-footer {
+    background: #ffffff;
+    border-top: 1px solid var(--pm-hairline, #e2e8f0);
+    padding: var(--space-8, 32px) 0 var(--space-5, 20px);
+    box-shadow: 0 -2px 10px rgba(15, 23, 42, 0.02);
+}
+
+.landing-page .lp-final-section .app-footer .footer-grid-layout {
+    margin-bottom: var(--space-5, 20px);
+    gap: var(--space-6, 24px);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (Tablets & Mobile)
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .lp-hero-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .lp-hero-left h1 {
+        font-size: 40px;
+    }
+
+    .lp-prep-pillars-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .lp-workflow-step,
+    .lp-workflow-step.reverse {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .lp-workflow-step.reverse .lp-step-content {
+        order: 1;
+    }
+
+    .lp-workflow-step.reverse .lp-step-visual {
+        order: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .lp-container {
+        padding: 0 var(--space-4, 16px);
+    }
+    .landing-page .lp-snap-section {
+        min-height: auto;
+        padding: var(--space-8, 32px) 0;
+    }
+    .lp-reality-section,
+    .lp-workflow-section {
+        padding: var(--space-8, 32px) 0;
+    }
+    .lp-contained-cta-box {
+        padding: var(--space-6, 24px) var(--space-5, 20px);
+        border-radius: 16px;
+    }
+    .lp-hero-section {
+        padding: 44px 0 64px;
+    }
+
+    .lp-hero-left h1 {
+        font-size: 32px;
+        letter-spacing: -0.8px;
+    }
+
+    .lp-section-title {
+        font-size: 28px;
+    }
+
+    .lp-comparison-grid,
+    .lp-sources-grid,
+    .lp-prep-pillars-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lp-mockup-interview-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lp-debrief-top {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .lp-final-cta-section h2 {
+        font-size: 30px;
+    }
+
+    .lp-workflow-step {
+        padding: 24px;
+    }
+
+    .lp-adaptive-flow-card {
+        padding: 24px;
+    }
+}
+
+/* =========================================================================
+   ACCESSIBILITY: PREFERS-REDUCED-MOTION OVERRIDES (WCAG 2.1 SC 2.3.3)
+   Preserve static wave bars and live status while disabling perpetual loop
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+    .lp-live-pulse {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .lp-audio-bar {
+        animation: none !important;
+        transform: scaleY(1) !important;
+    }
+
+    .lp-step-pane {
+        animation: none !important;
+        transform: none !important;
+    }
+}
+
+/* ==========================================================================
+   SKILL-GUIDED BLOOM ANIMATION & COMPACT CALLOUT (STEP 1D-R4)
+   ========================================================================== */
+
+/* Header Theme Toggle Button Styles */
+.header-theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: var(--pm-radius-full, 9999px);
+    border: 1px solid var(--pm-hairline, #BDC1C6);
+    background: var(--pm-surface, #ffffff);
+    color: var(--pm-text-secondary, #475569);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
+}
+
+.header-theme-toggle:hover {
+    background: var(--pm-surface-hover, #f8fafc);
+    color: var(--pm-text-primary, #0f172a);
+    border-color: var(--pm-border-hover, #bfdbfe);
+    transform: translateY(-1px);
+}
+
+.header-theme-toggle:focus-visible {
+    outline: 2px solid var(--pm-primary, #f59e0b);
+    outline-offset: 2px;
+}
+
+/* Attached Compact Callout (Section E) */
+.lp-simulator-mockup.lp-bloom-callout {
+    width: 100%;
+    max-width: 660px;
+    background: var(--pm-surface, #ffffff);
+    border-radius: 12px;
+    border: 1px solid var(--lp-border, #BDC1C6);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-sizing: border-box;
+    text-align: left;
+    transition: all 0.25s ease;
+    min-height: 84px;
+}
+
+.lp-callout-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 12px;
+}
+
+.lp-callout-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--pm-text-primary, #0f172a);
+    margin: 0;
+}
+
+.lp-callout-sep {
+    color: var(--pm-text-faint, #cbd5e1);
+}
+
+.lp-callout-interviewer {
+    font-size: 11.5px;
+    color: var(--pm-text-muted, #64748b);
+    font-weight: 500;
+}
+
+.lp-callout-body {
+    font-size: 12.5px;
+    line-height: 1.48;
+    color: var(--pm-text-secondary, #334155);
+    background: var(--pm-surface-subtle, #f8fafc);
+    border: 1px solid var(--pm-hairline, #BDC1C6);
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin: 0;
+    font-weight: 500;
+}
+
+.lp-callout-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.lp-callout-metric-chip {
+    font-size: 11px;
+    color: var(--pm-text-muted, #64748b);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.lp-callout-metric-chip strong {
+    color: var(--mobbin-accent, #0066ff);
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   TRUE ORGANIC BLOOM ANIMATION ENGINE (STEP 1D-R5)
+   Closed bud initial state -> Sequential spiral unfolding -> Settled stable open
+   ========================================================================== */
+
+/* Base transition rules for petal blades & stems */
+.lp-bloom-petal-blade {
+    transform-box: view-box;
+    transform-origin: 330px 260px;
+    will-change: transform, opacity;
+    transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
+}
+
+.lp-bloom-stem {
+    transform-box: view-box;
+    transform-origin: 330px 260px;
+    will-change: transform, opacity;
+    transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
+}
+
+.lp-bloom-feature-node {
+    will-change: transform, opacity;
+    transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease, filter 0.25s ease;
+}
+
+.lp-industry-tab {
+    will-change: transform, opacity;
+    transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
+}
+
+.lp-radial-dot,
+.lp-bloom-sub-branch {
+    transition: opacity 0.5s ease;
+}
+
+/* 1. CLOSED BUD INITIAL STATE (.lp-bloom-bud) */
+.lp-organic-bloom-stage.lp-bloom-bud .lp-bloom-petal-blade {
+    transform: scale(0.28) rotate(-26deg);
+    opacity: 0.88;
+}
+
+.lp-organic-bloom-stage.lp-bloom-bud .lp-bloom-stem {
+    transform: scale(0.24) rotate(-26deg);
+    opacity: 0.45;
+}
+
+.lp-organic-bloom-stage.lp-bloom-bud .lp-bloom-feature-node {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(calc(-50% - var(--petal-dx, 0%)), calc(-50% - var(--petal-dy, 0%))) scale(0.35) rotate(-15deg);
+}
+
+.lp-organic-bloom-stage.lp-bloom-bud .lp-industry-tab {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(calc(-50% - var(--sub-dx, 0%)), calc(-50% - var(--sub-dy, 0%))) scale(0.3);
+}
+
+.lp-organic-bloom-stage.lp-bloom-bud .lp-radial-dot,
+.lp-organic-bloom-stage.lp-bloom-bud .lp-bloom-sub-branch {
+    opacity: 0;
+}
+
+/* 2. SEQUENTIAL DELAYS FOR CLOCKWISE BLOOM UNFOLDING */
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-blade-interview,
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-stem-interview,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-interview {
+    transition-delay: 60ms;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-blade-qbank,
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-stem-qbank,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-qbank {
+    transition-delay: 180ms;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-blade-report,
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-stem-report,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-report {
+    transition-delay: 300ms;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-blade-roadmap,
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-stem-roadmap,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-roadmap {
+    transition-delay: 420ms;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-blade-jobs,
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-stem-jobs,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-jobs {
+    transition-delay: 540ms;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-blade-cv,
+.lp-organic-bloom-stage.lp-bloom-blooming #bloom-stem-cv,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-cv {
+    transition-delay: 660ms;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming #radial-path-tech,
+.lp-organic-bloom-stage.lp-bloom-blooming #radial-dot-tech,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-sub-tech {
+    transition-delay: 780ms;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming #radial-path-marketing,
+.lp-organic-bloom-stage.lp-bloom-blooming #radial-dot-marketing,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-sub-marketing {
+    transition-delay: 840ms;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming #radial-path-finance,
+.lp-organic-bloom-stage.lp-bloom-blooming #radial-dot-finance,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-sub-finance {
+    transition-delay: 900ms;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming #radial-path-ba,
+.lp-organic-bloom-stage.lp-bloom-blooming #radial-dot-ba,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-sub-ba {
+    transition-delay: 960ms;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming #radial-path-hr,
+.lp-organic-bloom-stage.lp-bloom-blooming #radial-dot-hr,
+.lp-organic-bloom-stage.lp-bloom-blooming .node-sub-hr {
+    transition-delay: 1020ms;
+}
+
+/* 3. BLOOMING & SETTLED OPEN STATES (.lp-bloom-blooming, .lp-bloom-open) */
+.lp-organic-bloom-stage.lp-bloom-blooming .lp-bloom-petal-blade,
+.lp-organic-bloom-stage.lp-bloom-blooming .lp-bloom-stem,
+.lp-organic-bloom-stage.lp-bloom-open .lp-bloom-petal-blade,
+.lp-organic-bloom-stage.lp-bloom-open .lp-bloom-stem {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming .lp-bloom-feature-node,
+.lp-organic-bloom-stage.lp-bloom-open .lp-bloom-feature-node {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming .lp-industry-tab,
+.lp-organic-bloom-stage.lp-bloom-open .lp-industry-tab {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.lp-organic-bloom-stage.lp-bloom-blooming .lp-radial-dot,
+.lp-organic-bloom-stage.lp-bloom-blooming .lp-bloom-sub-branch,
+.lp-organic-bloom-stage.lp-bloom-open .lp-radial-dot,
+.lp-organic-bloom-stage.lp-bloom-open .lp-bloom-sub-branch {
+    opacity: 1;
+}
+
+/* 4. CLICK & SELECTED PETAL EMPHASIS (Permanent when open) */
+.lp-organic-bloom-stage.lp-bloom-open .lp-bloom-feature-node.active,
+.lp-organic-bloom-stage.lp-bloom-blooming .lp-bloom-feature-node.active {
+    transform: translate(-50%, -50%) scale(1.06);
+    filter: drop-shadow(0 4px 14px rgba(0, 102, 255, 0.24));
+}
+
+.lp-organic-bloom-stage.lp-bloom-open .lp-bloom-features-layer:has(.lp-bloom-feature-node.active) .lp-bloom-feature-node:not(.active) {
+    opacity: 0.82;
+}
+
+/* 5. ACCESSIBILITY: REDUCED MOTION OVERRIDE */
+@media (prefers-reduced-motion: reduce) {
+    .lp-organic-bloom-stage .lp-bloom-petal-blade,
+    .lp-organic-bloom-stage .lp-bloom-stem,
+    .lp-organic-bloom-stage .lp-bloom-feature-node,
+    .lp-organic-bloom-stage .lp-industry-tab,
+    .lp-organic-bloom-stage .lp-radial-dot,
+    .lp-organic-bloom-stage .lp-bloom-sub-branch {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transition: none !important;
+    }
+    .lp-organic-bloom-stage .lp-bloom-petal-blade,
+    .lp-organic-bloom-stage .lp-bloom-stem {
+        transform: scale(1) rotate(0deg) !important;
+    }
+}
+
+/* Active Feature Node */
+.lp-organic-bloom-stage.lp-bloom-open .lp-bloom-feature-node.active,
+.lp-organic-bloom-stage .lp-bloom-feature-node.active {
+    transform: translate(-50%, -50%) scale(1.08);
+    background: var(--mobbin-ink, #0f172a);
+    color: #ffffff;
+    border-color: var(--mobbin-ink, #0f172a);
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.22), 0 8px 24px rgba(15, 23, 42, 0.25);
+    z-index: 10;
+}
+html[data-theme="dark"] .lp-organic-bloom-stage.lp-bloom-open .lp-bloom-feature-node.active,
+html[data-theme="dark"] .lp-organic-bloom-stage .lp-bloom-feature-node.active {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35), 0 8px 24px rgba(0, 0, 0, 0.55);
+}
+
+/* ==========================================================================
+   GLOBAL DARK THEME NORMALIZATION FOR LANDING PAGE (STEP 1D-R13 MODERN DARK)
+   Direction: Deep Midnight Canvas (#202124), Layered Surfaces, Balanced Contrast
+   ========================================================================== */
+
+/* 1. Global Page & Body Surfaces */
+html[data-theme="dark"] body.landing-page {
+    background: #202124 !important;
+    color: #E8EAED;
+}
+
+/* 2. Hero Section: Elegant Radial Depth */
+html[data-theme="dark"] .lp-hero-section.lp-oversized-hero {
+    background: radial-gradient(85% 70% at 75% 45%, rgba(36, 38, 43, 0.6) 0%, rgba(26, 27, 30, 0.95) 70%, #202124 100%) !important;
+    border-bottom: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-hero-title {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-hero-title .highlight-text {
+    color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .lp-hero-lead {
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .lp-cta-primary {
+    background: #2563eb !important;
+    border-color: #38bdf8 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+}
+
+html[data-theme="dark"] .lp-cta-primary:hover {
+    background: #3b82f6 !important;
+    border-color: #60a5fa !important;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.5) !important;
+}
+
+html[data-theme="dark"] .lp-btn-secondary,
+html[data-theme="dark"] .lp-cta-secondary,
+body.dark-mode .lp-btn-secondary,
+body.dark-mode .lp-cta-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #e8eaed !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .lp-btn-secondary:hover,
+html[data-theme="dark"] .lp-cta-secondary:hover,
+body.dark-mode .lp-btn-secondary:hover,
+body.dark-mode .lp-cta-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .lp-hero-values,
+body.dark-mode .lp-hero-values {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .lp-hero-val-icon,
+body.dark-mode .lp-hero-val-icon {
+    color: #f59e0b !important;
+}
+
+html[data-theme="dark"] .lp-hero-val-title,
+body.dark-mode .lp-hero-val-title {
+    color: #f1f3f4;
+}
+
+html[data-theme="dark"] .lp-hero-val-text,
+body.dark-mode .lp-hero-val-text {
+    color: #bdc1c6;
+}
+
+html[data-theme="dark"] .lp-hero-val-sep,
+body.dark-mode .lp-hero-val-sep {
+    color: #5f6368;
+}
+
+/* 3. Hero Organic Bloom (Step 1D-R28 Warm Celestial Architecture in Dark Mode) */
+html[data-theme="dark"] .lp-radial-stage-card {
+    background: transparent;
+}
+
+html[data-theme="dark"] .lp-radial-stage.lp-organic-bloom-stage {
+    background: transparent !important;
+}
+
+html[data-theme="dark"] .lp-orbit-ring {
+    stroke: #453c31;
+    display: block !important;
+}
+
+html[data-theme="dark"] .lp-orbit-ring.outer {
+    stroke: #52473a;
+    display: block !important;
+}
+
+html[data-theme="dark"] .lp-radial-branch,
+html[data-theme="dark"] .lp-bloom-stem {
+    stroke: #e2d9cc;
+}
+
+html[data-theme="dark"] .lp-radial-branch.active,
+html[data-theme="dark"] .lp-bloom-stem.active,
+html[data-theme="dark"] .lp-bloom-sub-branch.active {
+    stroke: #f59e0b;
+    filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.55));
+}
+
+html[data-theme="dark"] .lp-radial-dot {
+    fill: #453c31;
+}
+
+html[data-theme="dark"] .lp-radial-dot.active {
+    fill: #fbbf24 !important;
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.75)) !important;
+}
+
+html[data-theme="dark"] .lp-industry-selector-bar {
+    display: block !important;
+}
+
+html[data-theme="dark"] .lp-industry-tab {
+    background: #231e17;
+    border: 1px solid #453c31;
+    color: #e2d9cc;
+}
+
+html[data-theme="dark"] .lp-industry-tab:hover {
+    background: #2e261e;
+    border-color: #d97706;
+    color: #fffdf5;
+}
+
+html[data-theme="dark"] .lp-industry-tab.active {
+    background: #2e1d0c !important;
+    border-color: #f59e0b !important;
+    color: #fffdf5 !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35), 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* 4. Shared Detail Dock (#heroSimulatorCard) */
+html[data-theme="dark"] .lp-simulator-mockup.lp-radial-detail-dock {
+    background: #292A2D !important;
+    border: 1px solid #3C4043 !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
+}
+
+html[data-theme="dark"] .lp-dock-room-badge {
+    background: #252629 !important;
+    border: 1px solid #3C4043 !important;
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-dock-interviewer {
+    color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .lp-dock-tag {
+    color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .lp-dock-question {
+    background: #202124 !important;
+    border: 1px solid #3C4043 !important;
+    color: #93c5fd !important;
+}
+
+html[data-theme="dark"] .lp-dock-goal {
+    color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .lp-dock-footer {
+    border-top: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-dock-telemetry {
+    color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .lp-dock-telemetry strong {
+    color: #E8EAED !important;
+}
+
+/* 5. Factual Product Metrics Strip (Step 1D-R49) */
+html[data-theme="dark"] .lp-hero-trust-bar.lp-factual-metrics-strip,
+html[data-theme="dark"] .lp-hero-trust-bar {
+    background: #131416 !important;
+    border-top: 1px solid #2e3238 !important;
+    border-bottom: 1px solid #2e3238 !important;
+}
+
+html[data-theme="dark"] .lp-metric-strip-val {
+    color: var(--mobbin-accent, #8ab4f8) !important;
+}
+
+html[data-theme="dark"] .lp-metric-strip-label,
+html[data-theme="dark"] .lp-metric-strip-title {
+    color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .lp-metric-strip-divider {
+    background: #2e3238 !important;
+}
+
+/* 6. Vertical Screen Navigation Dots */
+html[data-theme="dark"] .lp-screen-dot {
+    background: #3C4043 !important;
+    border: 2px solid #292A2D !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+html[data-theme="dark"] .lp-screen-dot:hover,
+html[data-theme="dark"] .lp-screen-dot.active {
+    background: #38bdf8 !important;
+    border-color: #E8EAED !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
+}
+
+html[data-theme="dark"] .lp-screen-dot::after {
+    background: #252629 !important;
+    color: #E8EAED !important;
+    border: 1px solid #3C4043 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 7. Problem / Reality Gap Section */
+html[data-theme="dark"] #reality,
+html[data-theme="dark"] .lp-reality-section,
+html[data-theme="dark"] .lp-reality-gap-section {
+    background: #202124 !important;
+    border-bottom: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-section-title {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-section-lead,
+html[data-theme="dark"] .lp-section-desc {
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .lp-comparison-card,
+html[data-theme="dark"] .lp-gap-card,
+html[data-theme="dark"] .lp-reality-card {
+    background: #292A2D !important;
+    border: 1px solid #3C4043 !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .lp-comparison-card.old-way {
+    background: #292A2D !important;
+    border-color: #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-comparison-card.prepmate-way {
+    background: #292A2D !important;
+    border: 2px solid #3b82f6 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+html[data-theme="dark"] .lp-comparison-card h3,
+html[data-theme="dark"] .lp-gap-card-title {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-comparison-card .lp-comp-item,
+html[data-theme="dark"] .lp-comparison-card .lp-comp-item div,
+html[data-theme="dark"] .lp-gap-card-desc {
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .lp-comparison-card .lp-comp-item strong {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-comp-badge.muted {
+    background: #3C4043 !important;
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .lp-comp-badge.active {
+    background: rgba(37, 99, 235, 0.2) !important;
+    color: #60a5fa !important;
+    border-color: #2563eb !important;
+}
+
+/* 8. Workflow Section */
+html[data-theme="dark"] .lp-workflow-section {
+    background: #202124 !important;
+    border-bottom: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-interactive-workflow {
+    background: #292A2D !important;
+    border: 1px solid #3C4043 !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+html[data-theme="dark"] .lp-workflow-nav-bar {
+    background: #202124 !important;
+    border-bottom: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-workflow-tab,
+html[data-theme="dark"] .lp-step-nav-btn {
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .lp-workflow-tab:hover,
+html[data-theme="dark"] .lp-step-nav-btn:hover {
+    background: #252629 !important;
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-workflow-tab.active,
+html[data-theme="dark"] .lp-step-nav-btn.active {
+    background: #292A2D !important;
+    border-color: #3C4043 !important;
+    color: #38bdf8 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+html[data-theme="dark"] .lp-workflow-tab .step-badge {
+    background: #3C4043 !important;
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .lp-workflow-tab.active .step-badge {
+    background: #172554 !important;
+    color: #60a5fa !important;
+    border: 1px solid #1e40af !important;
+}
+
+html[data-theme="dark"] .lp-step-pane-card {
+    background: #292A2D !important;
+    border: 1px solid #3C4043 !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+html[data-theme="dark"] .lp-step-content h3 {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-step-content p,
+html[data-theme="dark"] .lp-step-highlight-item {
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .lp-step-number {
+    background: rgba(37, 99, 235, 0.2) !important;
+    color: #60a5fa !important;
+}
+
+html[data-theme="dark"] .lp-visual-setup,
+html[data-theme="dark"] .lp-visual-interview-active,
+html[data-theme="dark"] .lp-visual-adaptive-tree,
+html[data-theme="dark"] .lp-visual-debrief-scorecard,
+html[data-theme="dark"] .lp-step-visual-mockup {
+    background: #202124 !important;
+    border: 1px solid #3C4043 !important;
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .lp-setup-row {
+    background: #292A2D !important;
+    border: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-setup-label {
+    color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .lp-setup-value {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-visual-room-hud {
+    background: #292A2D !important;
+    color: #9AA0A6 !important;
+    border-bottom: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-visual-room-speech {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-tree-node.answer {
+    background: #292A2D !important;
+    border-color: #3C4043 !important;
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .lp-tree-node.probe {
+    background: #172554 !important;
+    border-color: #1e40af !important;
+    color: #93c5fd !important;
+}
+
+html[data-theme="dark"] .lp-scorecard-header {
+    border-bottom: 1px solid #3C4043 !important;
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-metric-meta span {
+    color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .lp-metric-meta strong {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-metric-bar {
+    background: #3C4043 !important;
+}
+
+/* 9. Adaptive Interview & Pillars Sections */
+html[data-theme="dark"] .lp-adaptive-section,
+html[data-theme="dark"] .lp-ecosystem-section,
+html[data-theme="dark"] .lp-debrief-section,
+html[data-theme="dark"] .lp-trust-section {
+    background: #202124 !important;
+    border-bottom: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-pillar-card,
+html[data-theme="dark"] .lp-debrief-card,
+html[data-theme="dark"] .lp-trust-card {
+    background: #292A2D !important;
+    border: 1px solid #3C4043 !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="dark"] .lp-pillar-title,
+html[data-theme="dark"] .lp-debrief-title,
+html[data-theme="dark"] .lp-trust-card-title {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-pillar-desc,
+html[data-theme="dark"] .lp-debrief-desc,
+html[data-theme="dark"] .lp-trust-card-desc {
+    color: #BDC1C6 !important;
+}
+
+/* 10. Pricing Summary & Final CTA */
+html[data-theme="dark"] .lp-pricing-summary-section {
+    background: #202124 !important;
+    border-bottom: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-pricing-summary-card {
+    background: #292A2D !important;
+    border: 1px solid #3C4043 !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="dark"] .lp-pricing-summary-card.featured {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 0 1px #38bdf8, 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+html[data-theme="dark"] #cta,
+html[data-theme="dark"] .lp-final-section,
+html[data-theme="dark"] .lp-final-cta-section {
+    background: #202124 !important;
+    border-top: 1px solid #3C4043 !important;
+}
+
+html[data-theme="dark"] .lp-contained-cta-box,
+html[data-theme="dark"] .lp-final-cta-card {
+    background: linear-gradient(135deg, #292A2D 0%, #252629 100%) !important;
+    border: 1px solid #3C4043 !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-contained-cta-box h2,
+html[data-theme="dark"] .lp-final-cta-title {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .lp-contained-cta-box p,
+html[data-theme="dark"] .lp-final-cta-lead {
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .landing-page .lp-final-section .app-footer,
+html[data-theme="dark"] .landing-page .lp-final-section footer {
+    background: #202124 !important;
+    border-top: 1px solid #3C4043 !important;
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .landing-page .lp-final-section .app-footer a {
+    color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .landing-page .lp-final-section .app-footer a:hover {
+    color: #E8EAED !important;
+}
+
+
+@media (max-width: 480px) {
+    .lp-radial-stage.lp-organic-bloom-stage {
+        max-width: 360px;
+        aspect-ratio: 1 / 1;
+        margin: 0 auto;
+    }
+    .lp-bloom-feature-node {
+        padding: 4px 6px !important;
+        font-size: 8.5px !important;
+        gap: 2px !important;
+    }
+    .lp-industry-tab {
+        padding: 3px 5px !important;
+        font-size: 8px !important;
+        gap: 2px !important;
+    }
+    .lp-radial-hub-badge {
+        padding: 4px 6px !important;
+        font-size: 9.5px !important;
+    }
+}
+
+
+html[data-theme="dark"] .lp-btn-cta-white,
+body.dark-mode .lp-btn-cta-white {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border: 1px solid #3b82f6 !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
+}
+html[data-theme="dark"] .lp-btn-cta-white:hover,
+body.dark-mode .lp-btn-cta-white:hover {
+  background: #1d4ed8 !important;
+}
+
+
+/* ==========================================================================
+   R24.2 DUAL-THEME MINIATURE UNIVERSE: COSMIC DARK MODE + AIRY LIGHT MODE
+   ========================================================================== */
+.lp-radial-stage-card.lp-tree-stage-card,
+.lp-tree-stage-card,
+.lp-galactic-stage-card,
+.lp-universe-stage-card {
+    width: 100%;
+    max-width: 820px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    border-radius: var(--pm-radius-xl, 16px);
+    transition: background 0.4s ease;
+}
+
+.lp-radial-stage.lp-tree-stage,
+.lp-tree-stage,
+.lp-galactic-stage,
+.lp-universe-stage {
+    position: relative;
+    width: 100%;
+    max-width: 820px;
+    aspect-ratio: 820 / 500;
+    margin: 0 auto;
+    animation: universeCanvasEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes universeCanvasEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.lp-radial-svg.lp-tree-svg,
+.lp-tree-svg,
+.lp-galactic-svg,
+.lp-universe-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   DUAL-THEME STARFIELD (Mạng lưới sao lấp lánh có kiểm soát)
+   ========================================================================== */
+.lp-starfield {
+    pointer-events: none;
+}
+
+/* Light Mode: Airy Stardust Specks (Thoáng, tinh tế, không invert đen) */
+.lp-star {
+    fill: #94a3b8;
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: fill 0.4s ease, opacity 0.4s ease;
+}
+
+.lp-star-micro {
+    opacity: 0.22;
+}
+
+.lp-star-medium {
+    opacity: 0.40;
+}
+
+.lp-star-twinkle {
+    fill: #64748b;
+    opacity: 0.50;
+}
+
+/* 3 Gentle Asymmetric Orbital Guide Planes with Living Breath */
+.lp-orbit-ring {
+    fill: none;
+    stroke: #cbd5e1;
+    stroke-width: 1.1px;
+    stroke-dasharray: 4 6;
+    transform-origin: 410px 250px;
+    transition: stroke 0.35s ease, rx 0.5s ease, ry 0.5s ease;
+}
+
+.lp-orbit-inner {
+    opacity: 0.85;
+    transform: rotate(-5deg);
+    animation: orbitRingBreatheInner 14s ease-in-out infinite alternate;
+}
+
+.lp-orbit-mid {
+    opacity: 0.65;
+    transform: rotate(4deg);
+    animation: orbitRingBreatheMid 18s ease-in-out infinite alternate;
+}
+
+.lp-orbit-outer {
+    opacity: 0.50;
+    transform: rotate(-2.5deg);
+    animation: orbitRingBreatheOuter 22s ease-in-out infinite alternate;
+}
+
+@keyframes orbitRingBreatheInner {
+    0%, 100% { transform: rotate(-5deg) scale(1); opacity: 0.80; }
+    50% { transform: rotate(-5deg) scale(1.018); opacity: 0.95; }
+}
+
+@keyframes orbitRingBreatheMid {
+    0%, 100% { transform: rotate(4deg) scale(1); opacity: 0.60; }
+    50% { transform: rotate(4deg) scale(1.012); opacity: 0.75; }
+}
+
+@keyframes orbitRingBreatheOuter {
+    0%, 100% { transform: rotate(-2.5deg) scale(1); opacity: 0.45; }
+    50% { transform: rotate(-2.5deg) scale(1.008); opacity: 0.60; }
+}
+
+/* Central Anchor: PrepMate Sun Core Hub */
+.lp-tree-center-hub,
+.lp-galactic-hub,
+.lp-universe-hub {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    pointer-events: none;
+}
+
+.lp-radial-hub-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9.5px 20px;
+    border-radius: var(--pm-radius-full, 9999px);
+    background: #0f172a;
+    color: #ffffff;
+    font-family: var(--pm-font-family, 'Outfit', sans-serif);
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.16);
+    animation: universeHubPulse 4s ease-in-out infinite alternate;
+    transition: background 0.35s ease, color 0.35s ease;
+}
+
+.lp-hub-pulse-dot {
+    width: 7.5px;
+    height: 7.5px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #f59e0b 60%, #b45309 100%);
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.85);
+}
+
+@keyframes universeHubPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.35), 0 4px 18px rgba(15, 23, 42, 0.16);
+    }
+    100% {
+        box-shadow: 0 0 0 9px rgba(245, 158, 11, 0), 0 6px 22px rgba(15, 23, 42, 0.22);
+    }
+}
+
+/* 6 Primary Fluid Curved Rays (SVG Stems / Visible Floating Tethers) */
+.lp-tree-stem {
+    fill: none;
+    stroke: #94a3b8;
+    stroke-width: 1.5px;
+    stroke-linecap: round;
+    opacity: 0.72;
+    filter: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.06));
+    transition: stroke 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                stroke-width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.35s ease,
+                opacity 0.35s ease;
+}
+
+/* Light Mode Active Stems (Warm Celestial Luminary Family) */
+.stem-interview.active {
+    stroke: #f59e0b; /* Solar Gold */
+    stroke-width: 2.6px;
+    opacity: 1;
+    filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.32));
+}
+.stem-qbank.active {
+    stroke: #ea580c; /* Muted Terracotta Flame */
+    stroke-width: 2.6px;
+    opacity: 1;
+    filter: drop-shadow(0 2px 6px rgba(234, 88, 12, 0.30));
+}
+.stem-report.active {
+    stroke: #d97706; /* Golden Amber */
+    stroke-width: 2.6px;
+    opacity: 1;
+    filter: drop-shadow(0 2px 6px rgba(217, 119, 6, 0.30));
+}
+.stem-roadmap.active {
+    stroke: #b45309; /* Bronze Ochre */
+    stroke-width: 2.6px;
+    opacity: 1;
+    filter: drop-shadow(0 2px 6px rgba(180, 83, 9, 0.30));
+}
+.stem-jobs.active {
+    stroke: #f97316; /* Sunset Soft Orange */
+    stroke-width: 2.6px;
+    opacity: 1;
+    filter: drop-shadow(0 2px 6px rgba(249, 115, 22, 0.30));
+}
+.stem-cv.active {
+    stroke: #d97706; /* Champagne Amber Starlight */
+    stroke-width: 2.6px;
+    opacity: 1;
+    filter: drop-shadow(0 2px 6px rgba(253, 230, 138, 0.40));
+}
+
+/* Sub-Ray Satellite Filaments */
+.lp-tree-sub-stem {
+    fill: none;
+    stroke: #cbd5e1;
+    stroke-width: 1.4px;
+    stroke-linecap: round;
+    stroke-dasharray: 4 3;
+    opacity: 0;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.35s ease, d 0.5s ease;
+}
+
+.stem-leaf-interview.active { opacity: 1; stroke: #f59e0b; stroke-dasharray: none; }
+.stem-leaf-qbank.active { opacity: 1; stroke: #ea580c; stroke-dasharray: none; }
+.stem-leaf-report.active { opacity: 1; stroke: #d97706; stroke-dasharray: none; }
+.stem-leaf-roadmap.active { opacity: 1; stroke: #b45309; stroke-dasharray: none; }
+.stem-leaf-jobs.active { opacity: 1; stroke: #f97316; stroke-dasharray: none; }
+.stem-leaf-cv.active { opacity: 1; stroke: #d97706; stroke-dasharray: none; }
+
+.lp-radial-dot {
+    fill: #cbd5e1;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-radial-dot.active {
+    fill: #f59e0b;
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.65));
+}
+
+/* Primary Planetary Nodes Layer */
+.lp-tree-main-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Light Mode: Airy & Volumetric Floating Card Blooms */
+.lp-tree-main-node {
+    position: absolute;
+    pointer-events: auto;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 15px;
+    border-radius: var(--pm-radius-full, 9999px);
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid var(--lp-border, #cbd5e1);
+    color: var(--lp-text-body, #334155);
+    font-family: var(--pm-font-family, 'Outfit', sans-serif);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.95) inset,
+                0 3px 6px -1px rgba(15, 23, 42, 0.05),
+                0 10px 20px -3px rgba(15, 23, 42, 0.08);
+    will-change: transform;
+    transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                left 0.5s ease,
+                top 0.5s ease;
+}
+
+/* Soft Planetary Indicator Dots - Non-uniform celestial proportions */
+.lp-node-dot {
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+/* R28 4-Layer Volumetric Planet Dots (Light Mode) */
+.dot-interview {
+    width: 8.5px; height: 8.5px;
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #f59e0b 60%, #b45309 100%);
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.50);
+}
+.dot-qbank {
+    width: 7.5px; height: 7.5px;
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #ea580c 60%, #9a3412 100%);
+    box-shadow: 0 0 5px rgba(234, 88, 12, 0.50);
+}
+.dot-report {
+    width: 7.5px; height: 7.5px;
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #d97706 60%, #78350f 100%);
+    box-shadow: 0 0 5px rgba(217, 119, 6, 0.50);
+}
+.dot-roadmap {
+    width: 7.0px; height: 7.0px;
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #b45309 60%, #713f12 100%);
+    box-shadow: 0 0 5px rgba(180, 83, 9, 0.50);
+}
+.dot-jobs {
+    width: 7.0px; height: 7.0px;
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #f97316 60%, #9a3412 100%);
+    box-shadow: 0 0 5px rgba(249, 115, 22, 0.50);
+}
+.dot-cv {
+    width: 6.0px; height: 6.0px;
+    background: radial-gradient(circle at 35% 35%, #ffffff 0%, #fde68a 60%, #d97706 100%);
+    box-shadow: 0 0 5px rgba(253, 230, 138, 0.60);
+}
+
+/* Step 1D-R34: UNIFIED FEATURE COLOR SYSTEM (Light Mode)
+   Clean White SaaS Surface + Delicate Warm Celestial Rim Halo across all 6 peer nodes */
+.lp-tree-main-node {
+    background: var(--pm-surface, #ffffff) !important;
+    background-image: none !important;
+    border: 1px solid var(--lp-border, #cbd5e1) !important;
+    color: var(--lp-text-dark, #0f172a) !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05),
+                0 6px 16px rgba(15, 23, 42, 0.04),
+                0 0 0 1px rgba(245, 158, 11, 0.18) !important;
+    font-family: var(--pm-font-family, 'Outfit', sans-serif);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.2s ease,
+                background-color 0.2s ease !important;
+}
+
+/* Individual node positions & font scales (Step 1D-R58 Scaled-Up Bloom) */
+.lp-tree-main-node.node-interview {
+    left: 63.4%; top: 21.0%; transform: translate(-50%, -50%);
+    padding: 8.5px 18px; font-size: 13.5px; font-weight: 700;
+}
+.lp-tree-main-node.node-qbank {
+    left: 86.0%; top: 46.0%; transform: translate(-50%, -50%);
+    padding: 8px 16px; font-size: 13px; font-weight: 600;
+}
+.lp-tree-main-node.node-report {
+    left: 75.0%; top: 79.0%; transform: translate(-50%, -50%);
+    padding: 8px 16px; font-size: 13px; font-weight: 600;
+}
+.lp-tree-main-node.node-roadmap {
+    left: 31.7%; top: 81.0%; transform: translate(-50%, -50%);
+    padding: 7.5px 15px; font-size: 12.5px; font-weight: 600;
+}
+.lp-tree-main-node.node-jobs {
+    left: 19.5%; top: 53.0%; transform: translate(-50%, -50%);
+    padding: 7.5px 15px; font-size: 12.5px; font-weight: 600;
+}
+.lp-tree-main-node.node-cv {
+    left: 28.7%; top: 23.0%; transform: translate(-50%, -50%);
+    padding: 7px 15px; font-size: 12.5px; font-weight: 600;
+}
+
+/* Unified Node Hover States */
+.lp-tree-main-node:hover {
+    background: #fffdf5 !important;
+    background-image: none !important;
+    border-color: #d97706 !important;
+    color: var(--lp-text-dark, #0f172a) !important;
+    transform: translate(-50%, -50%) translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(180, 83, 9, 0.14),
+                0 0 0 1px rgba(245, 158, 11, 0.25) !important;
+}
+
+/* Unified Light Mode Active States across all 6 peer nodes */
+.lp-tree-main-node.active,
+.lp-tree-main-node.node-interview.active,
+.lp-tree-main-node.node-qbank.active,
+.lp-tree-main-node.node-report.active,
+.lp-tree-main-node.node-roadmap.active,
+.lp-tree-main-node.node-jobs.active,
+.lp-tree-main-node.node-cv.active {
+    background: var(--pm-surface, #ffffff) !important;
+    background-image: none !important;
+    border-color: #f59e0b !important;
+    color: var(--lp-text-dark, #0f172a) !important;
+    font-weight: 700;
+    transform: translate(-50%, -50%) scale(1.08) !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22),
+                0 6px 20px rgba(245, 158, 11, 0.16),
+                0 1px 3px rgba(15, 23, 42, 0.05) !important;
+    z-index: 10 !important;
+}
+
+/* Active Dots (Luminous Accent Glow) */
+.lp-tree-main-node.node-interview.active .dot-interview {
+    background: #f59e0b !important;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.65) !important;
+}
+.lp-tree-main-node.node-qbank.active .dot-qbank {
+    background: #ea580c !important;
+    box-shadow: 0 0 8px rgba(234, 88, 12, 0.65) !important;
+}
+.lp-tree-main-node.node-report.active .dot-report {
+    background: #d97706 !important;
+    box-shadow: 0 0 8px rgba(217, 119, 6, 0.65) !important;
+}
+.lp-tree-main-node.node-roadmap.active .dot-roadmap {
+    background: #b45309 !important;
+    box-shadow: 0 0 8px rgba(180, 83, 9, 0.65) !important;
+}
+.lp-tree-main-node.node-jobs.active .dot-jobs {
+    background: #f97316 !important;
+    box-shadow: 0 0 8px rgba(249, 115, 22, 0.65) !important;
+}
+.lp-tree-main-node.node-cv.active .dot-cv {
+    background: #f59e0b !important;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.65) !important;
+}
+
+/* Satellite Groups & Sub-Rays: Fluid Bloom Motion */
+.lp-tree-sub-group {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+}
+
+.lp-tree-sub-group.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Micro-Tag Satellite Styling */
+.lp-tree-leaf,
+.lp-satellite-tag {
+    position: absolute;
+    pointer-events: auto;
+    z-index: 6;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 11px;
+    border-radius: var(--pm-radius-full, 9999px);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--lp-border, #cbd5e1);
+    color: var(--lp-text-body, #475569);
+    font-family: var(--pm-font-family, 'Outfit', sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: default;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0;
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                left 0.5s ease,
+                top 0.5s ease;
+}
+
+.lp-satellite-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.lp-satellite-dot.dot-interview { background: #f59e0b; }
+.lp-satellite-dot.dot-qbank { background: #ea580c; }
+.lp-satellite-dot.dot-report { background: #d97706; }
+.lp-satellite-dot.dot-roadmap { background: #b45309; }
+.lp-satellite-dot.dot-jobs { background: #f97316; }
+.lp-satellite-dot.dot-cv { background: #d97706; }
+
+.lp-tree-sub-group.active .lp-tree-leaf,
+.lp-tree-sub-group.active .lp-satellite-tag {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+/* Staggered Blooming for Active Sub-Rays */
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(1),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(1) { transition-delay: 0.03s; }
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(2),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(2) { transition-delay: 0.08s; }
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(3),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(3) { transition-delay: 0.13s; }
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(4),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(4) { transition-delay: 0.18s; }
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(5),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(5) { transition-delay: 0.23s; }
+
+/* Industry Satellites (Interview Sub-group) */
+.lp-industry-tab.lp-tree-leaf {
+    cursor: pointer;
+    font-size: 11.5px;
+    padding: 5px 12px;
+}
+
+.lp-industry-tab.lp-tree-leaf.active {
+    background: #fffbeb;
+    border-color: #f59e0b;
+    color: #92400e;
+    font-weight: 700;
+}
+
+/* Satellite Base Coordinates (viewBox 820 x 500 - Step 1D-R41: Airy Asymmetric Layout) */
+/* Interview Leaves (Undulating W-wave crown, zero horizontal/vertical overlap) */
+.node-sub-tech { left: 59.8%; top: 4.5%; }
+.node-sub-ba { left: 36.5%; top: 15.5%; }
+.node-sub-marketing { left: 78.0%; top: 15.0%; }
+.node-sub-finance { left: 91.5%; top: 27.0%; }
+.node-sub-hr { left: 19.0%; top: 5.5%; }
+
+/* CV Analysis Leaves (Airy fan-out with varied depths and zero overlap) */
+.node-sub-cv-strength { left: 8.0%; top: 28.0%; }
+.node-sub-cv-improvement { left: 24.0%; top: 4.0%; }
+.node-sub-cv-optimization { left: 42.0%; top: 24.0%; }
+.node-sub-cv-jd-match { left: 60.0%; top: 5.0%; }
+
+/* Jobs Leaves (Staggered zigzag depths, zero column stacking) */
+.node-sub-jobs-search { left: 6.0%; top: 22.0%; }
+.node-sub-jobs-jd-analyze { left: 20.0%; top: 38.0%; }
+.node-sub-jobs-match { left: 5.0%; top: 60.0%; }
+.node-sub-jobs-skills { left: 20.0%; top: 80.0%; }
+
+/* Question Bank Leaves (Organic crescent arc) */
+.node-sub-qbank-star { left: 85.0%; top: 30.0%; }
+.node-sub-qbank-industry { left: 92.5%; top: 48.0%; }
+.node-sub-qbank-followup { left: 85.0%; top: 66.0%; }
+
+/* STAR Report Leaves (Height rhythm, no flat baseline) */
+.node-sub-report-matrix { left: 84.0%; top: 70.0%; }
+.node-sub-report-feedback { left: 74.0%; top: 92.0%; }
+.node-sub-report-coaching { left: 48.0%; top: 80.0%; }
+
+/* Career Roadmap Leaves (Asymmetric crescent valley) */
+.node-sub-roadmap-goals { left: 10.0%; top: 74.0%; }
+.node-sub-roadmap-milestones { left: 27.0%; top: 94.0%; }
+.node-sub-roadmap-progress { left: 50.0%; top: 80.0%; }
+
+/* Backward-compatible aliases */
+.leaf-qbank-1 { left: 85.0%; top: 30.0%; }
+.leaf-qbank-2 { left: 85.0%; top: 66.0%; }
+.leaf-report-1 { left: 82.0%; top: 72.0%; }
+.leaf-report-2 { left: 52.0%; top: 82.0%; }
+.leaf-roadmap-1 { left: 10.0%; top: 74.0%; }
+.leaf-roadmap-2 { left: 50.0%; top: 80.0%; }
+.leaf-jobs-1 { left: 6.0%; top: 22.0%; }
+.leaf-jobs-2 { left: 5.0%; top: 60.0%; }
+.leaf-cv-1 { left: 8.0%; top: 28.0%; }
+.leaf-cv-2 { left: 60.0%; top: 5.0%; }
+
+.lp-tree-leaf:hover,
+.lp-satellite-tag:hover {
+    background: #ffffff;
+    border-color: #94a3b8;
+    color: #0f172a;
+    transform: translate(-50%, -50%) scale(1.04) !important;
+}
+
+.lp-industry-tab:focus-visible,
+.lp-tree-main-node:focus-visible {
+    outline: 2px solid var(--pm-primary, #f59e0b);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   DARK MODE: COSMIC MINIATURE UNIVERSE (GOOGLE MATERIAL NEUTRAL CHARCOAL GRAY)
+   ========================================================================== */
+html[data-theme="dark"] .lp-hero-eyebrow,
+body.dark-mode .lp-hero-eyebrow {
+    color: #8ab4f8;
+}
+
+/* Dark Mode Space Depth: Subtle feathered cosmic aura */
+html[data-theme="dark"] .lp-universe-stage-card,
+body.dark-mode .lp-universe-stage-card {
+    background: radial-gradient(ellipse at 50% 50%, rgba(37, 38, 41, 0.45) 0%, rgba(32, 33, 36, 0.25) 60%, transparent 100%);
+}
+
+/* Dark Mode Twinkling Starfield */
+html[data-theme="dark"] .lp-star,
+body.dark-mode .lp-star {
+    fill: #e8eaed;
+}
+
+html[data-theme="dark"] .lp-star-micro,
+body.dark-mode .lp-star-micro {
+    opacity: 0.35;
+}
+
+html[data-theme="dark"] .lp-star-medium,
+body.dark-mode .lp-star-medium {
+    opacity: 0.65;
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+}
+
+html[data-theme="dark"] .lp-star-twinkle,
+body.dark-mode .lp-star-twinkle {
+    fill: #fffdf5;
+    filter: drop-shadow(0 0 4px rgba(254, 240, 138, 0.75));
+}
+
+/* Dark Mode Orbits (Subtle Warm Charcoal-Amber Path) */
+html[data-theme="dark"] .lp-orbit-ring,
+body.dark-mode .lp-orbit-ring {
+    stroke: #453c31;
+}
+
+html[data-theme="dark"] .lp-radial-hub-badge,
+body.dark-mode .lp-radial-hub-badge {
+    background: #231e17;
+    border: 1px solid rgba(245, 158, 11, 0.38);
+    color: #fffdf5;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 16px rgba(245, 158, 11, 0.20);
+}
+
+html[data-theme="dark"] .lp-hub-pulse-dot,
+body.dark-mode .lp-hub-pulse-dot {
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #f59e0b 60%, #b45309 100%);
+    box-shadow: 0 0 9px rgba(245, 158, 11, 0.95);
+}
+
+html[data-theme="dark"] .lp-tree-stem,
+body.dark-mode .lp-tree-stem {
+    stroke: #e2d9cc;
+    stroke-width: 1.4px;
+    opacity: 0.68;
+    filter: drop-shadow(0 0 2px rgba(254, 240, 138, 0.25));
+}
+
+/* Dark Mode Active Stems (Luminous Celestial Warm Rays) */
+html[data-theme="dark"] .stem-interview.active,
+body.dark-mode .stem-interview.active {
+    stroke: #f59e0b; /* Solar Gold */
+    filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.60));
+}
+html[data-theme="dark"] .stem-qbank.active,
+body.dark-mode .stem-qbank.active {
+    stroke: #fb923c; /* Muted Terracotta Flame */
+    filter: drop-shadow(0 2px 8px rgba(251, 146, 60, 0.60));
+}
+html[data-theme="dark"] .stem-report.active,
+body.dark-mode .stem-report.active {
+    stroke: #fbbf24; /* Golden Amber */
+    filter: drop-shadow(0 2px 8px rgba(251, 191, 36, 0.60));
+}
+html[data-theme="dark"] .stem-roadmap.active,
+body.dark-mode .stem-roadmap.active {
+    stroke: #d97706; /* Bronze Ochre */
+    filter: drop-shadow(0 2px 8px rgba(217, 119, 6, 0.60));
+}
+html[data-theme="dark"] .stem-jobs.active,
+body.dark-mode .stem-jobs.active {
+    stroke: #f97316; /* Sunset Soft Orange */
+    filter: drop-shadow(0 2px 8px rgba(249, 115, 22, 0.60));
+}
+html[data-theme="dark"] .stem-cv.active,
+body.dark-mode .stem-cv.active {
+    stroke: #fde68a; /* Champagne Starlight */
+    filter: drop-shadow(0 2px 8px rgba(253, 230, 138, 0.60));
+}
+
+html[data-theme="dark"] .lp-tree-sub-stem,
+body.dark-mode .lp-tree-sub-stem {
+    stroke: #383025;
+}
+
+html[data-theme="dark"] .lp-tree-sub-stem.active,
+body.dark-mode .lp-tree-sub-stem.active {
+    stroke: #f59e0b; stroke-width: 1.8px; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.60));
+}
+
+html[data-theme="dark"] .lp-radial-dot,
+body.dark-mode .lp-radial-dot {
+    fill: #453c31;
+}
+
+html[data-theme="dark"] .lp-radial-dot.active,
+body.dark-mode .lp-radial-dot.active {
+    fill: #fbbf24;
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.75));
+}
+
+/* R28 4-Layer Planet Glow Architecture (Dark Mode)
+   Lớp 1: Planet core (Warm ivory/gold highlight lệch tâm)
+   Lớp 2: Surface depth (Limb darkening đối diện nguồn sáng)
+   Lớp 3: Atmospheric rim (Viền sáng cùng họ màu ấm)
+   Lớp 4: Outer glow (Quầng sáng đa tầng lan tỏa tự nhiên) */
+
+html[data-theme="dark"] .lp-tree-main-node,
+body.dark-mode .lp-tree-main-node {
+    color: #fefce8;
+}
+
+/* Step 1D-R34: UNIFIED FEATURE COLOR SYSTEM (Dark Mode)
+   Authentic Dark Charcoal Surface (#202124) + Warm Celestial Rim Halo across all 6 peer nodes */
+html[data-theme="dark"] .lp-tree-main-node,
+body.dark-mode .lp-tree-main-node {
+    background: var(--pm-surface, #202124) !important;
+    background-image: none !important;
+    border: 1px solid #3c4043 !important;
+    color: #e8eaed !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45),
+                0 0 0 1px rgba(245, 158, 11, 0.22) !important;
+}
+
+html[data-theme="dark"] .lp-tree-main-node:hover,
+body.dark-mode .lp-tree-main-node:hover {
+    background: #2a2b2f !important;
+    background-image: none !important;
+    border-color: rgba(245, 158, 11, 0.65) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6),
+                0 0 16px rgba(245, 158, 11, 0.25) !important;
+    transform: translate(-50%, -50%) translateY(-2px) !important;
+}
+
+/* Dark Mode Unified Active States across all 6 peer nodes */
+html[data-theme="dark"] .lp-tree-main-node.active,
+body.dark-mode .lp-tree-main-node.active,
+html[data-theme="dark"] .lp-tree-main-node.node-interview.active,
+html[data-theme="dark"] .lp-tree-main-node.node-qbank.active,
+html[data-theme="dark"] .lp-tree-main-node.node-report.active,
+html[data-theme="dark"] .lp-tree-main-node.node-roadmap.active,
+html[data-theme="dark"] .lp-tree-main-node.node-jobs.active,
+html[data-theme="dark"] .lp-tree-main-node.node-cv.active {
+    background: var(--pm-surface, #202124) !important;
+    background-image: none !important;
+    border-color: #f59e0b !important;
+    color: #ffffff !important;
+    transform: translate(-50%, -50%) scale(1.08) !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.35),
+                0 0 22px rgba(245, 158, 11, 0.28),
+                0 10px 28px rgba(0, 0, 0, 0.55) !important;
+    z-index: 10 !important;
+}
+
+/* Dark Mode Distinct Accent Dots (Unified luminosity and warm celestial tone) */
+html[data-theme="dark"] .dot-interview {
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #f59e0b 60%, #b45309 100%);
+    box-shadow: 0 0 7px rgba(245, 158, 11, 0.85);
+}
+html[data-theme="dark"] .dot-qbank {
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #ea580c 60%, #9a3412 100%);
+    box-shadow: 0 0 7px rgba(234, 88, 12, 0.85);
+}
+html[data-theme="dark"] .dot-report {
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #d97706 60%, #78350f 100%);
+    box-shadow: 0 0 7px rgba(217, 119, 6, 0.85);
+}
+html[data-theme="dark"] .dot-roadmap {
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #b45309 60%, #713f12 100%);
+    box-shadow: 0 0 6px rgba(180, 83, 9, 0.85);
+}
+html[data-theme="dark"] .dot-jobs {
+    background: radial-gradient(circle at 35% 35%, #fffdf5 0%, #f97316 60%, #9a3412 100%);
+    box-shadow: 0 0 6px rgba(249, 115, 22, 0.85);
+}
+html[data-theme="dark"] .dot-cv {
+    background: radial-gradient(circle at 35% 35%, #ffffff 0%, #fde68a 60%, #d97706 100%);
+    box-shadow: 0 0 6px rgba(253, 230, 138, 0.85);
+}
+
+/* Dark Mode Active Dot Highlights */
+html[data-theme="dark"] .lp-tree-main-node.active .dot-interview {
+    background: #f59e0b !important;
+    box-shadow: 0 0 9px rgba(245, 158, 11, 0.95) !important;
+}
+html[data-theme="dark"] .lp-tree-main-node.active .dot-qbank {
+    background: #ea580c !important;
+    box-shadow: 0 0 9px rgba(234, 88, 12, 0.95) !important;
+}
+html[data-theme="dark"] .lp-tree-main-node.active .dot-report {
+    background: #d97706 !important;
+    box-shadow: 0 0 9px rgba(217, 119, 6, 0.95) !important;
+}
+html[data-theme="dark"] .lp-tree-main-node.active .dot-roadmap {
+    background: #b45309 !important;
+    box-shadow: 0 0 9px rgba(180, 83, 9, 0.95) !important;
+}
+html[data-theme="dark"] .lp-tree-main-node.active .dot-jobs {
+    background: #f97316 !important;
+    box-shadow: 0 0 9px rgba(249, 115, 22, 0.95) !important;
+}
+html[data-theme="dark"] .lp-tree-main-node.active .dot-cv {
+    background: #f59e0b !important;
+    box-shadow: 0 0 9px rgba(245, 158, 11, 0.95) !important;
+}
+
+/* Dark Mode Satellites */
+html[data-theme="dark"] .lp-satellite-tag,
+body.dark-mode .lp-satellite-tag {
+    background: rgba(37, 38, 41, 0.95);
+    border-color: #3c4043;
+    color: #bdc1c6;
+}
+
+html[data-theme="dark"] .lp-satellite-tag:hover,
+body.dark-mode .lp-satellite-tag:hover {
+    background: #303134;
+    border-color: #5f6368;
+    color: #e8eaed;
+}
+
+html[data-theme="dark"] .lp-satellite-dot.dot-interview { background: #f59e0b; box-shadow: 0 0 5px rgba(245, 158, 11, 0.65); }
+html[data-theme="dark"] .lp-satellite-dot.dot-qbank { background: #ea580c; box-shadow: 0 0 5px rgba(234, 88, 12, 0.65); }
+html[data-theme="dark"] .lp-satellite-dot.dot-report { background: #d97706; box-shadow: 0 0 5px rgba(217, 119, 6, 0.65); }
+html[data-theme="dark"] .lp-satellite-dot.dot-roadmap { background: #b45309; box-shadow: 0 0 5px rgba(180, 83, 9, 0.65); }
+html[data-theme="dark"] .lp-satellite-dot.dot-jobs { background: #f97316; box-shadow: 0 0 5px rgba(249, 115, 22, 0.65); }
+html[data-theme="dark"] .lp-satellite-dot.dot-cv { background: #fde68a; box-shadow: 0 0 5px rgba(253, 230, 138, 0.70); }
+
+html[data-theme="dark"] .lp-industry-tab.lp-tree-leaf,
+body.dark-mode .lp-industry-tab.lp-tree-leaf {
+    background: #252629;
+    border-color: #3c4043;
+    color: #bdc1c6;
+}
+
+html[data-theme="dark"] .lp-industry-tab.lp-tree-leaf:hover,
+body.dark-mode .lp-industry-tab.lp-tree-leaf:hover {
+    background: #303134;
+    border-color: #5f6368;
+    color: #e8eaed;
+}
+
+html[data-theme="dark"] .lp-industry-tab.lp-tree-leaf.active,
+body.dark-mode .lp-industry-tab.lp-tree-leaf.active {
+    background: #2e1d0c;
+    border-color: #f59e0b;
+    color: #fffdf5;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35), 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+    .lp-universe-stage,
+    .lp-orbit-ring,
+    .lp-orbit-inner,
+    .lp-orbit-mid,
+    .lp-orbit-outer,
+    .lp-star,
+    .lp-star-twinkle,
+    .lp-tree-main-node,
+    .lp-tree-main-node.node-interview:not(.active),
+    .lp-tree-main-node.node-qbank:not(.active),
+    .lp-tree-main-node.node-report:not(.active),
+    .lp-tree-main-node.node-roadmap:not(.active),
+    .lp-tree-main-node.node-jobs:not(.active),
+    .lp-tree-main-node.node-cv:not(.active),
+    .lp-tree-leaf,
+    .lp-satellite-tag,
+    .lp-tree-stem,
+    .lp-tree-sub-stem,
+    .lp-tree-center-hub,
+    .lp-galactic-hub,
+    .lp-universe-hub,
+    .lp-radial-hub-badge {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* ==========================================================================
+   R24.2 MOBILE RESPONSIVE TUNING FOR DUAL-THEME UNIVERSE
+   ========================================================================== */
+@media (max-width: 768px) {
+    .lp-hero-editorial-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .lp-radial-stage-card.lp-tree-stage-card,
+    .lp-tree-stage-card,
+    .lp-galactic-stage-card,
+    .lp-universe-stage-card {
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .lp-tree-stage,
+    .lp-galactic-stage,
+    .lp-universe-stage {
+        max-width: 100%;
+        aspect-ratio: 820 / 530;
+    }
+
+    /* Giảm mật độ sao hiển thị trên mobile để giao diện tối giản */
+    .lp-star-micro {
+        display: none;
+    }
+
+    .lp-tree-main-node {
+        padding: 5px 11px;
+        font-size: 11px;
+    }
+
+
+
+    .lp-tree-leaf,
+    .lp-satellite-tag,
+    .lp-industry-tab {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    /* Bounded lateral nodes on mobile */
+    .leaf-qbank-1 { left: 84% !important; }
+    .leaf-qbank-2 { left: 84% !important; }
+    .node-sub-marketing { left: 78% !important; }
+    .node-sub-finance { left: 80% !important; }
+
+    .leaf-jobs-1 { left: 16% !important; }
+    .leaf-jobs-2 { left: 15% !important; }
+    .leaf-cv-1 { left: 20% !important; }
+}
+
+/* ==========================================================================
+   R24.3 SMOOTH CENTER-OUT UNIVERSE REVEAL & PARTICLE CLEANUP
+   ========================================================================== */
+
+/* 1. UNIFIED CENTER-OUT REVEAL KEYFRAMES */
+@keyframes universeCenterReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.4);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes universeOrbitScaleRevealInner {
+    0% {
+        opacity: 0;
+        transform: rotate(-5deg) scale(0.35);
+    }
+    100% {
+        opacity: var(--orbit-target-opacity, 0.85);
+        transform: rotate(-5deg) scale(1);
+    }
+}
+
+@keyframes universeOrbitScaleRevealMid {
+    0% {
+        opacity: 0;
+        transform: rotate(4deg) scale(0.35);
+    }
+    100% {
+        opacity: var(--orbit-target-opacity, 0.65);
+        transform: rotate(4deg) scale(1);
+    }
+}
+
+@keyframes universeOrbitScaleRevealOuter {
+    0% {
+        opacity: 0;
+        transform: rotate(-2.5deg) scale(0.35);
+    }
+    100% {
+        opacity: var(--orbit-target-opacity, 0.50);
+        transform: rotate(-2.5deg) scale(1);
+    }
+}
+
+@keyframes universeStarfieldFade {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes universeNodeReveal {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.65);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* 2. REVEALING STATE (Center-Out Cascade) */
+.lp-universe-revealing .lp-radial-hub-badge {
+    animation: universeCenterReveal 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.lp-universe-revealing .lp-orbit-inner {
+    --orbit-target-opacity: 0.85;
+    animation: universeOrbitScaleRevealInner 0.45s 0.12s cubic-bezier(0.16, 1, 0.3, 1) both;
+    transform-origin: 410px 250px;
+}
+
+.lp-universe-revealing .lp-orbit-mid {
+    --orbit-target-opacity: 0.65;
+    animation: universeOrbitScaleRevealMid 0.50s 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+    transform-origin: 410px 250px;
+}
+
+.lp-universe-revealing .lp-orbit-outer {
+    --orbit-target-opacity: 0.50;
+    animation: universeOrbitScaleRevealOuter 0.55s 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+    transform-origin: 410px 250px;
+}
+
+.lp-universe-revealing #universeStarfield {
+    animation: universeStarfieldFade 0.45s 0.28s ease-out both;
+}
+
+/* Staggered Planetary Nodes Reveal: Tier 1 -> Tier 2 -> Tier 3 */
+.lp-universe-revealing .node-cv {
+    animation: universeNodeReveal 0.42s 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lp-universe-revealing .node-jobs {
+    animation: universeNodeReveal 0.42s 0.40s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lp-universe-revealing .node-roadmap {
+    animation: universeNodeReveal 0.42s 0.46s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lp-universe-revealing .node-report {
+    animation: universeNodeReveal 0.42s 0.52s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lp-universe-revealing .node-interview {
+    animation: universeNodeReveal 0.42s 0.58s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lp-universe-revealing .node-qbank {
+    animation: universeNodeReveal 0.42s 0.64s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* 3. READY STATE: LIVING ORBITAL GUIDE BREATH */
+.lp-universe-ready .lp-orbit-inner { animation: orbitRingBreatheInner 14s ease-in-out infinite alternate; }
+.lp-universe-ready .lp-orbit-mid   { animation: orbitRingBreatheMid 17s ease-in-out infinite alternate; }
+.lp-universe-ready .lp-orbit-outer { animation: orbitRingBreatheOuter 20s ease-in-out infinite alternate; }
+
+/* 4. PREFERS-REDUCED-MOTION OVERRIDE */
+@media (prefers-reduced-motion: reduce) {
+    .lp-universe-revealing .lp-radial-hub-badge,
+    .lp-universe-revealing .lp-orbit-ring,
+    .lp-universe-revealing #universeStarfield,
+    .lp-universe-revealing .lp-bloom-feature-node,
+    .lp-universe-ready .lp-tree-main-node,
+    .lp-universe-ready .lp-orbit-ring,
+    .lp-star-twinkle {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: translate(-50%, -50%) scale(1) !important;
+    }
+    .lp-universe-revealing .lp-radial-hub-badge {
+        transform: scale(1) !important;
+    }
+    .lp-universe-revealing .lp-orbit-ring {
+        transform: scale(1) !important;
+    }
+}
+
+/* ==========================================================================
+   R24.4 CLEAR BRANCH MOTION & NATURAL NIGHT-SKY TWINKLING
+   ========================================================================== */
+
+/* 1. SATELLITE ANCHOR DIRECTIONAL VECTORS (Offsets pointing towards parent node) */
+.node-sub-tech      { --branch-dx:   0px; --branch-dy:  26px; }
+.node-sub-ba        { --branch-dx:  28px; --branch-dy:  20px; }
+.node-sub-marketing { --branch-dx: -28px; --branch-dy:  20px; }
+.node-sub-finance   { --branch-dx: -32px; --branch-dy:  -6px; }
+.node-sub-hr        { --branch-dx:  32px; --branch-dy:  14px; }
+
+.leaf-qbank-1       { --branch-dx: -28px; --branch-dy:  22px; }
+.leaf-qbank-2       { --branch-dx: -28px; --branch-dy: -22px; }
+
+.leaf-report-1      { --branch-dx: -26px; --branch-dy: -22px; }
+.leaf-report-2      { --branch-dx:  18px; --branch-dy: -26px; }
+
+.leaf-roadmap-1     { --branch-dx:  28px; --branch-dy: -20px; }
+.leaf-roadmap-2     { --branch-dx: -18px; --branch-dy: -26px; }
+
+.leaf-jobs-1        { --branch-dx:  26px; --branch-dy:  20px; }
+.leaf-jobs-2        { --branch-dx:  26px; --branch-dy: -20px; }
+
+.leaf-cv-1          { --branch-dx:  26px; --branch-dy:  16px; }
+.leaf-cv-2          { --branch-dx:   0px; --branch-dy:  28px; }
+
+/* 2. SATELLITE BRANCH MOTION: OUTWARD UNFOLDING & RETRACTING RETURN */
+.lp-tree-leaf,
+.lp-satellite-tag {
+    transform: translate(-50%, -50%) translate(var(--branch-dx, 0px), var(--branch-dy, 16px)) scale(0.68);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.24s ease,
+                visibility 0.28s,
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.lp-tree-sub-group.active .lp-tree-leaf,
+.lp-tree-sub-group.active .lp-satellite-tag {
+    transform: translate(-50%, -50%) translate(0, 0) scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+/* Staggered Outward Unfolding Delays for Active Leaves */
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(1),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(1),
+.lp-tree-sub-group.active .lp-industry-selector-bar button:nth-child(1) { transition-delay: 0.04s; }
+
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(2),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(2),
+.lp-tree-sub-group.active .lp-industry-selector-bar button:nth-child(2) { transition-delay: 0.09s; }
+
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(3),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(3),
+.lp-tree-sub-group.active .lp-industry-selector-bar button:nth-child(3) { transition-delay: 0.14s; }
+
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(4),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(4),
+.lp-tree-sub-group.active .lp-industry-selector-bar button:nth-child(4) { transition-delay: 0.19s; }
+
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(5),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(5),
+.lp-tree-sub-group.active .lp-industry-selector-bar button:nth-child(5) { transition-delay: 0.24s; }
+
+/* 3. SVG SUB-STEM LASER RAY DRAW-OUT MOTION */
+.lp-tree-sub-stem {
+    fill: none;
+    stroke: #cbd5e1;
+    stroke-width: 1.4px;
+    stroke-linecap: round;
+    stroke-dasharray: 180;
+    stroke-dashoffset: 180;
+    opacity: 0;
+    transition: stroke-dashoffset 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.25s ease,
+                stroke 0.3s ease;
+}
+
+.lp-tree-sub-stem.active {
+    stroke-dashoffset: 0;
+    opacity: 1;
+}
+
+/* 4. ACTIVE LUMINOUS BEACON STATE FOR CLICKED FEATURE NODE */
+.lp-tree-main-node.active {
+    transform: translate(-50%, -50%) scale(1.05) !important;
+    animation: none !important; /* Pause drift while actively inspecting */
+    z-index: 8;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.3s ease,
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease !important;
+}
+
+html[data-theme="dark"] .lp-tree-main-node.active,
+body.dark-mode .lp-tree-main-node.active {
+    color: #ffffff !important;
+    border-color: rgba(245, 158, 11, 0.65);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.28), 0 8px 24px rgba(0, 0, 0, 0.50);
+}
+
+html[data-theme="light"] .lp-tree-main-node.active,
+body.light-mode .lp-tree-main-node.active {
+    color: #451a03 !important;
+    border-color: rgba(217, 119, 6, 0.60);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.20), 0 8px 24px rgba(180, 83, 9, 0.14);
+}
+
+/* ==========================================================================
+   R25 VISUAL REFERENCE-LED COSMIC MODEL REFINEMENT
+   - Asymmetric Tilted Orbits & Varied Planetary Scales
+   - Stationary 5-Phase Starlight Twinkling (0px Translation Invariant)
+   - Wide Fan-out Branch Motion & Collision-free Retraction
+   - Dual-Theme Celestial Palette (Charcoal Dark & Airy Slate Light)
+   ========================================================================== */
+
+/* 1. WIDE FAN-OUT SATELLITE OFFSETS (Directional travel vector from parent node - Step 1D-R41) */
+.node-sub-hr        { --branch-dx:  120px; --branch-dy:  45px; }
+.node-sub-ba        { --branch-dx:   65px; --branch-dy:  25px; }
+.node-sub-tech      { --branch-dx:    0px; --branch-dy:  50px; }
+.node-sub-marketing { --branch-dx:  -65px; --branch-dy:  25px; }
+.node-sub-finance   { --branch-dx: -120px; --branch-dy:  -5px; }
+
+.node-sub-cv-strength     { --branch-dx:  90px; --branch-dy:   5px; }
+.node-sub-cv-improvement  { --branch-dx:  40px; --branch-dy:  65px; }
+.node-sub-cv-optimization { --branch-dx: -20px; --branch-dy:  20px; }
+.node-sub-cv-jd-match     { --branch-dx: -80px; --branch-dy:  65px; }
+
+.node-sub-jobs-search     { --branch-dx:  80px; --branch-dy:  65px; }
+.node-sub-jobs-jd-analyze { --branch-dx:  25px; --branch-dy:  35px; }
+.node-sub-jobs-match      { --branch-dx:  80px; --branch-dy: -20px; }
+.node-sub-jobs-skills     { --branch-dx:  25px; --branch-dy: -70px; }
+
+.node-sub-qbank-star      { --branch-dx: -35px; --branch-dy:  35px; }
+.node-sub-qbank-industry  { --branch-dx: -60px; --branch-dy:   0px; }
+.node-sub-qbank-followup  { --branch-dx: -35px; --branch-dy: -35px; }
+
+.node-sub-report-matrix   { --branch-dx: -58px; --branch-dy:  -8px; }
+.node-sub-report-feedback { --branch-dx: -25px; --branch-dy: -40px; }
+.node-sub-report-coaching { --branch-dx:  50px; --branch-dy: -35px; }
+
+.node-sub-roadmap-goals      { --branch-dx:  75px; --branch-dy: -10px; }
+.node-sub-roadmap-milestones { --branch-dx:   8px; --branch-dy: -50px; }
+.node-sub-roadmap-progress   { --branch-dx: -55px; --branch-dy: -25px; }
+
+.leaf-qbank-1       { --branch-dx: -35px; --branch-dy:  35px; }
+.leaf-qbank-2       { --branch-dx: -35px; --branch-dy: -35px; }
+.leaf-report-1      { --branch-dx: -55px; --branch-dy: -10px; }
+.leaf-report-2      { --branch-dx:  45px; --branch-dy: -35px; }
+.leaf-roadmap-1     { --branch-dx:  75px; --branch-dy: -10px; }
+.leaf-roadmap-2     { --branch-dx: -55px; --branch-dy: -25px; }
+.leaf-jobs-1        { --branch-dx:  80px; --branch-dy:  50px; }
+.leaf-jobs-2        { --branch-dx:  80px; --branch-dy: -25px; }
+.leaf-cv-1          { --branch-dx:  90px; --branch-dy:   5px; }
+.leaf-cv-2          { --branch-dx: -80px; --branch-dy:  65px; }
+
+/* 2. SATELLITE EXPANSION & RETRACTION KINEMATICS */
+.lp-tree-leaf,
+.lp-satellite-tag {
+    transform: translate(-50%, -50%) translate(var(--branch-dx, 0px), var(--branch-dy, 20px)) scale(0.65);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.24s ease,
+                visibility 0.28s,
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.lp-tree-sub-group.active .lp-tree-leaf,
+.lp-tree-sub-group.active .lp-satellite-tag {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+/* Staggered outward fan-out unfolding */
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(1),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(1),
+.lp-tree-sub-group.active .lp-industry-selector-bar button:nth-child(1) { transition-delay: 0.03s !important; }
+
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(2),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(2),
+.lp-tree-sub-group.active .lp-industry-selector-bar button:nth-child(2) { transition-delay: 0.08s !important; }
+
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(3),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(3),
+.lp-tree-sub-group.active .lp-industry-selector-bar button:nth-child(3) { transition-delay: 0.13s !important; }
+
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(4),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(4),
+.lp-tree-sub-group.active .lp-industry-selector-bar button:nth-child(4) { transition-delay: 0.18s !important; }
+
+.lp-tree-sub-group.active .lp-tree-leaf:nth-child(5),
+.lp-tree-sub-group.active .lp-satellite-tag:nth-child(5),
+.lp-tree-sub-group.active .lp-industry-selector-bar button:nth-child(5) { transition-delay: 0.23s !important; }
+
+/* 3. SVG SUB-STEM LASER DRAW-OUT & FULL-SPAN COVERAGE (Step 1D-R32) */
+.lp-tree-sub-stem {
+    stroke-dasharray: 400 !important;
+    stroke-dashoffset: 400 !important;
+    opacity: 0 !important;
+    transition: stroke-dashoffset 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.28s ease,
+                stroke 0.3s ease !important;
+}
+
+.lp-tree-sub-stem.active {
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
+    stroke: #f59e0b !important;
+    stroke-width: 1.8px !important;
+    filter: drop-shadow(0 1px 3px rgba(245, 158, 11, 0.35)) !important;
+}
+
+html[data-theme="dark"] .lp-tree-sub-stem.active,
+body.dark-mode .lp-tree-sub-stem.active {
+    stroke: #f59e0b !important;
+    stroke-width: 1.8px !important;
+    filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.60)) !important;
+}
+
+/* Active Industry Selected Stem (Prominent Focus) */
+.selected-industry-stem {
+    stroke-width: 2.6px !important;
+    opacity: 1 !important;
+}
+html[data-theme="dark"] .selected-industry-stem,
+body.dark-mode .selected-industry-stem {
+    stroke: #fbbf24 !important;
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.85)) !important;
+}
+html[data-theme="light"] .selected-industry-stem,
+body.light-mode .selected-industry-stem {
+    stroke: #d97706 !important;
+    filter: drop-shadow(0 1px 4px rgba(217, 119, 6, 0.45)) !important;
+}
+
+/* Interview Crown Trunk & Hub Fork Connector */
+.lp-interview-trunk {
+    stroke-width: 2.2px !important;
+}
+.lp-interview-fork-dot {
+    opacity: 0;
+    transition: opacity 0.32s ease;
+}
+.lp-interview-fork-dot.active,
+.sub-group-interview.active ~ svg .lp-interview-fork-dot,
+.stem-leaf-interview.active ~ .lp-interview-fork-dot {
+    opacity: 1 !important;
+}
+html[data-theme="dark"] .lp-interview-fork-dot {
+    fill: #f59e0b !important;
+    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.85)) !important;
+}
+html[data-theme="light"] .lp-interview-fork-dot,
+body.light-mode .lp-interview-fork-dot {
+    fill: #f59e0b !important;
+    filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.50)) !important;
+}
+
+/* ==========================================================================
+   STEP 1D-R31: LIVING STARFIELD (Luminous Core, Atmospheric Halo & Natural Twinkling)
+   ========================================================================== */
+.lp-starfield {
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Base geometry and transform-origin for all star components */
+.lp-star,
+.lp-star-system,
+.lp-star-halo,
+.lp-star-glow,
+.lp-star-core,
+.lp-star-sparkle-ray,
+.lp-star-halo-waypoint,
+.lp-star-bright,
+.lp-star-medium,
+.lp-star-micro {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: fill 0.4s ease, opacity 0.4s ease, filter 0.4s ease;
+}
+
+/* --- Multi-Layer Luminous Star Elements --- */
+/* Lớp C: Outer Atmospheric Halo (Tỏa rộng, dịu êm, co giãn đồng bộ theo nhịp thở) */
+.lp-star-halo {
+    fill: url(#starHaloAtmospheric);
+    opacity: 0.22;
+    transform: scale(0.68);
+    will-change: transform, opacity;
+}
+
+/* Lớp B: Inner Glow (Vùng chuyển tiếp mềm mại từ tâm ra không gian) */
+.lp-star-glow {
+    fill: url(#starGlowWarm);
+    opacity: 0.32;
+    transform: scale(0.82);
+    will-change: transform, opacity;
+}
+
+/* Lớp A: Luminous Core (Hạt nhân sáng rõ nét, sáng nhất tại tâm) */
+.lp-star-core {
+    fill: #fffdf5;
+    filter: drop-shadow(0 0 2.2px rgba(255, 253, 245, 0.95));
+    opacity: 0.45;
+    transform: scale(0.92);
+    will-change: transform, opacity;
+}
+
+/* Lớp D: 4-Point Celestial Sparkle Ray (Tia lấp lánh kim cương đối xứng chớp nhẹ ở đỉnh) */
+.lp-star-sparkle-ray {
+    fill: #ffffff;
+    filter: drop-shadow(0 0 3.5px rgba(254, 240, 138, 0.85));
+    opacity: 0;
+    transform: scale(0);
+    will-change: transform, opacity;
+}
+
+/* --- Waypoint Luminaries (Dual-Layer Core + Atmospheric Halo) --- */
+.lp-star-halo-waypoint {
+    fill: url(#starHaloAtmospheric);
+    opacity: 0.32;
+    transform: scale(0.85);
+    animation: waypointHaloPulse 7.2s ease-in-out infinite alternate;
+}
+.lp-star-bright {
+    fill: #fffdf5;
+    filter: drop-shadow(0 0 2.2px rgba(255, 253, 245, 0.85));
+    opacity: 0.72;
+    animation: waypointCorePulse 7.2s ease-in-out infinite alternate;
+}
+
+@keyframes waypointHaloPulse {
+    0%   { opacity: 0.20; transform: scale(0.75); }
+    100% { opacity: 0.55; transform: scale(1.20); }
+}
+@keyframes waypointCorePulse {
+    0%   { opacity: 0.50; transform: scale(0.90); }
+    100% { opacity: 0.95; transform: scale(1.12); }
+}
+
+/* --- Mid-Layer & Deep Cosmic Stardust --- */
+.lp-star-medium {
+    fill: #fef08a;
+    opacity: 0.45;
+    filter: drop-shadow(0 0 1.5px rgba(254, 240, 138, 0.45));
+    animation: stardustMediumPulse 8.5s ease-in-out infinite alternate;
+}
+
+.lp-star-micro {
+    fill: #e2e8f0;
+    opacity: 0.25;
+    animation: stardustDeepPulse 10.5s ease-in-out infinite alternate;
+}
+
+@keyframes stardustDeepPulse {
+    0%   { opacity: 0.16; }
+    50%  { opacity: 0.42; }
+    100% { opacity: 0.16; }
+}
+
+@keyframes stardustMediumPulse {
+    0%   { opacity: 0.28; }
+    50%  { opacity: 0.65; }
+    100% { opacity: 0.28; }
+}
+
+/* ==========================================================================
+   5-PHASE ASYNCHRONOUS LIVING TWINKLE KEYFRAMES
+   (Rest -> Brightening -> Peak [Sparkle Flare] -> Soft Fading -> Pause)
+   ========================================================================== */
+
+/* --- Star System 1: Top-Left Celestial Accent (6.8s Cycle, Peak at ~48%) --- */
+.lp-halo-twinkle-1 { animation: livingHaloA 6.8s 0.2s ease-in-out infinite; }
+.lp-glow-twinkle-1 { animation: livingGlowA 6.8s 0.2s ease-in-out infinite; }
+.lp-core-twinkle-1 { animation: livingCoreA 6.8s 0.2s ease-in-out infinite; }
+.lp-ray-twinkle-1  { animation: livingSparkleRayA 6.8s 0.2s ease-in-out infinite; }
+
+@keyframes livingHaloA {
+    0%, 22%   { opacity: 0.16; transform: scale(0.66); }
+    48%       { opacity: 0.75; transform: scale(1.28); }
+    55%       { opacity: 0.70; transform: scale(1.22); }
+    74%       { opacity: 0.22; transform: scale(0.72); }
+    100%      { opacity: 0.16; transform: scale(0.66); }
+}
+@keyframes livingGlowA {
+    0%, 22%   { opacity: 0.22; transform: scale(0.75); }
+    48%       { opacity: 0.90; transform: scale(1.22); }
+    55%       { opacity: 0.85; transform: scale(1.16); }
+    74%       { opacity: 0.30; transform: scale(0.80); }
+    100%      { opacity: 0.22; transform: scale(0.75); }
+}
+@keyframes livingCoreA {
+    0%, 22%   { opacity: 0.36; transform: scale(0.88); }
+    48%       { opacity: 1.00; transform: scale(1.18); }
+    55%       { opacity: 0.95; transform: scale(1.12); }
+    74%       { opacity: 0.44; transform: scale(0.92); }
+    100%      { opacity: 0.36; transform: scale(0.88); }
+}
+@keyframes livingSparkleRayA {
+    0%, 40%   { opacity: 0; transform: scale(0) rotate(0deg); }
+    45%       { opacity: 0.45; transform: scale(0.55) rotate(2deg); }
+    48%       { opacity: 1.00; transform: scale(1.25) rotate(5deg); }
+    52%       { opacity: 0.85; transform: scale(1.10) rotate(7deg); }
+    58%       { opacity: 0; transform: scale(0.20) rotate(12deg); }
+    100%      { opacity: 0; transform: scale(0) rotate(15deg); }
+}
+
+/* --- Star System 2: Top-Right High Constellation (8.6s Cycle, Peak at ~52%) --- */
+.lp-halo-twinkle-2 { animation: livingHaloB 8.6s 1.5s ease-in-out infinite; }
+.lp-glow-twinkle-2 { animation: livingGlowB 8.6s 1.5s ease-in-out infinite; }
+.lp-core-twinkle-2 { animation: livingCoreB 8.6s 1.5s ease-in-out infinite; }
+.lp-ray-twinkle-2  { animation: livingSparkleRayB 8.6s 1.5s ease-in-out infinite; }
+
+@keyframes livingHaloB {
+    0%, 26%   { opacity: 0.14; transform: scale(0.64); }
+    52%       { opacity: 0.72; transform: scale(1.25); }
+    60%       { opacity: 0.68; transform: scale(1.20); }
+    80%       { opacity: 0.20; transform: scale(0.70); }
+    100%      { opacity: 0.14; transform: scale(0.64); }
+}
+@keyframes livingGlowB {
+    0%, 26%   { opacity: 0.20; transform: scale(0.74); }
+    52%       { opacity: 0.88; transform: scale(1.20); }
+    60%       { opacity: 0.82; transform: scale(1.14); }
+    80%       { opacity: 0.28; transform: scale(0.78); }
+    100%      { opacity: 0.20; transform: scale(0.74); }
+}
+@keyframes livingCoreB {
+    0%, 26%   { opacity: 0.34; transform: scale(0.86); }
+    52%       { opacity: 1.00; transform: scale(1.16); }
+    60%       { opacity: 0.94; transform: scale(1.10); }
+    80%       { opacity: 0.42; transform: scale(0.90); }
+    100%      { opacity: 0.34; transform: scale(0.86); }
+}
+@keyframes livingSparkleRayB {
+    0%, 45%   { opacity: 0; transform: scale(0) rotate(0deg); }
+    49%       { opacity: 0.40; transform: scale(0.50) rotate(-2deg); }
+    52%       { opacity: 0.95; transform: scale(1.20) rotate(-5deg); }
+    56%       { opacity: 0.80; transform: scale(1.05) rotate(-7deg); }
+    62%       { opacity: 0; transform: scale(0.20) rotate(-12deg); }
+    100%      { opacity: 0; transform: scale(0) rotate(-15deg); }
+}
+
+/* --- Star System 3: East Cosmic Horizon (7.4s Cycle, Peak at ~42%) --- */
+.lp-halo-twinkle-3 { animation: livingHaloC 7.4s 3.2s ease-in-out infinite; }
+.lp-glow-twinkle-3 { animation: livingGlowC 7.4s 3.2s ease-in-out infinite; }
+.lp-core-twinkle-3 { animation: livingCoreC 7.4s 3.2s ease-in-out infinite; }
+.lp-ray-twinkle-3  { animation: livingSparkleRayC 7.4s 3.2s ease-in-out infinite; }
+
+@keyframes livingHaloC {
+    0%, 18%   { opacity: 0.16; transform: scale(0.66); }
+    42%       { opacity: 0.74; transform: scale(1.26); }
+    50%       { opacity: 0.69; transform: scale(1.20); }
+    72%       { opacity: 0.22; transform: scale(0.72); }
+    100%      { opacity: 0.16; transform: scale(0.66); }
+}
+@keyframes livingGlowC {
+    0%, 18%   { opacity: 0.22; transform: scale(0.75); }
+    42%       { opacity: 0.88; transform: scale(1.20); }
+    50%       { opacity: 0.84; transform: scale(1.15); }
+    72%       { opacity: 0.28; transform: scale(0.80); }
+    100%      { opacity: 0.22; transform: scale(0.75); }
+}
+@keyframes livingCoreC {
+    0%, 18%   { opacity: 0.35; transform: scale(0.88); }
+    42%       { opacity: 1.00; transform: scale(1.18); }
+    50%       { opacity: 0.94; transform: scale(1.12); }
+    72%       { opacity: 0.42; transform: scale(0.90); }
+    100%      { opacity: 0.35; transform: scale(0.88); }
+}
+@keyframes livingSparkleRayC {
+    0%, 35%   { opacity: 0; transform: scale(0) rotate(0deg); }
+    39%       { opacity: 0.45; transform: scale(0.55) rotate(3deg); }
+    42%       { opacity: 1.00; transform: scale(1.22) rotate(6deg); }
+    46%       { opacity: 0.85; transform: scale(1.08) rotate(8deg); }
+    52%       { opacity: 0; transform: scale(0.20) rotate(14deg); }
+    100%      { opacity: 0; transform: scale(0) rotate(16deg); }
+}
+
+/* --- Star System 4: South-West Cosmic Deep (9.2s Cycle, Peak at ~58%) --- */
+.lp-halo-twinkle-4 { animation: livingHaloD 9.2s 0.8s ease-in-out infinite; }
+.lp-glow-twinkle-4 { animation: livingGlowD 9.2s 0.8s ease-in-out infinite; }
+.lp-core-twinkle-4 { animation: livingCoreD 9.2s 0.8s ease-in-out infinite; }
+
+@keyframes livingHaloD {
+    0%, 30%   { opacity: 0.14; transform: scale(0.65); }
+    58%       { opacity: 0.70; transform: scale(1.22); }
+    66%       { opacity: 0.65; transform: scale(1.18); }
+    86%       { opacity: 0.20; transform: scale(0.70); }
+    100%      { opacity: 0.14; transform: scale(0.65); }
+}
+@keyframes livingGlowD {
+    0%, 30%   { opacity: 0.20; transform: scale(0.74); }
+    58%       { opacity: 0.86; transform: scale(1.18); }
+    66%       { opacity: 0.80; transform: scale(1.12); }
+    86%       { opacity: 0.26; transform: scale(0.78); }
+    100%      { opacity: 0.20; transform: scale(0.74); }
+}
+@keyframes livingCoreD {
+    0%, 30%   { opacity: 0.32; transform: scale(0.86); }
+    58%       { opacity: 0.98; transform: scale(1.15); }
+    66%       { opacity: 0.92; transform: scale(1.10); }
+    86%       { opacity: 0.40; transform: scale(0.90); }
+    100%      { opacity: 0.32; transform: scale(0.86); }
+}
+
+/* --- Star System 5: North Zenith Crown (7.8s Cycle, Peak at ~36%) --- */
+.lp-halo-twinkle-5 { animation: livingHaloE 7.8s 2.4s ease-in-out infinite; }
+.lp-glow-twinkle-5 { animation: livingGlowE 7.8s 2.4s ease-in-out infinite; }
+.lp-core-twinkle-5 { animation: livingCoreE 7.8s 2.4s ease-in-out infinite; }
+
+@keyframes livingHaloE {
+    0%, 14%   { opacity: 0.15; transform: scale(0.65); }
+    36%       { opacity: 0.72; transform: scale(1.24); }
+    45%       { opacity: 0.68; transform: scale(1.18); }
+    68%       { opacity: 0.20; transform: scale(0.70); }
+    100%      { opacity: 0.15; transform: scale(0.65); }
+}
+@keyframes livingGlowE {
+    0%, 14%   { opacity: 0.22; transform: scale(0.75); }
+    36%       { opacity: 0.88; transform: scale(1.18); }
+    45%       { opacity: 0.82; transform: scale(1.14); }
+    68%       { opacity: 0.28; transform: scale(0.80); }
+    100%      { opacity: 0.22; transform: scale(0.75); }
+}
+@keyframes livingCoreE {
+    0%, 14%   { opacity: 0.35; transform: scale(0.88); }
+    36%       { opacity: 1.00; transform: scale(1.16); }
+    45%       { opacity: 0.94; transform: scale(1.10); }
+    68%       { opacity: 0.42; transform: scale(0.90); }
+    100%      { opacity: 0.35; transform: scale(0.88); }
+}
+
+/* --- Star System 6: South-East Orbital Rim (8.4s Cycle, Peak at ~50%) --- */
+.lp-halo-twinkle-6 { animation: livingHaloF 8.4s 4.2s ease-in-out infinite; }
+.lp-glow-twinkle-6 { animation: livingGlowF 8.4s 4.2s ease-in-out infinite; }
+.lp-core-twinkle-6 { animation: livingCoreF 8.4s 4.2s ease-in-out infinite; }
+
+@keyframes livingHaloF {
+    0%, 25%   { opacity: 0.14; transform: scale(0.64); }
+    50%       { opacity: 0.72; transform: scale(1.24); }
+    58%       { opacity: 0.67; transform: scale(1.18); }
+    78%       { opacity: 0.20; transform: scale(0.70); }
+    100%      { opacity: 0.14; transform: scale(0.64); }
+}
+@keyframes livingGlowF {
+    0%, 25%   { opacity: 0.20; transform: scale(0.74); }
+    50%       { opacity: 0.86; transform: scale(1.18); }
+    58%       { opacity: 0.80; transform: scale(1.12); }
+    78%       { opacity: 0.28; transform: scale(0.78); }
+    100%      { opacity: 0.20; transform: scale(0.74); }
+}
+@keyframes livingCoreF {
+    0%, 25%   { opacity: 0.32; transform: scale(0.86); }
+    50%       { opacity: 0.98; transform: scale(1.15); }
+    58%       { opacity: 0.92; transform: scale(1.10); }
+    78%       { opacity: 0.40; transform: scale(0.90); }
+    100%      { opacity: 0.32; transform: scale(0.86); }
+}
+
+/* ==========================================================================
+   AUTHENTIC CELESTIAL DUAL-THEME COLOR SYSTEM
+   Dark Mode: Warm Ivory & Champagne Gold Glow on Deep Charcoal
+   Light Mode: Jewel Ivory & Solar Amber Glow on Airy Canvas
+   ========================================================================== */
+
+/* Dark Mode Overrides (Warm Celestial Glow) */
+html[data-theme="dark"] .lp-star-halo,
+body.dark-mode .lp-star-halo,
+html[data-theme="dark"] .lp-star-halo-waypoint,
+body.dark-mode .lp-star-halo-waypoint {
+    fill: url(#starHaloAtmospheric) !important;
+}
+
+html[data-theme="dark"] .lp-star-glow,
+body.dark-mode .lp-star-glow {
+    fill: url(#starGlowWarm) !important;
+}
+
+html[data-theme="dark"] .lp-star-core,
+body.dark-mode .lp-star-core {
+    fill: #fffdf5 !important;
+    filter: drop-shadow(0 0 2.5px rgba(255, 253, 245, 0.95)) !important;
+}
+
+html[data-theme="dark"] .lp-star-sparkle-ray,
+body.dark-mode .lp-star-sparkle-ray {
+    fill: #ffffff !important;
+    filter: drop-shadow(0 0 3.5px rgba(254, 240, 138, 0.85)) !important;
+}
+
+html[data-theme="dark"] .lp-star-bright,
+body.dark-mode .lp-star-bright {
+    fill: #fffdf5 !important;
+    filter: drop-shadow(0 0 2.2px rgba(255, 253, 245, 0.85)) !important;
+}
+
+html[data-theme="dark"] .lp-star-medium,
+body.dark-mode .lp-star-medium {
+    fill: #fef08a !important;
+    filter: drop-shadow(0 0 1.5px rgba(254, 240, 138, 0.45)) !important;
+}
+
+html[data-theme="dark"] .lp-star-micro,
+body.dark-mode .lp-star-micro {
+    fill: #e2e8f0 !important;
+    opacity: 0.25 !important;
+}
+
+/* Light Mode Overrides (High-Contrast Amber-Champagne Radiance) */
+html[data-theme="light"] .lp-star-halo,
+body.light-mode .lp-star-halo,
+html[data-theme="light"] .lp-star-halo-waypoint,
+body.light-mode .lp-star-halo-waypoint {
+    fill: url(#starHaloLight) !important;
+}
+
+html[data-theme="light"] .lp-star-glow,
+body.light-mode .lp-star-glow {
+    fill: url(#starGlowLight) !important;
+}
+
+html[data-theme="light"] .lp-star-core,
+body.light-mode .lp-star-core {
+    fill: #fffbeb !important;
+    stroke: #d97706 !important;
+    stroke-width: 0.35px !important;
+    filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.65)) !important;
+}
+
+html[data-theme="light"] .lp-star-sparkle-ray,
+body.light-mode .lp-star-sparkle-ray {
+    fill: #f59e0b !important;
+    filter: drop-shadow(0 0 3px rgba(217, 119, 6, 0.55)) !important;
+}
+
+html[data-theme="light"] .lp-star-bright,
+body.light-mode .lp-star-bright {
+    fill: #f59e0b !important;
+    stroke: #b45309 !important;
+    stroke-width: 0.25px !important;
+    filter: drop-shadow(0 0 1.8px rgba(217, 119, 6, 0.45)) !important;
+}
+
+html[data-theme="light"] .lp-star-medium,
+body.light-mode .lp-star-medium {
+    fill: #d97706 !important;
+    opacity: 0.42 !important;
+}
+
+html[data-theme="light"] .lp-star-micro,
+body.light-mode .lp-star-micro {
+    fill: #94a3b8 !important;
+    opacity: 0.32 !important;
+}
+
+/* ==========================================================================
+   REDUCED MOTION PREFERENCES (A11y Compliant)
+   Static Luminous Starfield - Suppresses continuous cycling, retains layered beauty
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .lp-star-halo,
+    .lp-star-glow,
+    .lp-star-core,
+    .lp-star-sparkle-ray,
+    .lp-star-halo-waypoint,
+    .lp-star-bright,
+    .lp-star-medium,
+    .lp-star-micro {
+        animation: none !important;
+    }
+    .lp-star-halo {
+        opacity: 0.35 !important;
+        transform: scale(0.90) !important;
+    }
+    .lp-star-glow {
+        opacity: 0.50 !important;
+        transform: scale(0.95) !important;
+    }
+    .lp-star-core {
+        opacity: 0.85 !important;
+        transform: scale(1.0) !important;
+    }
+    .lp-star-sparkle-ray {
+        opacity: 0.40 !important;
+        transform: scale(0.70) !important;
+    }
+}
+
+/* ==========================================================================
+   R27: RECURSIVE BRANCH ANIMATION, FOCUS HIERARCHY & BOUNDARY-AWARE LAYOUT
+   ========================================================================== */
+
+/* 1. FOCUS HIERARCHY RULES */
+.lp-tree-main-node {
+    transition: opacity 0.35s ease, filter 0.35s ease, box-shadow 0.35s ease, background 0.35s ease, border-color 0.35s ease !important;
+}
+
+.lp-tree-stem {
+    transition: opacity 0.35s ease, filter 0.35s ease, stroke 0.35s ease !important;
+}
+
+.has-bloom-focus .lp-tree-main-node:not(.active) {
+    opacity: 0.48;
+    filter: blur(0.3px);
+}
+
+.has-bloom-focus .lp-tree-stem:not(.active) {
+    opacity: 0.22 !important;
+}
+
+.lp-tree-main-node.active {
+    opacity: 1.0 !important;
+    filter: none !important;
+    z-index: 30 !important;
+    transform: translate(-50%, -50%) scale(1.08) !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22),
+                0 6px 20px rgba(245, 158, 11, 0.16),
+                0 1px 3px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme="dark"] .lp-tree-main-node.active,
+body.dark-mode .lp-tree-main-node.active {
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.35),
+                0 0 22px rgba(245, 158, 11, 0.28),
+                0 10px 28px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* 2. REMOVED BLINKING STARDUST/PARTICLES FROM INSIDE BUTTONS (Step 1D-R34)
+   Buttons must remain pure interactive UI elements without internal twinkling specks. */
+.lp-bloom-internal-stardust,
+.lp-bloom-star {
+    display: none !important;
+}
+
+/* 3. TIER-2 SUB-CHILD CONNECTING STEMS & TAGS */
+.lp-sub-child-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 25;
+}
+
+.lp-sub-child-stem {
+    fill: none;
+    stroke: #94a3b8;
+    stroke-width: 1.2px;
+    stroke-dasharray: 180;
+    stroke-dashoffset: 180;
+    opacity: 0;
+    transition: opacity 0.3s ease, stroke 0.3s ease;
+}
+
+.lp-sub-child-stem.active {
+    opacity: 0.88;
+    animation: drawSubChildStem 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes drawSubChildStem {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.lp-sub-child-stem.stem-interview { stroke: #f59e0b; }
+.lp-sub-child-stem.stem-qbank     { stroke: #ea580c; }
+.lp-sub-child-stem.stem-report    { stroke: #d97706; }
+.lp-sub-child-stem.stem-roadmap   { stroke: #b45309; }
+.lp-sub-child-stem.stem-jobs      { stroke: #f97316; }
+.lp-sub-child-stem.stem-cv        { stroke: #d97706; }
+
+html[data-theme="dark"] .lp-sub-child-stem,
+body.dark-mode .lp-sub-child-stem {
+    stroke-width: 1.3px;
+    filter: drop-shadow(0 0 3px rgba(254, 240, 138, 0.25));
+}
+html[data-theme="dark"] .lp-sub-child-stem.stem-interview { stroke: #f59e0b; filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.65)); }
+html[data-theme="dark"] .lp-sub-child-stem.stem-qbank     { stroke: #fb923c; filter: drop-shadow(0 0 4px rgba(251, 146, 60, 0.65)); }
+html[data-theme="dark"] .lp-sub-child-stem.stem-report    { stroke: #fbbf24; filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.65)); }
+html[data-theme="dark"] .lp-sub-child-stem.stem-roadmap   { stroke: #d97706; filter: drop-shadow(0 0 4px rgba(217, 119, 6, 0.65)); }
+html[data-theme="dark"] .lp-sub-child-stem.stem-jobs      { stroke: #f97316; filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.65)); }
+html[data-theme="dark"] .lp-sub-child-stem.stem-cv        { stroke: #fde68a; filter: drop-shadow(0 0 4px rgba(253, 230, 138, 0.65)); }
+
+.lp-sub-child-tag {
+    position: absolute;
+    transform: translate(-50%, -50%) scale(0.7);
+    opacity: 0;
+    pointer-events: auto;
+    padding: 3.5px 9.5px;
+    font-size: 10.5px;
+    font-weight: 500;
+    border-radius: 9999px;
+    white-space: nowrap;
+    cursor: default;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.lp-sub-child-tag.active {
+    animation: popSubChildNode 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes popSubChildNode {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.7);
+    }
+    70% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.04);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.0);
+    }
+}
+
+html[data-theme="dark"] .lp-sub-child-tag,
+body.dark-mode .lp-sub-child-tag {
+    background: linear-gradient(180deg, #2d2f34 0%, #1e2023 100%);
+    border-color: #3c4043;
+    color: #e8eaed;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+.lp-satellite-tag.active-sub-parent,
+.lp-industry-tab.active-sub-parent {
+    font-weight: 700 !important;
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25), 0 4px 14px rgba(180, 83, 9, 0.12) !important;
+}
+
+html[data-theme="dark"] .lp-satellite-tag.active-sub-parent,
+html[data-theme="dark"] .lp-industry-tab.active-sub-parent,
+body.dark-mode .lp-satellite-tag.active-sub-parent,
+body.dark-mode .lp-industry-tab.active-sub-parent {
+    border-color: #fbbf24 !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.40), 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ==========================================================================
+   R41 CHILD BLOOM MOTION CONSISTENCY, RIM LIGHT & AIRY ASYMMETRIC DISTRIBUTION
+   ========================================================================== */
+
+/* 1. Base Child Satellite Bloom Styling: Warm Celestial Rim Light & Subtle Depth */
+.lp-tree-leaf,
+.lp-satellite-tag {
+    position: absolute;
+    pointer-events: auto;
+    z-index: 6;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4.5px 12px;
+    border-radius: var(--pm-radius-full, 9999px);
+    background: var(--pm-surface, #ffffff);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    color: var(--lp-text-body, #475569);
+    font-family: var(--pm-font-family, 'Outfit', sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05),
+                0 0 0 1px rgba(245, 158, 11, 0.16),
+                0 0 12px rgba(245, 158, 11, 0.06);
+    transform: translate(-50%, -50%) translate(var(--branch-dx, 0px), var(--branch-dy, 20px)) scale(0.65);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.24s ease,
+                visibility 0.28s,
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.25s ease;
+}
+
+/* 2. Active Sub-Group: Unfolded Resting State */
+.lp-tree-sub-group.active .lp-tree-leaf,
+.lp-tree-sub-group.active .lp-satellite-tag {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* 3. Hover: Soft Rim Light Expansion */
+.lp-tree-leaf:hover,
+.lp-satellite-tag:hover {
+    background: #fffdf8 !important;
+    border-color: rgba(217, 119, 6, 0.55) !important;
+    color: var(--lp-text-dark, #0f172a) !important;
+    box-shadow: 0 4px 14px rgba(180, 83, 9, 0.12),
+                0 0 0 1.5px rgba(245, 158, 11, 0.32),
+                0 0 16px rgba(245, 158, 11, 0.14) !important;
+}
+
+/* 4. Active / Focused Child Leaf (Enhanced Rim Light & Luminous Halo) */
+.lp-satellite-tag.active,
+.lp-industry-tab.active {
+    background: #fffdf5 !important;
+    border-color: #f59e0b !important;
+    color: #78350f !important;
+    font-weight: 700 !important;
+    opacity: 1 !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.30),
+                0 4px 16px rgba(245, 158, 11, 0.18),
+                0 0 20px rgba(245, 158, 11, 0.14) !important;
+    z-index: 10 !important;
+}
+
+/* 5. Subordinate Siblings: Graceful De-emphasis (Zero Harsh Dimming) */
+.lp-tree-sub-group.active:has(.active) .lp-tree-leaf:not(.active),
+.lp-tree-sub-group.active:has(.active) .lp-satellite-tag:not(.active) {
+    opacity: 0.72;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04),
+                0 0 0 1px rgba(203, 213, 225, 0.5);
+}
+
+/* 6. Selected Child Stem Highlight */
+.selected-industry-stem {
+    stroke: #f59e0b !important;
+    stroke-width: 2.2px !important;
+    opacity: 1 !important;
+    filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.65)) !important;
+}
+
+/* 7. Dark Mode Celestial Theme Support */
+html[data-theme="dark"] .lp-tree-leaf,
+html[data-theme="dark"] .lp-satellite-tag,
+body.dark-mode .lp-tree-leaf,
+body.dark-mode .lp-satellite-tag {
+    background: #1e1b18;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #e2e8f0;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45),
+                0 0 0 1px rgba(245, 158, 11, 0.22),
+                0 0 14px rgba(245, 158, 11, 0.10);
+}
+
+html[data-theme="dark"] .lp-tree-leaf:hover,
+html[data-theme="dark"] .lp-satellite-tag:hover,
+body.dark-mode .lp-tree-leaf:hover,
+body.dark-mode .lp-satellite-tag:hover {
+    background: #25201a !important;
+    border-color: rgba(245, 158, 11, 0.55) !important;
+    color: #fffdf5 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6),
+                0 0 0 1.5px rgba(245, 158, 11, 0.45),
+                0 0 18px rgba(245, 158, 11, 0.22) !important;
+}
+
+html[data-theme="dark"] .lp-satellite-tag.active,
+html[data-theme="dark"] .lp-industry-tab.active,
+body.dark-mode .lp-satellite-tag.active,
+body.dark-mode .lp-industry-tab.active {
+    background: #2b2214 !important;
+    border-color: rgba(245, 158, 11, 0.75) !important;
+    color: #fef08a !important;
+    font-weight: 700 !important;
+    opacity: 1 !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.42),
+                0 6px 20px rgba(0, 0, 0, 0.65),
+                0 0 22px rgba(245, 158, 11, 0.28) !important;
+    z-index: 10 !important;
+}
+
+html[data-theme="dark"] .lp-tree-sub-group.active:has(.active) .lp-tree-leaf:not(.active),
+html[data-theme="dark"] .lp-tree-sub-group.active:has(.active) .lp-satellite-tag:not(.active),
+body.dark-mode .lp-tree-sub-group.active:has(.active) .lp-tree-leaf:not(.active),
+body.dark-mode .lp-tree-sub-group.active:has(.active) .lp-satellite-tag:not(.active) {
+    opacity: 0.65;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .selected-industry-stem,
+body.dark-mode .selected-industry-stem {
+    stroke: #fbbf24 !important;
+    stroke-width: 2.2px !important;
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.75)) !important;
+}
+
+/* ==========================================================================
+   STEP 1D-R44: ALTERNATING VERTICAL TRAINING TIMELINE
+   Central vertical spine with alternating Left/Right steps & scroll reveal
+   ========================================================================== */
+.lp-training-timeline-section {
+    padding: clamp(48px, 5.5vw, 68px) 0;
+    background: var(--pm-canvas, #ffffff);
+    border-bottom: 1px solid var(--pm-hairline, #e2e8f0);
+    box-sizing: border-box;
+}
+
+.lp-timeline-container {
+    position: relative;
+    max-width: 920px;
+    margin: 32px auto 0;
+    padding: 12px 0;
+}
+
+/* Central vertical spine down the exact center */
+.lp-timeline-spine {
+    position: absolute;
+    top: 48px;
+    bottom: 20px;
+    left: 50%;
+    width: 2px;
+    background: var(--pm-hairline, #e2e8f0);
+    transform: translateX(-50%);
+    transform-origin: top;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
+}
+
+/* Progressive enhancement: hide initially only when animation is activated */
+.lp-timeline-container.lp-timeline-animated .lp-timeline-spine {
+    transform: translateX(-50%) scaleY(0);
+}
+
+.lp-timeline-container.lp-timeline-animated.is-revealed .lp-timeline-spine {
+    transform: translateX(-50%) scaleY(1);
+}
+
+/* Individual timeline step row */
+.lp-timeline-step {
+    position: relative;
+    width: 100%;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: flex-start;
+    z-index: 2;
+}
+
+.lp-timeline-step:last-child {
+    margin-bottom: 0;
+}
+
+/* Central node intersecting the spine */
+.lp-timeline-node {
+    position: absolute;
+    left: 50%;
+    top: 28px;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--mobbin-accent, #0066ff);
+    border: 3px solid var(--pm-canvas, #ffffff);
+    box-shadow: 0 0 0 1px var(--pm-hairline, #e2e8f0);
+    z-index: 3;
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-timeline-dot {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.lp-timeline-container.lp-timeline-animated .lp-timeline-node {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+}
+
+.lp-timeline-container.lp-timeline-animated .lp-timeline-step.is-visible .lp-timeline-node {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Alternating Left and Right columns */
+.lp-timeline-left {
+    justify-content: flex-start;
+}
+
+.lp-timeline-right {
+    justify-content: flex-end;
+}
+
+.lp-timeline-left .lp-timeline-content {
+    width: calc(50% - 44px);
+    margin-right: auto;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-timeline-right .lp-timeline-content {
+    width: calc(50% - 44px);
+    margin-left: auto;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-timeline-container.lp-timeline-animated .lp-timeline-left .lp-timeline-content {
+    opacity: 0;
+    transform: translateX(-24px);
+}
+
+.lp-timeline-container.lp-timeline-animated .lp-timeline-right .lp-timeline-content {
+    opacity: 0;
+    transform: translateX(24px);
+}
+
+.lp-timeline-container.lp-timeline-animated .lp-timeline-step.is-visible .lp-timeline-content {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ==========================================================================
+   INTERACTIVE JOURNEY CARD (Click-to-Expand Accordion Architecture - Step 1D-R50 Refinement)
+   ========================================================================== */
+.lp-journey-card {
+    width: 100%;
+    background: var(--pm-canvas, #ffffff);
+    border: 1px solid var(--pm-hairline, #e2e8f0);
+    border-radius: var(--pm-radius-card, 14px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.lp-journey-card:hover {
+    border-color: rgba(0, 102, 255, 0.35);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.lp-journey-card.is-expanded {
+    border-color: var(--mobbin-accent, #0066ff);
+    box-shadow: 0 8px 24px rgba(0, 102, 255, 0.09), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.lp-journey-card-header {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 18px 22px;
+    margin: 0;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+}
+
+.lp-journey-card-header:hover {
+    background: rgba(0, 0, 0, 0.015);
+}
+
+.lp-journey-card-header:focus-visible {
+    outline: 2px solid var(--mobbin-accent, #0066ff);
+    outline-offset: -2px;
+}
+
+.lp-journey-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.lp-timeline-badge {
+    font-size: 13px;
+    font-weight: 750;
+    letter-spacing: 0.05em;
+    color: var(--mobbin-accent, #0066ff);
+    line-height: 1;
+}
+
+.lp-journey-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--pm-text-muted, #64748b);
+    transition: color 0.2s ease;
+}
+
+.lp-journey-card:hover .lp-journey-cue,
+.lp-journey-card.is-expanded .lp-journey-cue {
+    color: var(--mobbin-accent, #0066ff);
+}
+
+.lp-journey-chevron {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-journey-card.is-expanded .lp-journey-chevron {
+    transform: rotate(180deg);
+}
+
+.lp-timeline-title {
+    font-size: 18.5px;
+    font-weight: 650;
+    line-height: 1.35;
+    color: var(--pm-text-primary, #0f172a);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.015em;
+}
+
+.lp-timeline-summary {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--pm-text-muted, #64748b);
+    margin: 0;
+}
+
+/* Expandable content via CSS Grid animation (0fr to 1fr) */
+.lp-journey-card-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
+    background: transparent;
+    border-top: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.lp-journey-card.is-expanded .lp-journey-card-body {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    border-top: 1px solid var(--pm-hairline, #e2e8f0);
+}
+
+.lp-journey-card-inner {
+    overflow: hidden;
+    min-height: 0;
+    padding: 0 22px;
+    box-sizing: border-box;
+    background: transparent;
+    transition: padding 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-journey-card.is-expanded .lp-journey-card-inner {
+    padding: 14px 22px 18px 22px;
+}
+
+.lp-timeline-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--pm-text-muted, #475569);
+    margin: 0 0 14px 0;
+    padding: 0;
+    border: none;
+}
+
+.lp-journey-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.lp-journey-highlight-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--pm-text-primary, #0f172a);
+}
+
+.lp-journey-check-icon {
+    color: var(--mobbin-accent, #0066ff);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .lp-timeline-left .lp-timeline-content,
+    .lp-timeline-right .lp-timeline-content {
+        width: calc(50% - 32px);
+    }
+    .lp-timeline-step {
+        margin-bottom: 32px;
+    }
+}
+
+/* Mobile single-sided layout with full readability */
+@media (max-width: 768px) {
+    .lp-training-timeline-section {
+        padding: var(--space-8, 32px) 0;
+    }
+    .lp-timeline-container {
+        padding-left: 32px;
+        margin-top: 32px;
+    }
+    .lp-timeline-spine {
+        left: 14px;
+        transform: none;
+    }
+    .lp-timeline-container.lp-timeline-animated .lp-timeline-spine {
+        transform: scaleY(0);
+    }
+    .lp-timeline-container.lp-timeline-animated.is-revealed .lp-timeline-spine {
+        transform: scaleY(1);
+    }
+    .lp-timeline-node {
+        left: 14px;
+        top: 28px;
+        transform: translate(-50%, -50%);
+    }
+    .lp-timeline-container.lp-timeline-animated .lp-timeline-node {
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    .lp-timeline-container.lp-timeline-animated .lp-timeline-step.is-visible .lp-timeline-node {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    .lp-timeline-step {
+        margin-bottom: 24px;
+        display: block;
+    }
+    .lp-timeline-left .lp-timeline-content,
+    .lp-timeline-right .lp-timeline-content {
+        width: 100%;
+        margin: 0;
+        text-align: left;
+        align-items: flex-start;
+    }
+    .lp-timeline-container.lp-timeline-animated .lp-timeline-left .lp-timeline-content,
+    .lp-timeline-container.lp-timeline-animated .lp-timeline-right .lp-timeline-content {
+        transform: translateY(14px);
+    }
+    .lp-timeline-container.lp-timeline-animated .lp-timeline-step.is-visible .lp-timeline-content {
+        transform: translateY(0);
+    }
+}
+
+/* Accessibility: prefers-reduced-motion fallback */
+@media (prefers-reduced-motion: reduce) {
+    .lp-timeline-spine,
+    .lp-timeline-container.lp-timeline-animated .lp-timeline-spine {
+        transform: translateX(-50%) scaleY(1) !important;
+        transition: none !important;
+    }
+    .lp-timeline-node,
+    .lp-timeline-container.lp-timeline-animated .lp-timeline-node {
+        opacity: 1 !important;
+        transform: translate(-50%, -50%) scale(1) !important;
+        transition: none !important;
+    }
+    .lp-timeline-content,
+    .lp-timeline-container.lp-timeline-animated .lp-timeline-left .lp-timeline-content,
+    .lp-timeline-container.lp-timeline-animated .lp-timeline-right .lp-timeline-content {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    .lp-journey-card-body,
+    .lp-journey-chevron,
+    .lp-journey-card {
+        transition: none !important;
+    }
+}
+
+
+/* ==========================================================================
+   FAQ SECTION (DesignPrompts SaaS style - Step 1D-R52 Two-Column Layout)
+   ========================================================================== */
+.lp-faq-section {
+    padding: clamp(48px, 5.5vw, 68px) 0;
+    background: var(--pm-canvas, #ffffff);
+    border-bottom: 1px solid var(--pm-hairline, #e2e8f0);
+    box-sizing: border-box;
+    position: relative;
+    z-index: 5;
+    transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.lp-faq-grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 48px;
+    align-items: start;
+}
+
+.lp-faq-left-col {
+    position: sticky;
+    top: 100px;
+    text-align: left;
+}
+
+.lp-faq-left-col .lp-eyebrow {
+    margin-bottom: 12px;
+}
+
+.lp-faq-left-col .lp-section-title {
+    font-size: clamp(23px, 2.0vw, 28px);
+    font-weight: 750;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--pm-text-primary, #0f172a);
+    margin: 0 0 12px 0;
+}
+
+.lp-faq-left-col .lp-section-desc {
+    font-size: clamp(14px, 1.0vw, 15px);
+    line-height: 1.55;
+    color: var(--pm-text-muted, #64748b);
+    margin: 0;
+    max-width: 320px;
+}
+
+.lp-faq-right-col {
+    width: 100%;
+}
+
+.lp-faq-list {
+    width: 100%;
+    margin: 0;
+    border-bottom: 1px solid var(--pm-hairline, #e2e8f0);
+}
+
+.lp-faq-item {
+    border-top: 1px solid var(--pm-hairline, #e2e8f0);
+    transition: border-color 0.25s ease, background-color 0.2s ease;
+}
+
+.lp-faq-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: color 0.2s ease;
+}
+
+.lp-faq-trigger:focus-visible {
+    outline: 2px solid var(--mobbin-accent, #0066ff);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.lp-faq-question {
+    font-family: var(--pm-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    font-size: 17px;
+    font-weight: 650;
+    line-height: 1.45;
+    color: var(--pm-text-primary, #0f172a);
+    letter-spacing: -0.015em;
+    transition: color 0.2s ease;
+}
+
+.lp-faq-trigger:hover .lp-faq-question,
+.lp-faq-item.is-expanded .lp-faq-question {
+    color: var(--mobbin-accent, #0066ff);
+}
+
+.lp-faq-chevron {
+    color: var(--pm-text-muted, #64748b);
+    flex-shrink: 0;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+}
+
+.lp-faq-trigger:hover .lp-faq-chevron,
+.lp-faq-item.is-expanded .lp-faq-chevron {
+    color: var(--mobbin-accent, #0066ff);
+}
+
+.lp-faq-item.is-expanded .lp-faq-chevron {
+    transform: rotate(180deg);
+}
+
+/* Expandable Answer */
+.lp-faq-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-faq-item.is-expanded .lp-faq-body {
+    grid-template-rows: 1fr;
+}
+
+.lp-faq-inner {
+    overflow: hidden;
+    min-height: 0;
+}
+
+.lp-faq-inner p {
+    font-size: 15px;
+    line-height: 1.68;
+    color: var(--pm-text-muted, #475569);
+    margin: 0;
+    padding: 0 0 18px 0;
+}
+
+/* Scroll reveal for FAQ items */
+.lp-faq-animated .lp-faq-item {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-faq-animated.is-revealed .lp-faq-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive: Tablet and Mobile */
+@media (max-width: 900px) {
+    .lp-faq-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    .lp-faq-left-col {
+        position: static;
+        text-align: left;
+    }
+    .lp-faq-left-col .lp-section-desc {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .lp-faq-section {
+        padding: 48px 0 56px 0;
+    }
+    .lp-faq-left-col .lp-section-title {
+        font-size: 24px;
+    }
+    .lp-faq-question {
+        font-size: 15.5px;
+    }
+    .lp-faq-inner p {
+        font-size: 14px;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .lp-faq-animated .lp-faq-item {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    .lp-faq-body,
+    .lp-faq-chevron {
+        transition: none !important;
+    }
+}
+
+html[data-theme="dark"] #workflow,
+html[data-theme="dark"] .lp-workflow-section.lp-training-timeline-section,
+html[data-theme="dark"] .lp-training-timeline-section {
+    background: #141414 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .lp-timeline-spine {
+    background: rgba(255, 255, 255, 0.14) !important;
+}
+
+html[data-theme="dark"] .lp-timeline-node {
+    background: var(--mobbin-accent, #8ab4f8) !important;
+    border-color: #141414 !important;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
+}
+
+html[data-theme="dark"] .lp-timeline-badge {
+    color: var(--mobbin-accent, #8ab4f8) !important;
+}
+
+html[data-theme="dark"] .lp-journey-card {
+    background: #1e1e1e !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+html[data-theme="dark"] .lp-journey-card:hover {
+    border-color: rgba(138, 180, 248, 0.45) !important;
+}
+
+html[data-theme="dark"] .lp-journey-card:hover .lp-journey-cue,
+html[data-theme="dark"] .lp-journey-card.is-expanded .lp-journey-cue {
+    color: var(--mobbin-accent, #8ab4f8) !important;
+}
+
+html[data-theme="dark"] .lp-journey-card.is-expanded {
+    border-color: rgba(138, 180, 248, 0.75) !important;
+    box-shadow: 0 8px 24px rgba(0, 102, 255, 0.18) !important;
+}
+
+html[data-theme="dark"] .lp-journey-card.is-expanded .lp-journey-card-body {
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .lp-journey-card-header:hover {
+    background: rgba(255, 255, 255, 0.02) !important;
+}
+
+html[data-theme="dark"] .lp-timeline-title {
+    color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .lp-timeline-summary,
+html[data-theme="dark"] .lp-journey-cue {
+    color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .lp-timeline-desc {
+    color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .lp-journey-highlight-item {
+    color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .lp-journey-check-icon {
+    color: var(--mobbin-accent, #8ab4f8) !important;
+}
+
+/* FAQ Dark Mode */
+html[data-theme="dark"] .lp-faq-section {
+    background: #141414 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .lp-faq-left-col .lp-section-title,
+html[data-theme="dark"] .lp-faq-header .lp-section-title {
+    color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .lp-faq-left-col .lp-section-desc,
+html[data-theme="dark"] .lp-faq-header .lp-section-desc {
+    color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .lp-faq-list,
+html[data-theme="dark"] .lp-faq-item {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme="dark"] .lp-faq-question {
+    color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .lp-faq-trigger:hover .lp-faq-question,
+html[data-theme="dark"] .lp-faq-item.is-expanded .lp-faq-question {
+    color: var(--mobbin-accent, #8ab4f8) !important;
+}
+
+html[data-theme="dark"] .lp-faq-chevron {
+    color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .lp-faq-trigger:hover .lp-faq-chevron,
+html[data-theme="dark"] .lp-faq-item.is-expanded .lp-faq-chevron {
+    color: var(--mobbin-accent, #8ab4f8) !important;
+}
+
+html[data-theme="dark"] .lp-faq-inner p {
+    color: #94a3b8 !important;
+}
+
+/* ==========================================================================
+   LANDING PAGE FOOTER INTEGRATION (Step 1D-R51)
+   ========================================================================== */
+.landing-page .app-footer {
+    background: #ffffff;
+    border-top: 1px solid var(--pm-hairline, #e2e8f0);
+    padding: var(--space-8, 32px) 0 var(--space-5, 20px);
+    box-sizing: border-box;
+}
+
+html[data-theme="dark"] .landing-page .app-footer {
+    background: #141414 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .landing-page .app-footer .footer-logo,
+html[data-theme="dark"] .landing-page .app-footer .footer-logo span {
+    color: #F1F3F4 !important;
+}
+
+html[data-theme="dark"] .landing-page .app-footer .footer-desc {
+    color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .landing-page .app-footer .footer-col h4 {
+    color: #F1F3F4 !important;
+}
+
+html[data-theme="dark"] .landing-page .app-footer .footer-col ul li a {
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .landing-page .app-footer .footer-col ul li a:hover {
+    color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .landing-page .app-footer .footer-status-pill,
+html[data-theme="dark"] .landing-page .app-footer .social-icons a {
+    background: #202124 !important;
+    border: 1px solid #3C4043 !important;
+    color: #E2E8F0 !important;
+}
+
+html[data-theme="dark"] .landing-page .app-footer .social-icons a:hover {
+    border-color: #38bdf8 !important;
+    color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .landing-page .app-footer .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #9AA0A6 !important;
+}
+
+/* Step 1D-R52: Clean Hero Mini-Universe - Remove decorative ray clutter & satellite tags */
+.lp-tree-sub-group,
+.lp-tree-sub-stem,
+.lp-radial-dot,
+.lp-sub-child-container,
+.lp-sub-child-lines-layer {
+    display: none !important;
+}

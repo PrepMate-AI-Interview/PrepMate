@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Trung tâm pháp lý & Chính sách bảo vệ dữ liệu</title>
+    <meta name="description" content="Trung tâm pháp lý PrepMate: Chính sách bảo mật dữ liệu cá nhân (Luật 91/2025/QH15), Điều khoản sử dụng dịch vụ và Quy định thanh toán.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Canonical Design Tokens & System Stylesheets -->
+    <link rel="stylesheet" href="../../shared/css/tokens.css?v=30">
+    <link rel="stylesheet" href="../../shared/css/base.css?v=30">
+    <link rel="stylesheet" href="../../shared/css/layout.css?v=30">
+    <link rel="stylesheet" href="../../shared/css/components.css?v=30">
+    <link rel="stylesheet" href="../../shared/css/style.css?v=30">
+    <link rel="stylesheet" href="./legal-center.css?v=30">
+</head>
+<body class="legal-page-body">
+    <!-- Top Global Header -->
+    <app-header></app-header>
+
+    <main class="legal-page-wrap">
+        <!-- Streamlined Header (LEGAL-UI-10) -->
+        <header class="legal-hero">
+            <span class="legal-eyebrow">TRUNG TÂM VĂN BẢN</span>
+            <h1 class="legal-hero-title">Trung tâm pháp lý</h1>
+            <p class="legal-hero-desc">Hệ thống văn bản công khai gồm Chính sách bảo mật dữ liệu cá nhân, Điều khoản sử dụng và Quy định thanh toán trên nền tảng PrepMate.</p>
+        </header>
+
+        <!-- Segmented Tab Navigation -->
+        <nav class="legal-tab-nav" id="legal-tab-nav" aria-label="Danh mục văn bản pháp lý">
+            <div class="legal-tab-bar" role="tablist" aria-orientation="horizontal">
+                <button type="button" 
+                        role="tab" 
+                        class="legal-tab-btn active" 
+                        id="tab-privacy-policy" 
+                        data-tab-slug="privacy"
+                        aria-selected="true" 
+                        aria-controls="privacy-policy" 
+                        tabindex="0"
+                        onclick="switchLegalDoc('privacy-policy', true)">
+                    Chính sách bảo mật
+                </button>
+                <button type="button" 
+                        role="tab" 
+                        class="legal-tab-btn" 
+                        id="tab-terms-of-use" 
+                        data-tab-slug="terms"
+                        aria-selected="false" 
+                        aria-controls="terms-of-use" 
+                        tabindex="-1"
+                        onclick="switchLegalDoc('terms-of-use', true)">
+                    Điều khoản sử dụng
+                </button>
+                <button type="button" 
+                        role="tab" 
+                        class="legal-tab-btn" 
+                        id="tab-payment-policy" 
+                        data-tab-slug="payment"
+                        aria-selected="false" 
+                        aria-controls="payment-policy" 
+                        tabindex="-1"
+                        onclick="switchLegalDoc('payment-policy', true)">
+                    Quy định thanh toán
+                </button>
+            </div>
+        </nav>
+
+        <!-- 4. Khối hỗ trợ nhỏ gọn với nút “Liên hệ ngay” (LEGAL-UI-11) -->
+        <aside class="legal-support-card" aria-label="Hỗ trợ pháp lý">
+            <div class="legal-support-info">
+                <div class="legal-support-title">Cần hỗ trợ thêm?</div>
+                <p class="legal-support-desc">Nếu cần giải đáp về các chính sách hoặc điều khoản, hãy liên hệ qua Trung tâm hỗ trợ của PrepMate.</p>
+            </div>
+            <a href="../help/help.html" class="legal-support-cta">Liên hệ ngay</a>
+        </aside>
+
+        <!-- Main Document Reading Container (Two-Tier Information Architecture) -->
+        <article class="legal-document-container" id="legal-document-root">
+
+            <!-- ==========================================================================
+                 DOCUMENT 1: CHÍNH SÁCH BẢO MẬT DỮ LIỆU CÁ NHÂN
+                 ========================================================================== -->
+            <section id="privacy-policy" class="legal-doc-panel active" role="tabpanel" aria-labelledby="tab-privacy-policy">
+                <header class="legal-doc-header">
+                    <span class="legal-doc-badge">VĂN BẢN SỐ 01/2026/CSBM-PM</span>
+                    <h2 class="legal-doc-title">Chính sách bảo mật dữ liệu cá nhân (Privacy Policy)</h2>
+                    <div class="legal-doc-meta">Căn cứ <a href="https://vanban.chinhphu.vn/?docid=214590&pageid=27160" target="_blank" rel="noopener noreferrer" class="legal-law-link">Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15</a>, <a href="https://vanban.chinhphu.vn/?classid=1&docid=216387&orggroupid=2&pageid=27160" target="_blank" rel="noopener noreferrer" class="legal-law-link">Nghị định 356/2025/NĐ-CP</a> và <a href="https://vanban.chinhphu.vn/?docid=208363&pageid=27160" target="_blank" rel="noopener noreferrer" class="legal-law-link">Luật Bảo vệ quyền lợi người tiêu dùng số 19/2023/QH15</a> • Hiệu lực: 01/01/2026</div>
+                </header>
+
+                <!-- TẦNG 1: THÔNG TIN QUAN TRỌNG NHẤT (EXECUTIVE HIGHLIGHTS) -->
+                <div class="legal-tier-highlights">
+                    <div class="tier-highlights-header">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                        <span class="tier-highlights-title">Tóm lược quan trọng (Key Highlights)</span>
+                    </div>
+                    <ul class="tier-highlights-grid">
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">✓</span>
+                            <div class="tier-highlight-text">
+                                <strong>Bảo mật Camera tuyệt đối</strong>
+                                Khung hình video chỉ hiển thị cục bộ trên trình duyệt để tự quan sát; PrepMate không bao giờ ghi hình, không phát trực tiếp, không lưu video lên máy chủ.
+                            </div>
+                        </li>
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">✓</span>
+                            <div class="tier-highlight-text">
+                                <strong>Không bán dữ liệu người dùng</strong>
+                                Dữ liệu luyện tập và nội dung CV chỉ dùng để phân tích kịch bản phỏng vấn theo phương pháp STAR; tuyệt đối không bán hoặc chia sẻ cho bên thứ ba vì mục đích tiếp thị.
+                            </div>
+                        </li>
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">✓</span>
+                            <div class="tier-highlight-text">
+                                <strong>11 Quyền Chủ thể dữ liệu</strong>
+                                Bạn có đầy đủ quyền được biết, truy cập, chỉnh sửa, tải bản sao hoặc yêu cầu xóa dữ liệu cá nhân theo Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15.
+                            </div>
+                        </li>
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">✓</span>
+                            <div class="tier-highlight-text">
+                                <strong>Bảo vệ mật khẩu &amp; đường truyền</strong>
+                                Mật khẩu được băm một chiều an toàn bằng thuật toán mã hóa (không thể giải mã ngược); dữ liệu truyền tải qua giao thức HTTPS/TLS bảo mật cao.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- TẦNG 2: CHI TIẾT 10 ĐIỀU KHOẢN (THEMATIC ACCORDION) -->
+                <div class="legal-tier-details-bar">
+                    <div class="tier-details-label">
+                        <span>Chi tiết điều khoản chính sách</span>
+                        <span style="font-size: 11px; background: var(--legal-hairline); padding: 2px 8px; border-radius: 9999px;">10 Điều khoản</span>
+                    </div>
+                    <button type="button" class="btn-toggle-all-accordions" onclick="toggleAllAccordions('privacy-policy')">
+                        <span class="toggle-all-text">Mở tất cả chi tiết</span>
+                    </button>
+                </div>
+
+                <div class="legal-accordion-list">
+                    <!-- Group 1 -->
+                    <div class="legal-accordion-item is-open" id="acc-privacy-1">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="true" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">1</span>
+                                <span class="trigger-text">Phạm vi áp dụng &amp; Đơn vị kiểm soát dữ liệu (Điều 1 &amp; Điều 2)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 1. Phạm vi áp dụng và đối tượng</h3>
+                                <div class="legal-clause-block">
+                                    <div class="legal-clause-title">1.1. Phạm vi điều chỉnh</div>
+                                    <p>Chính sách bảo mật dữ liệu cá nhân này ("Chính sách") quy định cách thức PrepMate thu thập, ghi nhận, phân loại, lưu trữ, xử lý, bảo vệ và xóa dữ liệu cá nhân của người dùng ("Bạn" hoặc "Chủ thể dữ liệu") khi truy cập trang web, sử dụng phần mềm giả lập phỏng vấn AI, tải lên hồ sơ nghề nghiệp hoặc thanh toán dịch vụ trên nền tảng PrepMate.</p>
+                                </div>
+                                <div class="legal-clause-block">
+                                    <div class="legal-clause-title">1.2. Hiệu lực chấp thuận</div>
+                                    <p>Bằng việc đăng ký tài khoản, tải CV hoặc kích hoạt phiên phỏng vấn, bạn xác nhận đã được thông báo, hiểu rõ và đồng ý toàn bộ nội dung của Chính sách này.</p>
+                                </div>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 2. Đơn vị quản lý và Kiểm soát dữ liệu (Data Controller)</h3>
+                                <p>Đơn vị kiểm soát và xử lý dữ liệu cá nhân đối với nền tảng PrepMate là <strong>Nền tảng PrepMate AI</strong>. Mọi thắc mắc, đề nghị thực hiện quyền của chủ thể dữ liệu hoặc thông báo sự cố bảo mật xin vui lòng gửi về kênh tiếp nhận chính thức: <strong>interviewprepmate@gmail.com</strong>.</p>
+                                <p><em>(Lưu ý: Thông tin đăng ký doanh nghiệp, mã số thuế và địa chỉ trụ sở pháp lý chính thức sẽ được cập nhật khi chủ dự án hoàn tất thủ tục đăng ký kinh doanh).</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 2 -->
+                    <div class="legal-accordion-item" id="acc-privacy-2">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">2</span>
+                                <span class="trigger-text">Dữ liệu thu thập &amp; Căn cứ xử lý thực tế (Điều 3 &amp; Điều 4)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 3. Các loại dữ liệu cá nhân được xử lý thực tế</h3>
+                                <p>Đối chiếu với mã nguồn và kiến trúc kỹ thuật của hệ thống, PrepMate chỉ xử lý những dữ liệu cần thiết phục vụ trực tiếp cho quá trình vận hành và cung cấp tính năng luyện phỏng vấn:</p>
+                                <ul>
+                                    <li><strong>Dữ liệu tài khoản đăng ký:</strong> Địa chỉ email, họ và tên hiển thị, mật khẩu (được băm một chiều an toàn bằng thuật toán mật mã, không thể giải mã ngược), vai trò người dùng (Ứng viên/Quản trị viên) và ngày khởi tạo tài khoản.</li>
+                                    <li><strong>Dữ liệu hồ sơ và CV nghề nghiệp:</strong> Tệp tin CV (PDF hoặc văn bản) do bạn chủ động tải lên, các trường dữ liệu được trích xuất (kinh nghiệm làm việc, học vấn, kỹ năng chuyên môn, vị trí mục tiêu).</li>
+                                    <li><strong>Dữ liệu phiên phỏng vấn:</strong> Bản ghi văn bản (text chat) các câu trả lời của bạn, kịch bản câu hỏi do AI tạo ra, thang điểm chấm theo chuẩn STAR Rubric, nhận xét điểm mạnh và điểm cần cải thiện.</li>
+                                    <li><strong>Dữ liệu âm thanh giọng nói (Voice AI):</strong> Khi bạn bật tính năng phỏng vấn giọng nói, luồng âm thanh từ microphone được chuyển hóa thành văn bản (Speech-to-Text). Hệ thống không lưu trữ vĩnh viễn tệp âm thanh giọng nói thô trên máy chủ.</li>
+                                    <li><strong>Dữ liệu camera (Khung hình tự quan sát):</strong> <span style="text-decoration: underline;">Xử lý hoàn toàn cục bộ trên trình duyệt (client-side)</span>: Khung hình video từ camera chỉ được hiển thị trực tiếp trên trình duyệt của bạn để bạn tự quan sát và căn chỉnh tư thế/nhịp mắt. <strong>PrepMate KHÔNG BAO GIỜ ghi hình, KHÔNG phát trực tiếp và KHÔNG lưu trữ video camera của bạn trên bất kỳ máy chủ nào.</strong></li>
+                                    <li><strong>Dữ liệu giao dịch và thanh toán:</strong> Mã định danh giao dịch, gói cước đã chọn (Gói PRO 99.000 VNĐ / tháng), thời gian thanh toán và trạng thái giao dịch. PrepMate không trực tiếp lưu trữ số thẻ tín dụng hoặc mã bảo mật CVV của bạn.</li>
+                                    <li><strong>Dữ liệu kỹ thuật &amp; Phiên:</strong> Token xác thực đăng nhập (JWT), tùy chọn giao diện (Sáng/Tối - Light/Dark Mode) được lưu trong LocalStorage/SessionStorage của trình duyệt.</li>
+                                </ul>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 4. Mục đích và căn cứ xử lý dữ liệu</h3>
+                                <p>Theo quy định tại <a href="https://vanban.chinhphu.vn/?docid=214590&pageid=27160" target="_blank" rel="noopener noreferrer" class="legal-law-link">Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15</a>, PrepMate xử lý dữ liệu cá nhân dựa trên các căn cứ hợp pháp sau:</p>
+                                <ul>
+                                    <li><strong>Thực hiện thỏa thuận cung cấp dịch vụ:</strong> Khởi tạo phiên phỏng vấn tương thích với vị trí và kinh nghiệm của bạn; đối chiếu câu trả lời với phương pháp STAR; cung cấp báo cáo đánh giá năng lực chi tiết.</li>
+                                    <li><strong>Sự đồng thuận của chủ thể dữ liệu:</strong> Bạn đồng thuận cho phép PrepMate phân tích nội dung CV tải lên để trích xuất ngữ cảnh phỏng vấn và cấp quyền microphone/camera trên trình duyệt. Bạn có quyền rút lại sự đồng ý bất cứ lúc nào bằng cách xóa CV trong mục Cài đặt.</li>
+                                    <li><strong>Tuân thủ nghĩa vụ pháp luật:</strong> Lưu trữ chứng từ giao dịch thanh toán theo quy định kế toán và tài chính của pháp luật Việt Nam.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 3 -->
+                    <div class="legal-accordion-item" id="acc-privacy-3">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">3</span>
+                                <span class="trigger-text">Xử lý Trí tuệ nhân tạo (AI) &amp; An ninh bảo vệ (Điều 5 &amp; Điều 6)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 5. Sử dụng Trí tuệ nhân tạo (AI) và bên thứ ba xử lý dữ liệu</h3>
+                                <p>Trong quá trình phỏng vấn giả lập, nội dung câu hỏi và câu trả lời được xử lý thông qua cổng kết nối AI Gateway với các nhà cung cấp mô hình ngôn ngữ lớn (LLM). PrepMate tuân thủ các nguyên tắc:</p>
+                                <ul>
+                                    <li>Dữ liệu truyền qua cổng AI Gateway chỉ bao gồm ngữ cảnh phỏng vấn và câu trả lời chuyên môn cần phân tích đánh giá, không gửi kèm mật khẩu hay thông tin định danh không cần thiết.</li>
+                                    <li>Dữ liệu câu trả lời phỏng vấn của người dùng <strong>không được sử dụng để bán lại</strong> cho các đơn vị quảng cáo hoặc nhà tuyển dụng bên ngoài.</li>
+                                </ul>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 6. Biện pháp bảo vệ an ninh và kiểm soát truy cập</h3>
+                                <p>PrepMate áp dụng các biện pháp kỹ thuật và quản trị phù hợp:</p>
+                                <ul>
+                                    <li><strong>Mã hóa đường truyền:</strong> Dữ liệu trao đổi giữa trình duyệt của bạn và hệ thống máy chủ được bảo vệ qua giao thức mạng an toàn HTTPS/TLS.</li>
+                                    <li><strong>Kiểm soát phân quyền (RBAC):</strong> Cơ chế xác thực phân quyền nghiêm ngặt đảm bảo chỉ có bạn mới có quyền xem nội dung phỏng vấn và CV của chính mình. Quản trị viên chỉ truy cập khi có yêu cầu hỗ trợ kỹ thuật cụ thể từ bạn.</li>
+                                    <li><strong>Bảo mật mật khẩu:</strong> Mật khẩu người dùng được băm (hash) một chiều qua thuật toán mật mã an toàn, nhân sự vận hành không thể đọc được mật khẩu gốc của bạn.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 4 -->
+                    <div class="legal-accordion-item" id="acc-privacy-4">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">4</span>
+                                <span class="trigger-text">Thời hạn lưu trữ &amp; 11 Quyền của Chủ thể dữ liệu (Điều 7 &amp; Điều 8)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 7. Thời gian lưu trữ và Xóa dữ liệu</h3>
+                                <div class="legal-clause-block">
+                                    <div class="legal-clause-title">7.1. Thời gian lưu trữ hoạt động</div>
+                                    <p>Dữ liệu tài khoản và lịch sử phỏng vấn được lưu trữ trong suốt thời gian tài khoản của bạn còn hoạt động trên hệ thống.</p>
+                                </div>
+                                <div class="legal-clause-block">
+                                    <div class="legal-clause-title">7.2. Xóa dữ liệu theo yêu cầu</div>
+                                    <p>Khi bạn chủ động xóa phiên phỏng vấn hoặc gửi yêu cầu đóng tài khoản, dữ liệu liên quan sẽ được xóa khỏi cơ sở dữ liệu hoạt động.</p>
+                                </div>
+                                <div class="legal-clause-block">
+                                    <div class="legal-clause-title">7.3. Lưu trữ chứng từ pháp lý</div>
+                                    <p>Các chứng từ thanh toán được lưu trữ theo quy định kế toán hiện hành của pháp luật Việt Nam. <em>(Thời hạn lưu trữ bản sao lưu dự phòng dài hạn sẽ được chủ dự án phê duyệt theo quy chế vận hành chính thức).</em></p>
+                                </div>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 8. Quyền của Chủ thể dữ liệu theo Luật số 91/2025/QH15</h3>
+                                <p>Bạn có đầy đủ 11 quyền hợp pháp đối với dữ liệu cá nhân của mình theo Điều 9 Luật số 91/2025/QH15:</p>
+                                <ol>
+                                    <li><strong>Quyền được biết:</strong> Được thông báo rõ ràng về hoạt động thu thập và xử lý dữ liệu cá nhân.</li>
+                                    <li><strong>Quyền đồng ý:</strong> Được đồng ý hoặc không đồng ý cho phép xử lý dữ liệu cá nhân.</li>
+                                    <li><strong>Quyền truy cập:</strong> Được xem, chỉnh sửa hoặc yêu cầu chỉnh sửa dữ liệu cá nhân của mình.</li>
+                                    <li><strong>Quyền rút lại sự đồng ý:</strong> Có quyền rút lại sự đồng ý cho phép xử lý dữ liệu bất cứ lúc nào.</li>
+                                    <li><strong>Quyền xóa dữ liệu:</strong> Yêu cầu xóa dữ liệu cá nhân của mình khi không còn cần thiết cho mục đích ban đầu.</li>
+                                    <li><strong>Quyền hạn chế xử lý dữ liệu:</strong> Yêu cầu hạn chế xử lý dữ liệu cá nhân trong các trường hợp luật định.</li>
+                                    <li><strong>Quyền cung cấp dữ liệu:</strong> Yêu cầu cung cấp bản sao dữ liệu cá nhân của mình.</li>
+                                    <li><strong>Quyền phản đối xử lý dữ liệu:</strong> Phản đối việc xử lý dữ liệu cá nhân nhằm ngăn chặn việc sử dụng không đúng mục đích.</li>
+                                    <li><strong>Quyền khiếu nại, tố cáo, khởi kiện:</strong> Khiếu nại, tố cáo hoặc khởi kiện theo quy định của pháp luật nếu quyền dữ liệu bị xâm phạm.</li>
+                                    <li><strong>Quyền yêu cầu bồi thường thiệt hại:</strong> Yêu cầu bồi thường thiệt hại khi xảy ra hành vi vi phạm pháp luật về bảo vệ dữ liệu cá nhân.</li>
+                                    <li><strong>Quyền tự bảo vệ:</strong> Tự bảo vệ hoặc yêu cầu cơ quan có thẩm quyền bảo vệ quyền dữ liệu cá nhân của mình.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 5 -->
+                    <div class="legal-accordion-item" id="acc-privacy-5">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">5</span>
+                                <span class="trigger-text">Chia sẻ bên thứ ba &amp; Tiếp nhận yêu cầu (Điều 9 &amp; Điều 10)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 9. Chia sẻ dữ liệu với bên thứ ba</h3>
+                                <p>PrepMate cam kết <strong>không bán, không cho thuê và không chia sẻ</strong> thông tin cá nhân của bạn cho bên thứ ba vì mục đích thương mại hoặc tiếp thị. Dữ liệu chỉ được chia sẻ trong các trường hợp giới hạn sau:</p>
+                                <ul>
+                                    <li><strong>Đối tác xử lý thanh toán:</strong> Chia sẻ mã giao dịch và số tiền để thực hiện đối soát gói cước dịch vụ.</li>
+                                    <li><strong>Theo yêu cầu của cơ quan nhà nước có thẩm quyền:</strong> Khi có văn bản yêu cầu chính thức từ cơ quan quản lý nhà nước theo đúng trình tự pháp luật Việt Nam.</li>
+                                </ul>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 10. Quy trình tiếp nhận và xử lý yêu cầu về dữ liệu</h3>
+                                <p>Để thực hiện các quyền của mình (như tra cứu dữ liệu tổng hợp, đề nghị xóa tài khoản), bạn có thể gửi thư điện tử từ chính địa chỉ email đã đăng ký tài khoản tới <strong>interviewprepmate@gmail.com</strong>. Đội ngũ kỹ thuật sẽ tiếp nhận, xác minh danh tính và phản hồi yêu cầu của bạn theo đúng trình tự quy định.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 DOCUMENT 2: ĐIỀU KHOẢN SỬ DỤNG DỊCH VỤ
+                 ========================================================================== -->
+            <section id="terms-of-use" class="legal-doc-panel" role="tabpanel" aria-labelledby="tab-terms-of-use">
+                <header class="legal-doc-header">
+                    <span class="legal-doc-badge">VĂN BẢN SỐ 02/2026/DKSD-PM</span>
+                    <h2 class="legal-doc-title">Điều khoản sử dụng dịch vụ (Terms of Use)</h2>
+                    <div class="legal-doc-meta">Căn cứ <a href="https://vanban.chinhphu.vn/?docid=208363&pageid=27160" target="_blank" rel="noopener noreferrer" class="legal-law-link">Luật Bảo vệ quyền lợi người tiêu dùng số 19/2023/QH15</a> và <a href="https://vanban.chinhphu.vn/?docid=216334&pageid=27160" target="_blank" rel="noopener noreferrer" class="legal-law-link">Luật Trí tuệ nhân tạo số 134/2025/QH15</a> • Hiệu lực: 01/01/2026</div>
+                </header>
+
+                <!-- TẦNG 1: THÔNG TIN QUAN TRỌNG NHẤT (EXECUTIVE HIGHLIGHTS) -->
+                <div class="legal-tier-highlights">
+                    <div class="tier-highlights-header">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <span class="tier-highlights-title">Tóm lược quan trọng (Key Highlights)</span>
+                    </div>
+                    <ul class="tier-highlights-grid">
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">!</span>
+                            <div class="tier-highlight-text">
+                                <strong>Không đảm bảo trúng tuyển</strong>
+                                PrepMate là công cụ công nghệ hỗ trợ rèn luyện phản xạ phỏng vấn; không cam kết hay bảo đảm bạn sẽ đỗ phỏng vấn hoặc nhận việc làm (Job Offer) từ bất kỳ nhà tuyển dụng nào.
+                            </div>
+                        </li>
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">✓</span>
+                            <div class="tier-highlight-text">
+                                <strong>Bảo toàn quyền sở hữu CV</strong>
+                                Bạn giữ toàn bộ quyền sở hữu đối với nội dung CV cá nhân và các câu trả lời do chính bạn sáng tạo trong quá trình thực hiện phỏng vấn giả lập.
+                            </div>
+                        </li>
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">✕</span>
+                            <div class="tier-highlight-text">
+                                <strong>Nghiêm cấm lạm dụng kỹ thuật</strong>
+                                Nghiêm cấm mọi hành vi dịch ngược mã nguồn, cào dữ liệu tự động, sử dụng chung/bán lại tài khoản vì mục đích thương mại hoặc gửi yêu cầu phá hoại (prompt injection).
+                            </div>
+                        </li>
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">✓</span>
+                            <div class="tier-highlight-text">
+                                <strong>Điều kiện tuổi và bảo mật</strong>
+                                Người dùng từ đủ 15 tuổi hoặc có sự đồng ý của người giám hộ hợp pháp; tự chịu trách nhiệm bảo mật thông tin đăng nhập và mật khẩu cá nhân.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- TẦNG 2: CHI TIẾT 8 ĐIỀU KHOẢN (THEMATIC ACCORDION) -->
+                <div class="legal-tier-details-bar">
+                    <div class="tier-details-label">
+                        <span>Chi tiết điều khoản sử dụng</span>
+                        <span style="font-size: 11px; background: var(--legal-hairline); padding: 2px 8px; border-radius: 9999px;">8 Điều khoản</span>
+                    </div>
+                    <button type="button" class="btn-toggle-all-accordions" onclick="toggleAllAccordions('terms-of-use')">
+                        <span class="toggle-all-text">Mở tất cả chi tiết</span>
+                    </button>
+                </div>
+
+                <div class="legal-accordion-list">
+                    <!-- Group 1 -->
+                    <div class="legal-accordion-item is-open" id="acc-terms-1">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="true" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">1</span>
+                                <span class="trigger-text">Phạm vi thỏa thuận &amp; Điều kiện tài khoản (Điều 1 &amp; Điều 2)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 1. Phạm vi áp dụng và Chấp thuận điều khoản</h3>
+                                <p>Bản Điều khoản sử dụng này ("Điều khoản") xác lập thỏa thuận sử dụng dịch vụ giữa bạn và Nền tảng PrepMate. Khi truy cập website, đăng ký tài khoản hoặc sử dụng bất kỳ tính năng giả lập phỏng vấn nào, bạn cam kết tuân thủ đầy đủ các điều khoản dưới đây.</p>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 2. Điều kiện sử dụng và Quản lý tài khoản</h3>
+                                <p>Người dùng phải từ đủ 15 tuổi trở lên hoặc có sự đồng ý của cha mẹ/người giám hộ hợp pháp. Bạn chịu trách nhiệm đối với:</p>
+                                <ul>
+                                    <li>Bảo mật thông tin đăng nhập, mật khẩu và các hoạt động phát sinh dưới tài khoản của mình.</li>
+                                    <li>Cung cấp thông tin xác thực, chính xác khi đăng ký tài khoản hoặc thực hiện thanh toán.</li>
+                                    <li>Thông báo ngay cho PrepMate qua <strong>interviewprepmate@gmail.com</strong> nếu phát hiện dấu hiệu truy cập trái phép vào tài khoản của bạn.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 2 -->
+                    <div class="legal-accordion-item" id="acc-terms-2">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">2</span>
+                                <span class="trigger-text">Bản chất dịch vụ &amp; Giới hạn quan trọng của AI (Điều 3)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 3. Bản chất dịch vụ và Giới hạn quan trọng của Trí tuệ nhân tạo (AI)</h3>
+                                <div class="legal-notice-box warning">
+                                    <strong>LƯU Ý QUAN TRỌNG VỀ ĐẦU RA CỦA AI VÀ KẾT QUẢ TUYỂN DỤNG:</strong>
+                                    <p style="margin: 6px 0 0;">PrepMate là công cụ công nghệ hỗ trợ rèn luyện kỹ năng và phản xạ phỏng vấn. Các nhận xét, điểm số STAR và câu hỏi do AI tạo ra chỉ mang tính chất <strong>tham khảo học tập</strong>.</p>
+                                </div>
+                                <ul>
+                                    <li><strong>Không đảm bảo trúng tuyển:</strong> PrepMate hoàn toàn <strong>không cam kết hay bảo đảm</strong> rằng bạn sẽ vượt qua kỳ phỏng vấn thực tế hoặc nhận được việc làm (Job Offer) từ bất kỳ nhà tuyển dụng, tổ chức hay công ty nào.</li>
+                                    <li><strong>Không thay thế quyết định tuyển dụng:</strong> Tiêu chuẩn đánh giá của các doanh nghiệp thực tế phụ thuộc vào nhiều yếu tố chủ quan và chính sách nội bộ. Đánh giá của PrepMate không cấu thành một văn bản xác nhận năng lực nghề nghiệp chính thức.</li>
+                                    <li><strong>Tính chính xác của AI:</strong> Mô hình ngôn ngữ lớn (LLM) là công nghệ hỗ trợ và có thể đưa ra câu trả lời chưa hoàn hảo hoặc hiểu sai ngữ cảnh văn hóa doanh nghiệp đặc thù. Bạn cần chủ động đối chiếu với kiến thức chuyên môn thực tế của ngành nghề.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 3 -->
+                    <div class="legal-accordion-item" id="acc-terms-3">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">3</span>
+                                <span class="trigger-text">Các hành vi nghiêm cấm &amp; Quyền sở hữu trí tuệ (Điều 4 &amp; Điều 5)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 4. Các hành vi nghiêm cấm</h3>
+                                <p>Khi sử dụng PrepMate, người dùng tuyệt đối không được thực hiện các hành vi sau:</p>
+                                <ol>
+                                    <li>Can thiệp kỹ thuật, dịch ngược mã nguồn (reverse engineer), tự động hóa cào dữ liệu (scraping), hoặc gây gián đoạn hạ tầng máy chủ của PrepMate.</li>
+                                    <li>Sử dụng tài khoản chung, bán lại tài khoản hoặc phân phối lại nội dung phỏng vấn/bộ câu hỏi của PrepMate vì mục đích thương mại khi chưa có sự chấp thuận bằng văn bản.</li>
+                                    <li>Tải lên các nội dung CV chứa mã độc, thông tin xâm phạm quyền lợi của người khác hoặc nội dung vi phạm pháp luật Việt Nam.</li>
+                                    <li>Lạm dụng tài nguyên tính toán của mô hình AI bằng cách gửi các yêu cầu phá hoại (prompt injection, jailbreak).</li>
+                                </ol>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 5. Quyền sở hữu trí tuệ</h3>
+                                <p>Toàn bộ giao diện người dùng, mã nguồn, thuật toán đối thoại, cấu trúc chấm điểm STAR Rubric, logo, nhãn hiệu và tài liệu hướng dẫn trên nền tảng đều thuộc quyền sở hữu trí tuệ của PrepMate.</p>
+                                <p>Bạn giữ toàn bộ quyền sở hữu đối với nội dung CV cá nhân và các sản phẩm sáng tạo do chính bạn cung cấp trong quá trình phỏng vấn.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 4 -->
+                    <div class="legal-accordion-item" id="acc-terms-4">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">4</span>
+                                <span class="trigger-text">Bảo trì hệ thống, Khóa tài khoản &amp; Giải quyết tranh chấp (Điều 6, 7, 8)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 6. Mức độ sẵn sàng của dịch vụ &amp; Bảo trì hệ thống</h3>
+                                <p>Dịch vụ có thể tạm gián đoạn định kỳ để nâng cấp máy chủ, bảo trì hệ thống hoặc xử lý các sự cố mạng viễn thông. Chúng tôi sẽ thông báo trước về các đợt bảo trì lớn thông qua website hoặc email thông báo.</p>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 7. Tạm ngừng và Chấm dứt tài khoản</h3>
+                                <p>PrepMate bảo lưu quyền tạm khóa hoặc chấm dứt quyền sử dụng tài khoản của bạn nếu bạn vi phạm nghiêm trọng các hành vi bị cấm quy định tại Điều 4 của bản Điều khoản này.</p>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 8. Trách nhiệm pháp lý và Giải quyết tranh chấp</h3>
+                                <div class="legal-clause-block">
+                                    <div class="legal-clause-title">8.1. Luật áp dụng</div>
+                                    <p>Điều khoản này được điều chỉnh và giải thích theo quy định của pháp luật nước Cộng hòa Xã hội Chủ nghĩa Việt Nam.</p>
+                                </div>
+                                <div class="legal-clause-block">
+                                    <div class="legal-clause-title">8.2. Cơ chế giải quyết tranh chấp</div>
+                                    <p>Mọi tranh chấp phát sinh sẽ được ưu tiên giải quyết thông qua thương lượng hòa giải. Trường hợp không đạt được thỏa thuận, tranh chấp sẽ được đưa ra giải quyết tại Tòa án nhân dân có thẩm quyền tại Việt Nam.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 DOCUMENT 3: QUY ĐỊNH THANH TOÁN
+                 ========================================================================== -->
+            <section id="payment-policy" class="legal-doc-panel" role="tabpanel" aria-labelledby="tab-payment-policy">
+                <header class="legal-doc-header">
+                    <span class="legal-doc-badge">VĂN BẢN SỐ 03/2026/QDTT-PM</span>
+                    <h2 class="legal-doc-title">Quy định thanh toán (Payment Terms)</h2>
+                    <div class="legal-doc-meta">Căn cứ <a href="https://vanban.chinhphu.vn/?classid=1&docid=216503&pageid=27160" target="_blank" rel="noopener noreferrer" class="legal-law-link">Luật Thương mại điện tử số 122/2025/QH15</a> và <a href="https://vanban.chinhphu.vn/?docid=208363&pageid=27160" target="_blank" rel="noopener noreferrer" class="legal-law-link">Luật Bảo vệ quyền lợi người tiêu dùng số 19/2023/QH15</a> • Hiệu lực: 01/01/2026</div>
+                </header>
+
+                <!-- TẦNG 1: THÔNG TIN QUAN TRỌNG NHẤT (EXECUTIVE HIGHLIGHTS) -->
+                <div class="legal-tier-highlights">
+                    <div class="tier-highlights-header">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        <span class="tier-highlights-title">Tóm lược quan trọng (Key Highlights)</span>
+                    </div>
+                    <ul class="tier-highlights-grid">
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">₫</span>
+                            <div class="tier-highlight-text">
+                                <strong>Biểu phí chính thức: 99.000 VNĐ</strong>
+                                Gói PrepMate PRO có giá chính thức 99.000 VNĐ / tháng (thời hạn 30 ngày); không phát sinh phụ phí ẩn hoặc phí duy trì.
+                            </div>
+                        </li>
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">✓</span>
+                            <div class="tier-highlight-text">
+                                <strong>Tuyệt đối không tự động gia hạn</strong>
+                                PrepMate không tự động trừ tiền ngân hàng hoặc thẻ khi hết chu kỳ 30 ngày; tài khoản tự chuyển về gói Miễn phí an toàn.
+                            </div>
+                        </li>
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">✓</span>
+                            <div class="tier-highlight-text">
+                                <strong>Hoàn tiền 100% trong 48 giờ</strong>
+                                Hoàn lại 100% số tiền giao dịch nếu phát sinh lỗi kỹ thuật hệ thống từ máy chủ khiến bạn không thể luyện tập và không thể khắc phục trong 24 giờ.
+                            </div>
+                        </li>
+                        <li class="tier-highlight-item">
+                            <span class="tier-highlight-icon">⚡</span>
+                            <div class="tier-highlight-text">
+                                <strong>Kích hoạt tự động tức thì</strong>
+                                Dịch vụ PRO được hệ thống mở khóa tự động trong vòng 10 đến 30 giây ngay sau khi hệ thống ghi nhận giao dịch thành công.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- TẦNG 2: CHI TIẾT 8 ĐIỀU KHOẢN (THEMATIC ACCORDION) -->
+                <div class="legal-tier-details-bar">
+                    <div class="tier-details-label">
+                        <span>Chi tiết điều khoản thanh toán</span>
+                        <span style="font-size: 11px; background: var(--legal-hairline); padding: 2px 8px; border-radius: 9999px;">8 Điều khoản</span>
+                    </div>
+                    <button type="button" class="btn-toggle-all-accordions" onclick="toggleAllAccordions('payment-policy')">
+                        <span class="toggle-all-text">Mở tất cả chi tiết</span>
+                    </button>
+                </div>
+
+                <div class="legal-accordion-list">
+                    <!-- Group 1 -->
+                    <div class="legal-accordion-item is-open" id="acc-payment-1">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="true" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">1</span>
+                                <span class="trigger-text">Phân cấp gói dịch vụ &amp; Bảng giá niêm yết (Điều 1)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 1. Phân cấp gói dịch vụ và Bảng giá áp dụng</h3>
+                                <p>Quy định này áp dụng cho các giao dịch nâng cấp gói dịch vụ trên website PrepMate. Hiện tại, PrepMate cung cấp 2 phân cấp gói dịch vụ rõ ràng:</p>
+                                <ul>
+                                    <li><strong>Gói Trải Nghiệm (Free Tier):</strong> Miễn phí hoàn toàn (0 VNĐ). Bao gồm 3 phiên phỏng vấn mô phỏng/tháng, chế độ gõ phím Text Chat, ngân hàng câu hỏi phỏng vấn cơ bản.</li>
+                                    <li><strong>Gói PrepMate PRO:</strong> Gói nâng cấp chuyên sâu với mức giá chính thức <strong>99.000 VNĐ / tháng</strong> (thời hạn 30 ngày). Quyền lợi bao gồm: Không giới hạn số lượt phỏng vấn; đàm thoại hai chiều bằng giọng nói AI thời gian thực (Voice AI); phân tích kịch bản bám sát link JD; báo cáo STAR Debrief chi tiết từng luận điểm.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 2 -->
+                    <div class="legal-accordion-item" id="acc-payment-2">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">2</span>
+                                <span class="trigger-text">Phương thức thanh toán &amp; Kích hoạt tự động (Điều 2 &amp; Điều 3)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 2. Giá niêm yết, Tiền tệ và Phương thức thanh toán</h3>
+                                <p>Giá dịch vụ trên website được niêm yết bằng <strong>Đồng Việt Nam (VNĐ)</strong>. Người dùng có thể thanh toán qua các phương thức sau:</p>
+                                <ol>
+                                    <li><strong>Chuyển khoản VietQR tức thì (24/7):</strong> Quét mã QR thanh toán qua ứng dụng Mobile Banking của các ngân hàng tại Việt Nam.</li>
+                                    <li><strong>Ví điện tử:</strong> Hỗ trợ thanh toán qua các ví điện tử thông dụng (MoMo, ZaloPay).</li>
+                                    <li><strong>Thẻ thanh toán:</strong> Thẻ tín dụng/ghi nợ quốc tế (Visa, MasterCard).</li>
+                                </ol>
+                                <p><em>(Lưu ý: Cổng thanh toán hiện đang hoạt động theo quy trình thử nghiệm phát triển / sandbox. Thỏa thuận kết nối cổng thanh toán thương mại chính thức sẽ được chủ dự án công bố khi đưa vào vận hành thực tế).</em></p>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 3. Quy trình kích hoạt dịch vụ tự động</h3>
+                                <p>Sau khi hệ thống ghi nhận giao dịch thành công:</p>
+                                <ul>
+                                    <li>Gói PrepMate PRO sẽ được kích hoạt <strong>tự động trong vòng 10 đến 30 giây</strong>.</li>
+                                    <li>Màn hình thanh toán sẽ tự động chuyển trạng thái <em>"Thanh toán thành công"</em> và cập nhật quyền hạn PRO vào hồ sơ cá nhân của bạn.</li>
+                                    <li>Hệ thống hiển thị mã giao dịch và lưu trữ trạng thái thanh toán trong hồ sơ tài khoản.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 3 -->
+                    <div class="legal-accordion-item" id="acc-payment-3">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">3</span>
+                                <span class="trigger-text">Trạng thái giao dịch &amp; Quy tắc không tự động gia hạn (Điều 4 &amp; Điều 5)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 4. Trạng thái giao dịch và Xử lý sự cố</h3>
+                                <p>Một giao dịch thanh toán có thể có các trạng thái sau:</p>
+                                <ul>
+                                    <li><strong>Chờ thanh toán (Pending):</strong> Mã QR hoặc cổng thanh toán đang chờ bạn xác nhận chuyển khoản.</li>
+                                    <li><strong>Thành công (Completed):</strong> Giao dịch đã hoàn tất và dịch vụ PRO đã được kích hoạt.</li>
+                                    <li><strong>Hết hạn / Thất bại (Expired / Failed):</strong> Giao dịch chưa được hoàn tất trong thời gian hiệu lực. Nếu tài khoản ngân hàng của bạn đã bị trừ tiền nhưng hệ thống chưa kích hoạt trong vòng 5 phút, vui lòng liên hệ <strong>interviewprepmate@gmail.com</strong> kèm mã giao dịch để được hỗ trợ kiểm tra ngay lập tức.</li>
+                                </ul>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 5. Thời hạn sử dụng và Quy tắc gia hạn</h3>
+                                <p>Gói dịch vụ PrepMate PRO có thời hạn sử dụng <strong>30 ngày</strong> kể từ ngày kích hoạt thành công.</p>
+                                <div class="legal-notice-box">
+                                    <strong>QUY TẮC KHÔNG TỰ ĐỘNG GIA HẠN TRỪ TIỀN:</strong>
+                                    <p style="margin: 6px 0 0;">Nền tảng PrepMate <strong>không tự động trừ tiền gia hạn</strong> trên tài khoản ngân hàng hoặc thẻ của bạn khi hết hạn gói cước. Khi chu kỳ 30 ngày kết thúc, tài khoản sẽ tự động chuyển về Gói Trải Nghiệm miễn phí; bạn hoàn toàn chủ động thanh toán khi có nhu cầu tiếp tục sử dụng.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 4 -->
+                    <div class="legal-accordion-item" id="acc-payment-4">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">4</span>
+                                <span class="trigger-text">Chính sách hoàn tiền 100% &amp; Hóa đơn chứng từ (Điều 6 &amp; Điều 7)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 6. Quy định hoàn tiền (Refund Terms)</h3>
+                                <div class="legal-clause-block">
+                                    <div class="legal-clause-title">6.1. Trường hợp được hoàn tiền 100%</div>
+                                    <p>Trong vòng <strong>48 giờ</strong> kể từ thời điểm thanh toán thành công, nếu phát sinh sự cố kỹ thuật từ phía máy chủ PrepMate khiến bạn hoàn toàn không thể thực hiện buổi phỏng vấn giả lập và đội ngũ kỹ thuật không thể khắc phục trong vòng 24 giờ, bạn được quyền yêu cầu hoàn lại 100% số tiền giao dịch qua đúng tài khoản bạn đã thanh toán.</p>
+                                </div>
+                                <div class="legal-clause-block">
+                                    <div class="legal-clause-title">6.2. Trường hợp không thuộc diện hoàn tiền</div>
+                                    <p>Không áp dụng hoàn tiền nếu bạn đã kích hoạt và sử dụng trên 3 phiên phỏng vấn PRO; hoặc lý do xuất phát từ thiết bị cá nhân của bạn (hỏng microphone, đường truyền internet cá nhân không ổn định, lỗi trình duyệt do không cập nhật).</p>
+                                </div>
+                                <div class="legal-clause-block">
+                                    <div class="legal-clause-title">6.3. Quy trình tiếp nhận yêu cầu</div>
+                                    <p>Gửi thư yêu cầu hoàn tiền tới <strong>interviewprepmate@gmail.com</strong> kèm theo Mã giao dịch (Transaction ID), Biên lai ngân hàng và Mô tả lỗi kỹ thuật gặp phải.</p>
+                                </div>
+                            </div>
+                            <div class="legal-article">
+                                <h3>Điều 7. Hóa đơn chứng từ điện tử</h3>
+                                <p>PrepMate cung cấp hóa đơn/biên lai điện tử hợp lệ cho các cá nhân và tổ chức có nhu cầu. Vui lòng gửi email đến <strong>interviewprepmate@gmail.com</strong> trong vòng 07 ngày làm việc kể từ ngày phát sinh giao dịch, bao gồm: Mã đơn hàng, Tên đơn vị, Mã số thuế và Địa chỉ nhận hóa đơn.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 5 -->
+                    <div class="legal-accordion-item" id="acc-payment-5">
+                        <button type="button" class="legal-accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <div class="trigger-title-wrap">
+                                <span class="trigger-num-badge">5</span>
+                                <span class="trigger-text">Đầu mối tiếp nhận tra soát &amp; Khiếu nại giao dịch (Điều 8)</span>
+                            </div>
+                            <svg class="legal-accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="legal-accordion-panel">
+                            <div class="legal-article">
+                                <h3>Điều 8. Đầu mối tiếp nhận tra soát và khiếu nại giao dịch</h3>
+                                <p>Mọi thắc mắc, yêu cầu tra soát hoặc khiếu nại thanh toán xin vui lòng liên hệ:</p>
+                                <p>Email tiếp nhận: <strong>interviewprepmate@gmail.com</strong> | Hotline hỗ trợ: <strong>096 487 10 54</strong>. Thời gian tiếp nhận và xử lý tra soát từ 08:30 đến 18:00 (Thứ Hai đến Thứ Bảy hàng tuần).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <!-- Global Shared Footer -->
+    <app-footer></app-footer>
+
+    <!-- Scripts -->
+    <script src="../../shared/js/main.js?v=30"></script>
+    <script src="../../features/auth/auth.js?v=30"></script>
+    <script src="../../shared/js/components.js?v=30"></script>
+
+    <script>
+        /**
+         * PREPMATE LEGAL CENTER — TWO-TIER CONTROLLER (LEGAL-UI-10)
+         * Manages tab switching, URL routing (?tab= / #), and thematic accordion toggles
+         */
+        const LEGAL_DOC_MAP = {
+            'privacy-policy': { slug: 'privacy', id: 'privacy-policy', tabId: 'tab-privacy-policy' },
+            'terms-of-use': { slug: 'terms', id: 'terms-of-use', tabId: 'tab-terms-of-use' },
+            'payment-policy': { slug: 'payment', id: 'payment-policy', tabId: 'tab-payment-policy' },
+            'privacy': { slug: 'privacy', id: 'privacy-policy', tabId: 'tab-privacy-policy' },
+            'terms': { slug: 'terms', id: 'terms-of-use', tabId: 'tab-terms-of-use' },
+            'payment': { slug: 'payment', id: 'payment-policy', tabId: 'tab-payment-policy' }
+        };
+
+        const LEGAL_DOC_IDS = ['privacy-policy', 'terms-of-use', 'payment-policy'];
+
+        function resolveTargetKey(key) {
+            const mapped = LEGAL_DOC_MAP[key];
+            return mapped ? mapped.id : 'privacy-policy';
+        }
+
+        function switchLegalDoc(targetKey, updateUrl = true, shouldScroll = false) {
+            const targetId = resolveTargetKey(targetKey);
+
+            // 1. Update Tabs & Panels
+            LEGAL_DOC_IDS.forEach(id => {
+                const btn = document.getElementById('tab-' + id);
+                const panel = document.getElementById(id);
+                const isTarget = (id === targetId);
+
+                if (btn) {
+                    btn.classList.toggle('active', isTarget);
+                    btn.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+                    btn.setAttribute('tabindex', isTarget ? '0' : '-1');
+                }
+
+                if (panel) {
+                    panel.classList.toggle('active', isTarget);
+                }
+            });
+
+            // 2. Update URL (Supporting both Query Parameter ?tab= and Hash #)
+            if (updateUrl) {
+                const targetSlug = LEGAL_DOC_MAP[targetId].slug;
+                const newHash = '#' + targetId;
+                if (window.location.hash !== newHash) {
+                    if (window.history && window.history.replaceState) {
+                        const newUrl = window.location.pathname + '?tab=' + targetSlug + newHash;
+                        window.history.replaceState(null, '', newUrl);
+                    } else {
+                        window.location.hash = targetId;
+                    }
+                }
+            }
+
+            // 3. Scroll position orientation
+            const tabNav = document.getElementById('legal-tab-nav');
+            const container = document.getElementById('legal-document-root');
+            const targetEl = tabNav || container;
+            if (targetEl) {
+                const targetTop = Math.max(0, targetEl.getBoundingClientRect().top + window.pageYOffset - 20);
+
+                // Re-orient if explicit shouldScroll (e.g. from footer) OR if user has scrolled past document top
+                if (shouldScroll || window.pageYOffset > (targetTop + 40)) {
+                    window.scrollTo({
+                        top: targetTop,
+                        behavior: shouldScroll ? 'smooth' : 'auto'
+                    });
+                }
+            }
+        }
+
+        // Accordion Trigger Handler
+        function toggleAccordion(triggerBtn) {
+            const item = triggerBtn.closest('.legal-accordion-item');
+            if (!item) return;
+
+            const isOpen = item.classList.contains('is-open');
+            item.classList.toggle('is-open', !isOpen);
+            triggerBtn.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
+        }
+
+        // Expand All / Collapse All for a panel
+        function toggleAllAccordions(panelId) {
+            const panel = document.getElementById(panelId);
+            if (!panel) return;
+
+            const items = Array.from(panel.querySelectorAll('.legal-accordion-item'));
+            const allOpen = items.every(item => item.classList.contains('is-open'));
+            const newState = !allOpen;
+
+            items.forEach(item => {
+                item.classList.toggle('is-open', newState);
+                const btn = item.querySelector('.legal-accordion-trigger');
+                if (btn) btn.setAttribute('aria-expanded', newState ? 'true' : 'false');
+            });
+
+            const toggleBtn = panel.querySelector('.btn-toggle-all-accordions .toggle-all-text');
+            if (toggleBtn) {
+                toggleBtn.textContent = newState ? 'Thu gọn tất cả' : 'Mở tất cả chi tiết';
+            }
+        }
+
+        // Keyboard Arrow Navigation for Tabs
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = LEGAL_DOC_IDS.map(id => document.getElementById('tab-' + id)).filter(Boolean);
+
+            tabButtons.forEach((btn, index) => {
+                btn.addEventListener('keydown', (e) => {
+                    let nextIndex = null;
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                        nextIndex = (index + 1) % tabButtons.length;
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        nextIndex = (index - 1 + tabButtons.length) % tabButtons.length;
+                    } else if (e.key === 'Home') {
+                        nextIndex = 0;
+                    } else if (e.key === 'End') {
+                        nextIndex = tabButtons.length - 1;
+                    }
+
+                    if (nextIndex !== null) {
+                        e.preventDefault();
+                        const nextBtn = tabButtons[nextIndex];
+                        const nextId = LEGAL_DOC_IDS[nextIndex];
+                        switchLegalDoc(nextId, true, false);
+                        nextBtn.focus();
+                    }
+                });
+            });
+
+            // Initial URL Routing (?tab= or #hash)
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryTab = urlParams.get('tab');
+            const hash = (window.location.hash || '').replace('#', '');
+
+            if (queryTab && LEGAL_DOC_MAP[queryTab]) {
+                switchLegalDoc(queryTab, false, false);
+            } else if (hash && LEGAL_DOC_MAP[hash]) {
+                switchLegalDoc(hash, false, false);
+            } else {
+                switchLegalDoc('privacy-policy', false, false);
+            }
+
+            // Global interception of clicks to footer legal hash links
+            document.addEventListener('click', (e) => {
+                const targetLink = e.target.closest('a');
+                if (!targetLink) return;
+
+                const href = targetLink.getAttribute('href') || '';
+                const hashIndex = href.indexOf('#');
+                if (hashIndex !== -1) {
+                    const targetHash = href.substring(hashIndex + 1);
+                    if (LEGAL_DOC_MAP[targetHash]) {
+                        e.preventDefault();
+                        switchLegalDoc(targetHash, true, true);
+                    }
+                }
+            });
+        });
+
+        // Listen for external back/forward hash changes
+        window.addEventListener('hashchange', () => {
+            const currentHash = (window.location.hash || '').replace('#', '');
+            if (LEGAL_DOC_MAP[currentHash]) {
+                switchLegalDoc(currentHash, false, true);
+            }
+        });
+    </script>
+</body>
+</html>

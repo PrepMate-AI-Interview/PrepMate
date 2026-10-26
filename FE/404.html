@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Không tìm thấy trang (404)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./shared/css/tokens.css?v=27">
+    <link rel="stylesheet" href="./shared/css/base.css?v=27">
+    <link rel="stylesheet" href="./shared/css/layout.css?v=27">
+    <link rel="stylesheet" href="./shared/css/components.css?v=27">
+    <link rel="stylesheet" href="./404.css?v=27">
+</head>
+
+<body>
+    <!-- Canonical Public Header -->
+    <app-header></app-header>
+
+    <main class="error-page-container">
+        <div class="error-card">
+            <div class="error-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span>Mã lỗi 404</span>
+            </div>
+            
+            <h1 class="error-title">
+                Trang bạn tìm không tồn tại hoặc đã được di chuyển.
+            </h1>
+            
+            <p class="error-desc">
+                Đường dẫn liên kết có thể đã cũ, bị thay đổi trong đợt cập nhật hệ thống, hoặc địa chỉ URL bạn nhập vào thanh địa chỉ chưa hoàn toàn chính xác.
+            </p>
+
+            <div class="error-actions">
+                <a href="index.html" class="btn btn-primary">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span>Về trang chủ</span>
+                </a>
+                <a href="features/auth/auth.html" class="btn btn-outline">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                    <span>Đăng nhập</span>
+                </a>
+                <a href="features/help/help.html" class="btn btn-outline">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span>Trợ giúp</span>
+                </a>
+            </div>
+
+            <div class="error-links-box">
+                <span>Chuyển nhanh tới:</span>
+                <a href="features/interview/interview-info.html">Phỏng vấn mới</a> •
+                <a href="features/qbank/qbank.html">Ngân hàng câu hỏi</a> •
+                <a href="features/jobs/jobs.html">Khám phá việc làm</a> •
+                <a href="features/payment/pricing.html">Bảng giá PRO</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Canonical Public Footer -->
+    <app-footer></app-footer>
+
+    <script src="./shared/js/main.js?v=26"></script>
+    <script src="./features/auth/auth.js?v=26"></script>
+    <script src="./shared/js/components.js?v=26"></script>
+</body>
+
+</html>

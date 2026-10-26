@@ -1,0 +1,457 @@
+:root {
+    --prep-bg: var(--pm-bg);
+    --prep-border: var(--pm-hairline, #BDC1C6);
+    --prep-text-primary: var(--pm-text-primary, #0f172a);
+    --prep-text-secondary: var(--pm-text-secondary, #475569);
+    --prep-text-muted: var(--pm-text-muted, #64748b);
+    --prep-accent-dark: var(--pm-primary, #1d4ed8);
+    --prep-shadow-sm: var(--pm-shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.04));
+    --prep-shadow-md: var(--pm-shadow-md, 0 4px 12px rgba(15, 23, 42, 0.06));
+}
+
+body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.pricing-wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+}
+
+/* ── HEADER (Short, focused, no marketing hero) ── */
+.pricing-header-center {
+    text-align: center;
+    margin-bottom: 44px;
+}
+
+.pricing-header-center h1 {
+    font-size: clamp(28px, 3.2vw, 40px);
+    font-weight: 850;
+    color: var(--mobbin-ink, #141414);
+    margin: 0 0 12px;
+    letter-spacing: -0.8px;
+}
+
+.pricing-header-center p {
+    font-size: 15.5px;
+    color: var(--prep-text-secondary);
+    margin: 0 auto;
+    max-width: 580px;
+    line-height: 1.6;
+}
+
+/* ── 2-COLUMN PRICING GRID (TRẢI NGHIỆM vs PRO) ── */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1000px; gap: 28px;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+@media (max-width: 768px) {
+    .pricing-wrap {
+        padding: 36px 16px 60px;
+    }
+    .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 440px;
+        gap: 20px;
+    }
+}
+
+/* ── PLAN CARD ── */
+.plan-card {
+    background: #ffffff;
+    border: 1px solid var(--prep-border);
+    border-radius: var(--pm-radius-card, 12px);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    transition: all 0.2s ease;
+}
+
+.plan-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+/* Featured Plan Card (PRO) */
+.plan-card.featured {
+    border: 1.5px solid var(--mobbin-ink, #141414);
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.plan-card.featured:hover {
+    border-color: var(--mobbin-ink, #141414);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+}
+
+.plan-card-top {
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-header-tag {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--prep-text-muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.plan-badge-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: #059669;
+    background: #ecfdf5;
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid #a7f3d0;
+}
+
+.badge-popular {
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    background: var(--mobbin-accent, #0066ff);
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.plan-headline {
+    font-size: 22px;
+    font-weight: 850;
+    color: var(--mobbin-ink, #141414);
+    margin: 0 0 8px;
+    letter-spacing: -0.4px;
+}
+
+.plan-subtitle {
+    font-size: 13.5px;
+    color: var(--prep-text-secondary);
+    line-height: 1.5;
+    margin: 0 0 20px;
+    min-height: 42px;
+}
+
+/* Price block */
+.plan-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 24px;
+}
+
+.plan-price-current {
+    font-size: 34px;
+    font-weight: 850;
+    color: var(--mobbin-ink, #141414);
+    letter-spacing: -0.8px;
+}
+
+.plan-price-period {
+    font-size: 13.5px;
+    color: var(--prep-text-muted);
+    font-weight: 500;
+}
+
+/* CTA Buttons */
+.btn-plan-action {
+    width: 100%;
+    padding: 13px 20px;
+    border-radius: var(--pm-radius-btn, 8px);
+    font-weight: 700;
+    font-size: 14.5px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+}
+
+/* Outline / Free Button */
+.btn-plan-action.outline {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: var(--mobbin-ink, #141414);
+}
+
+.btn-plan-action.outline:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    transform: translateY(-1px);
+}
+
+/* Primary PRO Button */
+.btn-plan-action.primary-pro {
+    background: var(--mobbin-ink, #141414);
+    color: #ffffff;
+    border: 1px solid var(--mobbin-ink, #141414);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.btn-plan-action.primary-pro:hover {
+    background: #262626;
+    border-color: #262626;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    color: #ffffff;
+}
+
+/* Disabled State */
+.btn-plan-action.current {
+    background: #f1f5f9;
+    border: 1px solid var(--prep-border);
+    color: var(--prep-text-muted);
+    cursor: default;
+}
+
+/* Feature Checklist */
+.plan-feature-list {
+    list-style: none;
+    padding: 24px 0 0;
+    margin: 28px 0 0;
+    border-top: 1px solid var(--prep-border);
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    font-size: 13.5px;
+    flex: 1;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.45;
+    color: var(--prep-text-secondary);
+}
+
+.feature-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.feature-icon.check-free {
+    color: #94a3b8;
+}
+
+.feature-icon.check-pro {
+    color: #059669;
+    font-weight: 800;
+}
+
+.feature-text strong {
+    color: var(--prep-text-primary);
+}
+
+/* ==========================================================================
+   GLOBAL DARK THEME SUPPORT FOR STANDALONE PRICING PAGE (MODERN DARK CANONICAL)
+   ========================================================================== */
+html[data-theme="dark"] .pricing-page,
+body.dark-mode .pricing-page,
+html[data-theme="dark"] .pricing-main {
+    background-color: var(--pm-bg, #202124);
+    color: var(--pm-text-primary, #E8EAED);
+}
+
+html[data-theme="dark"] .pricing-hero {
+    background-color: var(--pm-bg, #202124);
+}
+
+html[data-theme="dark"] .pricing-hero-title {
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .pricing-hero-lead {
+    color: #9AA0A6;
+}
+
+html[data-theme="dark"] .pricing-card {
+    background: #292A2D;
+    border-color: #3C4043;
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .pricing-card.featured {
+    background: #252629;
+    border-color: #2563eb;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .pricing-card-name {
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .pricing-card-desc {
+    color: #9AA0A6;
+}
+
+html[data-theme="dark"] .pricing-price-num {
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .pricing-price-period {
+    color: #9AA0A6;
+}
+
+html[data-theme="dark"] .pricing-features-list li {
+    color: #BDC1C6;
+}
+
+html[data-theme="dark"] .pricing-btn-secondary {
+    background: #292A2D;
+    border-color: #3C4043;
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .pricing-btn-secondary:hover {
+    background: #3C4043;
+    border-color: #5F6368;
+}
+
+html[data-theme="dark"] .pricing-table-section,
+html[data-theme="dark"] .pricing-faq-section {
+    background: var(--pm-bg, #202124);
+}
+
+html[data-theme="dark"] .pricing-table {
+    background: #292A2D;
+    border-color: #3C4043;
+}
+
+html[data-theme="dark"] .pricing-table th {
+    background: #202124;
+    border-color: #3C4043;
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .pricing-table td {
+    border-color: #3C4043;
+    color: #BDC1C6;
+}
+
+html[data-theme="dark"] .pricing-table tr:hover td {
+    background: #252629;
+}
+
+html[data-theme="dark"] .pricing-faq-item {
+    background: #292A2D;
+    border-color: #3C4043;
+}
+
+html[data-theme="dark"] .pricing-faq-q {
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .pricing-faq-a {
+    color: #9AA0A6;
+}
+
+/* Additional Plan Card Dark Theme Rules */
+html[data-theme="dark"] .pricing-wrap {
+    background-color: var(--pm-bg, #202124);
+}
+
+html[data-theme="dark"] .pricing-header-center h1 {
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .pricing-header-center p {
+    color: #9AA0A6;
+}
+
+html[data-theme="dark"] .plan-card {
+    background: #292A2D;
+    border-color: #3C4043;
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .plan-card.featured {
+    background: #252629;
+    border-color: #2563eb;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .plan-headline {
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .plan-subtitle {
+    color: #9AA0A6;
+}
+
+html[data-theme="dark"] .plan-price-current {
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .plan-price-period {
+    color: #9AA0A6;
+}
+
+html[data-theme="dark"] .feature-text {
+    color: #BDC1C6;
+}
+
+html[data-theme="dark"] .btn-plan-action.outline {
+    background: #292A2D;
+    border-color: #3C4043;
+    color: #E8EAED;
+}
+
+html[data-theme="dark"] .btn-plan-action.outline:hover {
+    background: #3C4043;
+    border-color: #5F6368;
+}
+/* Modern Dark Support for Primary PRO CTA (STEP 1D-R19) */
+html[data-theme="dark"] .btn-plan-action.primary-pro,
+body.dark-mode .btn-plan-action.primary-pro {
+    background: #2563eb !important;
+    border-color: #38bdf8 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
+}
+
+html[data-theme="dark"] .btn-plan-action.primary-pro:hover,
+body.dark-mode .btn-plan-action.primary-pro:hover {
+    background: #1d4ed8 !important;
+    border-color: #60a5fa !important;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5) !important;
+}
+
+
+/* ==========================================================================
+   PRICING BADGES DARK MODE OVERRIDES (R21)
+   ========================================================================== */
+html[data-theme="dark"] #badge-current-free,
+html[data-theme="dark"] .plan-badge-tag,
+body.dark-mode #badge-current-free,
+body.dark-mode .plan-badge-tag {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #81c995 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+html[data-theme="dark"] .badge-popular,
+body.dark-mode .badge-popular {
+  background: rgba(37, 99, 235, 0.18) !important;
+  color: #8ab4f8 !important;
+  border: 1px solid rgba(37, 99, 235, 0.3) !important;
+}

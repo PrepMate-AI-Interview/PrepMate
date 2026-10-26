@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrepMate Design System — Mobbin Analysis Specification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/css/tokens.css?v=27">
+  <link rel="stylesheet" href="../../shared/css/base.css?v=27">
+  <link rel="stylesheet" href="../../shared/css/layout.css?v=27">
+  <link rel="stylesheet" href="../../shared/css/components.css?v=27">
+  <link rel="stylesheet" href="./showcase.css?v=27">
+</head>
+<body>
+
+  <!-- FLOATING STADIUM NAV BAR -->
+  <header class="showcase-header-dock">
+    <nav class="showcase-floating-nav">
+      <a href="../../index.html" class="showcase-brand">
+        <div class="brand-squircle">P</div>
+        <span>PrepMate Design System</span>
+      </a>
+      <div class="showcase-nav-links">
+        <a href="#palette">Bảng màu</a>
+        <a href="#typography">Typography</a>
+        <a href="#components">Components</a>
+        <a href="#geometry">Hình khối</a>
+      </div>
+      <div class="showcase-cta-group">
+        <a href="../../index.html" class="btn-outline-pill" style="padding: 6px 14px; font-size: 13px;">Trang chủ</a>
+        <a href="../dashboard/dashboard.html" class="btn-primary-pill" style="padding: 6px 14px; font-size: 13px;">Dashboard</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="showcase-container">
+
+    <!-- HERO SECTION -->
+    <section class="showcase-hero">
+      <div class="showcase-tag">Mobbin Analysis Specification</div>
+      <h1>Sự tinh tế của không gian âm.</h1>
+      <p>
+        Hệ thống thiết kế monochrome gallery-white: Nền trắng tinh khiết, cấu trúc phân lớp bằng thang sắc độ xám trung tính, tương tác stadium pill và typography Saans/Inter đa trọng số.
+      </p>
+    </section>
+
+    <!-- 1. BRAND PALETTE MATRIX -->
+    <section class="showcase-section" id="palette">
+      <div class="section-head">
+        <h2>1. Thang sắc tố & Bảng màu (Monochrome Ladder)</h2>
+        <p>Bảng màu hoàn toàn không màu ngoại trừ một điểm nhấn Electric Blue dành riêng cho tín hiệu thương mại.</p>
+      </div>
+
+      <div class="palette-grid">
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #141414;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Ink Black (Primary)</div>
+            <div class="swatch-code">#141414</div>
+            <div class="swatch-desc">Nút chính, tiêu đề, footer</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #262626;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Ink Soft</div>
+            <div class="swatch-code">#262626</div>
+            <div class="swatch-desc">Tiêu đề phụ, nhãn tương tác</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #707070;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Text Muted</div>
+            <div class="swatch-code">#707070</div>
+            <div class="swatch-desc">Văn bản mô tả, metadata</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #adadad;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Text Faint</div>
+            <div class="swatch-code">#adadad</div>
+            <div class="swatch-desc">Placeholder, ghi chú mờ</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #ffffff; border-bottom: 1px solid #e0e0e0;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Canvas</div>
+            <div class="swatch-code">#ffffff</div>
+            <div class="swatch-desc">Nền trang & thẻ nội dung</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #f3f3f3;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Canvas Soft</div>
+            <div class="swatch-code">#f3f3f3</div>
+            <div class="swatch-desc">Thanh nav nổi, thẻ đặc biệt</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #f0f0f0;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Field / Hairline Soft</div>
+            <div class="swatch-code">#f0f0f0</div>
+            <div class="swatch-desc">Nền ô nhập liệu, viền mờ</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #e0e0e0;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Hairline Control</div>
+            <div class="swatch-code">#e0e0e0</div>
+            <div class="swatch-desc">Viền điều khiển 16%</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #0066ff;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Electric Blue (Accent)</div>
+            <div class="swatch-code">#0066ff</div>
+            <div class="swatch-desc">Tín hiệu thương mại / PRO</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. TYPOGRAPHY SPECIMEN TABLE -->
+    <section class="showcase-section" id="typography">
+      <div class="section-head">
+        <h2>2. Thang đo Typography (Saans / Inter Weights)</h2>
+        <p>Sự tương phản trọng số: 652 cho tiêu đề, 456 cho văn bản chuẩn, 300 cho phụ đề lead.</p>
+      </div>
+
+      <table class="type-specimen-table">
+        <thead>
+          <tr>
+            <th>Cấp bậc (Token)</th>
+            <th>Cỡ chữ / Line Height</th>
+            <th>Trọng số</th>
+            <th>Mẫu hiển thị</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>display</code></td>
+            <td>80px / 1.0</td>
+            <td>652 (Display Bold)</td>
+            <td style="font-size: 40px; font-weight: 652; line-height: 1;">PrepMate AI.</td>
+          </tr>
+          <tr>
+            <td><code>heading-1</code></td>
+            <td>56px / 1.0</td>
+            <td>652 (Page Hero)</td>
+            <td style="font-size: 32px; font-weight: 652; line-height: 1;">Phỏng vấn chuyên sâu.</td>
+          </tr>
+          <tr>
+            <td><code>heading-2</code></td>
+            <td>44px / 1.13</td>
+            <td>652 (Section Head)</td>
+            <td style="font-size: 26px; font-weight: 652; line-height: 1.13;">Chuẩn hóa mô hình STAR.</td>
+          </tr>
+          <tr>
+            <td><code>heading-3</code></td>
+            <td>32px / 1.13</td>
+            <td>652 (Card Headline)</td>
+            <td style="font-size: 20px; font-weight: 652; line-height: 1.13;">Phân tích phản xạ thời gian thực.</td>
+          </tr>
+          <tr>
+            <td><code>body-lg</code></td>
+            <td>20px / 1.38</td>
+            <td>300 (Airy Lead)</td>
+            <td style="font-size: 18px; font-weight: 300; line-height: 1.38; color: var(--mobbin-text-muted);">Sự chuẩn bị kỹ lưỡng là nền tảng của tự tin.</td>
+          </tr>
+          <tr>
+            <td><code>body</code></td>
+            <td>16px / 1.38</td>
+            <td>456 (Book Text)</td>
+            <td style="font-size: 15px; font-weight: 456; line-height: 1.38;">Đánh giá dựa trên bằng chứng dữ liệu thực tế thu thập từ lượt phỏng vấn.</td>
+          </tr>
+          <tr>
+            <td><code>link</code></td>
+            <td>16px / 1.38</td>
+            <td>600 (Semibold Pill)</td>
+            <td style="font-size: 15px; font-weight: 600; line-height: 1.38;">Bắt đầu phỏng vấn ↗</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 3. COMPONENT SHOWCASE -->
+    <section class="showcase-section" id="components">
+      <div class="section-head">
+        <h2>3. Hệ thống Thành phần (Component Primitives)</h2>
+        <p>Tất cả phần tử tương tác đều là Stadium Pill (9999px), các khối chứa là Card 24px.</p>
+      </div>
+
+      <div class="component-showcase-grid">
+        <!-- Button System -->
+        <div class="specimen-card">
+          <h3>Hệ thống Nút bấm Stadium Pill</h3>
+          <p class="card-sub">Ba biến thể nút tiêu chuẩn: Primary (Ink), Outline (Hairline), Soft Pill (Canvas-Soft).</p>
+          <div class="specimen-demo-row">
+            <button class="btn-primary-pill">Bắt đầu ngay</button>
+            <button class="btn-outline-pill">Đăng nhập tài khoản</button>
+            <button class="btn-soft-pill">Khám phá ↗</button>
+          </div>
+        </div>
+
+        <!-- Segmented Controls -->
+        <div class="specimen-card">
+          <h3>Segmented Control (Thanh gạt phân tầng)</h3>
+          <p class="card-sub">Điều hướng trạng thái không tải lại trang, nổi nhẹ trên nền canvas-soft.</p>
+          <div class="specimen-demo-row">
+            <div class="segmented-control-track">
+              <button class="segmented-control-btn active">Hàng tháng</button>
+              <button class="segmented-control-btn">Hàng năm (-20%)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- App Icon Squircles -->
+        <div class="specimen-card">
+          <h3>Icon Squircle 30% Radius</h3>
+          <p class="card-sub">Giao diện squircle chuẩn phong cách iOS cho logo công ty và nhận diện persona.</p>
+          <div class="specimen-demo-row">
+            <div class="squircle-tile">V</div>
+            <div class="squircle-tile">F</div>
+            <div class="squircle-tile">M</div>
+            <div class="squircle-tile">T</div>
+          </div>
+        </div>
+
+        <!-- Inputs and Fields -->
+        <div class="specimen-card">
+          <h3>Trường nhập liệu (Field 16px)</h3>
+          <p class="card-sub">Nền xám 8% không cần viền ở trạng thái nghỉ, viền hairline ink khi focus.</p>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="text" class="pm-input" placeholder="Nhập từ khóa tìm kiếm vị trí..." style="background: var(--mobbin-field); border: 1px solid transparent; border-radius: 9999px; padding: 10px 16px;">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. GEOMETRY & SHAPES -->
+    <section class="showcase-section" id="geometry">
+      <div class="section-head">
+        <h2>4. Ngôn ngữ Hình học (Geometric Language)</h2>
+        <p>Quy tắc bo góc: 0px (Toàn màn hình), 16px (Inputs/Pills nhỏ), 24px (Thẻ nội dung), 9999px (Tất cả nút).</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div style="background: var(--mobbin-canvas-soft); padding: 24px; border-radius: 16px; border: 1px solid var(--mobbin-hairline-soft);">
+          <strong style="display:block; font-size: 14px; margin-bottom: 4px;">rounded.sm (16px)</strong>
+          <span style="font-size: 13px; color: var(--mobbin-text-muted);">Inputs, ô phân tích STAR, hàng FAQ</span>
+        </div>
+        <div style="background: #ffffff; padding: 24px; border-radius: 24px; border: 1px solid var(--mobbin-hairline);">
+          <strong style="display:block; font-size: 14px; margin-bottom: 4px;">rounded.md (24px)</strong>
+          <span style="font-size: 13px; color: var(--mobbin-text-muted);">Thẻ bảng giá, thẻ JD việc làm, dock hero</span>
+        </div>
+        <div style="background: var(--mobbin-canvas-soft); padding: 24px; border-radius: 9999px; border: 1px solid var(--mobbin-hairline-soft); text-align: center;">
+          <strong style="display:block; font-size: 14px; margin-bottom: 4px;">rounded.full (9999px)</strong>
+          <span style="font-size: 13px; color: var(--mobbin-text-muted);">Tất cả các nút, thanh nav, tag</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- INVERTED POLARITY FOOTER -->
+  <footer class="showcase-footer">
+    <div class="showcase-footer-inner">
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <div class="brand-squircle" style="background: #ffffff; color: #141414;">P</div>
+          <span style="font-size: 18px; font-weight: 652;">PrepMate Design System</span>
+        </div>
+        <p class="footer-copy">Hệ sinh thái chuẩn bị phỏng vấn thông minh.</p>
+      </div>
+      <div style="display: flex; gap: 24px; font-size: 13px;">
+        <a href="../../index.html" style="color: #ffffff; text-decoration: none;">Trang chủ</a>
+        <a href="../dashboard/dashboard.html" style="color: #ffffff; text-decoration: none;">Dashboard</a>
+        <a href="../interview/interview-info.html" style="color: #ffffff; text-decoration: none;">Phỏng vấn AI</a>
+        <a href="../qbank/qbank.html" style="color: #ffffff; text-decoration: none;">Ngân hàng câu hỏi</a>
+        <a href="../jobs/jobs.html" style="color: #ffffff; text-decoration: none;">Việc làm</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/js/components.js"></script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — Bảng giá & Gói dịch vụ</title>
+    <meta name="description" content="Lựa chọn gói luyện tập phỏng vấn AI phù hợp với nhu cầu phát triển sự nghiệp của bạn.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Canonical Design Tokens & System Stylesheets -->
+    <link rel="stylesheet" href="../../shared/css/tokens.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/base.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/layout.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/components.css?v=27">
+    <link rel="stylesheet" href="../../shared/css/style.css?v=27">
+    <link rel="stylesheet" href="./pricing.css?v=27">
+</head>
+<body class="light-mode">
+    <!-- Top Global Header -->
+    <app-header></app-header>
+
+    <!-- MAIN CONTENT -->
+    <main class="pricing-wrap">
+        <!-- Header: Short, focused, no marketing hero -->
+        <div class="pricing-header-center">
+            <h1>Bảng giá dịch vụ</h1>
+            <p>Chọn gói trải nghiệm miễn phí để làm quen với AI phỏng vấn hoặc nâng cấp PrepMate PRO để mở khóa toàn bộ tính năng cao cấp không giới hạn.</p>
+        </div>
+
+        <!-- 2-Column Pricing Cards (Trải Nghiệm vs PRO) -->
+        <div class="pricing-grid">
+            <!-- 1. GÓI TRẢI NGHIỆM (MIỄN PHÍ) -->
+            <div class="plan-card">
+                <div class="plan-card-top">
+                    <div class="plan-header-tag">
+                        <span>Gói cơ bản</span>
+                        <span id="badge-current-free" class="plan-badge-tag">Miễn phí</span>
+                    </div>
+                    <h2 class="plan-headline">Gói Trải Nghiệm</h2>
+                    <p class="plan-subtitle">Làm quen với AI phỏng vấn, thử nghiệm câu hỏi cơ bản và kiểm tra không gian thiết bị.</p>
+                    <div class="plan-price-row">
+                        <span class="plan-price-current">0đ</span>
+                        <span class="plan-price-period">/ vĩnh viễn</span>
+                    </div>
+                    <div id="action-free-container">
+                        <a href="../auth/auth.html#register" class="btn-plan-action outline">
+                            <span>Bắt đầu miễn phí</span>
+                        </a>
+                    </div>
+                </div>
+                <ul class="plan-feature-list">
+                    <li class="feature-item">
+                        <span class="feature-icon check-free">✓</span>
+                        <span class="feature-text"><strong>3 lượt phỏng vấn</strong> AI mô phỏng mỗi tháng</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon check-free">✓</span>
+                        <span class="feature-text">Trải nghiệm đầy đủ <strong>phòng phỏng vấn 1-1</strong> (Giọng nói & Tương tác)</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon check-free">✓</span>
+                        <span class="feature-text">Báo cáo <strong>đánh giá STAR</strong> & chấm điểm năng lực sau buổi thi</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon check-free">✓</span>
+                        <span class="feature-text">Kiểm tra thiết bị <strong>preflight</strong>: camera, mic & không gian phòng</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon check-free">✓</span>
+                        <span class="feature-text">Truy cập ngân hàng <strong>câu hỏi phỏng vấn</strong> theo chuyên ngành</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 2. GÓI HỘI VIÊN PRO (KHUYÊN DÙNG) -->
+            <div class="plan-card featured">
+                <div class="plan-card-top">
+                    <div class="plan-header-tag">
+                        <span style="font-weight: 700; color: var(--mobbin-ink, #141414);">Hội Viên PRO</span>
+                        <span class="badge-popular">KHUYÊN DÙNG</span>
+                    </div>
+                    <h2 class="plan-headline">PrepMate PRO</h2>
+                    <p class="plan-subtitle">Mở khóa toàn bộ trí tuệ nhân tạo thích ứng, giọng nói thời gian thực và kịch bản theo mọi link JD.</p>
+                    <div class="plan-price-row">
+                        <span class="plan-price-current">99.000đ</span>
+                        <span class="plan-price-period">/ tháng</span>
+                    </div>
+                    <div id="action-pro-container">
+                        <a href="payment.html?plan=pro" class="btn-plan-action primary-pro">
+                            <span>Nâng cấp lên PRO &rarr;</span>
+                        </a>
+                    </div>
+                </div>
+                <ul class="plan-feature-list">
+                    <li class="feature-item">
+                        <span class="feature-icon check-pro">✓</span>
+                        <span class="feature-text"><strong>Không giới hạn</strong> số lượt phỏng vấn mô phỏng AI 1-1</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon check-pro">✓</span>
+                        <span class="feature-text">Mở khóa <strong>phân tích & tối ưu CV</strong> chi tiết bằng AI</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon check-pro">✓</span>
+                        <span class="feature-text">Gợi ý <strong>cơ hội việc làm</strong> cá nhân hóa dựa trên hồ sơ & kỹ năng</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon check-pro">✓</span>
+                        <span class="feature-text">Lộ trình <strong>phát triển sự nghiệp</strong> cá nhân hóa theo vị trí mục tiêu</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon check-pro">✓</span>
+                        <span class="feature-text">Đường truyền ưu tiên <strong>(Bypass Rate Limit)</strong>, gọi AI không độ trễ</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon check-pro">✓</span>
+                        <span class="feature-text">Lưu trữ toàn bộ <strong>lịch sử phỏng vấn</strong> & theo dõi tiến độ chi tiết</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Global Public Footer -->
+    <app-footer></app-footer>
+
+    <script src="../../shared/js/main.js?v=27"></script>
+    <script src="../../features/auth/auth.js?v=27"></script>
+    <script src="../../shared/js/components.js?v=27"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const badgeFree = document.getElementById('badge-current-free');
+            const actionFree = document.getElementById('action-free-container');
+            const actionPro = document.getElementById('action-pro-container');
+
+            if (user && user.subscription === 'pro') {
+                if (badgeFree) badgeFree.style.display = 'none';
+                const isScheduled = !!user.scheduledDowngrade;
+                const expiryStr = user.subscriptionExpiry ? new Date(user.subscriptionExpiry).toLocaleDateString('vi-VN') : '';
+
+                if (actionFree) {
+                    if (isScheduled) {
+                        actionFree.innerHTML = `
+                            <div style="font-size: 13px; color: #b45309; background: #fffbeb; border: 1px solid #fde68a; padding: 6px 10px; border-radius: 6px; text-align: center; margin-bottom: 8px; line-height: 1.4;">
+                                <strong>Đã hẹn về Free</strong>${expiryStr ? '<br>Hiệu lực: ' + expiryStr : ''}
+                            </div>
+                            <button type="button" class="btn-plan-action outline" onclick="cancelDowngrade()" style="font-size:13px; padding: 8px 12px; width: 100%;">
+                                <span>Hủy lịch (Giữ gói PRO)</span>
+                            </button>
+                        `;
+                    } else {
+                        actionFree.innerHTML = `
+                            <button type="button" class="btn-plan-action outline" onclick="requestDowngradeToFree()" style="font-size:13px; padding: 8px 12px; width: 100%;">
+                                <span>Hạ về gói Miễn phí (cuối kỳ)</span>
+                            </button>
+                        `;
+                    }
+                }
+                if (actionPro) {
+                    actionPro.innerHTML = `
+                        <button class="btn-plan-action current" disabled style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;cursor:default;">
+                            <span>✓ Gói PRO đang hoạt động</span>
+                        </button>
+                    `;
+                }
+            } else if (user) {
+                // Logged-in non-pro user -> Direct to checkout
+                if (badgeFree) badgeFree.textContent = 'Gói hiện tại';
+                if (actionFree) {
+                    actionFree.innerHTML = `
+                        <a href="../interview/interview-info.html" class="btn-plan-action outline">
+                            <span>Bắt đầu luyện tập</span>
+                        </a>
+                    `;
+                }
+                if (actionPro) {
+                    actionPro.innerHTML = `
+                        <a href="payment.html?plan=pro" class="btn-plan-action primary-pro">
+                            <span>Nâng cấp lên PRO &rarr;</span>
+                        </a>
+                    `;
+                }
+            } else {
+                // Guest -> Direct to registration / auth before checkout
+                if (badgeFree) badgeFree.textContent = 'Miễn phí';
+                if (actionFree) {
+                    actionFree.innerHTML = `
+                        <a href="../auth/auth.html#register" class="btn-plan-action outline">
+                            <span>Bắt đầu miễn phí</span>
+                        </a>
+                    `;
+                }
+                if (actionPro) {
+                    actionPro.innerHTML = `
+                        <a href="../auth/auth.html?redirect=${encodeURIComponent('../payment/payment.html?plan=pro')}" class="btn-plan-action primary-pro">
+                            <span>Nâng cấp lên PRO &rarr;</span>
+                        </a>
+                    `;
+                }
+            }
+        });
+
+        function requestDowngradeToFree() {
+            const user = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            if (!user) return;
+            const expiryStr = user.subscriptionExpiry ? new Date(user.subscriptionExpiry).toLocaleDateString('vi-VN') : 'khi hết chu kỳ hiện tại';
+            const confirmed = confirm(`Bạn có chắc muốn hạ về gói Miễn phí không?\n\n• Quyền lợi PRO vẫn được duy trì đến ${expiryStr}.\n• Sau thời điểm này, tài khoản sẽ chuyển về gói Miễn phí.\n• Hoàn toàn miễn phí, không phát sinh giao dịch nào.`);
+            if (!confirmed) return;
+
+            const token = user.token || (typeof getAuthToken === 'function' ? getAuthToken() : null);
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            fetch(`${API_BASE_URL}/api/payment/downgrade`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ scheduled: true })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message || 'Đã lên lịch chuyển về gói Miễn phí thành công.');
+                user.scheduledDowngrade = true;
+                if (typeof setCurrentUser === 'function') setCurrentUser(user);
+                location.reload();
+            })
+            .catch(err => {
+                alert('Lỗi: ' + (err.message || 'Không thể thực hiện yêu cầu'));
+            });
+        }
+
+        function cancelDowngrade() {
+            const user = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            if (!user) return;
+
+            const token = user.token || (typeof getAuthToken === 'function' ? getAuthToken() : null);
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            fetch(`${API_BASE_URL}/api/payment/cancel-downgrade`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message || 'Đã hủy lịch chuyển gói thành công. Tiếp tục duy trì PRO.');
+                user.scheduledDowngrade = false;
+                if (typeof setCurrentUser === 'function') setCurrentUser(user);
+                location.reload();
+            })
+            .catch(err => {
+                alert('Lỗi: ' + (err.message || 'Không thể thực hiện yêu cầu'));
+            });
+        }
+    </script>
+</body>
+</html>

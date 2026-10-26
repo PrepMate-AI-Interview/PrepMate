@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepMate — CV của tôi & Hồ sơ năng lực</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../shared/css/tokens.css">
+    <link rel="stylesheet" href="../../shared/css/base.css">
+    <link rel="stylesheet" href="../../shared/css/layout.css">
+    <link rel="stylesheet" href="../../shared/css/components.css">
+    <link rel="stylesheet" href="../../shared/css/style.css?v=26">
+    <link rel="stylesheet" href="../../features/dashboard/new-dashboard.css?v=26">
+    <link rel="stylesheet" href="./cv.css?v=26">
+    <script>
+        (function() {
+            var raw = localStorage.getItem('prepmate_current_user') || localStorage.getItem('prepmate_user');
+            var user = null;
+            try { if (raw) user = JSON.parse(raw); } catch (e) {}
+            if (!user || !user.token) {
+                document.documentElement.style.display = 'none';
+                var ret = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+                window.location.replace('../auth/auth.html?redirect=' + ret);
+            }
+        })();
+    </script>
+</head>
+<body class="dashboard-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar sidebar-new" id="main-sidebar">
+        <!-- Rendered by initRoleBasedSidebar() -->
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content main-content-new">
+        <!-- Top Hero Section -->
+        <div class="dashboard-hero" style="margin-bottom: 24px;">
+            <div class="hero-left">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                    <span style="font-size:12px;font-weight:700;color:#1d4ed8;background:#eff6ff;padding:3px 10px;border-radius:100px;border:1px solid #bfdbfe;">Hồ sơ ứng viên</span>
+                    <span style="font-size:12px;font-weight:700;color:#059669;background:#ecfdf5;padding:3px 10px;border-radius:100px;border:1px solid #a7f3d0;">AI Trích xuất kỹ năng</span>
+                </div>
+                <h1 style="font-size:24px;margin-bottom:8px;">CV của tôi & Hồ sơ năng lực</h1>
+                <p style="font-size:14px;color:#475569;margin-bottom:16px;max-width:650px;">
+                    Tải lên CV của bạn để PrepMate AI tự động phân tích kinh nghiệm, bóc tách kỹ năng cốt lõi và điều chỉnh kịch bản phỏng vấn theo đúng thực tế của bạn.
+                </p>
+                <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                    <button onclick="document.getElementById('cv-file-picker').click()" class="btn-start-interview" style="padding:10px 20px;font-size:13.5px;cursor:pointer;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:middle;margin-right:6px;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>Tải lên bản CV
+                    </button>
+                    <input type="file" id="cv-file-picker" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleCvUpload(event)">
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat-item">
+                    <span class="num" id="cv-readiness-num" style="color:#059669;">—</span>
+                    <span class="lbl">Độ sẵn sàng CV</span>
+                </div>
+                <div class="hero-stat-item">
+                    <span class="num" id="cv-skills-num">0</span>
+                    <span class="lbl">Kỹ năng trích xuất</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="cv-grid">
+            <!-- Left Column: CV File & Upload -->
+            <div style="display:flex;flex-direction:column;gap:20px;">
+                <!-- Current CV Card -->
+                <div class="cv-card">
+                    <div class="cv-card-header">
+                        <div class="cv-card-title-group">
+                            <div class="cv-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+                            <div>
+                                <h3 style="margin:0;font-size:16px;">Bản CV đang sử dụng</h3>
+                                <span style="font-size:12px;color:var(--text-secondary);">Được liên kết trực tiếp với các bài phỏng vấn mô phỏng</span>
+                            </div>
+                        </div>
+                        <span style="font-size:11.5px;font-weight:700;color:#059669;background:#ecfdf5;border:1px solid #a7f3d0;padding:3px 10px;border-radius:100px;">Đang hoạt động</span>
+                    </div>
+
+                    <div class="cv-doc-preview">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <div>
+                                <strong id="cv-name-display" style="font-size:14.5px;color:var(--text-primary);display:block;">Hoang_Hung_Frontend_Engineer_CV.pdf</strong>
+                                <span id="cv-meta-display" style="font-size:12px;color:var(--text-muted);">PDF • 1.4 MB • Cập nhật 2 ngày trước</span>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button onclick="alert('Đang tải tệp CV về máy tính...')" class="btn btn-outline btn-sm" style="font-size:12px;padding:6px 12px;">Tải về</button>
+                        </div>
+                    </div>
+
+                    <!-- Dropzone -->
+                    <div class="cv-upload-drop" id="cv-upload-drop" onclick="document.getElementById('cv-file-picker').click()">
+                        <div style="margin-bottom:8px;color:#1d4ed8;"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                        <strong style="font-size:14.5px;color:var(--text-primary);display:block;margin-bottom:4px;">Kéo thả tệp CV mới vào đây</strong>
+                        <p style="margin:0;font-size:12.5px;color:var(--text-secondary);">Hỗ trợ PDF, DOCX, DOC (Tối đa 10MB)</p>
+                    </div>
+                </div>
+
+                <!-- Readiness Meter -->
+                <div class="readiness-meter">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            <span style="font-size:13.5px;font-weight:700;color:var(--pm-text-primary);">Độ hoàn thiện & Sức mạnh CV</span>
+                        </div>
+                        <span style="font-size:16px;font-weight:800;color:#059669;background:#ecfdf5;border:1px solid #a7f3d0;padding:2px 10px;border-radius:100px;">92 / 100</span>
+                    </div>
+                    <div class="meter-track" style="height:8px;background:var(--pm-surface-subtle, #f1f5f9);border-radius:100px;overflow:hidden;margin-bottom:12px;border:1px solid var(--pm-border);">
+                        <div class="meter-fill" style="width:92%;height:100%;background:linear-gradient(90deg,#059669,#10b981);border-radius:100px;"></div>
+                    </div>
+                    <p style="font-size:12.5px;color:var(--pm-text-secondary);margin:0;line-height:1.5;">
+                        CV của bạn có thông tin định lượng rõ ràng và từ khóa chuyên môn phong phú, giúp AI mô phỏng phỏng vấn đào sâu sát với năng lực thực chiến.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Column: AI Parsed Skills & Questions -->
+            <div style="display:flex;flex-direction:column;gap:20px;">
+                <!-- AI Extracted Skills -->
+                <div class="cv-card">
+                    <div class="cv-card-header">
+                        <div class="cv-card-title-group">
+                            <div class="cv-icon-box" style="background:#f5f3ff;border-color:#ddd6fe;color:#7c3aed;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                            <div>
+                                <h3 style="margin:0;font-size:16px;">Kỹ năng AI đã nhận diện</h3>
+                                <span style="font-size:12px;color:var(--text-secondary);">Bóc tách tự động từ nội dung CV</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:14px;">
+                        <span style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:8px;">Chuyên môn cốt lõi</span>
+                        <div id="tech-skills-container">
+                            <span class="skill-tag-pill">Lập kế hoạch chiến lược</span>
+                            <span class="skill-tag-pill">Phân tích dữ liệu & Báo cáo</span>
+                            <span class="skill-tag-pill">Quản trị dự án</span>
+                            <span class="skill-tag-pill">Nghiên cứu thị trường</span>
+                            <span class="skill-tag-pill">Giải quyết vấn đề phức tạp</span>
+                            <span class="skill-tag-pill">Tối ưu quy trình</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:14px;">
+                        <span style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:8px;">Công cụ & Hệ thống</span>
+                        <div>
+                            <span class="skill-tag-pill tool">Excel / Power BI</span>
+                            <span class="skill-tag-pill tool">CRM / ERP</span>
+                            <span class="skill-tag-pill tool">Quản trị công việc (Jira/Trello)</span>
+                            <span class="skill-tag-pill tool">Bộ công cụ chuyên ngành</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:8px;">Kỹ năng mềm & Phương pháp</span>
+                        <div>
+                            <span class="skill-tag-pill soft">Mô hình STAR</span>
+                            <span class="skill-tag-pill soft">Làm việc nhóm & Đàm phán</span>
+                            <span class="skill-tag-pill soft">Thuyết trình & Giao tiếp</span>
+                            <span class="skill-tag-pill soft">Tư duy phản biện</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suggested Interview Questions from CV -->
+                <div class="cv-card">
+                    <div class="cv-card-header">
+                        <div class="cv-card-title-group">
+                            <div class="cv-icon-box" style="background:#ecfdf5;border-color:#a7f3d0;color:#059669;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+                            <div>
+                                <h3 style="margin:0;font-size:16px;">Câu hỏi AI dự đoán từ CV của bạn</h3>
+                                <span style="font-size:12px;color:var(--text-secondary);">Nhà tuyển dụng có khả năng cao sẽ hỏi các câu này</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div style="background:#f8fafc;border:1px solid var(--border-color);border-radius:10px;padding:12px 14px;">
+                            <strong style="font-size:13px;color:var(--text-primary);display:block;margin-bottom:4px;">1. Năng lực Triển khai & Đóng góp Thực tế</strong>
+                            <p style="font-size:12px;color:var(--text-secondary);margin:0;">Trong CV bạn có nêu các dự án chủ chốt. Hãy chia sẻ về một thử thách lớn nhất và cách bạn cùng đội ngũ vượt qua?</p>
+                        </div>
+                        <div style="background:#f8fafc;border:1px solid var(--border-color);border-radius:10px;padding:12px 14px;">
+                            <strong style="font-size:13px;color:var(--text-primary);display:block;margin-bottom:4px;">2. Xử lý Tình huống & Ra Quyết định</strong>
+                            <p style="font-size:12px;color:var(--text-secondary);margin:0;">Khi đối diện với các yêu cầu hoặc ưu tiên thay đổi từ cấp trên/đối tác, bạn đã cân đối nguồn lực và đạt mục tiêu như thế nào?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary CV -> Interview Bridge CTA -->
+                <div class="cv-card" style="background:linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);border:1.5px solid #bfdbfe;padding:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:#2563eb;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <h3 style="margin:0;font-size:16px;color:#1e40af;font-weight:700;">Sẵn sàng phỏng vấn thực chiến với hồ sơ này?</h3>
+                        </div>
+                        <p style="margin:0;font-size:13px;color:#475569;">
+                            Hệ thống sẽ nạp kinh nghiệm và bộ kỹ năng đã bóc tách từ CV của bạn vào phòng phỏng vấn mô phỏng.
+                        </p>
+                    </div>
+                    <button id="btn-practice-cv" onclick="startInterviewFromCv()" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;font-weight:700;padding:10px 22px;border-radius:10px;cursor:pointer;font-size:14px;">
+                        Luyện tập phỏng vấn theo CV này
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <app-workspace-footer></app-workspace-footer>
+    </main>
+
+    <script src="../../shared/js/main.js?v=18"></script>
+    <script src="../../shared/js/components.js?v=20"></script>
+    <script src="../../features/auth/auth.js?v=18"></script>
+    <script src="../../features/dashboard/dashboard.js?v=18"></script>
+    <script>
+        async function handleCvUpload(eventOrFile) {
+            const file = (eventOrFile && eventOrFile.target && eventOrFile.target.files)
+                ? eventOrFile.target.files[0]
+                : eventOrFile;
+            if (!file) return;
+
+            const nameEl = document.getElementById('cv-name-display');
+            const metaEl = document.getElementById('cv-meta-display');
+            const rEl = document.getElementById('cv-readiness-num');
+            const sEl = document.getElementById('cv-skills-num');
+
+            if (nameEl) nameEl.innerText = file.name;
+            if (metaEl) metaEl.innerText = `Đang tải lên và phân tích kỹ năng (${(file.size / 1024).toFixed(1)} KB)...`;
+
+            let rawText = '';
+            try {
+                if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                    rawText = await file.text();
+                } else {
+                    rawText = `CV Document: ${file.name} (Tệp đính kèm)`;
+                }
+            } catch (e) {
+                rawText = file.name;
+            }
+
+            const token = (typeof getAuthToken === 'function' ? getAuthToken() : (typeof getCurrentUser === 'function' ? getCurrentUser()?.token : null)) || localStorage.getItem('prepmate_auth_token') || sessionStorage.getItem('prepmate_auth_token');
+            if (token) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/api/cv`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            fileName: file.name,
+                            fileSize: file.size,
+                            fileType: file.name.split('.').pop() || 'pdf',
+                            rawText: rawText || file.name
+                        })
+                    });
+                    if (res.ok) {
+                        const cvData = await res.json();
+                        if (metaEl) metaEl.innerText = `${(cvData.fileType || 'PDF').toUpperCase()} • ${(file.size / 1024).toFixed(1)} KB • Đã lưu máy chủ`;
+                        if (rEl) rEl.innerText = (cvData.readinessScore || 90) + '%';
+                        if (sEl) sEl.innerText = (cvData.extractedSkills?.length || 10).toString();
+                        localStorage.setItem('prepmate_uploaded_cv_name', file.name);
+                        showToast('Đã tải lên và lưu trữ CV trên máy chủ thành công!', 'success');
+                        return;
+                    }
+                } catch (err) {
+                    console.warn('[CV] Server upload error:', err);
+                }
+            }
+
+            // Fallback
+            if (metaEl) metaEl.innerText = `Bản lưu tạm • ${(file.size / 1024).toFixed(1)} KB`;
+            if (rEl) rEl.innerText = '90%';
+            if (sEl) sEl.innerText = '10';
+            localStorage.setItem('prepmate_uploaded_cv_name', file.name);
+            showToast('Đã tải lên CV!', 'success');
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const token = (typeof getAuthToken === 'function' ? getAuthToken() : (typeof getCurrentUser === 'function' ? getCurrentUser()?.token : null)) || localStorage.getItem('prepmate_auth_token') || sessionStorage.getItem('prepmate_auth_token');
+            const rEl = document.getElementById('cv-readiness-num');
+            const sEl = document.getElementById('cv-skills-num');
+            const nameEl = document.getElementById('cv-name-display');
+            const metaEl = document.getElementById('cv-meta-display');
+
+            if (token) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/api/cv`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        const cv = await res.json();
+                        if (cv && cv.fileName) {
+                            if (nameEl) nameEl.innerText = cv.fileName;
+                            if (metaEl) metaEl.innerText = `${(cv.fileType || 'PDF').toUpperCase()} • ${(cv.fileSize / 1024).toFixed(1)} KB • Tải lên: ${new Date(cv.uploadedAt).toLocaleDateString('vi-VN')}`;
+                            if (rEl) rEl.innerText = (cv.readinessScore || 90) + '%';
+                            if (sEl) sEl.innerText = (cv.extractedSkills?.length || 12).toString();
+                            localStorage.setItem('prepmate_uploaded_cv_name', cv.fileName);
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[CV] Failed to load server CV:', e);
+                }
+            }
+
+            // Local cache fallback
+            const savedName = localStorage.getItem('prepmate_uploaded_cv_name');
+            if (savedName) {
+                if (nameEl) nameEl.innerText = savedName;
+                if (rEl) rEl.innerText = '90%';
+                if (sEl) sEl.innerText = '10';
+            } else {
+                if (rEl) rEl.innerText = '—';
+                if (sEl) sEl.innerText = '0';
+            }
+        });
+
+        function startInterviewFromCv() {
+            const cvName = document.getElementById('cv-name-display')?.innerText || localStorage.getItem('prepmate_uploaded_cv_name') || 'CV_Cua_Ban.pdf';
+            sessionStorage.setItem('prepmate_interview_source', 'cv');
+            window.location.href = `../interview/interview-info.html?source=cv&cvName=${encodeURIComponent(cvName)}`;
+        }
+        window.startInterviewFromCv = startInterviewFromCv;
+    </script>
+</body>
+</html>
