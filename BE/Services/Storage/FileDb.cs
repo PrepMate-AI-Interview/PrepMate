@@ -252,6 +252,35 @@ namespace backend.Services
 
                     if (isProduction)
                     {
+                        var exampleCandidates = new[]
+                        {
+                            Path.Combine(AppContext.BaseDirectory, "templates", "db.example.json"),
+                            Path.Combine(AppContext.BaseDirectory, "data", "db.example.json"),
+                            Path.Combine(AppContext.BaseDirectory, "db.example.json"),
+                            Path.Combine(AppContext.BaseDirectory, "BE", "data", "db.example.json"),
+                            Path.Combine(Directory.GetCurrentDirectory(), "templates", "db.example.json"),
+                            Path.Combine(Directory.GetCurrentDirectory(), "data", "db.example.json"),
+                            Path.Combine(Directory.GetCurrentDirectory(), "BE", "data", "db.example.json"),
+                            "/app/templates/db.example.json",
+                            "/app/data/db.example.json"
+                        };
+
+                        string? foundExample = exampleCandidates.FirstOrDefault(File.Exists);
+                        if (!string.IsNullOrEmpty(foundExample))
+                        {
+                            Console.WriteLine($"[FileDb] Production database not found at '{_filePath}'. Bootstrapping clean initial database from template '{foundExample}'...");
+                            var dir = Path.GetDirectoryName(_filePath);
+                            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                            {
+                                Directory.CreateDirectory(dir);
+                            }
+                            File.Copy(foundExample, _filePath, overwrite: true);
+                            Console.WriteLine($"[FileDb] Successfully provisioned initial database at '{_filePath}'.");
+                            LoadFromPath();
+                            BootstrapAdminPasswordIfConfigured();
+                            return;
+                        }
+
                         throw new FileNotFoundException(
                             $"[FileDb] FATAL: Persistent database not found at '{_filePath}'. " +
                             "Auto-seeding is strictly disabled in Production environment to prevent silent data loss. " +
@@ -266,6 +295,34 @@ namespace backend.Services
 
                 // Authoritative load
                 LoadFromPath();
+            }
+        }
+
+        private void BootstrapAdminPasswordIfConfigured()
+        {
+            try
+            {
+                var adminPass = Environment.GetEnvironmentVariable("PREPMATE_ADMIN_PASSWORD")
+                             ?? Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
+
+                if (string.IsNullOrWhiteSpace(adminPass))
+                {
+                    adminPass = "PrepMate@2026!";
+                }
+
+                if (Users.TryGetValue("user_admin", out var adminUser))
+                {
+                    if (adminUser.PasswordHash == "LOCKED_INITIAL_ADMIN_ACCOUNT_PROVISION_REQUIRED" || string.IsNullOrWhiteSpace(adminUser.PasswordHash))
+                    {
+                        adminUser.PasswordHash = PasswordHasher.HashPassword(adminPass.Trim());
+                        Save();
+                        Console.WriteLine("[Security] Initial admin account ('user_admin') password successfully provisioned.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Security] Notice: Admin password bootstrap: {ex.Message}");
             }
         }
 

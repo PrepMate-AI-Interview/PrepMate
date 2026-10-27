@@ -24,9 +24,10 @@ ENV DATABASE_FILE_PATH=/app/data/db.json
 ENV PREPMATE_KEYRING_PATH=/app/keys
 
 COPY --from=build /app/publish .
+COPY --from=build /src/BE/data/db.example.json /app/templates/db.example.json
 
-# Ensure data and keys directories exist
-RUN mkdir -p /app/data /app/keys
+# Ensure data, keys and templates directories exist
+RUN mkdir -p /app/data /app/keys /app/templates
 
 VOLUME ["/app/data", "/app/keys"]
 
