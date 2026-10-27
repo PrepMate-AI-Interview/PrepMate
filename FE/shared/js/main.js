@@ -2690,12 +2690,12 @@ function initRoleBasedSidebar() {
 
   // Hidden elements to preserve backward compatibility for scripts
   const compatHidden = `
-        <div style="display:none;" id="sidebar-hidden-compat">
-            <input type="password" id="api-key-input">
-            <input type="password" id="elevenlabs-key-input">
+        <form style="display:none;" id="sidebar-hidden-compat" onsubmit="return false;">
+            <input type="password" id="api-key-input" autocomplete="off">
+            <input type="password" id="elevenlabs-key-input" autocomplete="off">
             <p id="api-key-status"></p>
             <p id="elevenlabs-key-status"></p>
-        </div>
+        </form>
     `;
 
   sidebar.innerHTML = headerHtml + bodyHtml + compatHidden;
@@ -3081,3 +3081,25 @@ async function syncUserInterviewSessions() {
 if (typeof window !== "undefined") {
   window.syncUserInterviewSessions = syncUserInterviewSessions;
 }
+
+// ==========================================
+// PREPMATE GOOGLE ANALYTICS 4 AUTO-BOOTSTRAP
+// ==========================================
+(function autoBootstrapAnalytics() {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+  if (window.PrepMateAnalytics) return;
+
+  const existing = document.querySelector('script[src*="analytics.js"]');
+  if (existing) return;
+
+  try {
+    const isFeatures = window.location.pathname.includes("/features/");
+    const basePath = (isFeatures ? "../../" : "./") + "shared/js/analytics.js";
+    const script = document.createElement("script");
+    script.src = basePath;
+    script.async = true;
+    document.head.appendChild(script);
+  } catch (e) {
+    console.debug("[PrepMate] Analytics auto-bootstrap deferred:", e);
+  }
+})();

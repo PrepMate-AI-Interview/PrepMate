@@ -582,6 +582,13 @@ async function startInterviewSession(skipConfirm = false) {
     sessionStorage.setItem("prepmate_interview_started_" + sessionId, "true");
   }
 
+  // Analytics tracking (GA4)
+  if (typeof PrepMateAnalytics !== "undefined" && typeof PrepMateAnalytics.trackInterviewStart === "function") {
+    try {
+      PrepMateAnalytics.trackInterviewStart(currentInterviewSession?.jobTitle, currentInterviewSession?.specialization);
+    } catch (e) {}
+  }
+
   // Start total timer
   startInterviewTimer();
 

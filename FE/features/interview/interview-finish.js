@@ -393,7 +393,14 @@
       currentInterviewSession.commScore = commScoreVal;
       currentInterviewSession.softScore = softScoreVal;
       currentInterviewSession.starScore = starScoreVal;
-      currentInterviewSession.isEvaluated = true;
+      currentInterviewSession.isEvaluated = overallScoreVal > 0;
+
+      if (overallScoreVal === 0) {
+        const count = (validResponses && validResponses.length) || (userResponsesList && userResponsesList.length) || 0;
+        currentInterviewSession.unevaluatedReason = count > 0
+          ? `Hệ thống đã ghi nhận ${count} câu trả lời của bạn. Tuy nhiên, phiên phỏng vấn kết thúc sớm khi chưa hoàn thành đủ các nhóm câu hỏi chuyên môn và tình huống STAR để AI chấm điểm tin cậy.`
+          : "Phiên phỏng vấn kết thúc mà chưa có đủ câu trả lời để AI phân tích năng lực.";
+      }
 
       currentInterviewSession.scores = {
         tech: techScoreVal,
@@ -440,6 +447,15 @@
     }
     if (typeof window !== "undefined") {
       window._isInterviewSessionStarted = false;
+    }
+
+    if (typeof PrepMateAnalytics !== "undefined" && typeof PrepMateAnalytics.trackInterviewCompleted === "function") {
+      try {
+        PrepMateAnalytics.trackInterviewCompleted(
+          currentInterviewSession?.backendSessionId || currentInterviewSession?.id,
+          overallScoreVal
+        );
+      } catch (e) {}
     }
 
     saveCompletedInterviewSession();

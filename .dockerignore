@@ -1,0 +1,11 @@
+.git
+.gitignore
+.vscode
+.agents
+**/bin
+**/obj
+tests/
+publish/
+publish_test/
+*.tmp
+*.log
