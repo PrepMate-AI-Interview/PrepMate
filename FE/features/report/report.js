@@ -289,9 +289,10 @@ function getAllSavedSessions() {
 
 function findSessionInLocalStorage(sessionId) {
   const sessions = getAllSavedSessions();
+  if (!Array.isArray(sessions)) return null;
   return sessions.find(
-    (s) => s.backendSessionId === sessionId || s.id === sessionId || s.sessionId === sessionId
-  );
+    (s) => s && (s.backendSessionId === sessionId || s.id === sessionId || s.sessionId === sessionId)
+  ) || null;
 }
 
 function extractReportPayload(session) {

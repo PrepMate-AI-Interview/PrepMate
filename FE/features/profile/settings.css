@@ -354,3 +354,184 @@ body.dark-mode #role-sync-badge {
   color: #81c995 !important;
   border-color: rgba(16, 185, 129, 0.3) !important;
 }
+
+
+/* Account Summary Card */
+.account-summary-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--pm-surface-subtle, #f8fafc);
+    border: 1px solid var(--settings-border);
+    border-radius: 12px;
+    padding: 16px 20px;
+}
+
+.account-summary-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.account-avatar-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25);
+    flex-shrink: 0;
+}
+
+.account-meta-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.badge-role-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.badge-role-tag.role-manager {
+    background: #eef2ff;
+    color: #4338ca;
+    border-color: #c7d2fe;
+}
+
+.badge-role-tag.role-admin {
+    background: #f5f3ff;
+    color: #7c3aed;
+    border-color: #ddd6fe;
+}
+
+.badge-tier-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.badge-tier-tag.tier-pro {
+    background: #fffbeb;
+    color: #b45309;
+    border-color: #fde68a;
+}
+
+.btn-profile-bridge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    background: var(--settings-surface);
+    border: 1px solid var(--settings-border-subtle);
+    color: var(--settings-primary);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-profile-bridge:hover {
+    background: var(--pm-primary-soft, #eff6ff);
+    border-color: var(--settings-primary);
+    transform: translateX(2px);
+}
+
+/* Security & Session Actions */
+.btn-security-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    background: var(--settings-surface);
+    border: 1px solid var(--settings-border-subtle);
+    color: var(--settings-text-primary);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-security-action:hover {
+    border-color: var(--settings-primary);
+    color: var(--settings-primary);
+    background: var(--pm-primary-soft, #eff6ff);
+}
+
+.status-indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    display: inline-block;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.btn-clear-cache {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    background: var(--settings-surface);
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-clear-cache:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #dc2626;
+}
+
+.settings-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 8px;
+}
+
+.settings-save-tip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--settings-text-muted);
+}
+
+.pref-card-highlight {
+    animation: highlightPulse 2s ease;
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+}
+
+@keyframes highlightPulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.35); }
+    50% { transform: scale(1.01); box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.15); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}

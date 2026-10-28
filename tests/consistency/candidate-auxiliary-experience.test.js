@@ -21,9 +21,9 @@ const CV_HTML_PATH = path.join(WORKSPACE_ROOT, "FE", "features", "profile", "cv.
 const CV_CSS_PATH = path.join(WORKSPACE_ROOT, "FE", "features", "profile", "cv.css");
 const SETTINGS_HTML_PATH = path.join(WORKSPACE_ROOT, "FE", "features", "profile", "settings.html");
 const SETTINGS_CSS_PATH = path.join(WORKSPACE_ROOT, "FE", "features", "profile", "settings.css");
-const PROD_DB_PATH = path.join(WORKSPACE_ROOT, "BE", "data", "db.json");
-
-const BASELINE_DB_HASH = "C8D6CA48DFAC2DD4C9FC3F5793E36222506220F07DC4DE9E17102B92295662A7";
+const { resolveDbPath, getBaselineDbHash } = require('../helpers/test-env');
+const PROD_DB_PATH = resolveDbPath();
+const BASELINE_DB_HASH = getBaselineDbHash();
 
 const profileHtml = fs.readFileSync(PROFILE_HTML_PATH, "utf8");
 const profileCss = fs.readFileSync(PROFILE_CSS_PATH, "utf8");

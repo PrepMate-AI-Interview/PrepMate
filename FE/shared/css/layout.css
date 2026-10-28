@@ -1014,6 +1014,14 @@ app-header header {
 }
 
 /* Workspace Footer (Internal Dashboard Shell) */
+app-workspace-footer {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  clear: both;
+}
+
 .app-workspace-footer {
   padding: 20px 0 16px;
   margin-top: 40px;
@@ -1025,6 +1033,9 @@ app-header header {
   gap: 14px;
   color: var(--pm-text-muted, #64748b);
   font-size: 12.5px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .workspace-footer-left {
@@ -1828,6 +1839,68 @@ body.dark-mode .logo-brand span {
 .dropdown-item.text-danger:hover {
   background: #fef2f2;
   color: #b91c1c;
+}
+
+/* ==========================================================================
+   Guest Capsule Login Button in Sidebar (DESIGN.md tokens)
+   ========================================================================== */
+.guest-login-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--pm-primary, #1d4ed8);
+  color: #ffffff !important;
+  border-radius: var(--pm-radius-md, 12px);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.guest-login-btn:hover {
+  background: var(--pm-primary-hover, #1e40af);
+  box-shadow: 0 6px 18px rgba(29, 78, 216, 0.35);
+  transform: translateY(-1px);
+  color: #ffffff !important;
+}
+
+.guest-login-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.guest-login-icon svg {
+  color: #ffffff !important;
+  width: 16px;
+  height: 16px;
+}
+
+.guest-login-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Collapsed mode for guest login button */
+.sidebar-new.collapsed .guest-login-btn {
+  justify-content: center;
+  padding: 10px 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.sidebar-new.collapsed .guest-login-btn .guest-login-text {
+  display: none;
 }
 
 /* Master Main Content Container */

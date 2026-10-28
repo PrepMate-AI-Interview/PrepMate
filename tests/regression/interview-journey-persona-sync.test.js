@@ -12,7 +12,8 @@ console.log('===============================================================');
 console.log('   WI-INTERVIEW-UI-01: PERSONA JOURNEY SYNCHRONIZATION TESTS   ');
 console.log('===============================================================\n');
 
-const BASELINE_DB_HASH = 'C8D6CA48DFAC2DD4C9FC3F5793E36222506220F07DC4DE9E17102B92295662A7';
+const { resolveDbPath, getBaselineDbHash } = require('../helpers/test-env');
+const BASELINE_DB_HASH = getBaselineDbHash();
 
 // ── 1. MANIFEST VERIFICATION ──────────────────────────────────────────────
 console.log('--- GROUP 1: Persona Manifest SSOT Contract ---');
@@ -115,7 +116,7 @@ console.log('  [PASS] 11. History cards display persona name badge along with ti
 
 // ── 7. DATABASE INTEGRITY INVARIANT ───────────────────────────────────────
 console.log('\n--- GROUP 7: Database & Safety Invariants ---');
-const dbContent = fs.readFileSync(path.join(__dirname, '../../BE/data/db.json'), 'utf8');
+const dbContent = fs.readFileSync(resolveDbPath(), 'utf8');
 const currentDbHash = crypto.createHash('sha256').update(dbContent, 'utf8').digest('hex').toUpperCase();
 
 assert.strictEqual(

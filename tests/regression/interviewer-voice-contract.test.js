@@ -18,7 +18,8 @@ const { spawn } = require("child_process");
 const MOCK_ELEVENLABS_PORT = 19283;
 const BACKEND_PORT = 5002;
 const WORKSPACE_ROOT = path.resolve(__dirname, "../..");
-const PROD_DB_PATH = path.join(WORKSPACE_ROOT, "BE", "data", "db.json");
+const { resolveDbPath } = require('../helpers/test-env');
+const PROD_DB_PATH = resolveDbPath();
 const TEST_DIR = path.join(os.tmpdir(), `prepmate_contract_${Date.now()}`);
 const ISOLATED_DB_PATH = path.join(TEST_DIR, "isolated_contract_db.json");
 
@@ -209,6 +210,8 @@ async function runTestSuite() {
         ...process.env,
         ELEVENLABS_API_KEY: "test_contract_api_key_mock_123",
         ELEVENLABS_BASE_URL: `http://127.0.0.1:${MOCK_ELEVENLABS_PORT}`,
+        ElevenLabs__BaseUrl: `http://127.0.0.1:${MOCK_ELEVENLABS_PORT}`,
+        ElevenLabs__ApiKey: "test_contract_api_key_mock_123",
         DATABASE_FILE_PATH: ISOLATED_DB_PATH,
         PREPMATE_DATABASE_PATH: ISOLATED_DB_PATH,
         ASPNETCORE_URLS: `http://127.0.0.1:${BACKEND_PORT}`,
@@ -470,6 +473,8 @@ async function runTestSuite() {
           PREPMATE_DATABASE_PATH: ISOLATED_DB_PATH,
           ASPNETCORE_URLS: `http://127.0.0.1:${BACKEND_PORT_ZR}`,
           ELEVENLABS_ZERO_RETENTION_ENABLED: "true",
+          ElevenLabs__BaseUrl: `http://127.0.0.1:${MOCK_ELEVENLABS_PORT}`,
+          ElevenLabs__ApiKey: "test_contract_api_key_mock_123",
         },
         stdio: "ignore",
       }

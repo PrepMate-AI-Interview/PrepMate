@@ -24,6 +24,9 @@
 
     <!-- MAIN CONTENT -->
     <main class="main-content main-content-new">
+        <!-- Screen reader live announcer -->
+        <div id="settings-status-announcer" class="sr-only" aria-live="polite"></div>
+
         <!-- Top Hero -->
         <div class="dashboard-hero" style="margin-bottom: 24px;">
             <div class="hero-left">
@@ -33,7 +36,7 @@
                 </div>
                 <h1 style="font-size:24px;margin-bottom:8px;">Cài đặt cá nhân & Trải nghiệm</h1>
                 <p style="font-size:14px;color:var(--text-secondary);margin-bottom:0;max-width:650px;">
-                    Tùy chỉnh chế độ hiển thị sáng/tối, ngôn ngữ hệ thống, âm thanh người phỏng vấn ảo và tần suất thông báo. Cấu hình tự động lưu và áp dụng nhất quán trên toàn bộ nền tảng.
+                    Tùy chỉnh chế độ hiển thị sáng/tối, ngôn ngữ hệ thống, âm thanh người phỏng vấn ảo, bảo mật phiên và thông báo luyện tập. Cấu hình tự động lưu trên trình duyệt của bạn.
                 </p>
             </div>
             <div class="hero-stats">
@@ -49,6 +52,39 @@
         </div>
 
         <div class="settings-grid">
+            <!-- 0. Tài khoản & Định danh (Account Summary) -->
+            <div class="pref-card" id="account-summary-card">
+                <div class="pref-card-header">
+                    <div class="pref-icon-box">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div>
+                        <h3 style="margin:0;font-size:16px;">Tài khoản & Định danh</h3>
+                        <span style="font-size:12px;color:var(--text-secondary);">Thông tin đăng nhập và quyền hạn của bạn trên hệ thống PrepMate</span>
+                    </div>
+                </div>
+
+                <div class="account-summary-box">
+                    <div class="account-summary-meta">
+                        <div class="account-avatar-circle" id="settings-user-avatar">U</div>
+                        <div class="account-meta-text">
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                                <strong id="settings-user-name" style="font-size:15px;color:var(--settings-text-primary);">Đang tải người dùng...</strong>
+                                <span id="settings-user-role-badge" class="badge-role-tag">Ứng viên</span>
+                                <span id="settings-user-tier-badge" class="badge-tier-tag">Miễn phí</span>
+                            </div>
+                            <span id="settings-user-email" style="font-size:13px;color:var(--settings-text-muted);">email@prepmate.ai</span>
+                        </div>
+                    </div>
+                    <div class="account-summary-actions">
+                        <a href="profile.html" class="btn-profile-bridge" title="Chuyển đến trang Hồ sơ tài khoản để cập nhật thông tin cá nhân">
+                            <span>Chỉnh sửa hồ sơ cá nhân</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- 1. Giao diện (Theme) - ICON ONLY CHO SÁNG/TỐI/TỰ ĐỘNG -->
             <div class="pref-card">
                 <div class="pref-card-header">
@@ -196,9 +232,59 @@
                 </div>
             </div>
 
-            <!-- 5. Nút Cập Nhật Toàn Bộ -->
-            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:4px;">
-                <button type="button" class="btn-save-pref" onclick="saveAllSettingsManual()">
+            <!-- 5. Bảo mật & Phiên làm việc (#security Anchor) -->
+            <div class="pref-card" id="security">
+                <div class="pref-card-header">
+                    <div class="pref-icon-box">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <div>
+                        <h3 style="margin:0;font-size:16px;">Bảo mật & Phiên làm việc</h3>
+                        <span style="font-size:12px;color:var(--text-secondary);">Quản lý phiên đăng nhập an toàn, mật khẩu và xóa bộ nhớ tạm</span>
+                    </div>
+                </div>
+
+                <div class="pref-row">
+                    <div class="pref-row-info">
+                        <h4>Mật khẩu & Đăng nhập</h4>
+                        <p>Mật khẩu được lưu trữ an toàn bằng chuẩn mã hóa một chiều PBKDF2</p>
+                    </div>
+                    <a href="profile.html#account" class="btn-security-action">
+                        <span>Đổi mật khẩu tài khoản</span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </a>
+                </div>
+
+                <div class="pref-row">
+                    <div class="pref-row-info">
+                        <h4>Phiên làm việc hiện tại</h4>
+                        <p id="session-security-status">Trạng thái kết nối an toàn (Khóa ký số độc lập & Mã hóa SSL/TLS)</p>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span class="status-indicator-dot"></span>
+                        <span style="font-size:12.5px;font-weight:600;color:#059669;">Đang hoạt động</span>
+                    </div>
+                </div>
+
+                <div class="pref-row">
+                    <div class="pref-row-info">
+                        <h4>Bộ nhớ tạm phỏng vấn (Draft Cache)</h4>
+                        <p>Dọn dẹp bản ghi phỏng vấn nháp cục bộ nếu gặp sự cố tải trang</p>
+                    </div>
+                    <button type="button" class="btn-clear-cache" onclick="clearDraftCache()">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <span>Xóa dữ liệu nháp</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 6. Nút Cập Nhật Toàn Bộ -->
+            <div class="settings-action-bar">
+                <span class="settings-save-tip" id="settings-save-tip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    Các tùy chọn được tự động lưu vào bộ nhớ trình duyệt khi thay đổi
+                </span>
+                <button type="button" class="btn-save-pref" id="btn-save-all-settings" onclick="saveAllSettingsManual()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     <span>Lưu và cập nhật cài đặt</span>
                 </button>
@@ -213,6 +299,13 @@
     <script src="../../features/auth/auth.js?v=21"></script>
     <script src="../../features/dashboard/dashboard.js?v=21"></script>
     <script>
+        function announceStatus(message) {
+            const announcer = document.getElementById('settings-status-announcer');
+            if (announcer) {
+                announcer.textContent = message;
+            }
+        }
+
         function setThemePreference(mode, isUserAction = false) {
             document.querySelectorAll('.theme-icon-btn').forEach(b => b.classList.remove('active'));
             const el = document.getElementById('theme-btn-' + mode);
@@ -239,8 +332,11 @@
                 currentThemeStat.textContent = mode === 'dark' ? 'Tối' : mode === 'auto' ? 'Tự động' : 'Sáng';
             }
 
+            const label = mode === 'dark' ? 'Tối' : mode === 'auto' ? 'Tự động' : 'Sáng';
+            announceStatus('Đã đổi giao diện sang ' + label);
+
             if (isUserAction && typeof showToast === 'function') {
-                showToast('Đã chuyển giao diện sang: ' + (mode === 'dark' ? 'Tối' : mode === 'auto' ? 'Tự động' : 'Sáng'), 'success');
+                showToast('Đã chuyển giao diện sang: ' + label, 'success');
             }
         }
 
@@ -257,13 +353,17 @@
                 langStat.textContent = lang === 'en' ? '🇺🇸 EN' : '🇻🇳 VN';
             }
 
+            const msg = lang === 'en' ? 'System language changed to English!' : 'Đã cập nhật ngôn ngữ hệ thống sang Tiếng Việt!';
+            announceStatus(msg);
+
             if (typeof showToast === 'function') {
-                showToast(lang === 'en' ? 'System language changed to English!' : 'Đã cập nhật ngôn ngữ hệ thống sang Tiếng Việt!', 'success');
+                showToast(msg, 'success');
             }
         }
 
         function setVoiceSpeedPreference(speed) {
             localStorage.setItem('prepmate_voice_speed', speed);
+            announceStatus('Đã cập nhật tốc độ giọng đọc AI: ' + speed + 'x');
             if (typeof showToast === 'function') {
                 showToast('Đã cập nhật tốc độ giọng đọc AI: ' + speed + 'x', 'success');
             }
@@ -279,8 +379,30 @@
                 const el = document.getElementById(inputId);
                 if (el) el.setAttribute('aria-checked', val ? 'true' : 'false');
             }
+            const statusLabel = val ? 'Bật' : 'Tắt';
+            announceStatus('Đã lưu tùy chọn: ' + statusLabel);
             if (typeof showToast === 'function') {
-                showToast('Đã lưu tùy chọn: ' + (val ? 'Bật' : 'Tắt'), 'success');
+                showToast('Đã lưu tùy chọn: ' + statusLabel, 'success');
+            }
+        }
+
+        function clearDraftCache() {
+            try {
+                // Safely clear session drafts without logging user out
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && (k.startsWith('prepmate_draft_') || k.startsWith('draft_session_') || k === 'prepmate_repractice_config')) {
+                        keysToRemove.push(k);
+                    }
+                }
+                keysToRemove.forEach(k => localStorage.removeItem(k));
+                announceStatus('Đã xóa bộ nhớ nháp tạm thời an toàn');
+                if (typeof showToast === 'function') {
+                    showToast('Đã dọn dẹp sạch sẽ bộ nhớ nháp tạm thời!', 'success');
+                }
+            } catch(e) {
+                console.warn('Clear draft cache error:', e);
             }
         }
 
@@ -312,8 +434,35 @@
                 jobs.setAttribute('aria-checked', jobs.checked ? 'true' : 'false');
             }
 
+            const btn = document.getElementById('btn-save-all-settings');
+            if (btn) {
+                const origHtml = btn.innerHTML;
+                btn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Đã lưu thành công!</span>
+                `;
+                btn.style.background = '#059669';
+                setTimeout(() => {
+                    btn.innerHTML = origHtml;
+                    btn.style.background = '';
+                }, 1800);
+            }
+
+            announceStatus('Đã lưu toàn bộ thiết lập cá nhân thành công');
             if (typeof showToast === 'function') {
                 showToast('Đã lưu toàn bộ thiết lập cá nhân thành công!', 'success');
+            }
+        }
+
+        // Handle #security hash jump
+        function checkSecurityHash() {
+            if (window.location.hash === '#security') {
+                const secCard = document.getElementById('security');
+                if (secCard) {
+                    secCard.scrollIntoView({ behavior: 'smooth' });
+                    secCard.classList.add('pref-card-highlight');
+                    setTimeout(() => secCard.classList.remove('pref-card-highlight'), 2200);
+                }
             }
         }
 
@@ -330,20 +479,60 @@
             }
 
             const roleBadge = document.getElementById('role-sync-badge');
-            if (roleBadge && currentUser) {
-                if (currentUser.role === 'admin') {
-                    roleBadge.textContent = 'Vai trò: Quản trị viên';
-                    roleBadge.style.color = '#7c3aed';
-                    roleBadge.style.background = '#f5f3ff';
-                    roleBadge.style.borderColor = '#ddd6fe';
-                } else if (currentUser.role === 'manager') {
-                    roleBadge.textContent = 'Vai trò: Quản lý';
-                    roleBadge.style.color = '#4338ca';
-                    roleBadge.style.background = '#eef2ff';
-                    roleBadge.style.borderColor = '#c7d2fe';
-                } else {
-                    roleBadge.textContent = 'Vai trò: Ứng viên';
+            const userAvatar = document.getElementById('settings-user-avatar');
+            const userName = document.getElementById('settings-user-name');
+            const userEmail = document.getElementById('settings-user-email');
+            const userRoleBadge = document.getElementById('settings-user-role-badge');
+            const userTierBadge = document.getElementById('settings-user-tier-badge');
+
+            if (currentUser) {
+                const displayName = currentUser.fullname || currentUser.username || 'Người dùng';
+                const displayEmail = currentUser.email || 'user@prepmate.ai';
+                const initial = (displayName.charAt(0) || 'U').toUpperCase();
+                const isPro = currentUser.subscription === 'pro' && (!currentUser.subscriptionExpiry || new Date(currentUser.subscriptionExpiry) > new Date());
+
+                if (userName) userName.textContent = displayName;
+                if (userEmail) userEmail.textContent = displayEmail;
+                if (userAvatar) userAvatar.textContent = initial;
+
+                if (userTierBadge) {
+                    userTierBadge.textContent = isPro ? 'PrepMate PRO' : 'Gói Miễn Phí';
+                    userTierBadge.className = isPro ? 'badge-tier-tag tier-pro' : 'badge-tier-tag';
                 }
+
+                if (currentUser.role === 'admin') {
+                    if (roleBadge) {
+                        roleBadge.textContent = 'Vai trò: Quản trị viên';
+                        roleBadge.style.color = '#7c3aed';
+                        roleBadge.style.background = '#f5f3ff';
+                        roleBadge.style.borderColor = '#ddd6fe';
+                    }
+                    if (userRoleBadge) {
+                        userRoleBadge.textContent = 'Quản trị viên';
+                        userRoleBadge.className = 'badge-role-tag role-admin';
+                    }
+                } else if (currentUser.role === 'manager') {
+                    if (roleBadge) {
+                        roleBadge.textContent = 'Vai trò: Quản lý';
+                        roleBadge.style.color = '#4338ca';
+                        roleBadge.style.background = '#eef2ff';
+                        roleBadge.style.borderColor = '#c7d2fe';
+                    }
+                    if (userRoleBadge) {
+                        userRoleBadge.textContent = 'Quản lý';
+                        userRoleBadge.className = 'badge-role-tag role-manager';
+                    }
+                } else {
+                    if (roleBadge) roleBadge.textContent = 'Vai trò: Ứng viên';
+                    if (userRoleBadge) {
+                        userRoleBadge.textContent = 'Ứng viên';
+                        userRoleBadge.className = 'badge-role-tag';
+                    }
+                }
+            } else {
+                if (userName) userName.textContent = 'Khách thăm quan';
+                if (userEmail) userEmail.textContent = 'Chưa đăng nhập';
+                if (userRoleBadge) userRoleBadge.textContent = 'Khách';
             }
 
             const savedTheme = localStorage.getItem('prepmate_theme') || 'light';
@@ -382,8 +571,12 @@
                 jobs.checked = localStorage.getItem('prepmate_notifJobs') === 'true';
                 jobs.setAttribute('aria-checked', jobs.checked ? 'true' : 'false');
             }
+
+            // Check if #security was requested
+            checkSecurityHash();
         });
+
+        window.addEventListener('hashchange', checkSecurityHash);
     </script>
 </body>
 </html>
-

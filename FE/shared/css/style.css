@@ -190,7 +190,7 @@ nav a:hover {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    background: var(--pm-primary, #1d4ed8);
     color: #ffffff;
     font-size: 13.5px;
     font-weight: 800;
@@ -252,7 +252,7 @@ nav a:hover {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    background: var(--pm-primary, #1d4ed8);
     color: #ffffff;
     font-size: 15px;
     font-weight: 800;
@@ -1036,7 +1036,7 @@ body.light-mode .btn-outline {
 .footer-logo .logo-mini-icon {
     width: 28px;
     height: 28px;
-    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    background: var(--pm-primary, #1d4ed8);
     color: #ffffff;
     border-radius: var(--pm-radius-btn-sm, 6px);
     display: inline-flex;
@@ -1217,7 +1217,7 @@ body.light-mode .btn-outline {
     width: 20px;
     height: 20px;
     border-radius: 6px;
-    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    background: var(--pm-primary, #1d4ed8);
     color: #ffffff;
     display: inline-flex;
     align-items: center;
@@ -1262,6 +1262,7 @@ body.light-mode .btn-outline {
     list-style: none;
     padding: 0;
     margin: 0;
+    flex-wrap: wrap;
 }
 
 .workspace-footer-links a {
@@ -3964,7 +3965,7 @@ html[data-theme="dark"] .glow-bg {
     align-items: center;
     gap: 10px;
     padding: 10px 14px;
-    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    background: var(--pm-primary, #1d4ed8);
     color: #ffffff !important;
     border-radius: 12px;
     text-decoration: none;
@@ -3977,7 +3978,7 @@ html[data-theme="dark"] .glow-bg {
 }
 
 .guest-login-btn:hover {
-    background: linear-gradient(135deg, #1e40af, #1d4ed8);
+    background: var(--pm-primary-hover, #1e40af);
     box-shadow: 0 6px 18px rgba(29, 78, 216, 0.35);
     transform: translateY(-1px);
     color: #ffffff !important;

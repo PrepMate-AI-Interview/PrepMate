@@ -105,7 +105,7 @@ function apiRequest(method, endpoint, token = null, body = null, timeoutMs = 800
 }
 
 async function runSecuritySuite() {
-  const prodDbPath = path.resolve(__dirname, '../../BE/data/db.json');
+  const prodDbPath = resolveDbPath();
   const initialProdContent = fs.readFileSync(prodDbPath);
   const initialProdHash = crypto.createHash('sha256').update(initialProdContent).digest('hex').toUpperCase();
 

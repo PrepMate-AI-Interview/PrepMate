@@ -31,10 +31,11 @@ Tuyệt đối tuân thủ các nguyên tắc cốt lõi sau. Không được t�
 2. **Cổng Trí Tuệ Nhân Tạo Hợp Nhất (Single AI Gateway SSOT):**
    - Mọi luồng suy luận trực tiếp gọi qua `https://api.vilao.ai/v1` với định danh mô hình logic **`PrepMate`** (hoặc thông qua `AIRouter` / `ComboRootService`).
    - Plaintext API key tuyệt đối **không được** trả về Frontend hay in ra log hệ thống.
-3. **Cơ Chế Lưu Trữ Single-Instance FileDb:**
+3. **Cơ Chế Lưu Trữ Single-Instance FileDb & Bootstrap Môi Trường:**
    - Hệ thống lưu trữ `FileDb` là tệp JSON duy nhất (`data/db.json`), sử dụng ghi tệp nguyên tử (Atomic file swap) và lock in-memory.
    - Không được giả định hệ thống có distributed lock hay hỗ trợ horizontal clustering nhiều container.
-   - Trong môi trường `Production`, tính năng tự sinh dữ liệu (auto-seeding) bị vô hiệu hóa; server sẽ từ chối khởi động nếu thiếu `db.json`. Khi tạo môi trường mới, sử dụng template an toàn `BE/data/db.example.json` để bootstrap database sạch mà không phụ thuộc vào dữ liệu cá nhân hay secrets trên máy phát triển.
+   - Trong môi trường `Production`, tính năng auto-seeding dữ liệu ngẫu nhiên bị vô hiệu hóa. Nếu `db.json` chưa tồn tại, backend tự động bootstrap cơ sở dữ liệu khởi tạo sạch từ template an toàn `db.example.json` và kích hoạt mật khẩu cho `user_admin` thông qua biến môi trường `PREPMATE_ADMIN_PASSWORD` (hoặc fallback mặc định an toàn `PrepMate@2026!` nếu để trống). Nếu thiếu cả template mẫu, server dừng khởi động với ngoại lệ `FileNotFoundException`.
+   - Bộ kiểm thử tự động sử dụng fixture độc lập, an toàn (`tests/fixtures/test_db_fixture.json` thông qua `tests/helpers/test-env.js`), hoàn toàn không phụ thuộc database production, không hard-code hash dữ liệu cá nhân và không đưa `db.json` thật vào Git.
 4. **Bảo Mật Tách Biệt Khóa Ký Số (Cryptographic Key Separation):**
    - Khóa ký JWT (`JWT__SECRET`) và Khóa HMAC của khách (`GUEST_TOKEN__SIGNING_KEY`) **bắt buộc phải là hai chuỗi ký tự độc lập, khác nhau hoàn toàn**, có độ dài tối thiểu 32 ký tự (256-bit).
 5. **Tính Toàn Vẹn Của State Machine Phỏng Vấn:**

@@ -112,6 +112,7 @@ builder.Services.AddResponseCompression(options =>
 
 // Add services
 builder.Services.AddControllers();
+builder.Services.AddMemoryCache();
 
 // Configure ASP.NET Core Rate Limiting (Defense-in-depth against resource abuse & brute-force)
 builder.Services.AddRateLimiter(options =>
@@ -148,6 +149,19 @@ builder.Services.AddRateLimiter(options =>
         return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ => new FixedWindowRateLimiterOptions
         {
             PermitLimit = 40,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+
+    });
+
+    // 3. Dynamic jobs discovery & aggregation policy:
+    options.AddPolicy("jobs-policy", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown_jobs_ip";
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 60,
             Window = TimeSpan.FromMinutes(1),
             QueueLimit = 0
         });
@@ -276,6 +290,13 @@ builder.Services.AddScoped<IInterviewReadinessService, InterviewReadinessService
 builder.Services.AddSingleton<IInterviewQuotaService, InterviewQuotaService>();
 builder.Services.AddSingleton<InterviewQuotaService>();
 builder.Services.AddScoped<InterviewReadinessService>();
+builder.Services.AddSingleton<backend.Services.Jobs.ExternalSearchLinkProvider>();
+builder.Services.AddHttpClient<backend.Services.Jobs.IJobProvider, backend.Services.Jobs.JoobleJobProvider>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+builder.Services.AddScoped<backend.Services.Jobs.IJobAggregationService, backend.Services.Jobs.JobAggregationService>();
+builder.Services.AddSingleton<backend.Services.QBank.IQBankService, backend.Services.QBank.QBankService>();
 
 // Register JWT Security Services & Bearer Authentication
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();

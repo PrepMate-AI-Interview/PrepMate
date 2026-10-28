@@ -393,7 +393,13 @@
                 const apiBase = (typeof API_BASE_URL === 'string') ? API_BASE_URL : ((typeof window !== 'undefined' && typeof window.API_BASE_URL === 'string') ? window.API_BASE_URL : '');
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 2500);
+                const token = user.token || (typeof getAuthToken === 'function' ? getAuthToken() : null) || localStorage.getItem('prepmate_auth_token') || sessionStorage.getItem('prepmate_auth_token') || localStorage.getItem('token');
+                const reqHeaders = {};
+                if (token) {
+                    reqHeaders['Authorization'] = `Bearer ${token}`;
+                }
                 const res = await fetch(`${apiBase}/api/sessions/user/${encodeURIComponent(uid)}`, {
+                    headers: reqHeaders,
                     signal: controller.signal
                 });
                 clearTimeout(timeoutId);
