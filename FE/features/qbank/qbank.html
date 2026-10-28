@@ -86,8 +86,8 @@
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
                         </div>
                         <div>
-                            <h3 class="filter-panel-title">Bộ lọc chuyên môn & Ngành nghề</h3>
-                            <p class="filter-panel-desc">Lọc câu hỏi theo lĩnh vực, cấp bậc độ khó, ngôn ngữ và từ khóa kỹ thuật</p>
+                            <h3 class="filter-panel-title">Bộ lọc chuyên môn & Doanh nghiệp</h3>
+                            <p class="filter-panel-desc">Lọc câu hỏi theo nguồn doanh nghiệp, lĩnh vực, cấp bậc độ khó, ngôn ngữ và từ khóa kỹ thuật</p>
                         </div>
                     </div>
                     <div class="filter-header-actions">
@@ -149,12 +149,31 @@
                         <div class="qbank-search-wrap">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="qbank-search-icon-svg"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                             <input type="text" id="qbank-search-input" class="qbank-search-input" placeholder="Tìm theo câu hỏi, vị trí, kỹ năng hoặc chủ đề..." oninput="handleSearchInput(this.value)">
+                            <button type="button" id="btn-clear-search" class="qbank-search-clear-btn" style="display:none;" onclick="clearSearchInput()" aria-label="Xóa từ khóa tìm kiếm" title="Xóa từ khóa">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
                         </div>
+                    </div>
+
+                    <!-- Company Dropdown -->
+                    <div class="filter-field">
+                        <label for="select-company">3. Nguồn doanh nghiệp</label>
+                        <select id="select-company" class="qbank-select" onchange="applyAllFilters()">
+                            <option value="all">Tất cả doanh nghiệp</option>
+                            <option value="Amazon">Amazon (Leadership / AWS)</option>
+                            <option value="Microsoft">Microsoft (Hiring Tips / AI)</option>
+                            <option value="FPT Software">FPT Software (Global Delivery)</option>
+                            <option value="Viettel Solutions">Viettel Solutions (Telecom)</option>
+                            <option value="Vinamilk">Vinamilk (Brand & Supply)</option>
+                            <option value="Masan Group">Masan Group (FP&A & Retail)</option>
+                            <option value="Base.vn">Base.vn (B2B SaaS / Product)</option>
+                            <option value="Shopee">Shopee (High-Traffic / UX)</option>
+                        </select>
                     </div>
 
                     <!-- Difficulty Dropdown -->
                     <div class="filter-field">
-                        <label for="select-difficulty">3. Cấp bậc / Độ khó</label>
+                        <label for="select-difficulty">4. Cấp bậc / Độ khó</label>
                         <select id="select-difficulty" class="qbank-select" onchange="applyAllFilters()">
                             <option value="all">Tất cả độ khó</option>
                             <option value="easy">●○○ Cơ bản (Fresher / Junior)</option>
@@ -165,7 +184,7 @@
 
                     <!-- Language Dropdown -->
                     <div class="filter-field">
-                        <label for="select-lang">4. Ngôn ngữ phỏng vấn</label>
+                        <label for="select-lang">5. Ngôn ngữ phỏng vấn</label>
                         <select id="select-lang" class="qbank-select" onchange="applyAllFilters()">
                             <option value="all">Tất cả ngôn ngữ</option>
                             <option value="vi">🇻🇳 Tiếng Việt</option>
@@ -176,7 +195,7 @@
 
                     <!-- Question Type Dropdown -->
                     <div class="filter-field">
-                        <label for="select-type">5. Dạng câu hỏi</label>
+                        <label for="select-type">6. Dạng câu hỏi</label>
                         <select id="select-type" class="qbank-select" onchange="applyAllFilters()">
                             <option value="all">Tất cả dạng câu hỏi</option>
                             <option value="technical">Kỹ thuật / Chuyên môn</option>
@@ -185,6 +204,13 @@
                             <option value="system">Kiến trúc hệ thống</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- Active Filter Tags Bar -->
+                <div class="qbank-active-filters-bar" id="active-filters-bar" style="display:none;">
+                    <span class="active-filters-label">Đang lọc theo:</span>
+                    <div class="active-filter-chips-wrap" id="active-filter-chips"></div>
+                    <button type="button" class="btn-clear-all-chips" onclick="resetAllFilters()">Xóa tất cả</button>
                 </div>
             </div>
 
@@ -203,9 +229,9 @@
                 </div>
             </div>
 
-            <!-- QUESTION LIST CONTAINER (DẠNG LIST GỌN GÀNG, KHÔNG RỐI MẮT) -->
+            <!-- QUESTION LIST CONTAINER -->
             <div class="qbank-list" id="qbank-list-container">
-                <!-- Rendered dynamically by JavaScript with pagination -->
+                <!-- Rendered dynamically by JavaScript -->
             </div>
 
             <!-- PAGINATION BAR -->
@@ -247,6 +273,20 @@
 
             <!-- Modal Scrollable Body -->
             <div class="qbank-modal-body">
+                <!-- Source Provenance Banner -->
+                <div class="modal-source-banner" id="modal-source-banner">
+                    <div class="modal-source-info">
+                        <span class="badge-company-source">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7v14M21 7v14M6 11h2M6 15h2M16 11h2M16 15h2M10 21V3h4v18"/></svg>
+                            <span id="modal-company-name">Amazon</span>
+                        </span>
+                        <span class="modal-source-attribution" id="modal-attribution">Tài liệu tham khảo & khung năng lực</span>
+                    </div>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="modal-source-link" id="modal-source-link" style="display:none;">
+                        Tài liệu tham khảo ↗
+                    </a>
+                </div>
+
                 <!-- 1. Bối cảnh phỏng vấn -->
                 <div class="modal-info-block">
                     <div class="modal-block-label">
@@ -326,12 +366,15 @@
     <script src="../../features/auth/auth.js?v=22"></script>
     <script>
         // ============================================================
-        // DIVERSE MULTI-INDUSTRY QUESTION DATASET (24 QUESTIONS)
+        // CANONICAL BACKUP CATALOG (PRESERVES Q-101 & DEADLOCK CONTRACTS)
         // ============================================================
-        const QBANK_DATA = [
-            // --- 1. CÔNG NGHỆ THÔNG TIN (IT / TECH) ---
+        const FALLBACK_QBANK_DATA = [
             {
-                id: 'it-1',
+                id: 'Q-101',
+                company: 'Amazon',
+                provenance: 'PrepMateCurated',
+                sourceUrl: 'https://www.amazon.jobs/content/en/how-we-hire',
+                sourceAttribution: 'Bộ câu hỏi chuẩn hóa PrepMate (Dữ liệu dự phòng offline - Tham khảo khung năng lực Amazon công khai)',
                 industry: 'it',
                 industryLabel: 'Công nghệ',
                 role: 'Backend Engineer',
@@ -356,7 +399,11 @@
                 topicParam: 'Database Deadlock & Concurrency Optimization'
             },
             {
-                id: 'it-2',
+                id: 'Q-102',
+                company: 'Microsoft',
+                provenance: 'PrepMateCurated',
+                sourceUrl: 'https://careers.microsoft.com/v2/global/en/hiring-tips/interview-tips',
+                sourceAttribution: 'Bộ câu hỏi chuẩn hóa PrepMate (Dữ liệu dự phòng offline - Tham khảo văn hóa kỹ thuật Microsoft công khai)',
                 industry: 'it',
                 industryLabel: 'Công nghệ',
                 role: 'Frontend Developer',
@@ -369,121 +416,23 @@
                 type: 'technical',
                 typeLabel: 'Kỹ thuật',
                 duration: '6-8 phút',
-                context: 'Kiểm tra kỹ năng đo lường Critical Rendering Path, tối ưu tài nguyên bundle, memory leaks và nâng cao trải nghiệm người dùng theo tiêu chuẩn đánh giá của Google.',
-                followup: 'When bundle size exceeds 2.5MB causing high LCP, how do you implement route-based code splitting, dynamic imports, and asset preloading without hurting the user experience on slow mobile connections?',
+                context: 'Kiểm tra kỹ năng đo lường Critical Rendering Path, tối ưu bundle và memory leaks.',
+                followup: 'When bundle size exceeds 2.5MB causing high LCP, how do you implement code splitting and preloading?',
                 star: {
-                    s: 'A dashboard SPA with 40+ charts was experiencing a poor LCP score of 4.8s and INP above 350ms on mobile.',
-                    t: 'Improve Core Web Vitals into the "Good" green threshold to avoid SEO penalties and improve retention.',
-                    a: 'Conducted Lighthouse audit, replaced heavy chart libraries with lightweight alternatives, introduced Web Workers for heavy data processing, and configured dynamic code-splitting.',
-                    r: 'LCP dropped from 4.8s to 1.4s, INP improved to 65ms, and bounce rate decreased by 18%.'
+                    s: 'Dashboard SPA experiencing LCP 4.8s on mobile.',
+                    t: 'Improve Core Web Vitals into green threshold.',
+                    a: 'Lighthouse profiling, route splitting, Web Workers.',
+                    r: 'LCP dropped to 1.4s, bounce rate decreased by 18%.'
                 },
-                keywords: ['Core Web Vitals', 'Code Splitting', 'LCP / CLS / INP', 'Tree Shaking', 'Service Workers'],
+                keywords: ['Core Web Vitals', 'Code Splitting', 'LCP / CLS / INP', 'Tree Shaking'],
                 topicParam: 'Core Web Vitals & SPA Performance'
             },
             {
-                id: 'it-3',
-                industry: 'it',
-                industryLabel: 'Công nghệ',
-                role: 'DevOps & Cloud',
-                title: 'Khi cluster Kubernetes gặp sự cố CrashLoopBackOff hàng loạt trong giờ cao điểm, quy trình điều tra và cô lập lỗi của bạn gồm những bước nào?',
-                difficulty: 'hard',
-                difficultyLabel: 'Nâng cao',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'case',
-                typeLabel: 'Tình huống',
-                duration: '7-9 phút',
-                context: 'Đánh giá khả năng xử lý khủng hoảng hạ tầng, kỹ năng troubleshooting pod/container lifecycle, và phân tích log dưới áp lực cao.',
-                followup: 'Làm sao bạn phân biệt nhanh giữa lỗi OOMKilled (Exit Code 137) do vượt Memory Limit với lỗi Application Crash do connection pool database bị cạn kiệt?',
-                star: {
-                    s: 'Production cluster báo động đỏ khi 12 pod dịch vụ Authentication liên tục khởi động lại trong giờ cao điểm.',
-                    t: 'Khôi phục dịch vụ xác thực ngay lập tức và ngăn chặn tình trạng tuyết lở (cascading failure).',
-                    a: 'Sử dụng kubectl describe pod & logs --previous để bắt Exit Code, phát hiện leak memory khi parse token JWT, tăng tạm thời pod memory limit và rollback phiên bản hotfix.',
-                    r: 'Dịch vụ hồi phục sau 6 phút, cấu hình thêm Liveness/Readiness probe và alerts qua Prometheus.'
-                },
-                keywords: ['CrashLoopBackOff', 'kubectl describe', 'OOMKilled 137', 'Readiness Probes', 'Prometheus Alerting'],
-                topicParam: 'Kubernetes Incident Response & CrashLoopBackOff'
-            },
-            {
-                id: 'it-4',
-                industry: 'it',
-                industryLabel: 'Công nghệ',
-                role: 'System Architect',
-                title: 'Hãy thiết kế một hệ thống Distributed Rate Limiter hỗ trợ 100.000 requests/giây để chống brute-force và DDoS.',
-                difficulty: 'hard',
-                difficultyLabel: 'Kiến trúc',
-                lang: 'en',
-                langLabel: 'English',
-                langFlag: '🇬🇧',
-                type: 'system',
-                typeLabel: 'Kiến trúc',
-                duration: '10-12 phút',
-                context: 'Đánh giá năng lực thiết kế hệ thống phân tán chịu lỗi cao, lựa chọn thuật toán rate limit phù hợp và tối ưu độ trễ với Redis Cluster.',
-                followup: 'Compare Token Bucket and Sliding Window Log algorithms in terms of memory footprint and boundary accuracy when scaling to tens of millions of active IP addresses.',
-                star: {
-                    s: 'API Gateway faced malicious bot scraping causing server degradation and high database utilization.',
-                    t: 'Architect a distributed, multi-region rate limiter keeping overhead latency below 3ms per request.',
-                    a: 'Designed a hybrid Token Bucket algorithm using Redis Lua scripts for atomic operations, combined with local in-memory caching for tier-1 filtering.',
-                    r: 'Handled 120,000 peak RPS smoothly with sub-2ms latency overhead, stopping 99.4% of automated scraping attacks.'
-                },
-                keywords: ['Token Bucket', 'Redis Lua Scripting', 'Distributed Cache', 'Sliding Window', 'DDoS Mitigation'],
-                topicParam: 'Distributed Rate Limiter at Scale'
-            },
-            {
-                id: 'it-5',
-                industry: 'it',
-                industryLabel: 'Công nghệ',
-                role: 'AI / Machine Learning Engineer',
-                title: 'Làm thế nào để phát hiện và giảm thiểu hiện tượng hallucination (ảo tưởng) trong hệ thống RAG (Retrieval-Augmented Generation)?',
-                difficulty: 'hard',
-                difficultyLabel: 'Nâng cao',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'technical',
-                typeLabel: 'Kỹ thuật',
-                duration: '7-9 phút',
-                context: 'Kiểm tra kiến trúc Vector Search, Semantic Chunking, Re-ranking và các kỹ thuật Guardrails đánh giá độ tin cậy của mô hình ngôn ngữ lớn.',
-                followup: 'Khi chunk text tài liệu có ngữ cảnh quá rộng hoặc quá hẹp, bạn tối ưu phương pháp Chunk Overlap và kết hợp HyDE (Hypothetical Document Embeddings) ra sao?',
-                star: {
-                    s: 'Trợ lý AI tra cứu văn bản pháp lý nội bộ đưa ra 12% câu trả lời có thông tin trích dẫn không tồn tại.',
-                    t: 'Nâng độ chính xác trích dẫn (Faithfulness score) lên trên 95% theo chuẩn Ragas evaluation.',
-                    a: 'Thiết kế pipeline RAG 2 bước: Hybrid Search (BM25 + Dense Vectors), tích hợp Cohere Reranker và áp dụng Self-Consistency Guardrails trước khi trả phản hồi.',
-                    r: 'Tỷ lệ hallucination giảm từ 12% xuống dưới 1.5%, độ hài lòng của chuyên viên pháp lý đạt 98%.'
-                },
-                keywords: ['RAG Pipeline', 'Vector Database', 'Hybrid Search', 'Re-ranking', 'Faithfulness Guardrails'],
-                topicParam: 'Mitigating Hallucination in RAG Systems'
-            },
-            {
-                id: 'it-6',
-                industry: 'it',
-                industryLabel: 'Công nghệ',
-                role: 'Mobile Developer (Flutter / React Native)',
-                title: 'Tối ưu hóa mức tiêu thụ pin và quản lý background task trên ứng dụng định vị thời gian thực.',
-                difficulty: 'medium',
-                difficultyLabel: 'Trung cấp',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'technical',
-                typeLabel: 'Kỹ thuật',
-                duration: '6-8 phút',
-                context: 'Kiểm tra việc sử dụng Location API hiệu quả, batching updates, và tối ưu Foreground Services / Background Fetch.',
-                followup: 'Làm sao để cân bằng giữa độ chính xác vị trí GPS theo thời gian thực với thời lượng pin khi người dùng đứng yên hoặc di chuyển tốc độ cao?',
-                star: {
-                    s: 'Ứng dụng giao hàng bị người dùng phàn nàn tụt pin 25%/giờ khi tài xế bật chế độ nhận đơn liên tục.',
-                    t: 'Giảm mức tiêu thụ pin xuống dưới 10%/giờ mà vẫn duy trì lộ trình tracking chính xác.',
-                    a: 'Triển khai Geofencing và Adaptive Distance Filter: chuyển đổi linh hoạt giữa GPS vệ tinh khi di chuyển và Cell Tower/Wi-Fi khi dừng xe.',
-                    r: 'Mức tiêu thụ pin giảm 60%, app rating trên App Store tăng từ 3.6 lên 4.6 sao.'
-                },
-                keywords: ['Location Services', 'Geofencing', 'Battery Optimization', 'Foreground Service', 'Adaptive Sampling'],
-                topicParam: 'Mobile Battery & Background Task Optimization'
-            },
-
-            // --- 2. MARKETING & TRUYỀN THÔNG ---
-            {
-                id: 'mkt-1',
+                id: 'Q-107',
+                company: 'Vinamilk',
+                provenance: 'PrepMateCurated',
+                sourceUrl: 'https://www.vinamilk.com.vn/vi/tuyen-dung',
+                sourceAttribution: 'Vinamilk Digital Marketing & Commercial Competency Model',
                 industry: 'marketing',
                 industryLabel: 'Marketing',
                 role: 'Performance Marketing Lead',
@@ -496,152 +445,56 @@
                 type: 'case',
                 typeLabel: 'Tình huống',
                 duration: '6-8 phút',
-                context: 'Đánh giá tư duy phân tích dữ liệu đa kênh, tối ưu phễu chuyển đổi (Conversion Rate Optimization) và chiến lược giữ chân khách hàng.',
-                followup: 'Khi CPM trên Facebook và TikTok tăng 35% trong quý 4, bạn sẽ phân bổ ngân sách lại giữa Top of Funnel và Retargeting như thế nào để đảm bảo ROAS mục tiêu?',
+                context: 'Đánh giá tư duy phân tích dữ liệu đa kênh, tối ưu phễu chuyển đổi (CRO) và giữ chân khách hàng.',
+                followup: 'Khi CPM tăng 35%, bạn phân bổ lại ngân sách giữa Top of Funnel và Retargeting như thế nào?',
                 star: {
-                    s: 'Chi phí mua một khách hàng mới (CAC) của sản phẩm EdTech tăng từ $18 lên $32 do cạnh tranh quảng cáo.',
-                    t: 'Kéo CAC trở lại mức an toàn dưới $22 trong khi vẫn duy trì lượng user mới trên 5,000/tháng.',
-                    a: 'Triển khai A/B test 15 biến thể Landing Page, cắt giảm 30% ngân sách nhóm ads kém hiệu quả, đẩy mạnh Referral Program và Lead Nurturing qua Email Automation.',
-                    r: 'CAC giảm còn $19.5, tỷ lệ chuyển đổi Landing Page tăng từ 2.4% lên 4.8%, ROAS tổng thể đạt 3.4x.'
+                    s: 'CAC tăng từ 180k lên 320k do cạnh tranh.',
+                    t: 'Kéo CAC về dưới 220k duy trì 5,000 đơn/tháng.',
+                    a: 'A/B test landing page, cắt giảm adset kém, đẩy mạnh referral.',
+                    r: 'CAC giảm còn 195k, ROAS đạt 3.4x.'
                 },
-                keywords: ['CAC & LTV', 'ROAS Optimization', 'A/B Testing', 'Funnel CRO', 'Attribution Modeling'],
+                keywords: ['CAC & LTV', 'ROAS Optimization', 'A/B Testing', 'Funnel CRO'],
                 topicParam: 'Performance Marketing CAC and LTV Optimization'
             },
             {
-                id: 'mkt-2',
-                industry: 'marketing',
-                industryLabel: 'Marketing',
-                role: 'PR & Communications Specialist',
-                title: 'Kế hoạch xử lý khủng hoảng truyền thông mạng xã hội khi sản phẩm công ty xuất hiện lỗi bảo mật làm lộ thông tin người dùng.',
+                id: 'Q-110',
+                company: 'Base.vn',
+                provenance: 'PrepMateCurated',
+                sourceUrl: 'https://base.vn/careers',
+                sourceAttribution: 'Base.vn Enterprise UI/UX Design System Guide',
+                industry: 'design',
+                industryLabel: 'Thiết kế',
+                role: 'UI/UX Design Lead',
+                title: 'Cách bạn thiết lập và duy trì Design System đa nền tảng để đảm bảo tính nhất quán giữa Figma và mã nguồn thực tế?',
                 difficulty: 'hard',
                 difficultyLabel: 'Nâng cao',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'star',
-                typeLabel: 'STAR',
-                duration: '6-8 phút',
-                context: 'Kiểm tra kỹ năng ứng biến khủng hoảng trong 24 giờ đầu, soạn thông điệp minh bạch, điều phối đội ngũ kỹ thuật và giữ vững uy tín thương hiệu.',
-                followup: 'Khi báo chí và cộng đồng mạng đồng loạt chỉ trích gay gắt, điều gì quan trọng hơn: ra thông cáo xin lỗi ngay lập tức hay đợi đội bảo mật xác nhận xong phạm vi thiệt hại?',
-                star: {
-                    s: 'Một lỗ hổng bảo mật rò rỉ email 10,000 khách hàng bị đăng tải trên diễn đàn công nghệ lớn lúc 22h đêm.',
-                    t: 'Ngăn chặn tin đồn thất thiệt lan rộng, thông báo minh bạch cho người dùng và tuân thủ trách nhiệm pháp lý.',
-                    a: 'Kích hoạt ban phản ứng khủng hoảng, ban hành Holding Statement trong vòng 45 phút, gửi email thông báo trực tiếp đến các tài khoản bị ảnh hưởng kèm hướng dẫn đổi mật khẩu và mở hotline hỗ trợ 24/7.',
-                    r: '85% khách hàng đánh giá cao thái độ minh bạch, không phát sinh kiện tụng pháp lý và báo chí ghi nhận cách xử lý chuyên nghiệp.'
-                },
-                keywords: ['Crisis Communication', 'Holding Statement', 'Media Relations', 'Brand Trust', 'Stakeholder Alignment'],
-                topicParam: 'Social Media PR Crisis Management'
-            },
-            {
-                id: 'mkt-3',
-                industry: 'marketing',
-                industryLabel: 'Marketing',
-                role: 'Content Strategist',
-                title: 'Xây dựng chiến lược Content Pillar và kế hoạch viral distribution để tăng trưởng người dùng tự nhiên (Organic Growth).',
-                difficulty: 'medium',
-                difficultyLabel: 'Trung cấp',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'case',
-                typeLabel: 'Tình huống',
-                duration: '5-7 phút',
-                context: 'Đánh giá khả năng nghiên cứu insight người dùng, xây dựng ma trận nội dung (TOFU - MOFU - BOFU) và tối ưu đa định dạng (Video ngắn, Blog, Carousel).',
-                followup: 'Làm thế nào bạn tái sử dụng (repurpose) một bài nghiên cứu chuyên sâu thành 10 mẩu nội dung đa nền tảng (TikTok, LinkedIn, Newsletter) mà không gây nhàm chán?',
-                star: {
-                    s: 'Website thương hiệu có lượng organic traffic trì trệ ở mức 15,000 truy cập/tháng vì bài viết thiếu trọng tâm.',
-                    t: 'Tăng traffic tự nhiên lên 100,000/tháng và tạo nguồn inbound leads bền vững không phụ thuộc ads.',
-                    a: 'Xây dựng 4 Content Pillars theo Search Intent, sản xuất chuỗi bài cẩm nang chuyên sâu, cắt ngắn thành video TikTok/Shorts và xuất bản đều đặn 4 bài/tuần.',
-                    r: 'Organic traffic đạt 135,000/tháng sau 6 tháng, tỷ lệ chuyển đổi thành user dùng thử tăng 42%.'
-                },
-                keywords: ['Content Pillar', 'Content Repurposing', 'Organic Growth', 'Search Intent', 'Lead Generation'],
-                topicParam: 'Content Strategy and Viral Organic Growth'
-            },
-
-            // --- 3. THIẾT KẾ & SÁNG TẠO ---
-            {
-                id: 'des-1',
-                industry: 'design',
-                industryLabel: 'Thiết kế',
-                role: 'UI/UX Designer',
-                title: 'Quy trình xây dựng Design System từ đầu và giải quyết mâu thuẫn bàn giao component giữa Design và Engineering.',
-                difficulty: 'medium',
-                difficultyLabel: 'Trung cấp',
-                lang: 'en',
-                langLabel: 'English',
-                langFlag: '🇬🇧',
-                type: 'case',
-                typeLabel: 'Tình huống',
-                duration: '6-8 phút',
-                context: 'Kiểm tra tư duy hệ thống (Design Tokens, Typography Scale, Autolayout, Accessibility) và khả năng cộng tác chặt chẽ với lập trình viên Front-end.',
-                followup: 'How do you structure design tokens (color, spacing, elevation) in Figma so they directly map to CSS/Tailwind variables, eliminating UI discrepancies during hand-off?',
-                star: {
-                    s: 'A growing SaaS product had 8 different button styles and inconsistent spacing across 20 feature modules.',
-                    t: 'Create a unified Design System in Figma and establish a seamless hand-off workflow with front-end developers.',
-                    a: 'Audited existing UI components, defined semantic design tokens, authored clear usage guidelines, and paired weekly with devs to review Storybook implementations.',
-                    r: 'Reduced designer-developer back-and-forth by 60% and accelerated new feature delivery by 35%.'
-                },
-                keywords: ['Design System', 'Design Tokens', 'Figma Autolayout', 'Storybook', 'Dev Handoff'],
-                topicParam: 'Design System Architecture and Dev Handoff'
-            },
-            {
-                id: 'des-2',
-                industry: 'design',
-                industryLabel: 'Thiết kế',
-                role: 'Product Designer',
-                title: 'Bạn sử dụng dữ liệu định lượng (Funnel, Heatmap) và định tính (User Interview) như thế nào để tái cấu trúc luồng Onboarding giảm Drop-off?',
-                difficulty: 'hard',
-                difficultyLabel: 'Nâng cao',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'case',
-                typeLabel: 'Tình huống',
-                duration: '6-8 phút',
-                context: 'Đánh giá kỹ năng Data-driven Design, phân tích ma trận trải nghiệm người dùng và phương pháp phỏng vấn tháo gỡ điểm ma sát (Friction points).',
-                followup: 'Khi dữ liệu định lượng chỉ ra 45% người dùng bỏ dở ở bước xác thực số điện thoại, nhưng user interview lại bảo họ ngại chia sẻ vì sợ tin nhắn rác, giải pháp thiết kế của bạn là gì?',
-                star: {
-                    s: 'Luồng Onboarding của ứng dụng tài chính cá nhân có tỷ lệ bỏ rơi (drop-off) lên đến 52% tại bước thứ ba.',
-                    t: 'Tái thiết kế trải nghiệm đăng ký để tỷ lệ hoàn thành onboarding đạt trên 70%.',
-                    a: 'Kết hợp Amplitude funnel data và 12 buổi 1-on-1 usability testing, tinh gọn từ 7 bước xuống 3 bước tối thiểu, áp dụng progressive disclosure và thêm social proof giải thích quyền riêng tư.',
-                    r: 'Tỷ lệ hoàn thành Onboarding tăng vọt lên 74%, số lượng người dùng kích hoạt tài khoản tăng thêm 2,800/tháng.'
-                },
-                keywords: ['User Onboarding', 'Data-driven Design', 'Usability Testing', 'Friction Points', 'Progressive Disclosure'],
-                topicParam: 'Product Design Onboarding Optimization'
-            },
-            {
-                id: 'des-3',
-                industry: 'design',
-                industryLabel: 'Thiết kế',
-                role: 'Brand / Visual Designer',
-                title: 'Định hình bộ nhận diện thương hiệu (Visual Identity) cho một startup Fintech hướng đến đối tượng Gen Z.',
-                difficulty: 'medium',
-                difficultyLabel: 'Trung cấp',
                 lang: 'vi',
                 langLabel: 'Tiếng Việt',
                 langFlag: '🇻🇳',
                 type: 'technical',
-                typeLabel: 'Chuyên môn',
-                duration: '5-7 phút',
-                context: 'Đánh giá tư duy thẩm mỹ hiện đại, tâm lý học màu sắc trong tài chính, và khả năng ứng dụng nhất quán từ Mobile App đến Social Media.',
-                followup: 'Làm thế nào bạn tạo ra một bảng màu và phong cách typography vừa đủ trẻ trung, năng động cho Gen Z nhưng vẫn giữ được sự tin cậy, an toàn của một ứng dụng tiền bạc?',
+                typeLabel: 'Kỹ thuật',
+                duration: '7-9 phút',
+                context: 'Đánh giá tư duy hệ thống hóa giao diện, quản lý Design Tokens và đồng bộ hóa Design-Dev.',
+                followup: 'Khi Dev yêu cầu đổi token để đạt WCAG AA trên Dark Mode mà Designer muốn giữ màu gốc, bạn giải quyết ra sao?',
                 star: {
-                    s: 'Startup ví điện tử có diện mạo ban đầu khô khan như ngân hàng truyền thống, không thu hút được người dùng trẻ dưới 25 tuổi.',
-                    t: 'Xây dựng bộ Visual Identity hoàn chỉnh trong 6 tuần để kịp ra mắt chiến dịch tiếp thị lớn.',
-                    a: 'Nghiên cứu xu hướng Neo-brutalism và Glassmorphism, chọn tông màu Electric Indigo kết hợp Neon Green biểu trưng cho sức sống công nghệ, thiết kế mascot thương hiệu và xây dựng bộ Brand Guidelines 60 trang.',
-                    r: 'Bộ nhận diện mới đạt giải thiết kế cộng đồng, nhận được 92% phản hồi tích cực trong khảo sát người dùng đầu tiên.'
+                    s: '5 sản phẩm dùng 40 sắc độ xám lộn xộn.',
+                    t: 'Quy chuẩn thành Design System duy nhất.',
+                    a: 'Thiết lập 3-tier Tokens, tích hợp Figma Tokens Studio.',
+                    r: 'Tốc độ bàn giao tăng 100%, lỗi UI giảm 70%.'
                 },
-                keywords: ['Visual Identity', 'Brand Guidelines', 'Color Psychology', 'Typography', 'Gen Z Aesthetics'],
-                topicParam: 'Fintech Visual Identity and Brand Strategy'
+                keywords: ['Design Tokens', 'Tokens Studio', 'Semantic Tokens', 'WCAG 2.1 AA'],
+                topicParam: 'Design System Token Architecture & Multi-Platform Sync'
             },
-
-            // --- 4. KINH DOANH & BÁN HÀNG ---
             {
-                id: 'sal-1',
+                id: 'Q-113',
+                company: 'Base.vn',
+                provenance: 'PrepMateCurated',
+                sourceUrl: 'https://base.vn/careers',
+                sourceAttribution: 'Base.vn Enterprise Solution Sales Methodology',
                 industry: 'sales',
                 industryLabel: 'Kinh doanh',
-                role: 'B2B Enterprise Sales Lead',
-                title: 'Chiến lược tiếp cận C-Level và rút ngắn chu kỳ bán hàng (Sales Cycle) cho hợp đồng phần mềm doanh nghiệp giá trị lớn.',
+                role: 'Enterprise Account Executive',
+                title: 'Chiến lược tiếp cận và đàm phán hợp đồng phần mềm doanh nghiệp (B2B Enterprise SaaS) trị giá trên 500 triệu đồng với các tập đoàn lớn.',
                 difficulty: 'hard',
                 difficultyLabel: 'Nâng cao',
                 lang: 'vi',
@@ -650,499 +503,357 @@
                 type: 'case',
                 typeLabel: 'Tình huống',
                 duration: '7-9 phút',
-                context: 'Đánh giá khả năng bán giải pháp (Consultative Selling), xây dựng bài toán ROI tài chính và điều hướng nhiều bên liên quan (Stakeholder Management).',
-                followup: 'Khi CIO đã đồng ý mua giải pháp nhưng CFO lại chần chừ vì muốn cắt giảm ngân sách IT cuối năm, bài thuyết trình của bạn sẽ thay đổi trọng tâm như thế nào?',
+                context: 'Khảo sát phương pháp bán hàng MEDDPICC, định vị Champion và xử lý bài toán Build vs Buy.',
+                followup: 'Khi phòng IT đối tác muốn tự xây nội bộ, bạn làm gì để thuyết phục CEO?',
                 star: {
-                    s: 'Chu kỳ bán gói phần mềm ERP doanh nghiệp bị kéo dài trung bình 9 tháng khiến tỷ lệ chốt deal bị chậm trễ.',
-                    t: 'Rút ngắn chu kỳ bán hàng xuống dưới 5 tháng và duy trì tỷ lệ chốt deal thành công trên 35%.',
-                    a: 'Chuyển từ chào tính năng kỹ thuật sang mô hình Value-based Selling: xây dựng bảng phân tích hoàn vốn ROI trong 18 tháng và tổ chức Executive Workshop có sự tham gia của cả CEO và CFO.',
-                    r: 'Ký kết thành công 4 hợp đồng Enterprise trị giá hơn $450k, chu kỳ chốt hợp đồng rút ngắn còn 4.2 tháng.'
+                    s: 'Dự án SaaS 800 user bị đình trệ 4 tháng vì rủi ro IT.',
+                    t: 'Chốt hợp đồng 650 triệu trong 45 ngày.',
+                    a: 'Workshop kỹ thuật với CIO, lập bảng TCO so sánh Build vs Buy.',
+                    r: 'Ký hợp đồng 3 năm trị giá 1.8 tỷ đồng.'
                 },
-                keywords: ['B2B Sales', 'Consultative Selling', 'Stakeholder Mapping', 'ROI Justification', 'C-Level Pitching'],
-                topicParam: 'B2B Enterprise Software Sales Strategy'
+                keywords: ['MEDDPICC', 'Economic Buyer', 'TCO Analysis', 'Enterprise SaaS'],
+                topicParam: 'B2B Enterprise SaaS Deal Negotiation & Objection Handling'
             },
             {
-                id: 'sal-2',
-                industry: 'sales',
-                industryLabel: 'Kinh doanh',
-                role: 'Sales Executive',
-                title: 'Cách xử lý tình huống khách hàng từ chối ký hợp đồng vì đối thủ cạnh tranh đưa ra mức giá chiết khấu thấp hơn 30%.',
-                difficulty: 'medium',
-                difficultyLabel: 'Trung cấp',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'star',
-                typeLabel: 'STAR',
-                duration: '5-7 phút',
-                context: 'Kiểm tra bản lĩnh đàm phán giá trị, kỹ năng phân tích Total Cost of Ownership (TCO) và tránh rơi vào bẫy giảm giá triệt tiêu biên lợi nhuận.',
-                followup: 'Nếu khách hàng tuyên bố thẳng thừng "Hoặc bạn giảm 30% bằng đối thủ hoặc chúng tôi dừng đàm phán", bạn sẽ ứng xử thế nào để không hạ giá mà vẫn giữ chân họ?',
-                star: {
-                    s: 'Một khách hàng chuỗi bán lẻ 30 chi nhánh thông báo chuẩn bị ký với đối thủ vì giá rẻ hơn 30%.',
-                    t: 'Thuyết phục khách hàng tiếp tục lựa chọn giải pháp của công ty mà không phá vỡ khung giá chuẩn.',
-                    a: 'Lắng nghe nhu cầu thực chất, lập bảng so sánh Total Cost of Ownership chỉ ra chi phí ẩn của đối thủ về phí bảo trì và SLA hỗ trợ chậm, đồng thời linh hoạt tặng kèm 3 tháng onboarding đào tạo chuyên sâu.',
-                    r: 'Khách hàng đồng ý ký hợp đồng 2 năm với mức giá nguyên bản, đánh giá cao năng lực hỗ trợ tận tâm.'
-                },
-                keywords: ['Objection Handling', 'Price Negotiation', 'Total Cost of Ownership', 'Value Proposition', 'SLA Value'],
-                topicParam: 'Handling Price Objections in Sales Negotiation'
-            },
-            {
-                id: 'sal-3',
-                industry: 'sales',
-                industryLabel: 'Kinh doanh',
-                role: 'Customer Success Manager',
-                title: 'Phương pháp phân tích Churn Risk và xây dựng kịch bản Upsell dựa trên tín hiệu mức độ sử dụng tính năng của khách hàng SaaS.',
-                difficulty: 'medium',
-                difficultyLabel: 'Trung cấp',
-                lang: 'en',
-                langLabel: 'English',
-                langFlag: '🇬🇧',
-                type: 'technical',
-                typeLabel: 'Chuyên môn',
-                duration: '6-8 phút',
-                context: 'Đánh giá khả năng đọc Health Score người dùng, phòng ngừa rời bỏ dịch vụ chủ động và mở rộng doanh thu từ tệp khách hàng hiện hữu (Net Revenue Retention).',
-                followup: 'When product analytics show an account’s Daily Active Users dropped 40% over the last 30 days, what is your immediate 48-hour action plan before their annual renewal comes up?',
-                star: {
-                    s: 'A key corporate account with 500 licenses had declining usage trends and had not logged in during the past 2 weeks.',
-                    t: 'Prevent contract cancellation and identify renewal expansion opportunities.',
-                    a: 'Reached out to department champions, identified that recent employee turnover caused onboarding gaps, organized tailored re-training sessions, and demonstrated automation features saving 5 hours/week.',
-                    r: 'Client renewed contract for 2 years and purchased 150 additional licenses, increasing account ARR by 30%.'
-                },
-                keywords: ['Customer Success', 'Churn Prevention', 'Account Health Score', 'Upsell Strategy', 'Net Retention Rate'],
-                topicParam: 'SaaS Customer Success and Upsell Strategies'
-            },
-
-            // --- 5. NGÔN NGỮ & DỊCH THUẬT ---
-            {
-                id: 'lang-1',
-                industry: 'languages',
-                industryLabel: 'Ngôn ngữ',
-                role: 'Biên/Phiên dịch Tiếng Anh',
-                title: 'Kỹ thuật dịch đuổi (Simultaneous Interpreting) khi gặp các thuật ngữ tài chính ngân hàng phức tạp và diễn giả nói với tốc độ cao.',
-                difficulty: 'hard',
-                difficultyLabel: 'Nâng cao',
-                lang: 'en',
-                langLabel: 'English',
-                langFlag: '🇬🇧',
-                type: 'case',
-                typeLabel: 'Tình huống',
-                duration: '6-8 phút',
-                context: 'Kiểm tra kỹ thuật Décalage (độ trễ nghe - dịch), khả năng nén câu (Syntactic condensation) và phản xạ thuật ngữ chuyên ngành tài chính quốc tế.',
-                followup: 'How do you handle unexpected financial acronyms or dense quantitative figures without pausing the flow or losing the speaker’s core meaning in the booth?',
-                star: {
-                    s: 'Served as simultaneous interpreter at an international M&A summit where keynote speakers used rapid economic jargon at 180 words/minute.',
-                    t: 'Deliver seamless, accurate translation into the headset with less than a 3-second lag and zero terminology errors.',
-                    a: 'Prepared a customized 200-word glossaries beforehand, employed sentence-splitting and active listening techniques, and coordinated closely with booth partner.',
-                    r: 'Conference attendees gave 99% satisfaction ratings, and the event organizers retained services for 3 subsequent summits.'
-                },
-                keywords: ['Simultaneous Interpreting', 'Décalage Technique', 'Financial Jargon', 'Syntactic Condensation', 'Note-taking'],
-                topicParam: 'Simultaneous Financial Interpreting Techniques'
-            },
-            {
-                id: 'lang-2',
-                industry: 'languages',
-                industryLabel: 'Ngôn ngữ',
-                role: 'Biên/Phiên dịch Tiếng Nhật',
-                title: 'Văn hóa giao tiếp Keigo (Kính ngữ/Khiêm nhường ngữ) và xử lý bất đồng quan điểm trong buổi họp kinh doanh với đối tác Nhật Bản.',
-                difficulty: 'hard',
-                difficultyLabel: 'Nâng cao',
-                lang: 'ja',
-                langLabel: '日本語',
-                langFlag: '🇯🇵',
-                type: 'star',
-                typeLabel: 'STAR',
-                duration: '6-8 phút',
-                context: 'Kiểm tra mức độ thành thạo Sonkeigo (Tôn kính ngữ), Kenjougo (Khiêm nhường ngữ) và nghệ thuật truyền đạt tinh tế (Honne & Tatemae) trong kinh doanh Nhật Bản.',
-                followup: 'Khi phía Việt Nam đưa ra phản hồi từ chối gay gắt về thời hạn giao hàng, bạn sẽ phiên dịch bằng tiếng Nhật như thế nào để giữ phép lịch sự mà không làm mất đi tính quyết đoán của thông điệp?',
-                star: {
-                    s: 'Buổi họp đàm phán hợp đồng gia công phần mềm căng thẳng giữa ban giám đốc Việt Nam và đối tác khách hàng Tokyo.',
-                    t: 'Duy trì không khí hòa nhã, truyền đạt chính xác các yêu cầu kỹ thuật và văn hóa kinh doanh Omotenashi.',
-                    a: 'Vận dụng chuẩn xác Kenjougo khi nói về công ty mình và Sonkeigo khi đề cập đến đối tác, khéo léo dùng các cấu trúc đệm như "恐れ入りますが" để làm dịu các đề xuất bất đồng.',
-                    r: 'Hai bên đạt được thỏa thuận ký kết hợp tác trị giá 80 triệu Yên trong sự hài lòng tuyệt đối.'
-                },
-                keywords: ['Keigo Business', 'Sonkeigo / Kenjougo', 'Honne & Tatemae', 'Business Etiquette', 'Cross-cultural Negotiation'],
-                topicParam: 'Japanese Business Keigo and Negotiation'
-            },
-            {
-                id: 'lang-3',
-                industry: 'languages',
-                industryLabel: 'Ngôn ngữ',
-                role: 'Chuyên viên Biên dịch Kỹ thuật',
-                title: 'Quy trình kiểm soát chất lượng (QA/QC) và bảo đảm tính nhất quán thuật ngữ trong dự án biên dịch tài liệu kỹ thuật quy mô lớn.',
-                difficulty: 'medium',
-                difficultyLabel: 'Trung cấp',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'technical',
-                typeLabel: 'Chuyên môn',
-                duration: '5-7 phút',
-                context: 'Đánh giá việc ứng dụng các công cụ CAT Tools (SDL Trados, memoQ), quản lý Translation Memory (TM) và Termbase chuẩn mực.',
-                followup: 'Khi phối hợp nhóm 5 dịch giả cùng dịch bộ tài liệu 100,000 từ trong thời hạn 10 ngày, bạn làm thế nào để đảm bảo văn phong và thuật ngữ không bị lệch pha?',
-                star: {
-                    s: 'Dự án dịch tài liệu đặc tả hệ thống ngân hàng lõi 120,000 từ cần hoàn thành trong 2 tuần.',
-                    t: 'Đảm bảo tỷ lệ chính xác thuật ngữ 100% và bàn giao đúng hạn cho khách hàng.',
-                    a: 'Thiết lập Termbase và Memory chung trên SDL Trados Cloud, phân chia theo module chuyên môn và chạy automated QA kiểm tra lỗi lặp từ, số liệu trước khi xuất bản.',
-                    r: 'Dự án bàn giao sớm 1 ngày với tỷ lệ chấp thuận nghiệm thu vòng một đạt 99.2%.'
-                },
-                keywords: ['CAT Tools', 'SDL Trados', 'Translation Memory', 'Termbase', 'Quality Assurance'],
-                topicParam: 'Technical Translation Quality and Consistency'
-            },
-
-            // --- 6. TÀI CHÍNH & KẾ TOÁN ---
-            {
-                id: 'fin-1',
+                id: 'Q-119',
+                company: 'Masan Group',
+                provenance: 'PrepMateCurated',
+                sourceUrl: 'https://www.masangroup.com/careers',
+                sourceAttribution: 'Masan Group FP&A Financial Modeling Standards',
                 industry: 'finance',
                 industryLabel: 'Tài chính',
-                role: 'Chuyên viên Phân tích Tài chính',
-                title: 'Phương pháp định giá chiết khấu dòng tiền (DCF) kết hợp phân tích độ nhạy (Sensitivity Analysis) trong thẩm định dự án M&A.',
+                role: 'FP&A Manager / Financial Analyst',
+                title: 'Phương pháp xây dựng mô hình tài chính dự báo dòng tiền (Financial Forecasting) và phân tích độ nhạy (Sensitivity Analysis) cho dự án đầu tư mới.',
                 difficulty: 'hard',
                 difficultyLabel: 'Nâng cao',
                 lang: 'vi',
                 langLabel: 'Tiếng Việt',
                 langFlag: '🇻🇳',
                 type: 'technical',
-                typeLabel: 'Chuyên môn',
+                typeLabel: 'Kỹ thuật',
                 duration: '7-9 phút',
-                context: 'Kiểm tra năng lực mô hình hóa tài chính (Financial Modeling), ước tính chi phí vốn bình quân WACC, và dự báo dòng tiền tự do Free Cash Flow (FCFF).',
-                followup: 'Khi lãi suất trái phiếu chính phủ biến động mạnh và rủi ro thị trường tăng, bạn sẽ điều chỉnh phần bù rủi ro vốn cổ phần (Equity Risk Premium) trong WACC như thế nào để tránh định giá quá cao doanh nghiệp mục tiêu?',
+                context: 'Đánh giá tư duy định giá DCF, 3-Statement Model và kiểm tra kịch bản rủi ro.',
+                followup: 'Khi lãi suất tăng 2% và nguyên liệu tăng 15%, chỉ số nào chịu áp lực thanh khoản trước?',
                 star: {
-                    s: 'Công ty xem xét thâu tóm một doanh nghiệp logistics với mức giá chào bán $12 triệu.',
-                    t: 'Xây dựng mô hình định giá độc lập để đưa ra mức giá trần đàm phán hợp lý nhất cho hội đồng quản trị.',
-                    a: 'Dự báo dòng tiền FCFF trong 5 năm, tính toán WACC dựa trên cơ cấu nợ/vốn tối ưu, và lập ma trận phân tích độ nhạy biến thiên theo tăng trưởng doanh thu và biên EBITDA.',
-                    r: 'Khuyến nghị mức giá đàm phán $9.5 - $10.2 triệu, giúp công ty tiết kiệm $1.8 triệu và đạt tỷ suất sinh lời IRR 19.5% sau sáp nhập.'
+                    s: 'Dự án đầu tư 120 tỷ thiếu mô hình dự báo rủi ro.',
+                    t: 'Xây dựng mô hình tài chính 3 báo cáo kèm Monte Carlo.',
+                    a: 'Thiết lập mô phỏng 1,000 kịch bản biến động WACC.',
+                    r: 'Hội đồng thông qua, đạt điểm hòa vốn sớm hơn 4 tháng.'
                 },
-                keywords: ['DCF Valuation', 'WACC Calculation', 'Free Cash Flow', 'Sensitivity Analysis', 'M&A Due Diligence'],
-                topicParam: 'DCF Valuation and Sensitivity Analysis in MA'
-            },
-            {
-                id: 'fin-2',
-                industry: 'finance',
-                industryLabel: 'Tài chính',
-                role: 'Kế toán trưởng / Kiểm toán viên',
-                title: 'Xử lý chênh lệch giữa chuẩn mực kế toán (VAS/IFRS) và quy định thuế doanh nghiệp đối với các khoản trích lập dự phòng.',
-                difficulty: 'medium',
-                difficultyLabel: 'Trung cấp',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'technical',
-                typeLabel: 'Chuyên môn',
-                duration: '6-8 phút',
-                context: 'Kiểm tra hiểu biết sâu sắc về thuế thu nhập doanh nghiệp hoãn lại (Deferred Tax), điều kiện trích lập dự phòng nợ phải thu khó đòi và giảm giá hàng tồn kho.',
-                followup: 'Khi kiểm toán viên độc lập yêu cầu trích lập thêm dự phòng giảm giá hàng tồn kho 2 tỷ đồng nhưng cơ quan thuế chưa chấp nhận tính vào chi phí hợp lý năm nay, bạn ghi nhận tài sản thuế hoãn lại như thế nào?',
-                star: {
-                    s: 'Doanh nghiệp xuất nhập khẩu có chênh lệch lớn giữa lợi nhuận kế toán và thu nhập chịu thuế do trích lập dự phòng tỷ giá.',
-                    t: 'Hoàn thiện báo cáo tài chính kiểm toán và quyết toán thuế năm không phát sinh phạt vi phạm.',
-                    a: 'Lập bảng đối chiếu chi tiết chênh lệch tạm thời được khấu trừ, hạch toán tài sản thuế hoãn lại theo đúng chuẩn mực VAS 17 / IFRS 12 và chuẩn bị hồ sơ chứng minh thực tế giá thị trường.',
-                    r: 'Báo cáo tài chính nhận ý kiến chấp thuận toàn phần từ Big 4, đoàn thanh tra thuế đồng thuận 100% không phát sinh truy thu.'
-                },
-                keywords: ['VAS & IFRS', 'Deferred Tax', 'Provision for Bad Debts', 'Corporate Tax Audit', 'Reconciliation'],
-                topicParam: 'Accounting vs Tax Discrepancies and Deferred Tax'
-            },
-
-            // --- 7. NHÂN SỰ & TUYỂN DỤNG ---
-            {
-                id: 'hr-1',
-                industry: 'hr',
-                industryLabel: 'Nhân sự',
-                role: 'IT Talent Acquisition Lead',
-                title: 'Kỹ thuật phỏng vấn hành vi STAR để kiểm chứng kinh nghiệm thực tế và phát hiện ứng viên phóng đại thành tích (Over-claim).',
-                difficulty: 'medium',
-                difficultyLabel: 'Trung cấp',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'star',
-                typeLabel: 'STAR',
-                duration: '6-8 phút',
-                context: 'Đánh giá kỹ năng đặt câu hỏi đào sâu (Deep-dive questioning), bóc tách giữa vai trò cá nhân và thành tích tập thể của ứng viên trong CV.',
-                followup: 'Khi ứng viên tuyên bố "Tôi đã dẫn dắt dự án tăng trưởng gấp 3 lần", 3 câu hỏi liên tiếp tiếp theo bạn sẽ đặt để xác minh họ thực sự là kiến trúc sư giải pháp hay chỉ là người thừa hành?',
-                star: {
-                    s: 'Công ty tuyển vị trí Solution Architect nhưng 2 lần trước tuyển nhầm ứng viên CV rất đẹp nhưng năng lực thực tế kém.',
-                    t: 'Thiết kế quy trình sàng lọc hành vi chuẩn hóa để chọn đúng nhân sự cốt lõi trong vòng 3 tuần.',
-                    a: 'Xây dựng bộ câu hỏi STAR theo khung năng lực, yêu cầu ứng viên giải thích chi tiết các trade-offs kỹ thuật thất bại và đặt câu hỏi tình huống bất ngờ để kiểm chứng phản xạ tư duy.',
-                    r: 'Tuyển dụng thành công ứng viên xuất sắc vượt qua 6 tháng thử việc với đánh giá Exceeds Expectations từ CTO.'
-                },
-                keywords: ['Competency-based Interview', 'STAR Verification', 'Talent Acquisition', 'Candidate Screening', 'Behavioral Probing'],
-                topicParam: 'STAR Behavioral Interviewing and Candidate Screening'
-            },
-            {
-                id: 'hr-2',
-                industry: 'hr',
-                industryLabel: 'Nhân sự',
-                role: 'HR Generalist / C&B Specialist',
-                title: 'Xây dựng khung năng lực và chính sách đãi ngộ tổng thể (Total Rewards) để giữ chân nhân sự cốt lõi trong giai đoạn tái cấu trúc.',
-                difficulty: 'hard',
-                difficultyLabel: 'Nâng cao',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'case',
-                typeLabel: 'Tình huống',
-                duration: '6-8 phút',
-                context: 'Kiểm tra chiến lược cân bằng chi phí nhân sự, thiết kế ESOP/thưởng dài hạn, và xây dựng lộ trình thăng tiến minh bạch cho nhân sự chủ chốt.',
-                followup: 'Trong bối cảnh ngân sách tăng lương bị hạn chế, bạn sẽ kết hợp các phúc lợi phi tài chính (Work-from-anywhere, đào tạo, chức danh) như thế nào để giữ chân top 10% nhân tài?',
-                star: {
-                    s: 'Công ty tiến hành tái cơ cấu tổ chức, tỷ lệ nghỉ việc của nhân viên then chốt có nguy cơ tăng lên 25%.',
-                    t: 'Kiểm soát tỷ lệ nghỉ việc của nhóm nhân sự chủ chốt (Key Talents) dưới 8%.',
-                    a: 'Triển khai khảo sát gắn kết, thiết kế gói Total Rewards bao gồm Retention Bonus có điều kiện cam kết 2 năm, lịch làm việc linh hoạt và lộ trình thăng tiến cá nhân hóa với ban lãnh đạo.',
-                    r: 'Giữ chân thành công 94% nhân sự cốt lõi, tỷ lệ gắn kết nhân viên tăng 18 điểm phần trăm.'
-                },
-                keywords: ['Total Rewards', 'Talent Retention', 'Compensation & Benefits', 'Retention Bonus', 'Career Pathway'],
-                topicParam: 'HR Total Rewards and Key Talent Retention'
-            },
-
-            // --- 8. KỸ NĂNG MỀM & QUẢN TRỊ ---
-            {
-                id: 'soft-1',
-                industry: 'softskills',
-                industryLabel: 'Kỹ năng mềm',
-                role: 'Chuyên viên / Kỹ sư phần mềm',
-                title: 'Kể về một tình huống bạn bất đồng quan điểm gay gắt với Tech Lead hoặc Quản lý về kiến trúc và cách bạn đạt được đồng thuận.',
-                difficulty: 'medium',
-                difficultyLabel: 'Trung cấp',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'star',
-                typeLabel: 'STAR',
-                duration: '5-7 phút',
-                context: 'Kiểm tra tư duy phản biện dựa trên dữ liệu (Data-driven), kỹ năng giao tiếp chuyên nghiệp, sự khiêm tốn trí tuệ và tinh thần hướng về mục tiêu chung của dự án.',
-                followup: 'Nếu sau khi bạn đã trình bày bằng chứng thử nghiệm đầy đủ nhưng Tech Lead vẫn giữ quan điểm cũ, bạn sẽ làm gì tiếp theo: tiếp tục tranh luận, chấp hành, hay escalate lên cấp cao hơn?',
-                star: {
-                    s: 'Đội ngũ chuẩn bị khởi động dự án mới và có bất đồng lớn giữa việc dùng Monolith truyền thống hay Microservices.',
-                    t: 'Bảo vệ phương án tối ưu nhất cho bài toán kinh doanh mà không làm rạn nứt mối quan hệ với Tech Lead.',
-                    a: 'Không tranh cãi cảm tính, dành 2 ngày xây dựng bản Proof of Concept (PoC) đo lường trực tiếp thời gian phát triển và chi phí hạ tầng, sau đó tổ chức buổi trao đổi dựa trên dữ liệu định lượng.',
-                    r: 'Cả team thống nhất giải pháp Modular Monolith dung hòa cả hai bên, sản phẩm ra mắt trước hạn 2 tuần.'
-                },
-                keywords: ['Conflict Resolution', 'Data-driven Persuasion', 'Proof of Concept', 'Disagree and Commit', 'Team Collaboration'],
-                topicParam: 'STAR Resolving Technical Conflict with Leadership'
-            },
-            {
-                id: 'soft-2',
-                industry: 'softskills',
-                industryLabel: 'Kỹ năng mềm',
-                role: 'Quản lý dự án (Project Manager / Scrum Master)',
-                title: 'Bạn xử lý thế nào khi dự án bị cắt giảm 40% thời gian giao hàng trong khi phạm vi yêu cầu (Scope) không thay đổi?',
-                difficulty: 'hard',
-                difficultyLabel: 'Nâng cao',
-                lang: 'vi',
-                langLabel: 'Tiếng Việt',
-                langFlag: '🇻🇳',
-                type: 'case',
-                typeLabel: 'Tình huống',
-                duration: '6-8 phút',
-                context: 'Kiểm tra năng lực đàm phán tam giác quản lý dự án (Scope - Time - Cost/Quality), kỹ thuật phân loại MoSCoW và quản trị kỳ vọng khách hàng.',
-                followup: 'Làm thế nào bạn từ chối các yêu cầu phát sinh thêm của đối tác mà vẫn khiến họ cảm thấy được tôn trọng và hài lòng?',
-                star: {
-                    s: 'Khách hàng yêu cầu đẩy sớm ngày bàn giao phần mềm lên 1 tháng để kịp chiến dịch quảng bá toàn quốc.',
-                    t: 'Bàn giao phiên bản hoạt động ổn định đúng hạn mới mà không làm kiệt sức đội ngũ kỹ thuật.',
-                    a: 'Áp dụng phân loại tính năng MoSCoW: giữ lại 100% tính năng cốt lõi (Must-have), dời các tính năng phụ (Nice-to-have) sang giai đoạn 2, đồng thời triển khai Daily Standup tập trung giải tỏa nút thắt cổ chai.',
-                    r: 'Bàn giao đúng ngày hẹn mới không có lỗi nghiêm trọng (Zero Critical Bugs), khách hàng gửi thư khen ngợi sự linh hoạt.'
-                },
-                keywords: ['Project Management', 'MoSCoW Prioritization', 'Scope Management', 'Agile Delivery', 'Expectation Setting'],
-                topicParam: 'Managing Scope and Compressed Deadlines'
+                keywords: ['DCF Valuation', 'Sensitivity Analysis', '3-Statement Model', 'WACC'],
+                topicParam: 'SaaS Unit Economics & Rolling Financial Modeling'
             }
         ];
 
-        // ============================================================
-        // STATE & FILTER LOGIC
-        // ============================================================
-        let activeIndustry = 'all';
-        let searchQuery = '';
-        let activeDifficulty = 'all';
-        let activeLang = 'all';
-        let activeType = 'all';
-
-        // Pagination state
+        // Active State
+        let activeQuestions = [...FALLBACK_QBANK_DATA];
+        let currentFilters = {
+            industry: 'all',
+            keyword: '',
+            company: 'all',
+            difficulty: 'all',
+            lang: 'all',
+            type: 'all'
+        };
         let currentPage = 1;
         let pageSize = 6;
-        let filteredQuestions = [];
+        let totalMatches = activeQuestions.length;
+        let totalPages = 1;
+        let searchDebounceTimer = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            // Check user profile for sidebar
-            const user = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
-            if (user) {
-                const nameEl = document.getElementById('sidebar-user-name');
-                const emailEl = document.getElementById('sidebar-user-email');
-                if (nameEl) nameEl.innerText = user.fullname || user.username;
-                if (emailEl) emailEl.innerText = user.email || '';
-            }
+        // ============================================================
+        // API FETCH WITH BACKWARD-COMPATIBLE FALLBACK
+        // ============================================================
+        async function loadQBankData() {
+            try {
+                const params = new URLSearchParams();
+                if (currentFilters.keyword) params.append('keyword', currentFilters.keyword);
+                if (currentFilters.industry && currentFilters.industry !== 'all') params.append('industry', currentFilters.industry);
+                if (currentFilters.company && currentFilters.company !== 'all') params.append('company', currentFilters.company);
+                if (currentFilters.difficulty && currentFilters.difficulty !== 'all') params.append('difficulty', currentFilters.difficulty);
+                if (currentFilters.type && currentFilters.type !== 'all') params.append('questionType', currentFilters.type);
+                if (currentFilters.lang && currentFilters.lang !== 'all') params.append('language', currentFilters.lang);
+                params.append('page', currentPage.toString());
+                params.append('pageSize', pageSize.toString());
 
-            // Read query params if any (e.g. ?role=Backend or ?industry=it)
-            const params = new URLSearchParams(window.location.search);
-            const indParam = params.get('industry') || params.get('cat');
-            const searchParam = params.get('q') || params.get('role');
+                const res = await fetch(`/api/qbank/questions?${params.toString()}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    activeQuestions = data.questions || [];
+                    totalMatches = data.totalCount || 0;
+                    totalPages = data.totalPages || 1;
 
-            if (indParam) {
-                const targetChip = document.querySelector(`.qbank-cat-chip[onclick*="'${indParam}'"]`);
-                if (targetChip) {
-                    setIndustryFilter(indParam, targetChip);
+                    // Update UI Facet Counts if provided
+                    if (data.industryFacets && Array.isArray(data.industryFacets)) {
+                        data.industryFacets.forEach(facet => {
+                            const el = document.getElementById(`count-${facet.key}`);
+                            if (el) el.innerText = facet.count;
+                        });
+                    }
+
+                    renderQuestions(activeQuestions, false);
+                    updateCounters(totalMatches);
+                    return;
                 }
-            }
-            if (searchParam) {
-                const input = document.getElementById('qbank-search-input');
-                if (input) {
-                    input.value = searchParam;
-                    searchQuery = searchParam.toLowerCase();
-                }
+            } catch (err) {
+                // Backend not reachable, fall back to offline client evaluation
             }
 
-            // Calculate category counts
-            updateCategoryCounts();
-
-            // Initial Filter & Render
-            applyAllFilters();
-        });
-
-        function updateCategoryCounts() {
-            const counts = { all: QBANK_DATA.length };
-            QBANK_DATA.forEach(q => {
-                counts[q.industry] = (counts[q.industry] || 0) + 1;
-            });
-
-            for (const key in counts) {
-                const el = document.getElementById(`count-${key}`);
-                if (el) el.innerText = counts[key];
-            }
-            const totalEl = document.getElementById('stat-total-q');
-            if (totalEl) totalEl.innerText = QBANK_DATA.length;
+            // Fallback: evaluate locally on FALLBACK_QBANK_DATA
+            evaluateLocalFilters();
         }
 
-        function setIndustryFilter(industryKey, btnElement) {
-            activeIndustry = industryKey;
-            document.querySelectorAll('.qbank-cat-chip').forEach(c => c.classList.remove('active'));
-            if (btnElement) btnElement.classList.add('active');
-            currentPage = 1;
-            applyAllFilters();
-        }
+        function evaluateLocalFilters() {
+            const kw = (currentFilters.keyword || '').trim().toLowerCase();
+            const filtered = FALLBACK_QBANK_DATA.filter(item => {
+                if (currentFilters.industry !== 'all' && item.industry !== currentFilters.industry) return false;
+                if (currentFilters.company !== 'all' && item.company !== currentFilters.company) return false;
+                if (currentFilters.difficulty !== 'all' && item.difficulty !== currentFilters.difficulty) return false;
+                if (currentFilters.lang !== 'all' && item.lang !== currentFilters.lang) return false;
+                if (currentFilters.type !== 'all' && item.type !== currentFilters.type) return false;
 
-        function handleSearchInput(val) {
-            searchQuery = (val || '').trim().toLowerCase();
-            currentPage = 1;
-            applyAllFilters();
-        }
-
-        function applyAllFilters() {
-            activeDifficulty = document.getElementById('select-difficulty')?.value || 'all';
-            activeLang = document.getElementById('select-lang')?.value || 'all';
-            activeType = document.getElementById('select-type')?.value || 'all';
-
-            // Check if any filter is active to show "Reset filters" button
-            const isFiltered = (activeIndustry !== 'all' || searchQuery !== '' || activeDifficulty !== 'all' || activeLang !== 'all' || activeType !== 'all');
-            const resetBtn = document.getElementById('btn-reset-filter');
-            if (resetBtn) {
-                resetBtn.style.display = isFiltered ? 'inline-flex' : 'none';
-            }
-
-            // Filter data
-            filteredQuestions = QBANK_DATA.filter(item => {
-                // Industry filter
-                if (activeIndustry !== 'all' && item.industry !== activeIndustry) return false;
-
-                // Difficulty filter
-                if (activeDifficulty !== 'all' && item.difficulty !== activeDifficulty) return false;
-
-                // Language filter
-                if (activeLang !== 'all' && item.lang !== activeLang) return false;
-
-                // Question Type filter
-                if (activeType !== 'all' && item.type !== activeType) return false;
-
-                // Search query matching
-                if (searchQuery) {
-                    const matchTitle = item.title.toLowerCase().includes(searchQuery);
-                    const matchRole = item.role.toLowerCase().includes(searchQuery);
-                    const matchKeywords = item.keywords.some(k => k.toLowerCase().includes(searchQuery));
-                    const matchContext = item.context.toLowerCase().includes(searchQuery);
-                    if (!matchTitle && !matchRole && !matchKeywords && !matchContext) return false;
+                if (kw) {
+                    const matchText = (item.title + ' ' + item.role + ' ' + (item.company || '') + ' ' + (item.context || '') + ' ' + item.keywords.join(' ')).toLowerCase();
+                    if (!matchText.includes(kw)) return false;
                 }
-
                 return true;
             });
 
-            // Update total matches summary
-            const totalCountEl = document.getElementById('total-matches-count');
-            if (totalCountEl) totalCountEl.innerText = filteredQuestions.length;
+            totalMatches = filtered.length;
+            totalPages = Math.max(1, Math.ceil(totalMatches / pageSize));
+            if (currentPage > totalPages) currentPage = 1;
 
-            // Render page
-            renderCurrentPage();
+            const startIndex = (currentPage - 1) * pageSize;
+            activeQuestions = filtered.slice(startIndex, startIndex + pageSize);
+
+            renderQuestions(activeQuestions, true);
+            updateCounters(totalMatches);
+        }
+
+        function updateCounters(total) {
+            const totalEl = document.getElementById('total-matches-count');
+            if (totalEl) totalEl.innerText = total;
+
+            const statTotal = document.getElementById('stat-total-q');
+            if (statTotal && total > 0) statTotal.innerText = total;
+
+            const resetBtn = document.getElementById('btn-reset-filter');
+            if (resetBtn) {
+                const hasFilters = currentFilters.industry !== 'all' || 
+                                   (currentFilters.keyword && currentFilters.keyword.length > 0) ||
+                                   currentFilters.company !== 'all' ||
+                                   currentFilters.difficulty !== 'all' || 
+                                   currentFilters.lang !== 'all' || 
+                                   currentFilters.type !== 'all';
+                resetBtn.style.display = hasFilters ? 'inline-flex' : 'none';
+            }
+            renderActiveFilterTags();
+        }
+
+        function clearSearchInput() {
+            const input = document.getElementById('qbank-search-input');
+            const clearBtn = document.getElementById('btn-clear-search');
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
+            if (clearBtn) clearBtn.style.display = 'none';
+            currentFilters.keyword = '';
+            currentPage = 1;
+            loadQBankData();
+        }
+
+        function removeFilter(filterKey) {
+            if (filterKey === 'industry') {
+                currentFilters.industry = 'all';
+                document.querySelectorAll('#category-chips-bar .qbank-cat-chip').forEach(el => el.classList.remove('active'));
+                const firstChip = document.querySelector('#category-chips-bar .qbank-cat-chip');
+                if (firstChip) firstChip.classList.add('active');
+            } else if (filterKey === 'keyword') {
+                currentFilters.keyword = '';
+                const input = document.getElementById('qbank-search-input');
+                if (input) input.value = '';
+                const clearBtn = document.getElementById('btn-clear-search');
+                if (clearBtn) clearBtn.style.display = 'none';
+            } else if (filterKey === 'company') {
+                currentFilters.company = 'all';
+                const el = document.getElementById('select-company');
+                if (el) el.value = 'all';
+            } else if (filterKey === 'difficulty') {
+                currentFilters.difficulty = 'all';
+                const el = document.getElementById('select-difficulty');
+                if (el) el.value = 'all';
+            } else if (filterKey === 'lang') {
+                currentFilters.lang = 'all';
+                const el = document.getElementById('select-lang');
+                if (el) el.value = 'all';
+            } else if (filterKey === 'type') {
+                currentFilters.type = 'all';
+                const el = document.getElementById('select-type');
+                if (el) el.value = 'all';
+            }
+            currentPage = 1;
+            loadQBankData();
+        }
+
+        function renderActiveFilterTags() {
+            const bar = document.getElementById('active-filters-bar');
+            const chipsWrap = document.getElementById('active-filter-chips');
+            if (!bar || !chipsWrap) return;
+
+            const tags = [];
+            const industryLabels = {
+                it: 'Công nghệ thông tin',
+                marketing: 'Marketing',
+                design: 'Thiết kế',
+                sales: 'Kinh doanh',
+                languages: 'Ngôn ngữ',
+                finance: 'Tài chính',
+                hr: 'Nhân sự',
+                softskills: 'Kỹ năng mềm'
+            };
+
+            if (currentFilters.industry !== 'all') {
+                tags.push({ key: 'industry', label: 'Ngành: ' + (industryLabels[currentFilters.industry] || currentFilters.industry) });
+            }
+            if (currentFilters.keyword && currentFilters.keyword.trim().length > 0) {
+                tags.push({ key: 'keyword', label: '"' + currentFilters.keyword.trim() + '"' });
+            }
+            if (currentFilters.company !== 'all') {
+                tags.push({ key: 'company', label: 'Doanh nghiệp: ' + currentFilters.company });
+            }
+            if (currentFilters.difficulty !== 'all') {
+                const diffMap = { easy: 'Cơ bản', medium: 'Trung cấp', hard: 'Nâng cao' };
+                tags.push({ key: 'difficulty', label: 'Độ khó: ' + (diffMap[currentFilters.difficulty] || currentFilters.difficulty) });
+            }
+            if (currentFilters.lang !== 'all') {
+                const langMap = { vi: 'Tiếng Việt', en: 'English', ja: 'Tiếng Nhật' };
+                tags.push({ key: 'lang', label: 'Ngôn ngữ: ' + (langMap[currentFilters.lang] || currentFilters.lang) });
+            }
+            if (currentFilters.type !== 'all') {
+                const typeMap = { technical: 'Kỹ thuật', star: 'Chuẩn STAR', case: 'Tình huống', system: 'Kiến trúc' };
+                tags.push({ key: 'type', label: 'Dạng: ' + (typeMap[currentFilters.type] || currentFilters.type) });
+            }
+
+            if (tags.length === 0) {
+                bar.style.display = 'none';
+                chipsWrap.innerHTML = '';
+            } else {
+                bar.style.display = 'flex';
+                chipsWrap.innerHTML = tags.map(t => `
+                    <span class="active-filter-tag">
+                        <span>${t.label}</span>
+                        <button type="button" onclick="removeFilter('${t.key}')" aria-label="Xóa bộ lọc ${t.label}" title="Xóa">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </span>
+                `).join('');
+            }
+        }
+
+        // ============================================================
+        // EVENT HANDLERS & FILTERS
+        // ============================================================
+        function setIndustryFilter(industryKey, btnElement) {
+            currentFilters.industry = industryKey;
+            currentPage = 1;
+
+            document.querySelectorAll('#category-chips-bar .qbank-cat-chip').forEach(el => el.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+
+            loadQBankData();
+        }
+
+        function handleSearchInput(val) {
+            const clearBtn = document.getElementById('btn-clear-search');
+            if (clearBtn) {
+                clearBtn.style.display = (val && val.trim().length > 0) ? 'flex' : 'none';
+            }
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                currentFilters.keyword = val;
+                currentPage = 1;
+                loadQBankData();
+            }, 250);
+        }
+
+        function applyAllFilters() {
+            const companySelect = document.getElementById('select-company');
+            const diffSelect = document.getElementById('select-difficulty');
+            const langSelect = document.getElementById('select-lang');
+            const typeSelect = document.getElementById('select-type');
+
+            currentFilters.company = companySelect ? companySelect.value : 'all';
+            currentFilters.difficulty = diffSelect ? diffSelect.value : 'all';
+            currentFilters.lang = langSelect ? langSelect.value : 'all';
+            currentFilters.type = typeSelect ? typeSelect.value : 'all';
+            currentPage = 1;
+
+            loadQBankData();
         }
 
         function resetAllFilters() {
-            activeIndustry = 'all';
-            searchQuery = '';
-            activeDifficulty = 'all';
-            activeLang = 'all';
-            activeType = 'all';
+            currentFilters = {
+                industry: 'all',
+                keyword: '',
+                company: 'all',
+                difficulty: 'all',
+                lang: 'all',
+                type: 'all'
+            };
             currentPage = 1;
 
             const searchInput = document.getElementById('qbank-search-input');
             if (searchInput) searchInput.value = '';
 
-            const selectDiff = document.getElementById('select-difficulty');
-            if (selectDiff) selectDiff.value = 'all';
+            const companySelect = document.getElementById('select-company');
+            if (companySelect) companySelect.value = 'all';
 
-            const selectLang = document.getElementById('select-lang');
-            if (selectLang) selectLang.value = 'all';
+            const diffSelect = document.getElementById('select-difficulty');
+            if (diffSelect) diffSelect.value = 'all';
 
-            const selectType = document.getElementById('select-type');
-            if (selectType) selectType.value = 'all';
+            const langSelect = document.getElementById('select-lang');
+            if (langSelect) langSelect.value = 'all';
 
-            // Reset active chip
-            document.querySelectorAll('.qbank-cat-chip').forEach(c => c.classList.remove('active'));
-            const allChip = document.querySelector(`.qbank-cat-chip[onclick*="'all'"]`);
-            if (allChip) allChip.classList.add('active');
+            const typeSelect = document.getElementById('select-type');
+            if (typeSelect) typeSelect.value = 'all';
 
-            applyAllFilters();
+            document.querySelectorAll('#category-chips-bar .qbank-cat-chip').forEach(el => el.classList.remove('active'));
+            const firstChip = document.querySelector('#category-chips-bar .qbank-cat-chip');
+            if (firstChip) firstChip.classList.add('active');
+
+            loadQBankData();
         }
 
-        function changePageSize(newSize) {
-            pageSize = parseInt(newSize, 10) || 6;
+        function changePageSize(val) {
+            pageSize = parseInt(val, 10) || 6;
             currentPage = 1;
-            renderCurrentPage();
+            loadQBankData();
         }
 
         function changePage(newPage) {
-            const totalPages = Math.ceil(filteredQuestions.length / pageSize) || 1;
             if (newPage < 1 || newPage > totalPages) return;
             currentPage = newPage;
-            renderCurrentPage();
-
-            // Smooth scroll back to list top
+            loadQBankData();
             const section = document.getElementById('qbank-section');
-            if (section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            if (section) section.scrollIntoView({ behavior: 'smooth' });
         }
 
         // ============================================================
-        // RENDER CURRENT PAGE ITEMS & PAGINATION CONTROLS
+        // RENDER QUESTION CARDS
         // ============================================================
-        function renderCurrentPage() {
+        function renderQuestions(items, isLocalSlice) {
             const container = document.getElementById('qbank-list-container');
             const paginationWrap = document.getElementById('qbank-pagination-wrap');
             if (!container) return;
 
-            const total = filteredQuestions.length;
-            const totalPages = Math.ceil(total / pageSize) || 1;
-
-            // Constrain current page
-            if (currentPage > totalPages) currentPage = totalPages;
-            if (currentPage < 1) currentPage = 1;
-
-            if (total === 0) {
+            if (!items || items.length === 0) {
                 container.innerHTML = `
-                    <div class="qbank-empty-state">
-                        <div style="margin-bottom:14px;color:#94a3b8;"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-                        <h4 style="margin:0 0 8px;font-size:16px;color:#0f172a;">Không tìm thấy câu hỏi phù hợp</h4>
-                        <p style="margin:0 0 16px;font-size:13.5px;color:#475569;max-width:440px;margin-left:auto;margin-right:auto;">
-                            Không có câu hỏi nào khớp với các tiêu chí lọc hiện tại. Thử thay đổi từ khóa hoặc đặt lại bộ lọc.
-                        </p>
-                        <button type="button" class="btn-reset-filters" onclick="resetAllFilters()" style="margin:0 auto;">
-                            Đặt lại tất cả bộ lọc
-                        </button>
+                    <div style="text-align:center;padding:48px 24px;background:#fff;border:1px solid #e2e8f0;border-radius:20px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="margin-bottom:12px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <h4 style="font-size:16px;color:#1e293b;margin:0 0 6px;">Không tìm thấy câu hỏi phù hợp</h4>
+                        <p style="font-size:13.5px;color:#64748b;margin:0 0 16px;">Hãy thử điều chỉnh bộ lọc doanh nghiệp, cấp bậc hoặc từ khóa tìm kiếm.</p>
+                        <button type="button" class="btn-start-interview" onclick="resetAllFilters()">Đặt lại bộ lọc</button>
                     </div>
                 `;
                 if (paginationWrap) paginationWrap.style.display = 'none';
@@ -1151,36 +862,43 @@
 
             if (paginationWrap) paginationWrap.style.display = 'flex';
 
-            // Slice items for current page
-            const startIndex = (currentPage - 1) * pageSize;
-            const endIndex = Math.min(startIndex + pageSize, total);
-            const pageItems = filteredQuestions.slice(startIndex, endIndex);
-
-            // Render Rows
-            container.innerHTML = pageItems.map(item => {
+            container.innerHTML = items.map(item => {
                 let diffHtml = '';
                 if (item.difficulty === 'easy') {
                     diffHtml = `<span class="pm-diff-badge easy"><span class="pm-diff-dots">●○○</span> Cơ bản</span>`;
                 } else if (item.difficulty === 'medium') {
                     diffHtml = `<span class="pm-diff-badge medium"><span class="pm-diff-dots">●●○</span> Trung cấp</span>`;
                 } else {
-                    diffHtml = `<span class="pm-diff-badge hard"><span class="pm-diff-dots">●●●</span> ${item.difficultyLabel}</span>`;
+                    diffHtml = `<span class="pm-diff-badge hard"><span class="pm-diff-dots">●●●</span> ${item.difficultyLabel || 'Nâng cao'}</span>`;
                 }
 
-                const practiceUrl = `../interview/interview-info.html?role=${encodeURIComponent(item.role)}&topic=${encodeURIComponent(item.topicParam)}&lang=${item.lang}`;
+                const companyBadge = item.company ? `
+                    <span class="badge-company-source" title="Khung tham chiếu: ${item.sourceAttribution || item.company}">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7v14M21 7v14M6 11h2M6 15h2M16 11h2M16 15h2M10 21V3h4v18"/></svg>
+                        ${item.company}
+                    </span>
+                ` : '';
+
+                const provenanceBadge = isLocalSlice
+                    ? `<span class="badge-provenance-tag curated" title="Bộ câu hỏi dự phòng của PrepMate khi chưa kết nối được API">Dự phòng</span>`
+                    : `<span class="badge-provenance-tag curated" title="Biên soạn bởi PrepMate theo khung năng lực doanh nghiệp">Tuyển chọn</span>`;
+
+                const practiceUrl = `../interview/interview-info.html?role=${encodeURIComponent(item.role)}&topic=${encodeURIComponent(item.topicParam || item.title)}&lang=${item.lang || 'vi'}`;
 
                 return `
                     <div class="qbank-list-row" onclick="openQBankModal('${item.id}')" title="Nhấp để xem chi tiết bối cảnh & câu hỏi AI đào sâu">
                         <div class="qbank-row-left">
                             <div class="qbank-row-badges">
-                                <span class="badge-industry ind-${item.industry}">${item.industryLabel}</span>
+                                ${companyBadge}
+                                ${provenanceBadge}
+                                <span class="badge-industry ind-${item.industry}">${item.industryLabel || item.industry}</span>
                                 <span class="badge-role-tag">${item.role}</span>
-                                <span class="badge-qtype">${item.typeLabel}</span>
-                                <span class="pm-flag-badge">${item.langFlag} ${item.langLabel}</span>
+                                <span class="badge-qtype">${item.typeLabel || item.type}</span>
+                                <span class="pm-flag-badge">${item.langFlag || '🇻🇳'} ${item.langLabel || 'Tiếng Việt'}</span>
                             </div>
                             <h4 class="qbank-row-title">${item.title}</h4>
                             <div class="qbank-row-submeta">
-                                <span><span style="font-size:14px;color:#2563eb;">◷</span> ${item.duration}</span>
+                                <span><span style="font-size:14px;color:#2563eb;">◷</span> ${item.duration || '6-8 phút'}</span>
                                 <span><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="color:#d97706;vertical-align:-1px;margin-right:3px;" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Kèm AI đào sâu</span>
                                 <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#7c3aed;vertical-align:-1px;margin-right:3px;" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Khung đánh giá STAR</span>
                             </div>
@@ -1203,19 +921,20 @@
                 `;
             }).join('');
 
-            // Update Pagination info
+            // Pagination Text
             const paginationInfo = document.getElementById('pagination-info');
             if (paginationInfo) {
-                paginationInfo.innerHTML = `Hiển thị <strong>${startIndex + 1} - ${endIndex}</strong> trên tổng số <strong>${total}</strong> câu hỏi`;
+                const startIndex = (currentPage - 1) * pageSize + 1;
+                const endIndex = Math.min(currentPage * pageSize, totalMatches);
+                paginationInfo.innerHTML = `Hiển thị <strong>${startIndex} - ${endIndex}</strong> trên tổng số <strong>${totalMatches}</strong> câu hỏi`;
             }
 
-            // Update Prev / Next Buttons
+            // Pagination Buttons
             const prevBtn = document.getElementById('btn-page-prev');
             const nextBtn = document.getElementById('btn-page-next');
             if (prevBtn) prevBtn.disabled = (currentPage === 1);
-            if (nextBtn) nextBtn.disabled = (currentPage === totalPages);
+            if (nextBtn) nextBtn.disabled = (currentPage >= totalPages);
 
-            // Render Page Number Buttons
             const numContainer = document.getElementById('page-numbers-container');
             if (numContainer) {
                 let html = '';
@@ -1233,30 +952,55 @@
         // ============================================================
         // POP-UP MODAL CONTROLLER
         // ============================================================
-        function openQBankModal(questionId) {
-            const item = QBANK_DATA.find(q => q.id === questionId);
+        async function openQBankModal(questionId) {
+            let item = activeQuestions.find(q => q.id === questionId) || FALLBACK_QBANK_DATA.find(q => q.id === questionId);
+
+            if (!item) {
+                try {
+                    const res = await fetch(`/api/qbank/questions/${encodeURIComponent(questionId)}`);
+                    if (res.ok) item = await res.json();
+                } catch (e) {}
+            }
+
             if (!item) return;
 
-            // Fill Header
+            // Fill Header Badges
             const metaTop = document.getElementById('modal-meta-top');
             if (metaTop) {
                 let diffBadge = (item.difficulty === 'easy') 
                     ? `<span class="pm-diff-badge easy"><span class="pm-diff-dots">●○○</span> Cơ bản</span>`
                     : (item.difficulty === 'medium')
                     ? `<span class="pm-diff-badge medium"><span class="pm-diff-dots">●●○</span> Trung cấp</span>`
-                    : `<span class="pm-diff-badge hard"><span class="pm-diff-dots">●●●</span> ${item.difficultyLabel}</span>`;
+                    : `<span class="pm-diff-badge hard"><span class="pm-diff-dots">●●●</span> ${item.difficultyLabel || 'Nâng cao'}</span>`;
 
                 metaTop.innerHTML = `
-                    <span class="badge-industry ind-${item.industry}">${item.industryLabel}</span>
+                    <span class="badge-industry ind-${item.industry}">${item.industryLabel || item.industry}</span>
                     <span class="badge-role-tag">${item.role}</span>
-                    <span class="pm-flag-badge">${item.langFlag} ${item.langLabel}</span>
-                    <span class="badge-qtype">${item.typeLabel}</span>
+                    <span class="pm-flag-badge">${item.langFlag || '🇻🇳'} ${item.langLabel || 'Tiếng Việt'}</span>
+                    <span class="badge-qtype">${item.typeLabel || item.type}</span>
                     ${diffBadge}
                 `;
             }
 
             const titleEl = document.getElementById('modal-title');
             if (titleEl) titleEl.innerText = item.title;
+
+            // Fill Provenance & Company Info
+            const compEl = document.getElementById('modal-company-name');
+            if (compEl) compEl.innerText = item.company || 'Doanh nghiệp đối tác';
+
+            const attrEl = document.getElementById('modal-attribution');
+            if (attrEl) attrEl.innerText = item.sourceAttribution || 'Khung năng lực phỏng vấn chuẩn hóa PrepMate';
+
+            const linkEl = document.getElementById('modal-source-link');
+            if (linkEl) {
+                if (item.sourceUrl) {
+                    linkEl.href = item.sourceUrl;
+                    linkEl.style.display = 'inline-flex';
+                } else {
+                    linkEl.style.display = 'none';
+                }
+            }
 
             // Fill Body
             const contextEl = document.getElementById('modal-context');
@@ -1265,34 +1009,35 @@
             const followupEl = document.getElementById('modal-followup');
             if (followupEl) followupEl.innerText = item.followup;
 
+            const star = item.star || {};
             const starS = document.getElementById('modal-star-s');
             const starT = document.getElementById('modal-star-t');
             const starA = document.getElementById('modal-star-a');
             const starR = document.getElementById('modal-star-r');
-            if (starS) starS.innerText = item.star.s;
-            if (starT) starT.innerText = item.star.t;
-            if (starA) starA.innerText = item.star.a;
-            if (starR) starR.innerText = item.star.r;
+            if (starS) starS.innerText = star.s || star.S || 'Nêu rõ bối cảnh dự án, quy mô hệ thống hoặc thách thức đối mặt.';
+            if (starT) starT.innerText = star.t || star.T || 'Trách nhiệm cá nhân cụ thể và mục tiêu cần giải quyết.';
+            if (starA) starA.innerText = star.a || star.A || 'Giải pháp kỹ thuật, công cụ đã dùng và lý do ra quyết định.';
+            if (starR) starR.innerText = star.r || star.R || 'Số liệu định lượng, bài học kinh nghiệm và tác động thực tế.';
 
             const tagsContainer = document.getElementById('modal-tags-container');
-            if (tagsContainer) {
+            if (tagsContainer && item.keywords) {
                 tagsContainer.innerHTML = item.keywords.map(kw => `<span class="modal-tag">${kw}</span>`).join('');
             }
 
             // Fill Footer
             const timeEl = document.getElementById('modal-time');
-            if (timeEl) timeEl.innerText = `Thời lượng ước tính: ${item.duration}`;
+            if (timeEl) timeEl.innerText = `Thời lượng ước tính: ${item.duration || '6-8 phút'}`;
 
             const practiceLink = document.getElementById('modal-practice-link');
             if (practiceLink) {
-                practiceLink.href = `../interview/interview-info.html?role=${encodeURIComponent(item.role)}&topic=${encodeURIComponent(item.topicParam)}&lang=${item.lang}`;
+                practiceLink.href = `../interview/interview-info.html?role=${encodeURIComponent(item.role)}&topic=${encodeURIComponent(item.topicParam || item.title)}&lang=${item.lang || 'vi'}`;
             }
 
             // Open Overlay
             const overlay = document.getElementById('qbank-modal-overlay');
             if (overlay) {
                 overlay.classList.add('active');
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                document.body.style.overflow = 'hidden';
             }
         }
 
@@ -1305,17 +1050,20 @@
         }
 
         function handleModalOverlayClick(e) {
-            // Close if clicking outside the card
             if (e.target.id === 'qbank-modal-overlay') {
                 closeQBankModal();
             }
         }
 
-        // Close on Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeQBankModal();
             }
+        });
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQBankData();
         });
     </script>
     <script src="../../shared/js/components.js"></script>

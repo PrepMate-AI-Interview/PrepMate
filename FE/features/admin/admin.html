@@ -1208,6 +1208,7 @@
             if (quickSelect) quickSelect.innerHTML = '';
 
             users.forEach(u => {
+                if (!u || !u.id) return;
                 const safeFullname = escapeHtml(u.fullname || '');
                 const safeUsername = escapeHtml(u.username || '');
                 const safeEmail = escapeHtml(u.email || '');

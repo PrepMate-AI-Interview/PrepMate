@@ -16,6 +16,8 @@ process.env.TEST_USE_CANONICAL_FIXTURE = process.env.TEST_USE_CANONICAL_FIXTURE 
 const suites = [
   { name: 'Industry-Neutral Context', path: 'tests/regression/industry-context.test.js' },
   { name: 'Multi-Industry Presentation Layer', path: 'tests/regression/presentation-layer.test.js' },
+  { name: 'Multi-Source Job Aggregation (Jobs)', path: 'tests/regression/jobs-aggregation.test.js' },
+  { name: 'Company-Sourced Question Bank (QBank)', path: 'tests/regression/qbank-aggregation.test.js' },
   { name: 'Interview Setup Wizard UX', path: 'tests/regression/interview-setup-ux.test.js' },
   { name: 'Live Interview Room HUD', path: 'tests/regression/live-interview-ux.test.js' },
   { name: 'Interview Flow State Machine', path: 'tests/regression/interview-flow.test.js' },

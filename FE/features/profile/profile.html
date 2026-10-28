@@ -385,7 +385,7 @@
             if (document.getElementById('enable-recording')) document.getElementById('enable-recording').checked = settings.enableRecording || false;
             const activeGlobalTheme = (typeof getGlobalTheme === 'function') ? getGlobalTheme() : (localStorage.getItem('prepmate_theme') || settings.themeMode || 'light');
             if (document.getElementById('theme-mode')) document.getElementById('theme-mode').value = activeGlobalTheme;
-            document.getElementById('language').value = settings.language || 'vi';
+            if (document.getElementById('language')) document.getElementById('language').value = settings.language || 'vi';
 
             if (settings.goal) {
                 const goalEl = document.getElementById('selected-goal');
@@ -627,6 +627,7 @@
             const lang = getUserSettings().language || 'vi';
 
             const historyEl = document.getElementById('payment-history');
+            if (!historyEl) return;
 
             if (userTransactions.length === 0) {
                 historyEl.innerHTML = `<div style="color: var(--text-secondary); font-size: 13px; text-align: center; padding: 20px;">${lang === 'en' ? 'No transactions yet' : 'Chưa có giao dịch'}</div>`;

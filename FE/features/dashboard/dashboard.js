@@ -492,12 +492,12 @@ function applyUserSettings() {
 
 let isLoadingHistory = false;
 
-const sortDashboardSessions = (list) => [...list].sort((a, b) => {
-    const tA = new Date(a.createdAt || a.date || a.startTime || 0).getTime() || 0;
-    const tB = new Date(b.createdAt || b.date || b.startTime || 0).getTime() || 0;
+const sortDashboardSessions = (list) => [...(list || [])].filter(Boolean).sort((a, b) => {
+    const tA = new Date(a?.createdAt || a?.date || a?.startTime || 0).getTime() || 0;
+    const tB = new Date(b?.createdAt || b?.date || b?.startTime || 0).getTime() || 0;
     if (tB !== tA) return tB - tA;
-    const idA = String(a.id || a.backendSessionId || a.sessionId || '');
-    const idB = String(b.id || b.backendSessionId || b.sessionId || '');
+    const idA = String(a?.id || a?.backendSessionId || a?.sessionId || '');
+    const idB = String(b?.id || b?.backendSessionId || b?.sessionId || '');
     return idB.localeCompare(idA);
 });
 

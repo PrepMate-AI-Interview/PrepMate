@@ -126,6 +126,7 @@ PrepMate hỗ trợ cấu hình qua biến môi trường hệ điều hành ho�
 | `ELEVENLABS_API_KEY` | `ElevenLabs:ApiKey` | Tùy chọn | Tất cả | `REPLACE_ON_DEPLOYMENT` | Khóa ElevenLabs TTS tổng hợp giọng nói |
 | `ELEVENLABS_BASE_URL` | `ElevenLabs:BaseUrl`| Tùy chọn | Tất cả | `https://api.elevenlabs.io`| Base URL của dịch vụ ElevenLabs |
 | `ELEVENLABS_ZERO_RETENTION_ENABLED` | `ElevenLabs:ZeroRetentionEnabled` | Tùy chọn | Tất cả | `false` | Cờ bảo mật dữ liệu Enterprise cho ElevenLabs |
+| `JOOBLE_API_KEY` | `Jobs:Jooble:ApiKey` | Tùy chọn | Tất cả | `REPLACE_ON_DEPLOYMENT` | Khóa Jooble REST API tìm việc làm live tại Việt Nam (https://jooble.org) |
 
 ### 3.2 Cơ Chế Ưu Tiên Cấu Hình AI Giữa Biến Môi Trường và Admin Console
 
@@ -134,6 +135,67 @@ Hệ thống PrepMate có cơ chế phân tầng bảo mật cho AI Credentials 
 2. **Chế độ `environment`:** Bắt buộc chỉ nhận credentials từ biến môi trường.
 3. **Chế độ `admin`:** Chỉ nhận credentials được mã hóa trong `FileDb`.
 4. **Bảo mật tuyệt đối (Zero Exposure):** Khi trả DTO về client quản trị hoặc in log, hệ thống chỉ phản hồi cờ `ApiKeyConfigured: true/false`, định danh `CredentialSource` và trạng thái mã hóa. **Tuyệt đối không bao giờ trả plaintext API key về client hoặc in vào console log.**
+
+---
+
+
+### 3.3 Cấu Hình Nguồn Tìm Kiếm Việc Làm Đa Nền Tảng (Multi-Source Job Aggregation)
+
+PrepMate hỗ trợ tìm kiếm và tổng hợp cơ hội việc làm thực tế:
+1. **Jooble Live REST API:** Kích hoạt qua biến môi trường `JOOBLE_API_KEY` (hoặc `Jobs:Jooble:ApiKey` trong `appsettings.json`). Khi được cấu hình, backend tự động truy vấn chỉ mục việc làm Việt Nam tại `https://jooble.org/api/{apiKey}`, phân tích mức lương, kỹ năng, bóc tách thẻ HTML và chuẩn hóa thành `JobPostingDto`.
+2. **Cổng Điều Hướng Tìm Việc Trực Tiếp (Direct Search Deep-Link Hub):** Đối với các nền tảng tuyển dụng hàng đầu Việt Nam không cung cấp API tìm kiếm công khai cho ứng viên (TopCV, VietnamWorks, ITviec, CareerViet, LinkedIn), PrepMate tạo liên kết tìm kiếm trực tiếp có bản quyền, chuẩn hóa URL encoding theo từ khóa và địa điểm của ứng viên.
+3. **Danh Mục Benchmark Thẩm Định (Fallback Catalog):** Trong trường hợp `JOOBLE_API_KEY` chưa được cấu hình, hệ thống hiển thị danh mục việc làm benchmark mẫu chuẩn mực của PrepMate (được đánh dấu trung thực với cờ `isSample: true`) và liên kết trực tiếp sang các sàn tuyển dụng để ứng viên luôn có thể luyện tập phỏng vấn theo JD.
+
+---
+
+### 3.4 Cấu Hình Jooble Jobs API Trên Nền Tảng Render (Render Cloud Deployment)
+
+Để kích hoạt tính năng tìm kiếm việc làm thực tế (Dynamic Job Discovery) từ Jooble khi vận hành trên nền tảng **Render (Web Service)**, quản trị viên thực hiện theo quy trình chuẩn sau:
+
+#### Bước 1: Chuẩn bị khóa API từ Jooble
+1. Truy cập cổng đăng ký đối tác chính thức của Jooble: `https://jooble.org/api/about`.
+2. Đăng ký thông tin dịch vụ và nhận chuỗi khóa API (GUID/UUID) được cấp riêng cho dự án PrepMate.
+
+#### Bước 2: Thiết lập biến môi trường trên Render Dashboard
+1. Đăng nhập vào bảng điều khiển Render: `https://dashboard.render.com`.
+2. Chọn Web Service PrepMate đang triển khai (ví dụ: `prepmate-backend` hoặc `prepmate-web`).
+3. Trong menu điều hướng bên trái, chọn tab **Environment**.
+4. Chọn **Add Environment Variable** và điền các khóa sau:
+   - **`JOOBLE_API_KEY`**: Nhập chuỗi API key nhận được từ Jooble (ví dụ: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`).
+   - *(Tùy chọn)* **`JOOBLE_BASE_URL`**: `https://jooble.org/api` (nếu để trống, backend tự động dùng endpoint mặc định đã xác minh).
+5. Nhấn **Save Changes**. Render sẽ tự động kích hoạt quá trình rebuild / zero-downtime redeploy cho Web Service.
+
+#### Bước 3: Xác minh tích hợp thực tế (Live Verification Protocol)
+Sau khi Render hoàn tất quá trình deploy (trạng thái `Live`), tiến hành xác minh theo 2 bước:
+
+1. **Kiểm tra trạng thái provider (Metadata Endpoint):**
+   ```bash
+   curl -s https://<your-service>.onrender.com/api/jobs/providers
+   ```
+   *Kết quả mong đợi:*
+   ```json
+   {
+     "configuredProviders": ["Jooble"],
+     "hasLiveProvidersConfigured": true,
+     "providerStatuses": [
+       { "providerName": "Jooble", "isConfigured": true, "isOperational": true }
+     ]
+   }
+   ```
+2. **Kiểm tra truy vấn tìm kiếm trực tiếp (Live Keyword Query):**
+   ```bash
+   curl -s "https://<your-service>.onrender.com/api/jobs/search?keywords=Frontend&location=Hanoi"
+   ```
+   *Kết quả mong đợi:*
+   - Danh sách tin việc làm thực tế được trả về trong mảng `jobs`.
+   - Mỗi phần tử có `provider: "Jooble"`, `isSample: false`, kèm liên kết `applyUrl` hợp lệ.
+   - Banner trên giao diện Web (`FE/features/jobs/jobs.html`) hiển thị trạng thái *"Đã kết nối Jooble API — Dữ liệu việc làm live"*.
+
+> [!CAUTION]
+> **Nguyên Tắc Bảo Mật Tuyệt Đối (Zero Exposure):**
+> - **Tuyệt đối không bao giờ in `JOOBLE_API_KEY` vào log máy chủ** hay trả về Frontend. Endpoint `/api/jobs/providers` chỉ trả cờ boolean `isConfigured`.
+> - **Ứng viên người dùng cuối không bao giờ phải nhập hay cấu hình API key trên giao diện web.** Mọi yêu cầu tìm kiếm đều được Backend thực hiện qua proxy máy chủ an toàn.
+> - Việc cấu hình `JOOBLE_API_KEY` thành công không đồng nghĩa là tự động có kết quả live ở mọi vùng địa lý; nếu Jooble trả về 0 kết quả cho một từ khóa hiếm, PrepMate hiển thị empty state minh bạch và các liên kết trực tiếp sang TopCV, VietnamWorks, ITviec, CareerViet, LinkedIn mà không ngụy tạo dữ liệu.
 
 ---
 
