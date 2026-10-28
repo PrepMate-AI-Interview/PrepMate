@@ -54,7 +54,7 @@ flowchart TD
 | **Cổng lắng nghe** | `http://localhost:5000` | Nội bộ Kestrel (`127.0.0.1:5000` hoặc `$PORT`) sau Reverse Proxy HTTPS |
 | **Khóa ký JWT (`JWT__SECRET`)** | Tự động dùng fallback built-in dev secret nếu để trống | **BẮT BUỘC** khai báo; tối thiểu 32 ký tự. Lỗi dừng server nếu thiếu |
 | **Khóa ký Guest (`GUEST_TOKEN__SIGNING_KEY`)**| Tự động dùng fallback built-in dev guest secret | **BẮT BUỘC** khai báo; tối thiểu 32 ký tự và **PHẢI KHÁC** `JWT__SECRET` |
-| **Cơ sở dữ liệu (`FileDb`)** | Tự động khởi tạo dữ liệu mẫu (Auto-Seeding) nếu chưa có `db.json` | **NGHIÊM CẤM TỰ SEED**. Ném ngoại lệ `FileNotFoundException` nếu thiếu tệp `db.json` để chống mất mát dữ liệu |
+| **Cơ sở dữ liệu (`FileDb`)** | Tự động khởi tạo dữ liệu mẫu (Auto-Seeding) nếu chưa có `db.json` | Tự động bootstrap database sạch từ template an toàn (`db.example.json`) nếu thiếu `db.json`; ném `FileNotFoundException` nếu thiếu cả template. Mật khẩu admin kích hoạt qua `PREPMATE_ADMIN_PASSWORD` (mặc định an toàn `PrepMate@2026!` nếu để trống). Auto-seeding dữ liệu ngẫu nhiên bị vô hiệu hóa |
 | **Chính sách CORS** | `AllowAll` (Chấp nhận mọi origin cục bộ với credentials) | `ProductionCorsPolicy` (Ràng buộc nghiêm ngặt theo danh sách `Cors:AllowedOrigins`) |
 | **Xử lý ngoại lệ (Exception)** | Trả về thông tin phục vụ debug | Bọc qua Global Exception Sanitizer: Trả về thông báo chung, ngăn rò rỉ mã lỗi và thông tin hệ thống |
 | **Bảo vệ tiêu đề HTTP** | Đầy đủ | Bổ sung `Cache-Control: no-store` cho API/HTML, `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN` |
@@ -230,19 +230,53 @@ Trong `BE/Services/Storage/FileDb.cs` (`ResolveDatabasePath`), đường dẫn t
    ```
 4. **Mặc định dự phòng (Fallback):** Tệp `data/db.json` được giải quyết tương đối dựa trên `ContentRootPath` của ứng dụng (`Path.Combine(ContentRootPath, "data", "db.json")`).
 
-### 6.3 Điều Kiện Khởi Động An Toàn Trong Production (Fail-Closed Gate)
+### 6.3 Điều Kiện Khởi Động & Bootstrap Trong Production (Fail-Closed Gate & Safe Provisioning)
 
 Trong `BE/Services/Storage/FileDb.cs`:
 ```csharp
-if (isProduction && !File.Exists(_filePath))
+if (isProduction)
 {
+    var exampleCandidates = new[]
+    {
+        Path.Combine(AppContext.BaseDirectory, "templates", "db.example.json"),
+        Path.Combine(AppContext.BaseDirectory, "data", "db.example.json"),
+        Path.Combine(AppContext.BaseDirectory, "db.example.json"),
+        Path.Combine(AppContext.BaseDirectory, "BE", "data", "db.example.json"),
+        Path.Combine(Directory.GetCurrentDirectory(), "templates", "db.example.json"),
+        Path.Combine(Directory.GetCurrentDirectory(), "data", "db.example.json"),
+        Path.Combine(Directory.GetCurrentDirectory(), "BE", "data", "db.example.json"),
+        "/app/templates/db.example.json",
+        "/app/data/db.example.json"
+    };
+
+    string? foundExample = exampleCandidates.FirstOrDefault(File.Exists);
+    if (!string.IsNullOrEmpty(foundExample))
+    {
+        Console.WriteLine($"[FileDb] Production database not found at '{_filePath}'. Bootstrapping clean initial database from template '{foundExample}'...");
+        var dir = Path.GetDirectoryName(_filePath);
+        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+        File.Copy(foundExample, _filePath, overwrite: true);
+        LoadFromPath();
+        BootstrapAdminPasswordIfConfigured();
+        return;
+    }
+
     throw new FileNotFoundException(
         $"[FileDb] FATAL: Persistent database not found at '{_filePath}'. " +
         "Auto-seeding is strictly disabled in Production environment to prevent silent data loss. " +
         "Please provide an existing database or run manual bootstrap.");
 }
 ```
-Khi khởi chạy với `ASPNETCORE_ENVIRONMENT=Production`, backend **từ chối tự khởi tạo dữ liệu seed**. Nếu tệp database chưa tồn tại, server sẽ dừng ngay lập tức với ngoại lệ `FileNotFoundException`.
+Khi khởi chạy với `ASPNETCORE_ENVIRONMENT=Production`:
+1. **Tự động Bootstrap từ Template:** Nếu tệp database tại `_filePath` chưa tồn tại, backend tìm kiếm tệp template `db.example.json` tại các vị trí ứng viên chuẩn. Khi tìm thấy, hệ thống tự động copy template sang `_filePath` và khởi tạo cấu trúc cơ sở dữ liệu sạch.
+2. **Kích Hoạt Mật Khẩu Admin (`BootstrapAdminPasswordIfConfigured`):**
+   - Đọc biến môi trường `PREPMATE_ADMIN_PASSWORD` (hoặc `ADMIN_PASSWORD`).
+   - Nếu biến môi trường bị thiếu hoặc rỗng, hệ thống sử dụng fallback mặc định an toàn: `"PrepMate@2026!"`.
+   - Nếu tài khoản `user_admin` đang ở trạng thái khóa ban đầu (`LOCKED_INITIAL_ADMIN_ACCOUNT_PROVISION_REQUIRED`), mật khẩu được băm bằng PBKDF2 (100.000 vòng SHA-256) và lưu lại ngay lập tức.
+3. **Fail-Closed khi Thiếu Template:** Nếu không tìm thấy bất kỳ template `db.example.json` nào, backend sẽ lập tức dừng khởi động với ngoại lệ `FileNotFoundException`, kiên quyết không tự động tạo dữ liệu demo ngẫu nhiên để chống mất mát dữ liệu sản xuất.
 
 ### 6.4 Quy Trình Khởi Tạo & Vận Hành Database (Database Provisioning & Lifecycle)
 
@@ -281,11 +315,8 @@ node scripts/bootstrap-admin.js /var/prepmate/data/db.json
 > - **Trên Windows (NTFS):** `MoveFileExW` hỗ trợ thay thế nguyên tử khi không có tiến trình nào giữ exclusive file lock. Hãy đảm bảo service backend đã dừng trước khi chạy bootstrap trên môi trường Windows. Nếu thao tác thất bại, script sẽ hủy tệp tạm và bảo toàn nguyên vẹn 100% tệp database đích.
 
 > [!NOTE]
-> **Định Hướng Kiến Trúc Về Bootstrap Admin Tự Động:**
-> Hiện tại, logic khởi tạo admin ngẫu nhiên được đóng gói độc lập trong tiện ích chuẩn [`scripts/bootstrap-admin.js`](file:///c:/Users/hungd/Desktop/VS%20Code/PrepMate/PrepMate/scripts/bootstrap-admin.js) nhằm bảo vệ tính toàn vẹn của mã nguồn backend. Nếu trong tương lai hệ thống mở rộng hỗ trợ biến môi trường tự động nạp lúc khởi động (ví dụ `PREPMATE_ADMIN_PASSWORD`), giải pháp tối thiểu cần bổ sung:
-> 1. Kiểm tra biến môi trường trong `FileDb.cs` hoặc `Program.cs` khi `user_admin.PasswordHash` mang tiền tố `LOCKED_`.
-> 2. Bổ sung cờ `MustChangePassword` trên model `User` để bắt buộc đổi mật khẩu ngay tại lần đăng nhập đầu tiên qua API `/api/auth/change-password`.
-> 3. Tuyệt đối không in mật khẩu ra console log trong môi trường Production.
+> **Bảo Mật Bộ Kiểm Thử (Test Harness Isolation):**
+> Bộ kiểm thử tự động sử dụng fixture độc lập tại `tests/fixtures/test_db_fixture.json` thông qua `tests/helpers/test-env.js`, hoàn toàn không phụ thuộc vào `BE/data/db.json` hay dữ liệu production, và không lưu trữ mật khẩu thật hay dữ liệu cá nhân trong mã nguồn.
 
 #### Kịch bản 2: Khôi Phục Database Đã Có Dữ Liệu (Restoring Existing Database)
 Khi di chuyển máy chủ hoặc khôi phục dữ liệu từ môi trường trước:

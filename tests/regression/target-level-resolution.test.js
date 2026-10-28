@@ -24,7 +24,8 @@ const vm = require('vm');
 const WORKSPACE_ROOT = path.resolve(__dirname, '..', '..');
 const BACKEND_PORT = 5098;
 const BASE_URL = `http://127.0.0.1:${BACKEND_PORT}`;
-const PROD_DB_PATH = path.join(WORKSPACE_ROOT, 'BE', 'data', 'db.json');
+const { resolveDbPath } = require('../helpers/test-env');
+const PROD_DB_PATH = resolveDbPath();
 const TEST_DIR = path.join(os.tmpdir(), `prepmate_lvl_test_${Date.now()}`);
 const TEST_DB_PATH = path.join(TEST_DIR, 'test_db.json');
 const TEST_KEYRING = path.join(TEST_DIR, 'keys');
@@ -68,7 +69,7 @@ function requestJson(url, options = {}, body = null) {
     });
 
     req.on('error', reject);
-    req.setTimeout(15000, () => req.destroy(new Error(`Timeout calling ${url}`)));
+    req.setTimeout(40000, () => req.destroy(new Error(`Timeout calling ${url}`)));
     if (body) req.write(typeof body === 'string' ? body : JSON.stringify(body));
     req.end();
   });

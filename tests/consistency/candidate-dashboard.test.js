@@ -8,6 +8,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { resolveDbPath, getBaselineDbHash } = require('../helpers/test-env');
 
 const rootDir = path.resolve(__dirname, '../..');
 
@@ -104,10 +105,10 @@ console.log('  [PASS] 7. Script hooks and JS compatibility verified.');
 // --- GROUP 8: Database & Baseline Integrity ---
 console.log('--- GROUP 8: Database & Baseline Integrity ---');
 
-const dbPath = path.join(rootDir, 'BE/data/db.json');
+const dbPath = resolveDbPath();
 const dbContent = fs.readFileSync(dbPath);
 const dbHash = crypto.createHash('sha256').update(dbContent).digest('hex').toUpperCase();
-const expectedDbHash = 'C8D6CA48DFAC2DD4C9FC3F5793E36222506220F07DC4DE9E17102B92295662A7';
+const expectedDbHash = getBaselineDbHash();
 
 assert.strictEqual(dbHash, expectedDbHash, '8.1 Database SHA-256 hash strictly preserved');
 console.log('  [PASS] 8. Production database SHA-256 hash verified: ' + dbHash);
