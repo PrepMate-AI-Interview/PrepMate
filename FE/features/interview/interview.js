@@ -438,11 +438,13 @@ function upsertActiveSessionToUserStorage(session) {
     if (!sid) return;
 
     const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+    if (!currentUser) return;
+
     const getUserSessionsFn = typeof getUserSessions === "function" ? getUserSessions : null;
     const saveUserSessionsFn = typeof saveUserSessions === "function" ? saveUserSessions : null;
 
     let sessions = [];
-    if (currentUser && typeof getUserSessionsFn === "function") {
+    if (typeof getUserSessionsFn === "function") {
       sessions = getUserSessionsFn() || [];
     } else {
       try {
@@ -502,6 +504,25 @@ async function startInterviewSession(skipConfirm = false) {
   debugInterview("INTERVIEW", "=== USER CONFIRMED START INTERVIEW ===");
   window._isInterviewSessionStarted = true;
 
+  // Cancel waiting room welcome audio and in-flight fetch immediately
+  if (typeof cancelCurrentSpeech === "function") {
+    try { cancelCurrentSpeech("interview_session_started"); } catch (e) {}
+  }
+  if (window._waitingRoomAudio) {
+    try {
+      window._waitingRoomAudio.pause();
+      window._waitingRoomAudio.currentTime = 0;
+    } catch (e) {}
+    window._waitingRoomAudio = null;
+  }
+  if (window._currentAIAudio) {
+    try {
+      window._currentAIAudio.pause();
+      window._currentAIAudio.currentTime = 0;
+    } catch (e) {}
+    window._currentAIAudio = null;
+  }
+
   const startBtn = document.getElementById("btn-start-interview");
   const endBtn = document.getElementById("btn-end-interview");
   if (startBtn) startBtn.style.display = "none";
@@ -524,6 +545,8 @@ async function startInterviewSession(skipConfirm = false) {
         const jdText = config.jdText || currentInterviewSession?.jdText || "";
         const userDescription = config.userDescription || currentInterviewSession?.userDescription || "";
         const interviewLanguage = config.interviewLanguage || currentInterviewSession?.interviewLanguage || "vi";
+        const persona = config.interviewerPersona || (typeof localStorage !== "undefined" ? localStorage.getItem("prepmate_interviewer_persona") : "") || "professional";
+        currentInterviewSession.interviewerPersona = persona;
 
         const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
         const data = await InterviewApiClient.createSession({
@@ -556,7 +579,6 @@ async function startInterviewSession(skipConfirm = false) {
         } catch (startErr) {
           console.warn("[START INTERVIEW] startSession commit warning:", startErr);
         }
-        upsertActiveSessionToUserStorage(currentInterviewSession);
         return backendSessionId;
       } catch (err) {
         console.error("[START INTERVIEW] Backend session creation error:", err);
@@ -1228,7 +1250,15 @@ window.handleKeyPress = handleKeyPress;
 // ==========================================
 
 function requestClarification() {
-  if (interviewPhase !== "ADAPTIVE_INTERVIEW" && interviewPhase !== "TECHNICAL_ASSESSMENT") return;
+  if (interviewPhase !== "ADAPTIVE_INTERVIEW" && interviewPhase !== "TECHNICAL_ASSESSMENT") {
+    if (!window._isInterviewSessionStarted && typeof window.playWaitingRoomWelcome === "function") {
+      window.playWaitingRoomWelcome(true);
+      if (typeof showToast === "function") {
+        showToast("Đang phát lại lời chào của người phỏng vấn...", "info");
+      }
+    }
+    return;
+  }
   const currentQ = interviewQuestions[currentQuestionIndex];
   if (!currentQ) return;
 

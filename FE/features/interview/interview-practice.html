@@ -602,11 +602,8 @@
                   <span class="msg-timestamp">Chuẩn bị</span>
                 </div>
                 <div class="msg-text">
-                  Xin chào bạn! Tôi là Trần Minh Vũ, người đồng hành cùng bạn
-                  trong buổi phỏng vấn hôm nay. Bạn hãy kiểm tra lại góc máy
-                  camera, âm thanh micro và nhấn nút
-                  <strong>"Bắt đầu"</strong> ở góc trên bên phải khi đã sẵn sàng
-                  nhé!
+                  Chào bạn! Hãy chuẩn bị tinh thần và nhấn nút
+                  <strong>"Bắt đầu"</strong> ở góc trên bên phải khi đã sẵn sàng.
                 </div>
               </div>
             </div>
@@ -864,7 +861,7 @@
     <script src="../../shared/js/main.js?v=29"></script>
 
     <!-- Interviewer Persona Manifest SSOT -->
-    <script src="../../features/interview/interview-persona-manifest.js"></script>
+    <script src="../../features/interview/interview-persona-manifest.js?v=20261030"></script>
 
     <!-- Interview icons module -->
     <script src="../../features/interview/interview-icons.js"></script>
@@ -896,7 +893,7 @@
     <script src="../../features/interview/interview-modals.js"></script>
 
     <!-- Interview text-to-speech (TTS) subsystem module -->
-    <script src="../../features/interview/interview-tts.js"></script>
+    <script src="../../features/interview/interview-tts.js?v=20261030b"></script>
 
     <!-- Interview speech recognition (STT) subsystem module -->
     <script src="../../features/interview/interview-audio-recorder.js"></script>
@@ -910,7 +907,7 @@
     <script src="../../features/interview/interview-pause.js"></script>
 
     <!-- Interview engine LAST -->
-    <script src="../../features/interview/interview.js?v=29"></script>
+    <script src="../../features/interview/interview.js?v=20261030b"></script>
     <script>
       // Synchronize target role, company name, and interviewer persona
       window.addEventListener("DOMContentLoaded", () => {
@@ -991,8 +988,39 @@
 
         const aiMsgText = document.querySelector(".msg.ai-msg .msg-text");
         if (aiMsgText) {
-          aiMsgText.innerHTML = `Xin chào bạn! Tôi là ${interviewerName}, người đồng hành cùng bạn trong buổi phỏng vấn hôm nay. Bạn hãy kiểm tra lại góc máy camera, âm thanh micro và nhấn nút <strong>"Bắt đầu"</strong> ở góc trên bên phải khi đã sẵn sàng nhé!`;
+          aiMsgText.innerHTML = `Chào bạn! Hãy chuẩn bị tinh thần và nhấn nút <strong>"Bắt đầu"</strong> ở góc trên bên phải khi đã sẵn sàng.`;
         }
+
+        // Synchronize active interviewer persona and voice settings
+        if (!window.currentInterviewSession) {
+          window.currentInterviewSession = {};
+        }
+        window.currentInterviewSession.interviewerPersona = persona;
+
+        let pObj = null;
+        if (typeof PrepMatePersonas !== "undefined") {
+          pObj = PrepMatePersonas.getPersona(persona);
+        }
+        const activeVoiceId = pObj?.voiceId || pObj?.defaultVoiceId || (persona === "friendly" ? "3BUMLmVV2cgPJQ2pAwBa" : (persona === "professional" ? "yTpM1yhZn6oZ0xMLpLFT" : "GbyYOHheg88tlJBFNEYY"));
+        const activeVoiceCfg = {
+          provider: "elevenlabs",
+          voiceId: activeVoiceId,
+          personaId: persona,
+          modelId: "eleven_flash_v2_5",
+          speed: 1.0,
+          pitch: pObj?.pitch ?? 1.0,
+          rate: pObj?.rate ?? 1.0,
+          fallbackVoiceGender: pObj?.fallbackVoiceGender || (persona === "friendly" ? "female" : "male"),
+          name: pObj?.name || interviewerName,
+        };
+
+        if (typeof setTtsVoiceConfig === "function") {
+          setTtsVoiceConfig(activeVoiceCfg);
+        }
+        try {
+          localStorage.setItem("prepmate_interviewer_persona", persona);
+          localStorage.setItem("prepmate_tts_voice_config", JSON.stringify(activeVoiceCfg));
+        } catch (e) {}
 
         // Start Modal fields
         const modalJobEl = document.getElementById("confirm-modal-job-title");
@@ -1030,6 +1058,72 @@
             if (candTileName) candTileName.textContent = `${candName} (Bạn)`;
           }
         } catch (e) {}
+
+        // Synchronize speaker mute button UI state with persisted setting
+        if (typeof updateTTSButtonUI === "function" && typeof window.ttsEnabled !== "undefined") {
+          updateTTSButtonUI(window.ttsEnabled);
+        }
+
+        // Waiting room welcome voice controller
+        let waitingRoomAudio = null;
+        let waitingRoomHasPlayed = false;
+
+        async function playWaitingRoomWelcome(userGestureTriggered = false) {
+          if (window._isInterviewSessionStarted) return;
+          if (!window.ttsEnabled || (typeof window.isTTSEnabled === "function" && !window.isTTSEnabled())) return;
+
+          if (waitingRoomAudio) {
+            try { waitingRoomAudio.pause(); waitingRoomAudio.currentTime = 0; } catch (e) {}
+            waitingRoomAudio = null;
+            window._waitingRoomAudio = null;
+          }
+          if (typeof cancelCurrentSpeech === "function") {
+            try { cancelCurrentSpeech("waiting_room_replay"); } catch (e) {}
+          }
+
+          const waitingRoomText = 'Chào bạn! Hãy chuẩn bị tinh thần và nhấn nút "Bắt đầu" ở góc trên bên phải khi đã sẵn sàng.';
+
+          // Synchronize prompter headline
+          const currentQEl = document.getElementById("current-question-text");
+          if (currentQEl && !window._isInterviewSessionStarted) {
+            currentQEl.textContent = waitingRoomText;
+          }
+
+          const setInterviewerSpeakingUI = (speaking) => {
+            const avatarPreview = document.getElementById("interviewer-avatar-preview");
+            const interviewerBox = document.getElementById("interviewer-video-box") || avatarPreview?.closest(".ir-interviewer-tile");
+            const statusText = document.getElementById("chat-status-text");
+            if (avatarPreview) {
+              avatarPreview.classList.toggle("speaking-pulse", speaking);
+            }
+            if (interviewerBox) {
+              interviewerBox.classList.toggle("speaking", speaking);
+            }
+            if (typeof setInterviewerState === "function") {
+              setInterviewerState(speaking ? "speaking" : "idle", speaking ? "Đang đọc lời chào" : "Sẵn sàng");
+            }
+            if (statusText && !window._isInterviewSessionStarted) {
+              statusText.textContent = speaking ? `${interviewerName} đang chào bạn...` : "Chờ bạn nhấn nút Bắt đầu phỏng vấn...";
+            }
+          };
+
+          if (typeof speakAI === "function") {
+            setInterviewerSpeakingUI(true);
+            speakAI(waitingRoomText, () => {
+              setInterviewerSpeakingUI(false);
+              waitingRoomHasPlayed = true;
+            }, "waiting_room_prompt");
+          }
+        }
+
+        window.playWaitingRoomWelcome = playWaitingRoomWelcome;
+
+        // Auto trigger waiting room voice with a slight delay for smooth page presentation
+        setTimeout(() => {
+          if (!window._isInterviewSessionStarted && window.ttsEnabled) {
+            playWaitingRoomWelcome(false);
+          }
+        }, 300);
       });
 
       // Toggle dialogue panel

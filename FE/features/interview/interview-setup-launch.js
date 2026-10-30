@@ -18,7 +18,10 @@ async function startInterview() {
   const cvText = document.getElementById("cv-text")?.value.trim() || window._extractedCvText || "";
   const jdText = document.getElementById("jd-text")?.value.trim() || "";
   const userDescription = document.getElementById("user-description")?.value.trim() || "";
-  const interviewerPersona = document.getElementById("interviewer-persona")?.value || "professional";
+  const interviewerPersona = (typeof getSelectedPersona === "function" ? getSelectedPersona() : "")
+    || document.getElementById("interviewer-persona")?.value
+    || (typeof localStorage !== "undefined" ? localStorage.getItem("prepmate_interviewer_persona") : "")
+    || "professional";
   const interviewLanguage = document.getElementById("interview-language")?.value || "vi";
   const enableCamera = document.getElementById("enable-camera")?.checked || false;
   const enableHandsFree = document.getElementById("enable-handsfree")?.checked || false;
@@ -124,9 +127,33 @@ async function startInterview() {
       interviewLanguage,
       enableCamera,
       enableHandsFree,
-      ttsVoice: (typeof window !== "undefined" && typeof window.getTtsVoiceConfig === "function")
-        ? window.getTtsVoiceConfig()
-        : { provider: "elevenlabs", voiceId: "", speed: 1.0 },
+      ttsVoice: (() => {
+        const activePersonaId = interviewerPersona || "professional";
+        const pObj = (typeof window !== "undefined" && window.PrepMatePersonas && typeof window.PrepMatePersonas.getPersona === "function")
+          ? window.PrepMatePersonas.getPersona(activePersonaId)
+          : null;
+        const personaVoiceId = pObj?.voiceId || pObj?.defaultVoiceId || (activePersonaId === "friendly" ? "3BUMLmVV2cgPJQ2pAwBa" : (activePersonaId === "professional" ? "yTpM1yhZn6oZ0xMLpLFT" : "GbyYOHheg88tlJBFNEYY"));
+        const currentTts = (typeof window !== "undefined" && typeof window.getTtsVoiceConfig === "function")
+          ? window.getTtsVoiceConfig()
+          : {};
+
+        const resolvedVoice = {
+          provider: "elevenlabs",
+          voiceId: personaVoiceId,
+          personaId: activePersonaId,
+          modelId: "eleven_flash_v2_5",
+          speed: typeof currentTts.speed === "number" ? currentTts.speed : 1.0,
+          pitch: pObj?.pitch ?? 1.0,
+          rate: pObj?.rate ?? 1.0,
+          fallbackVoiceGender: pObj?.fallbackVoiceGender || (activePersonaId === "friendly" ? "female" : "male"),
+          name: pObj?.name || (activePersonaId === "friendly" ? "Lê Lan Anh" : (activePersonaId === "professional" ? "Trần Minh Vũ" : "Nguyễn Hoàng Nam")),
+        };
+        try {
+          localStorage.setItem("prepmate_interviewer_persona", activePersonaId);
+          localStorage.setItem("prepmate_tts_voice_config", JSON.stringify(resolvedVoice));
+        } catch (e) {}
+        return resolvedVoice;
+      })(),
     };
 
     sessionStorage.setItem("interview_init_data", JSON.stringify(config));

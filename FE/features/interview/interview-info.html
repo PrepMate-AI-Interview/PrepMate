@@ -7,7 +7,8 @@
     <title>PrepMate — Thiết lập Buổi Phỏng vấn AI Thực chiến</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="../../shared/css/tokens.css?v=25">
     <link rel="stylesheet" href="../../shared/css/base.css?v=25">
     <link rel="stylesheet" href="../../shared/css/layout.css?v=25">
@@ -71,7 +72,8 @@
                 </div>
                 <h1 class="chamber-hero-title">Chuẩn bị phòng phỏng vấn giả lập AI</h1>
                 <p class="chamber-hero-subtitle">
-                    Quy trình chuẩn hóa 4 bước giúp AI tạo bộ câu hỏi bám sát vị trí mục tiêu, cấp bậc chuyên môn và hồ sơ năng lực thực tế của bạn.
+                    Quy trình chuẩn hóa 4 bước giúp AI tạo bộ câu hỏi bám sát vị trí mục tiêu, cấp bậc chuyên môn và hồ
+                    sơ năng lực thực tế của bạn.
                 </p>
             </div>
 
@@ -81,7 +83,8 @@
             <div class="setup-stepper-wrap">
                 <nav class="setup-stepper-nav" aria-label="Các bước thiết lập phỏng vấn">
                     <!-- Step 1 Tab -->
-                    <button type="button" class="stepper-tab active" id="stepper-tab-1" onclick="handleStepTabClick(1)" aria-current="step">
+                    <button type="button" class="stepper-tab active" id="stepper-tab-1" onclick="handleStepTabClick(1)"
+                        aria-current="step">
                         <span class="stepper-tab-num" id="stepper-num-1">1</span>
                         <div class="stepper-tab-text">
                             <strong>1. Vị trí</strong>
@@ -92,7 +95,8 @@
                     <div class="stepper-divider" id="stepper-divider-1"></div>
 
                     <!-- Step 2 Tab -->
-                    <button type="button" class="stepper-tab locked" id="stepper-tab-2" onclick="handleStepTabClick(2)" aria-disabled="true" title="Vui lòng hoàn tất Thông tin vị trí">
+                    <button type="button" class="stepper-tab locked" id="stepper-tab-2" onclick="handleStepTabClick(2)"
+                        aria-disabled="true" title="Vui lòng hoàn tất Thông tin vị trí">
                         <span class="stepper-tab-num" id="stepper-num-2">2</span>
                         <div class="stepper-tab-text">
                             <strong>2. Hồ sơ</strong>
@@ -103,7 +107,8 @@
                     <div class="stepper-divider" id="stepper-divider-2"></div>
 
                     <!-- Step 3 Tab -->
-                    <button type="button" class="stepper-tab locked" id="stepper-tab-3" onclick="handleStepTabClick(3)" aria-disabled="true" title="Vui lòng hoàn tất các bước trước">
+                    <button type="button" class="stepper-tab locked" id="stepper-tab-3" onclick="handleStepTabClick(3)"
+                        aria-disabled="true" title="Vui lòng hoàn tất các bước trước">
                         <span class="stepper-tab-num" id="stepper-num-3">3</span>
                         <div class="stepper-tab-text">
                             <strong>3. Thiết lập</strong>
@@ -114,7 +119,8 @@
                     <div class="stepper-divider" id="stepper-divider-3"></div>
 
                     <!-- Step 4 Tab -->
-                    <button type="button" class="stepper-tab locked" id="stepper-tab-4" onclick="handleStepTabClick(4)" aria-disabled="true" title="Vui lòng hoàn tất các bước trước">
+                    <button type="button" class="stepper-tab locked" id="stepper-tab-4" onclick="handleStepTabClick(4)"
+                        aria-disabled="true" title="Vui lòng hoàn tất các bước trước">
                         <span class="stepper-tab-num" id="stepper-num-4">4</span>
                         <div class="stepper-tab-text">
                             <strong>4. Xác nhận</strong>
@@ -142,9 +148,11 @@
                                 <div class="setup-card-header-left">
                                     <div class="setup-step-badge">1</div>
                                     <div class="setup-card-title-group">
-                                        <h2 class="setup-hero-title" style="display:none;">Thông tin vị trí ứng tuyển</h2>
+                                        <h2 class="setup-hero-title" style="display:none;">Thông tin vị trí ứng tuyển
+                                        </h2>
                                         <h3>Thông tin vị trí &amp; Doanh nghiệp mục tiêu</h3>
-                                        <p class="setup-card-subtitle">Xác định chức danh, cấp bậc và doanh nghiệp mục tiêu để hệ thống cá nhân hóa kịch bản phỏng vấn bám sát thực tế.</p>
+                                        <p class="setup-card-subtitle">Xác định chức danh, cấp bậc và doanh nghiệp mục
+                                            tiêu để hệ thống cá nhân hóa kịch bản phỏng vấn bám sát thực tế.</p>
                                     </div>
                                 </div>
                             </div>
@@ -152,24 +160,35 @@
                             <!-- Step 1 Error Summary (Accessible & Inline) -->
                             <div id="step1-error-summary" class="error-summary-box hidden" role="alert" tabindex="-1">
                                 <div class="error-summary-title">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="8" x2="12" y2="12" />
+                                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                                    </svg>
                                     <span>Vui lòng kiểm tra lại thông tin:</span>
                                 </div>
                                 <ul>
-                                    <li><a href="#job-title" onclick="document.getElementById('job-title')?.focus()">Vui lòng nhập chức danh hoặc vị trí ứng tuyển mục tiêu để tiếp tục.</a></li>
+                                    <li><a href="#job-title" onclick="document.getElementById('job-title')?.focus()">Vui
+                                            lòng nhập chức danh hoặc vị trí ứng tuyển mục tiêu để tiếp tục.</a></li>
                                 </ul>
                             </div>
 
                             <!-- Subtle Context Notification Banner -->
-                            <div id="setup-context-banner" style="display:none;margin:10px 0 0;padding:10px 14px;border-radius:8px;font-size:13px;align-items:center;gap:8px;"></div>
+                            <div id="setup-context-banner"
+                                style="display:none;margin:10px 0 0;padding:10px 14px;border-radius:8px;font-size:13px;align-items:center;gap:8px;">
+                            </div>
 
                             <!-- 1. CHỌN KHỐI NGÀNH CHUYÊN MÔN (TÙY CHỌN) -->
                             <div class="hierarchical-block">
                                 <div class="hero-role-label-row">
-                                    <label class="hero-role-label" id="label-industry-selector">1. Khối ngành chuyên môn (Tùy chọn)</label>
-                                    <span class="hero-role-hint">Chọn để nhận gợi ý công ty &amp; chức danh, hoặc bỏ qua</span>
+                                    <label class="hero-role-label" id="label-industry-selector">1. Khối ngành chuyên môn
+                                        (Tùy chọn)</label>
+                                    <span class="hero-role-hint">Chọn để nhận gợi ý công ty &amp; chức danh, hoặc bỏ
+                                        qua</span>
                                 </div>
-                                <div class="industry-pills-bar" id="industry-pills-container" role="tablist" aria-labelledby="label-industry-selector">
+                                <div class="industry-pills-bar" id="industry-pills-container" role="tablist"
+                                    aria-labelledby="label-industry-selector">
                                     <!-- Populated dynamically by initHierarchicalIndustrySelector() -->
                                 </div>
                             </div>
@@ -177,17 +196,21 @@
                             <!-- 2. VỊ TRÍ ỨNG TUYỂN MỤC TIÊU (BẮT BUỘC DUY NHẤT) -->
                             <div class="hero-role-section">
                                 <div class="hero-role-label-row">
-                                    <label class="hero-role-label" for="job-title">2. Vị trí ứng tuyển mục tiêu *</label>
+                                    <label class="hero-role-label" for="job-title">2. Vị trí ứng tuyển mục tiêu
+                                        *</label>
                                     <span class="hero-role-hint">Bắt buộc duy nhất • Tự do nhập mọi vị trí</span>
                                 </div>
                                 <div class="hero-role-input-wrap">
-                                    <svg class="hero-role-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                                    <input type="text" id="job-title" list="job-titles" class="chamber-input hero-role-input"
+                                    <svg class="hero-role-input-icon" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="11" cy="11" r="8" />
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                    </svg>
+                                    <input type="text" id="job-title" list="job-titles"
+                                        class="chamber-input hero-role-input"
                                         placeholder="Ví dụ: Frontend Developer, Chuyên viên tín dụng, Kế toán tổng hợp..."
-                                        oninput="onJobTitleInput()"
-                                        aria-describedby="job-title-error"
-                                        aria-required="true"
-                                        autocomplete="off">
+                                        oninput="onJobTitleInput()" aria-describedby="job-title-error"
+                                        aria-required="true" autocomplete="off">
                                 </div>
 
                                 <datalist id="job-titles">
@@ -197,52 +220,123 @@
                                     <option value="Business Analyst">Chuyên viên Phân tích Nghiệp vụ (BA)</option>
                                     <option value="Data Analyst">Chuyên viên Phân tích Dữ liệu</option>
                                     <option value="Software Tester / QA">Kiểm thử phần mềm / QA Engineer</option>
-                                    <option value="Chuyên viên quan hệ khách hàng">Chuyên viên QHKH / Tín dụng Ngân hàng</option>
+                                    <option value="Chuyên viên quan hệ khách hàng">Chuyên viên QHKH / Tín dụng Ngân hàng
+                                    </option>
                                     <option value="Kế toán viên">Chuyên viên Kế toán & Kiểm toán</option>
-                                    <option value="Digital Marketing Specialist">Chuyên viên Tiếp thị Kỹ thuật số</option>
+                                    <option value="Digital Marketing Specialist">Chuyên viên Tiếp thị Kỹ thuật số
+                                    </option>
                                     <option value="Nhân viên kinh doanh">Chuyên viên Kinh doanh / Sales B2B</option>
                                     <option value="Chuyên viên tuyển dụng">Chuyên viên Tuyển dụng & Nhân sự</option>
                                     <option value="Kỹ sư quản lý chất lượng (QA/QC)">Kỹ sư Quản lý Chất lượng</option>
                                 </datalist>
                                 <div id="job-title-error" class="field-error-message hidden" role="alert">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                    <span id="job-title-error-text">Vui lòng nhập chức danh hoặc vị trí ứng tuyển mục tiêu để tiếp tục.</span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="8" x2="12" y2="12" />
+                                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                                    </svg>
+                                    <span id="job-title-error-text">Vui lòng nhập chức danh hoặc vị trí ứng tuyển mục
+                                        tiêu để tiếp tục.</span>
                                 </div>
 
                                 <!-- Diverse Quick Roles (8 major domains: Tech, BA, Marketing, Sales, Finance, HR, PM, Design) -->
                                 <div class="role-chips-wrap" style="margin-top: 12px;">
                                     <span class="role-chips-label">Gợi ý chức danh theo ngành:</span>
                                     <div class="role-chips-grid" id="industry-role-chips">
-                                        <div class="role-chip-card" data-role="Software Engineer" onclick="selectQuickRole('Software Engineer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('Software Engineer');}" role="button" tabindex="0">
-                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
+                                        <div class="role-chip-card" data-role="Software Engineer"
+                                            onclick="selectQuickRole('Software Engineer')"
+                                            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('Software Engineer');}"
+                                            role="button" tabindex="0">
+                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="2" y="3" width="20" height="14" rx="2" />
+                                                    <line x1="8" y1="21" x2="16" y2="21" />
+                                                    <line x1="12" y1="17" x2="12" y2="21" />
+                                                </svg></span>
                                             <span class="role-chip-title">Software Engineer</span>
                                         </div>
-                                        <div class="role-chip-card" data-role="Business Analyst" onclick="selectQuickRole('Business Analyst')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('Business Analyst');}" role="button" tabindex="0">
-                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+                                        <div class="role-chip-card" data-role="Business Analyst"
+                                            onclick="selectQuickRole('Business Analyst')"
+                                            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('Business Analyst');}"
+                                            role="button" tabindex="0">
+                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2">
+                                                    <line x1="18" y1="20" x2="18" y2="10" />
+                                                    <line x1="12" y1="20" x2="12" y2="4" />
+                                                    <line x1="6" y1="20" x2="6" y2="14" />
+                                                </svg></span>
                                             <span class="role-chip-title">Business Analyst</span>
                                         </div>
-                                        <div class="role-chip-card" data-role="Digital Marketing Specialist" onclick="selectQuickRole('Digital Marketing Specialist')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('Digital Marketing Specialist');}" role="button" tabindex="0">
-                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+                                        <div class="role-chip-card" data-role="Digital Marketing Specialist"
+                                            onclick="selectQuickRole('Digital Marketing Specialist')"
+                                            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('Digital Marketing Specialist');}"
+                                            role="button" tabindex="0">
+                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polygon
+                                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                </svg></span>
                                             <span class="role-chip-title">Digital Marketing</span>
                                         </div>
-                                        <div class="role-chip-card" data-role="B2B Sales Executive" onclick="selectQuickRole('B2B Sales Executive')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('B2B Sales Executive');}" role="button" tabindex="0">
-                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-7L10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg></span>
+                                        <div class="role-chip-card" data-role="B2B Sales Executive"
+                                            onclick="selectQuickRole('B2B Sales Executive')"
+                                            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('B2B Sales Executive');}"
+                                            role="button" tabindex="0">
+                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path
+                                                        d="M20 7h-7L10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+                                                </svg></span>
                                             <span class="role-chip-title">Sales B2B</span>
                                         </div>
-                                        <div class="role-chip-card" data-role="Financial Analyst" onclick="selectQuickRole('Financial Analyst')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('Financial Analyst');}" role="button" tabindex="0">
-                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><line x1="12" y1="6" x2="12" y2="18"/></svg></span>
+                                        <div class="role-chip-card" data-role="Financial Analyst"
+                                            onclick="selectQuickRole('Financial Analyst')"
+                                            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('Financial Analyst');}"
+                                            role="button" tabindex="0">
+                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
+                                                    <line x1="12" y1="6" x2="12" y2="18" />
+                                                </svg></span>
                                             <span class="role-chip-title">Financial Analyst</span>
                                         </div>
-                                        <div class="role-chip-card" data-role="HR Recruiter" onclick="selectQuickRole('HR Recruiter')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('HR Recruiter');}" role="button" tabindex="0">
-                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                                        <div class="role-chip-card" data-role="HR Recruiter"
+                                            onclick="selectQuickRole('HR Recruiter')"
+                                            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('HR Recruiter');}"
+                                            role="button" tabindex="0">
+                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                                    <circle cx="9" cy="7" r="4" />
+                                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                                </svg></span>
                                             <span class="role-chip-title">HR Recruiter</span>
                                         </div>
-                                        <div class="role-chip-card" data-role="Project Manager" onclick="selectQuickRole('Project Manager')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('Project Manager');}" role="button" tabindex="0">
-                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span>
+                                        <div class="role-chip-card" data-role="Project Manager"
+                                            onclick="selectQuickRole('Project Manager')"
+                                            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('Project Manager');}"
+                                            role="button" tabindex="0">
+                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path
+                                                        d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                                                </svg></span>
                                             <span class="role-chip-title">Project Manager</span>
                                         </div>
-                                        <div class="role-chip-card" data-role="UI/UX Designer" onclick="selectQuickRole('UI/UX Designer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('UI/UX Designer');}" role="button" tabindex="0">
-                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></span>
+                                        <div class="role-chip-card" data-role="UI/UX Designer"
+                                            onclick="selectQuickRole('UI/UX Designer')"
+                                            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectQuickRole('UI/UX Designer');}"
+                                            role="button" tabindex="0">
+                                            <span class="role-chip-icon"><svg width="13" height="13" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                                                    <path d="M2 12h20" />
+                                                </svg></span>
                                             <span class="role-chip-title">UI/UX Designer</span>
                                         </div>
                                     </div>
@@ -252,11 +346,13 @@
                             <!-- 3. DOANH NGHIỆP MỤC TIÊU (TÙY CHỌN) -->
                             <div class="chamber-input-group" style="margin-top: 20px; margin-bottom: 20px;">
                                 <div class="hero-role-label-row">
-                                    <label class="chamber-input-label" for="company-name" style="margin-bottom:0;">3. Doanh nghiệp mục tiêu (Tùy chọn)</label>
+                                    <label class="chamber-input-label" for="company-name" style="margin-bottom:0;">3.
+                                        Doanh nghiệp mục tiêu (Tùy chọn)</label>
                                     <span class="hero-role-hint">Tự do nhập bất kỳ doanh nghiệp nào</span>
                                 </div>
                                 <input type="text" id="company-name" list="top-companies" class="chamber-input"
-                                    placeholder="Ví dụ: FPT Software, Viettel, Techcombank, Shopee..." oninput="syncBriefing()">
+                                    placeholder="Ví dụ: FPT Software, Viettel, Techcombank, Shopee..."
+                                    oninput="syncBriefing()">
                                 <datalist id="top-companies">
                                     <option value="FPT Software">FPT Software (Công nghệ thông tin)</option>
                                     <option value="Tập đoàn Viettel">Tập đoàn Viettel (Viễn thông & Công nghệ)</option>
@@ -264,7 +360,8 @@
                                     <option value="Techcombank">Techcombank (Ngân hàng & Tài chính số)</option>
                                     <option value="Shopee / Sea Group">Shopee / Sea Group (Thương mại điện tử)</option>
                                     <option value="MoMo (M-Service)">Ví điện tử MoMo (Fintech)</option>
-                                    <option value="Tập đoàn Vinamilk">Tập đoàn Vinamilk (Hàng tiêu dùng nhanh FMCG)</option>
+                                    <option value="Tập đoàn Vinamilk">Tập đoàn Vinamilk (Hàng tiêu dùng nhanh FMCG)
+                                    </option>
                                     <option value="Unilever Vietnam">Unilever Vietnam (Đa quốc gia FMCG)</option>
                                     <option value="Grab Vietnam">Grab Vietnam (Dịch vụ & Công nghệ vận chuyển)</option>
                                     <option value="MB Bank">Ngân hàng Quân đội MB (Tài chính)</option>
@@ -284,37 +381,48 @@
                             <!-- 4. CẤP BẬC CHUYÊN MÔN (SENIORITY SELECTOR - SINGLE SOURCE OF TRUTH) -->
                             <div class="chamber-input-group seniority-group" style="margin-top: 22px;">
                                 <fieldset class="seniority-fieldset">
-                                    <legend class="chamber-input-label" style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:8px;">
+                                    <legend class="chamber-input-label"
+                                        style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:8px;">
                                         <span>4. Cấp bậc chuyên môn (Seniority)</span>
-                                        <span id="seniority-auto-hint" class="seniority-status-note">Tự động gợi ý từ chức danh</span>
+                                        <span id="seniority-auto-hint" class="seniority-status-note">Tự động gợi ý từ
+                                            chức danh</span>
                                     </legend>
-                                    <div class="seniority-selector-group" role="radiogroup" aria-label="Chọn cấp bậc ứng tuyển">
+                                    <div class="seniority-selector-group" role="radiogroup"
+                                        aria-label="Chọn cấp bậc ứng tuyển">
                                         <label class="seniority-pill" id="lbl-seniority-junior">
-                                            <input type="radio" name="seniority" id="seniority-junior" value="Junior" onchange="onSeniorityChange(true)">
+                                            <input type="radio" name="seniority" id="seniority-junior" value="Junior"
+                                                onchange="onSeniorityChange(true)">
                                             <span class="seniority-pill-body">
                                                 <strong>Mới vào nghề (Junior)</strong>
-                                                <span class="seniority-desc">Dưới 2 năm • Nền tảng & quy chuẩn chuyên môn</span>
+                                                <span class="seniority-desc">Dưới 2 năm • Nền tảng & quy chuẩn chuyên
+                                                    môn</span>
                                             </span>
                                         </label>
                                         <label class="seniority-pill" id="lbl-seniority-mid">
-                                            <input type="radio" name="seniority" id="seniority-mid" value="Mid-level" onchange="onSeniorityChange(true)">
+                                            <input type="radio" name="seniority" id="seniority-mid" value="Mid-level"
+                                                onchange="onSeniorityChange(true)">
                                             <span class="seniority-pill-body">
                                                 <strong>Đã có kinh nghiệm (Mid-level)</strong>
-                                                <span class="seniority-desc">2 – 4 năm • Tự chủ giải quyết bài toán độc lập</span>
+                                                <span class="seniority-desc">2 – 4 năm • Tự chủ giải quyết bài toán độc
+                                                    lập</span>
                                             </span>
                                         </label>
                                         <label class="seniority-pill active" id="lbl-seniority-senior">
-                                            <input type="radio" name="seniority" id="seniority-senior" value="Senior" checked onchange="onSeniorityChange(true)">
+                                            <input type="radio" name="seniority" id="seniority-senior" value="Senior"
+                                                checked onchange="onSeniorityChange(true)">
                                             <span class="seniority-pill-body">
                                                 <strong>Dày dạn kinh nghiệm (Senior)</strong>
-                                                <span class="seniority-desc">5+ năm • Làm chủ chuyên sâu & bài toán phức tạp</span>
+                                                <span class="seniority-desc">5+ năm • Làm chủ chuyên sâu & bài toán phức
+                                                    tạp</span>
                                             </span>
                                         </label>
                                         <label class="seniority-pill" id="lbl-seniority-lead">
-                                            <input type="radio" name="seniority" id="seniority-lead" value="Lead" onchange="onSeniorityChange(true)">
+                                            <input type="radio" name="seniority" id="seniority-lead" value="Lead"
+                                                onchange="onSeniorityChange(true)">
                                             <span class="seniority-pill-body">
                                                 <strong>Dẫn dắt / Quản lý (Lead / Manager)</strong>
-                                                <span class="seniority-desc">Định hướng chiến lược & điều phối đội ngũ</span>
+                                                <span class="seniority-desc">Định hướng chiến lược & điều phối đội
+                                                    ngũ</span>
                                             </span>
                                         </label>
                                     </div>
@@ -322,7 +430,12 @@
 
                                 <!-- Gentle inline hint on real conflict between title and seniority -->
                                 <div id="seniority-inline-hint" class="seniority-inline-hint hidden" role="note">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" style="flex-shrink:0;">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="16" x2="12" y2="12" />
+                                        <line x1="12" y1="8" x2="12.01" y2="8" />
+                                    </svg>
                                     <span id="seniority-hint-text"></span>
                                 </div>
                             </div>
@@ -331,17 +444,26 @@
                             <details class="setup-advanced-details" id="step1-advanced-settings">
                                 <summary class="setup-advanced-summary">
                                     <span>Cài đặt nâng cao (Vòng phỏng vấn)</span>
-                                    <svg class="advanced-chevron-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    <svg class="advanced-chevron-icon" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9" />
+                                    </svg>
                                 </summary>
                                 <div class="setup-advanced-content">
                                     <div class="chamber-input-group" style="margin-bottom:0;">
-                                        <label class="chamber-input-label" for="interview-round">Vòng phỏng vấn mục tiêu</label>
+                                        <label class="chamber-input-label" for="interview-round">Vòng phỏng vấn mục
+                                            tiêu</label>
                                         <select id="interview-round" class="chamber-select" onchange="syncBriefing()">
                                             <option value="round1">Vòng 1: Sơ loại &amp; HR Screening</option>
-                                            <option value="round2" selected>Vòng 2: Phỏng vấn Chuyên môn / Kỹ thuật</option>
-                                            <option value="round3">Vòng 3: Phỏng vấn Văn hóa &amp; Quản lý (Culture Fit)</option>
+                                            <option value="round2" selected>Vòng 2: Phỏng vấn Chuyên môn / Kỹ thuật
+                                            </option>
+                                            <option value="round3">Vòng 3: Phỏng vấn Văn hóa &amp; Quản lý (Culture Fit)
+                                            </option>
                                         </select>
-                                        <span style="font-size: 11.5px; color: var(--prep-text-muted); margin-top: 4px; display: block;">Mặc định Vòng 2 tập trung sâu vào năng lực chuyên môn và xử lý tình huống thực chiến.</span>
+                                        <span
+                                            style="font-size: 11.5px; color: var(--prep-text-muted); margin-top: 4px; display: block;">Mặc
+                                            định Vòng 2 tập trung sâu vào năng lực chuyên môn và xử lý tình huống thực
+                                            chiến.</span>
                                     </div>
                                 </div>
                             </details>
@@ -372,7 +494,8 @@
                                     <div class="setup-step-badge">2</div>
                                     <div class="setup-card-title-group">
                                         <h3>Hồ sơ năng lực & Trọng tâm đánh giá</h3>
-                                        <p>Cung cấp CV hoặc dán JD để người phỏng vấn AI khai thác đúng trải nghiệm thực chiến của bạn (Tùy chọn)</p>
+                                        <p>Cung cấp CV hoặc dán JD để người phỏng vấn AI khai thác đúng trải nghiệm thực
+                                            chiến của bạn (Tùy chọn)</p>
                                     </div>
                                 </div>
                                 <span class="setup-card-step-tag">Bước 2 / 4</span>
@@ -383,7 +506,11 @@
                                 <div class="saved-cv-top">
                                     <div class="saved-cv-meta">
                                         <div class="saved-cv-icon">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                <polyline points="14 2 14 8 20 8" />
+                                            </svg>
                                         </div>
                                         <div class="saved-cv-details">
                                             <h4 id="saved-cv-name">Hồ sơ CV đã lưu trên hệ thống</h4>
@@ -392,7 +519,8 @@
                                     </div>
                                     <div class="saved-cv-actions">
                                         <span class="saved-cv-badge" id="saved-cv-status-badge">Đang sử dụng</span>
-                                        <button type="button" class="btn-remove-cv" onclick="triggerReuploadCv()" style="font-size:12px;padding:4px 10px;">Đổi CV khác</button>
+                                        <button type="button" class="btn-remove-cv" onclick="triggerReuploadCv()"
+                                            style="font-size:12px;padding:4px 10px;">Đổi CV khác</button>
                                     </div>
                                 </div>
                             </div>
@@ -403,20 +531,36 @@
                                 <div class="profile-input-block" id="block-cv-upload">
                                     <div class="block-subhead">
                                         <div class="block-subhead-icon">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                <polyline points="14 2 14 8 20 8" />
+                                            </svg>
                                         </div>
                                         <div>
                                             <strong>Hồ sơ năng lực (CV)</strong>
-                                            <small style="display:block;color:var(--prep-text-muted);font-size:12px;">Định dạng .pdf, .txt (Tùy chọn)</small>
+                                            <small
+                                                style="display:block;color:var(--prep-text-muted);font-size:12px;">Định
+                                                dạng .pdf, .txt (Tùy chọn)</small>
                                         </div>
                                     </div>
 
                                     <div class="upload-container" id="upload-container">
-                                        <div class="upload-drop-zone" id="upload-box" onclick="document.getElementById('cv-file').click()">
-                                            <div class="upload-icon-graphic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-                                            <p class="upload-title">Kéo thả tệp CV hoặc <span class="upload-highlight">nhấp để tải lên</span></p>
+                                        <div class="upload-drop-zone" id="upload-box"
+                                            onclick="document.getElementById('cv-file').click()">
+                                            <div class="upload-icon-graphic"><svg width="28" height="28"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <path
+                                                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                    <polyline points="14 2 14 8 20 8" />
+                                                </svg></div>
+                                            <p class="upload-title">Kéo thả tệp CV hoặc <span
+                                                    class="upload-highlight">nhấp để tải lên</span></p>
                                             <p class="upload-hint">AI phân tích kỹ năng &amp; trải nghiệm dự án</p>
-                                            <input type="file" id="cv-file" accept=".pdf,.txt" style="display: none;" aria-label="Tải lên tệp CV (định dạng PDF hoặc TXT)" onchange="if(this.files && this.files[0]) handleCvUpload(this.files[0])">
+                                            <input type="file" id="cv-file" accept=".pdf,.txt" style="display: none;"
+                                                aria-label="Tải lên tệp CV (định dạng PDF hoặc TXT)"
+                                                onchange="if(this.files && this.files[0]) handleCvUpload(this.files[0])">
                                         </div>
 
                                         <div class="upload-status-bar hidden" id="upload-status">
@@ -427,7 +571,8 @@
                                                     <div class="upload-filesize" id="status-filesize">(0 KB)</div>
                                                 </div>
                                             </div>
-                                            <button type="button" class="btn-remove-cv" id="btn-remove-cv" onclick="removeUploadedCv(event)">✕ Gỡ bỏ</button>
+                                            <button type="button" class="btn-remove-cv" id="btn-remove-cv"
+                                                onclick="removeUploadedCv(event)">✕ Gỡ bỏ</button>
                                         </div>
                                     </div>
                                     <textarea id="cv-text" class="hidden" style="display: none;"></textarea>
@@ -437,20 +582,31 @@
                                 <div class="profile-input-block" id="block-jd-input">
                                     <div class="block-subhead">
                                         <div class="block-subhead-icon">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                            </svg>
                                         </div>
                                         <div style="flex:1;">
                                             <div style="display:flex;justify-content:space-between;align-items:center;">
                                                 <strong>Mô tả công việc (JD)</strong>
-                                                <button type="button" class="btn-text-link" onclick="document.getElementById('jd-file').click()" style="font-size:12px;">+ Tải tệp JD</button>
+                                                <button type="button" class="btn-text-link"
+                                                    onclick="document.getElementById('jd-file').click()"
+                                                    style="font-size:12px;">+ Tải tệp JD</button>
                                             </div>
-                                            <small style="display:block;color:var(--prep-text-muted);font-size:12px;">Dán trực tiếp hoặc tải tệp .pdf, .txt (Tùy chọn)</small>
+                                            <small
+                                                style="display:block;color:var(--prep-text-muted);font-size:12px;">Dán
+                                                trực tiếp hoặc tải tệp .pdf, .txt (Tùy chọn)</small>
                                         </div>
                                     </div>
-                                    <input type="file" id="jd-file" accept=".pdf,.txt" style="display:none;" aria-label="Tải lên tệp JD (định dạng PDF hoặc TXT)" onchange="if(this.files && this.files[0]) handleJdUpload(this.files[0])">
+                                    <input type="file" id="jd-file" accept=".pdf,.txt" style="display:none;"
+                                        aria-label="Tải lên tệp JD (định dạng PDF hoặc TXT)"
+                                        onchange="if(this.files && this.files[0]) handleJdUpload(this.files[0])">
 
                                     <!-- JD Upload status bar if file uploaded -->
-                                    <div class="upload-status-bar hidden" id="jd-upload-status" style="margin-bottom:8px;">
+                                    <div class="upload-status-bar hidden" id="jd-upload-status"
+                                        style="margin-bottom:8px;">
                                         <div class="upload-status-info">
                                             <div class="upload-status-badge">✓</div>
                                             <div>
@@ -458,7 +614,8 @@
                                                 <div class="upload-filesize" id="jd-status-filesize">(0 KB)</div>
                                             </div>
                                         </div>
-                                        <button type="button" class="btn-remove-cv" id="btn-remove-jd" onclick="removeUploadedJd(event)">✕ Gỡ bỏ</button>
+                                        <button type="button" class="btn-remove-cv" id="btn-remove-jd"
+                                            onclick="removeUploadedJd(event)">✕ Gỡ bỏ</button>
                                     </div>
 
                                     <textarea id="jd-text" rows="4" class="chamber-textarea"
@@ -468,114 +625,194 @@
 
                             <!-- Legacy Test Compatibility Tab Nav Elements -->
                             <div class="context-tabs-nav" style="display:none !important;" aria-hidden="true">
-                                <button type="button" class="context-tab-btn active" id="tab-btn-cv" onclick="switchContextTab('cv')">Tải lên tệp CV (.pdf, .txt)</button>
-                                <button type="button" class="context-tab-btn" id="tab-btn-jd" onclick="switchContextTab('jd')">Dán trực tiếp JD / Yêu cầu công việc</button>
+                                <button type="button" class="context-tab-btn active" id="tab-btn-cv"
+                                    onclick="switchContextTab('cv')">Tải lên tệp CV (.pdf, .txt)</button>
+                                <button type="button" class="context-tab-btn" id="tab-btn-jd"
+                                    onclick="switchContextTab('jd')">Dán trực tiếp JD / Yêu cầu công việc</button>
                             </div>
                             <div id="tab-content-cv" style="display:none !important;" aria-hidden="true"></div>
                             <div id="tab-content-jd" style="display:none !important;" aria-hidden="true"></div>
 
                             <!-- ACTION BUTTON: PHÂN TÍCH HỒ SƠ (CV & JD) -->
-                            <div class="analyze-profile-cta-wrap" style="margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                            <div class="analyze-profile-cta-wrap"
+                                style="margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
                                 <div style="display:flex;align-items:center;gap:10px;">
-                                    <button type="button" class="btn-analyze-profile" id="btn-analyze-profile" onclick="handleAnalyzeProfileClick()">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                    <button type="button" class="btn-analyze-profile" id="btn-analyze-profile"
+                                        onclick="handleAnalyzeProfileClick()">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <circle cx="11" cy="11" r="8" />
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                        </svg>
                                         <span>Phân tích hồ sơ (CV &amp; JD)</span>
                                     </button>
-                                    <span id="analysis-running-spinner" class="hidden" style="font-size: 13px; color: var(--prep-accent-dark); display: none;">Đang phân tích...</span>
+                                    <span id="analysis-running-spinner" class="hidden"
+                                        style="font-size: 13px; color: var(--prep-accent-dark); display: none;">Đang
+                                        phân tích...</span>
                                 </div>
-                                <span class="analysis-hint-text" style="font-size: 12px; color: var(--prep-text-muted);">Không bắt buộc để bắt đầu phỏng vấn</span>
+                                <span class="analysis-hint-text"
+                                    style="font-size: 12px; color: var(--prep-text-muted);">Không bắt buộc để bắt đầu
+                                    phỏng vấn</span>
                             </div>
 
                             <!-- Guest Preview Alert Badge (Shown if running as Guest without saving) -->
-                            <div id="guest-preview-alert" class="hidden" style="margin-top: 12px; padding: 10px 14px; border-radius: 8px; background: #fffbeb; border: 1px solid #fde68a; font-size: 12.5px; color: #92400e; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-                                <span>⚠️ <strong>Bản xem trước dành cho Khách:</strong> Kết quả này là tạm thời và sẽ không được lưu vào lịch sử phỏng vấn của bạn.</span>
-                                <button type="button" class="btn-text-link" onclick="promptGuestLogin()" style="font-size: 12px; font-weight: 700; color: #b45309;">Đăng nhập để lưu</button>
+                            <div id="guest-preview-alert" class="hidden"
+                                style="margin-top: 12px; padding: 10px 14px; border-radius: 8px; background: #fffbeb; border: 1px solid #fde68a; font-size: 12.5px; color: #92400e; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                                <span>⚠️ <strong>Bản xem trước dành cho Khách:</strong> Kết quả này là tạm thời và sẽ
+                                    không được lưu vào lịch sử phỏng vấn của bạn.</span>
+                                <button type="button" class="btn-text-link" onclick="promptGuestLogin()"
+                                    style="font-size: 12px; font-weight: 700; color: #b45309;">Đăng nhập để lưu</button>
                             </div>
 
                             <!-- ACTIONABLE CV/JD REVIEW PANEL (STRUCTURED) -->
                             <div id="cv-analysis-panel" class="analysis-panel-card hidden" style="margin-top: 16px;">
-                                <div class="analysis-panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                                <div class="analysis-panel-header"
+                                    style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                                     <div class="analysis-panel-title" style="margin-bottom:0;">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                                        <span id="cv-analysis-panel-heading">Đánh giá hồ sơ &amp; Hành động cải thiện</span>
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg>
+                                        <span id="cv-analysis-panel-heading">Đánh giá hồ sơ &amp; Hành động cải
+                                            thiện</span>
                                     </div>
                                     <div style="display:flex;align-items:center;gap:8px;">
                                         <div id="cv-analysis-suitability" class="suitability-badge"></div>
-                                        <button type="button" class="btn-dismiss-analysis" id="btn-dismiss-analysis" onclick="closeCvAnalysisPanel()" title="Ẩn kết quả phân tích" aria-label="Ẩn kết quả phân tích" style="background:none;border:none;cursor:pointer;color:var(--prep-text-muted);font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;">&times;</button>
+                                        <button type="button" class="btn-dismiss-analysis" id="btn-dismiss-analysis"
+                                            onclick="closeCvAnalysisPanel()" title="Ẩn kết quả phân tích"
+                                            aria-label="Ẩn kết quả phân tích"
+                                            style="background:none;border:none;cursor:pointer;color:var(--prep-text-muted);font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;">&times;</button>
                                     </div>
                                 </div>
 
                                 <!-- Outdated warning if target role changed after analysis -->
-                                <div id="cv-analysis-outdated-warning" class="hidden" style="margin: 8px 0 12px; padding: 10px 14px; border-radius: 8px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-                                    <span id="cv-outdated-text">Vị trí ứng tuyển đã thay đổi. Đánh giá CV cũ không còn tương ứng.</span>
-                                    <button type="button" class="btn-reanalyze-cv" onclick="reanalyzeCvForCurrentRole()" style="font-size: 11px; font-weight: 700; color: #b45309; background: #fef3c7; border: 1px solid #fcd34d; padding: 4px 10px; border-radius: 6px; cursor: pointer;">Phân tích lại theo vị trí mới</button>
+                                <div id="cv-analysis-outdated-warning" class="hidden"
+                                    style="margin: 8px 0 12px; padding: 10px 14px; border-radius: 8px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                                    <span id="cv-outdated-text">Vị trí ứng tuyển đã thay đổi. Đánh giá CV cũ không còn
+                                        tương ứng.</span>
+                                    <button type="button" class="btn-reanalyze-cv" onclick="reanalyzeCvForCurrentRole()"
+                                        style="font-size: 11px; font-weight: 700; color: #b45309; background: #fef3c7; border: 1px solid #fcd34d; padding: 4px 10px; border-radius: 6px; cursor: pointer;">Phân
+                                        tích lại theo vị trí mới</button>
                                 </div>
 
                                 <!-- 1. Nhận định tổng quan (1-3 câu) -->
                                 <div class="review-block review-block-summary" style="margin-bottom: 12px;">
-                                    <strong style="font-size:12.5px;color:var(--prep-text-primary);display:block;margin-bottom:4px;">1. Nhận định tổng quan:</strong>
-                                    <p id="cv-analysis-summary" class="analysis-summary-text" style="margin:0;">Nội dung hồ sơ đang được phân tích...</p>
+                                    <strong
+                                        style="font-size:12.5px;color:var(--prep-text-primary);display:block;margin-bottom:4px;">1.
+                                        Nhận định tổng quan:</strong>
+                                    <p id="cv-analysis-summary" class="analysis-summary-text" style="margin:0;">Nội dung
+                                        hồ sơ đang được phân tích...</p>
                                 </div>
 
                                 <!-- 2. Kỹ năng trọng tâm -->
                                 <div class="review-block review-block-skills" style="margin-bottom: 14px;">
-                                    <strong style="font-size:12.5px;color:var(--prep-text-primary);display:block;margin-bottom:6px;">2. Kỹ năng trọng tâm ghi nhận:</strong>
+                                    <strong
+                                        style="font-size:12.5px;color:var(--prep-text-primary);display:block;margin-bottom:6px;">2.
+                                        Kỹ năng trọng tâm ghi nhận:</strong>
                                     <div id="cv-key-skills" class="skills-pill-box"></div>
                                 </div>
 
                                 <!-- 3. Điểm mạnh kèm bằng chứng (Tối đa 3 điểm) -->
-                                <div class="review-block review-block-strengths" id="cv-strengths-container" style="margin-bottom: 14px;">
-                                    <strong style="font-size:12.5px;color:#047857;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                <div class="review-block review-block-strengths" id="cv-strengths-container"
+                                    style="margin-bottom: 14px;">
+                                    <strong
+                                        style="font-size:12.5px;color:#047857;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg>
                                         <span>3. Điểm mạnh nổi bật (kèm bằng chứng hồ sơ):</span>
                                     </strong>
-                                    <ul id="cv-strengths-list" class="review-bullet-list strengths-list" style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;"></ul>
+                                    <ul id="cv-strengths-list" class="review-bullet-list strengths-list"
+                                        style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;">
+                                    </ul>
                                 </div>
 
                                 <!-- 4. Khoảng trống năng lực cần lưu ý (Tối đa 3 điểm) -->
-                                <div class="review-block review-block-gaps" id="cv-gaps-container" style="margin-bottom: 14px;">
-                                    <strong style="font-size:12.5px;color:#b45309;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                <div class="review-block review-block-gaps" id="cv-gaps-container"
+                                    style="margin-bottom: 14px;">
+                                    <strong
+                                        style="font-size:12.5px;color:#b45309;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" y1="8" x2="12" y2="12" />
+                                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                                        </svg>
                                         <span>4. Khoảng trống cần lưu ý (chưa thấy bằng chứng trong hồ sơ):</span>
                                     </strong>
-                                    <ul id="cv-gaps-list" class="review-bullet-list gaps-list" style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;"></ul>
+                                    <ul id="cv-gaps-list" class="review-bullet-list gaps-list"
+                                        style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;">
+                                    </ul>
                                 </div>
 
                                 <!-- 5. Nên chuẩn bị / sửa gì trước (Tối đa 3 hành động) -->
-                                <div class="review-block review-block-actions" id="cv-action-items-container" style="margin-bottom: 12px;">
-                                    <strong style="font-size:12.5px;color:#1d4ed8;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                                <div class="review-block review-block-actions" id="cv-action-items-container"
+                                    style="margin-bottom: 12px;">
+                                    <strong
+                                        style="font-size:12.5px;color:#1d4ed8;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <line x1="8" y1="6" x2="21" y2="6" />
+                                            <line x1="8" y1="12" x2="21" y2="12" />
+                                            <line x1="8" y1="18" x2="21" y2="18" />
+                                            <line x1="3" y1="6" x2="3.01" y2="6" />
+                                            <line x1="3" y1="12" x2="3.01" y2="12" />
+                                            <line x1="3" y1="18" x2="3.01" y2="18" />
+                                        </svg>
                                         <span>5. Hành động chuẩn bị ưu tiên:</span>
                                     </strong>
-                                    <ul id="cv-action-items-list" class="review-bullet-list actions-list" style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.6;"></ul>
+                                    <ul id="cv-action-items-list" class="review-bullet-list actions-list"
+                                        style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.6;">
+                                    </ul>
                                 </div>
 
                                 <!-- Guest Teaser Lock Card (Masking detail view for unauthenticated users) -->
-                                <div id="guest-locked-teaser-banner" class="hidden" style="margin-top:16px;padding:18px 20px;background:#f8fafc;border:1.5px dashed #93c5fd;border-radius:12px;text-align:center;">
-                                    <div style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:#eff6ff;color:#2563eb;margin-bottom:10px;">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <div id="guest-locked-teaser-banner" class="hidden"
+                                    style="margin-top:16px;padding:18px 20px;background:#f8fafc;border:1.5px dashed #93c5fd;border-radius:12px;text-align:center;">
+                                    <div
+                                        style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:#eff6ff;color:#2563eb;margin-bottom:10px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>
                                     </div>
-                                    <h4 style="margin:0 0 6px 0;font-size:15px;font-weight:700;color:var(--prep-text-primary);">Đăng nhập để xem đầy đủ nhận xét &amp; lưu vào lịch sử</h4>
-                                    <p style="margin:0 0 14px 0;font-size:13px;color:var(--prep-text-secondary);max-width:540px;margin-left:auto;margin-right:auto;line-height:1.5;">
-                                        Bạn đang xem bản xem thử ngắn. Đăng nhập hoặc tạo tài khoản để xem đầy đủ nhận xét, bằng chứng, khoảng trống và kế hoạch cải thiện, đồng thời lưu vào lịch sử phỏng vấn.
+                                    <h4
+                                        style="margin:0 0 6px 0;font-size:15px;font-weight:700;color:var(--prep-text-primary);">
+                                        Đăng nhập để xem đầy đủ nhận xét &amp; lưu vào lịch sử</h4>
+                                    <p
+                                        style="margin:0 0 14px 0;font-size:13px;color:var(--prep-text-secondary);max-width:540px;margin-left:auto;margin-right:auto;line-height:1.5;">
+                                        Bạn đang xem bản xem thử ngắn. Đăng nhập hoặc tạo tài khoản để xem đầy đủ nhận
+                                        xét, bằng chứng, khoảng trống và kế hoạch cải thiện, đồng thời lưu vào lịch sử
+                                        phỏng vấn.
                                     </p>
                                     <div style="display:inline-flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-                                        <button type="button" class="btn-guest-login-action" onclick="promptGuestLogin()" style="padding:9px 18px;font-size:13px;margin:0;">Đăng nhập để xem đầy đủ</button>
-                                        <button type="button" class="btn-guest-register-action" onclick="promptGuestLogin()" style="padding:9px 18px;font-size:13px;margin:0;">Tạo tài khoản</button>
+                                        <button type="button" class="btn-guest-login-action"
+                                            onclick="promptGuestLogin()"
+                                            style="padding:9px 18px;font-size:13px;margin:0;">Đăng nhập để xem đầy
+                                            đủ</button>
+                                        <button type="button" class="btn-guest-register-action"
+                                            onclick="promptGuestLogin()"
+                                            style="padding:9px 18px;font-size:13px;margin:0;">Tạo tài khoản</button>
                                     </div>
                                 </div>
 
                                 <!-- Test compatibility suggestions list -->
-                                <ul id="cv-analysis-suggestions" class="suggestions-bullet-list" style="display:none !important;"></ul>
+                                <ul id="cv-analysis-suggestions" class="suggestions-bullet-list"
+                                    style="display:none !important;"></ul>
 
-                                <div class="analysis-disclaimer-note" style="margin-top:12px;padding-top:10px;border-top:1px solid #e2e8f0;font-size:11.5px;color:var(--prep-text-muted);font-style:italic;">
-                                    * Nhận xét sơ bộ từ mô hình AI giúp bạn định hướng phản xạ; không thay thế đánh giá trực tiếp của người phỏng vấn.
+                                <div class="analysis-disclaimer-note"
+                                    style="margin-top:12px;padding-top:10px;border-top:1px solid #e2e8f0;font-size:11.5px;color:var(--prep-text-muted);font-style:italic;">
+                                    * Nhận xét sơ bộ từ mô hình AI giúp bạn định hướng phản xạ; không thay thế đánh giá
+                                    trực tiếp của người phỏng vấn.
                                 </div>
                             </div>
 
                             <!-- Giới thiệu bản thân & Điểm nhấn năng lực -->
                             <div class="chamber-input-group" style="margin-top: 18px; margin-bottom: 0;">
-                                <label class="chamber-input-label" for="user-description">Lưu ý riêng cho AI (Tùy chọn)</label>
+                                <label class="chamber-input-label" for="user-description">Lưu ý riêng cho AI (Tùy
+                                    chọn)</label>
                                 <textarea id="user-description" rows="2" class="chamber-textarea"
                                     placeholder="Ví dụ: Mong muốn tập trung luyện câu hỏi về xử lý xung đột đội ngũ, quản trị rủi ro dự án, hoặc kỹ năng đàm phán ngân sách..."></textarea>
                             </div>
@@ -604,7 +841,8 @@
                                     <div class="setup-step-badge">3</div>
                                     <div class="setup-card-title-group">
                                         <h3>Hình thức phỏng vấn & Phong cách người phỏng vấn</h3>
-                                        <p>Lựa chọn ngôn ngữ đối thoại, phương thức tương tác và phong cách người phỏng vấn AI phù hợp mục tiêu của bạn</p>
+                                        <p>Lựa chọn ngôn ngữ đối thoại, phương thức tương tác và phong cách người phỏng
+                                            vấn AI phù hợp mục tiêu của bạn</p>
                                     </div>
                                 </div>
                                 <span class="setup-card-step-tag">Bước 3 / 4</span>
@@ -615,35 +853,80 @@
                                 <div class="quick-setting-item">
                                     <span class="quick-setting-title">Phương thức tương tác:</span>
                                     <div class="compact-segment-control" role="radiogroup">
-                                        <button type="button" class="segment-pill active" id="mode-tile-voice" onclick="setChamberMode('voice')" title="Phỏng vấn bằng giọng nói tự nhiên">
-                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                                        <button type="button" class="segment-pill active" id="mode-tile-voice"
+                                            onclick="setChamberMode('voice')" title="Phỏng vấn bằng giọng nói tự nhiên">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                                                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                                <line x1="12" y1="19" x2="12" y2="23" />
+                                                <line x1="8" y1="23" x2="16" y2="23" />
+                                            </svg>
                                             <span>Giọng nói (Voice AI)</span>
                                             <span class="mini-tag-badge">Khuyên dùng</span>
                                         </button>
-                                        <button type="button" class="segment-pill" id="mode-tile-text" onclick="setChamberMode('text')" title="Gõ phím văn bản">
-                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/></svg>
+                                        <button type="button" class="segment-pill" id="mode-tile-text"
+                                            onclick="setChamberMode('text')" title="Gõ phím văn bản">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                                                <line x1="6" y1="8" x2="6" y2="8" />
+                                                <line x1="10" y1="8" x2="10" y2="8" />
+                                                <line x1="14" y1="8" x2="14" y2="8" />
+                                            </svg>
                                             <span>Gõ phím (Chat)</span>
                                         </button>
                                     </div>
-                                    <input type="radio" name="interview-mode" id="enable-handsfree" value="voice" checked style="display:none;">
-                                    <input type="radio" name="interview-mode" id="enable-text" value="text" style="display:none;">
+                                    <input type="radio" name="interview-mode" id="enable-handsfree" value="voice"
+                                        checked style="display:none;">
+                                    <input type="radio" name="interview-mode" id="enable-text" value="text"
+                                        style="display:none;">
                                 </div>
 
                                 <div class="quick-setting-item">
                                     <span class="quick-setting-title">Ngôn ngữ phỏng vấn:</span>
                                     <div class="compact-segment-control">
-                                        <button type="button" class="segment-pill active" id="lang-tile-vn" onclick="setChamberLanguage('vietnam', true)">
-                                            <svg viewBox="0 0 512 512" width="13" height="13" style="border-radius:50%;overflow:hidden;flex-shrink:0;"><circle cx="256" cy="256" r="256" fill="#da251d"/><polygon points="256,92 294,208 416,208 317,280 355,396 256,324 157,396 195,280 96,208 218,208" fill="#ffeb3b"/></svg>
+                                        <button type="button" class="segment-pill active" id="lang-tile-vn"
+                                            onclick="setChamberLanguage('vietnam', true)">
+                                            <svg viewBox="0 0 512 512" width="13" height="13"
+                                                style="border-radius:50%;overflow:hidden;flex-shrink:0;">
+                                                <circle cx="256" cy="256" r="256" fill="#da251d" />
+                                                <polygon
+                                                    points="256,92 294,208 416,208 317,280 355,396 256,324 157,396 195,280 96,208 218,208"
+                                                    fill="#ffeb3b" />
+                                            </svg>
                                             <span>Tiếng Việt</span>
                                         </button>
-                                        <button type="button" class="segment-pill disabled-coming-soon" id="lang-tile-en" aria-disabled="true" onclick="setChamberLanguage('usa', true)" title="Ngôn ngữ Tiếng Anh đang trong giai đoạn chuẩn hóa STT và câu hỏi">
-                                            <svg viewBox="0 0 512 512" width="13" height="13" style="border-radius:50%;overflow:hidden;flex-shrink:0;"><defs><clipPath id="uk-clip-quick"><circle cx="256" cy="256" r="256"/></clipPath></defs><g clip-path="url(#uk-clip-quick)"><rect width="512" height="512" fill="#012169"/><path d="M0,0 L512,512 M512,0 L0,512" stroke="#ffffff" stroke-width="85"/><path d="M0,0 L512,512 M512,0 L0,512" stroke="#c8102e" stroke-width="50"/><path d="M256,0 V512 M0,256 H512" stroke="#ffffff" stroke-width="140"/><path d="M256,0 V512 M0,256 H512" stroke="#c8102e" stroke-width="85"/></g></svg>
+                                        <button type="button" class="segment-pill disabled-coming-soon"
+                                            id="lang-tile-en" aria-disabled="true"
+                                            onclick="setChamberLanguage('usa', true)"
+                                            title="Ngôn ngữ Tiếng Anh đang trong giai đoạn chuẩn hóa STT và câu hỏi">
+                                            <svg viewBox="0 0 512 512" width="13" height="13"
+                                                style="border-radius:50%;overflow:hidden;flex-shrink:0;">
+                                                <defs>
+                                                    <clipPath id="uk-clip-quick">
+                                                        <circle cx="256" cy="256" r="256" />
+                                                    </clipPath>
+                                                </defs>
+                                                <g clip-path="url(#uk-clip-quick)">
+                                                    <rect width="512" height="512" fill="#012169" />
+                                                    <path d="M0,0 L512,512 M512,0 L0,512" stroke="#ffffff"
+                                                        stroke-width="85" />
+                                                    <path d="M0,0 L512,512 M512,0 L0,512" stroke="#c8102e"
+                                                        stroke-width="50" />
+                                                    <path d="M256,0 V512 M0,256 H512" stroke="#ffffff"
+                                                        stroke-width="140" />
+                                                    <path d="M256,0 V512 M0,256 H512" stroke="#c8102e"
+                                                        stroke-width="85" />
+                                                </g>
+                                            </svg>
                                             <span>English</span>
                                             <span class="coming-soon-badge">Sắp hỗ trợ</span>
                                         </button>
                                     </div>
                                     <input type="hidden" id="interview-language" value="vi">
-                                    <select id="interviewer-country" onchange="saveSelectedCountry()" style="display: none;">
+                                    <select id="interviewer-country" onchange="saveSelectedCountry()"
+                                        style="display: none;">
                                         <option value="vietnam" selected>Việt Nam (Tiếng Việt)</option>
                                         <option value="usa">Hoa Kỳ (Tiếng Anh)</option>
                                     </select>
@@ -653,58 +936,83 @@
                             <!-- 2. NGƯỜI PHỎNG VẤN CỦA BẠN (INTERVIEWER PERSONA SELECTION) -->
                             <div class="chamber-input-group interviewer-persona-section" style="margin-top: 18px;">
                                 <div class="persona-section-header" style="margin-bottom: 12px;">
-                                    <label class="chamber-input-label" style="font-size: 14px; font-weight: 700; color: var(--pm-text-primary, #0f172a); margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                                    <label class="chamber-input-label"
+                                        style="font-size: 14px; font-weight: 700; color: var(--pm-text-primary, #0f172a); margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
                                         <span>Người phỏng vấn của bạn</span>
-                                        <span class="voice-badge-pill" style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--pm-primary-subtle, #eff6ff); color: var(--pm-primary, #1d4ed8); font-weight: 600; border: 1px solid var(--pm-primary-border, #bfdbfe);">
+                                        <span class="voice-badge-pill"
+                                            style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--pm-primary-subtle, #eff6ff); color: var(--pm-primary, #1d4ed8); font-weight: 600; border: 1px solid var(--pm-primary-border, #bfdbfe);">
                                             AI Interviewer
                                         </span>
                                     </label>
-                                    <p style="font-size: 12.5px; color: var(--pm-text-muted, #64748b); margin: 0; line-height: 1.4;">
-                                        Lựa chọn phong cách và nhân vật người phỏng vấn đồng hành cùng bạn trong buổi phỏng vấn.
+                                    <p
+                                        style="font-size: 12.5px; color: var(--pm-text-muted, #64748b); margin: 0; line-height: 1.4;">
+                                        Lựa chọn phong cách và nhân vật người phỏng vấn đồng hành cùng bạn trong buổi
+                                        phỏng vấn.
                                     </p>
                                 </div>
 
-                                <div class="interviewer-persona-grid" role="radiogroup" aria-label="Lựa chọn người phỏng vấn AI">
+                                <div class="interviewer-persona-grid" role="radiogroup"
+                                    aria-label="Lựa chọn người phỏng vấn AI">
                                     <!-- Persona 1: Professional (Trần Minh Vũ) -->
-                                    <div class="persona-card active" id="persona-card-professional" data-persona="professional" onclick="selectPersonaCard('professional')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectPersonaCard('professional');}" role="radio" aria-checked="true" tabindex="0">
+                                    <div class="persona-card active" id="persona-card-professional"
+                                        data-persona="professional" onclick="selectPersonaCard('professional')"
+                                        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectPersonaCard('professional');}"
+                                        role="radio" aria-checked="true" tabindex="0">
                                         <div class="persona-card-header">
                                             <div class="persona-avatar-wrap">
-                                                <div class="persona-avatar-circle" style="background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);">
+                                                <div class="persona-avatar-circle"
+                                                    style="background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);">
                                                     <span>MV</span>
                                                 </div>
                                             </div>
                                             <div class="persona-meta">
                                                 <div class="persona-name-row">
                                                     <h4 class="persona-name">Trần Minh Vũ</h4>
-                                                    <span class="persona-badge-pill badge-professional">Chuyên môn</span>
+                                                    <span class="persona-badge-pill badge-professional">Chuyên
+                                                        môn</span>
                                                 </div>
-                                                <span class="persona-role">Giám đốc Chuyên môn &amp; Tuyển dụng Cấp cao</span>
+                                                <span class="persona-role">Giám đốc Chuyên môn &amp; Tuyển dụng Cấp
+                                                    cao</span>
                                             </div>
                                         </div>
                                         <p class="persona-style-desc">
-                                            Nghiêm túc, điềm tĩnh. Đào sâu vào bản chất kiến trúc hệ thống, tư duy phản biện và năng lực giải quyết vấn đề kỹ thuật.
+                                            Nghiêm túc, điềm tĩnh. Đào sâu vào bản chất kiến trúc hệ thống, tư duy phản
+                                            biện và năng lực giải quyết vấn đề kỹ thuật.
                                         </p>
                                         <div class="persona-greeting-area">
-                                            <button type="button" class="btn-persona-greeting" id="btn-greeting-professional" onclick="event.stopPropagation(); togglePersonaGreeting('professional')" title="Nghe câu chào mở đầu của người phỏng vấn">
+                                            <button type="button" class="btn-persona-greeting"
+                                                id="btn-greeting-professional"
+                                                onclick="event.stopPropagation(); togglePersonaGreeting('professional')"
+                                                title="Nghe câu chào mở đầu của người phỏng vấn">
                                                 <span class="greeting-icon">🔊</span>
                                                 <span class="greeting-text">Nghe lời chào</span>
                                             </button>
-                                            <div class="greeting-quote-preview" id="greeting-quote-professional" style="display: none;">
-                                                <div class="greeting-quote-text">“Xin chào bạn, tôi là nhà tuyển dụng của PrepMate và sẽ là người phỏng vấn bạn ngày hôm nay.”</div>
+                                            <div class="greeting-quote-preview" id="greeting-quote-professional"
+                                                style="display: none;">
+                                                <div class="greeting-quote-text">“Xin chào bạn, tôi là Trần Minh Vũ,
+                                                    Giám đốc Chuyên môn. Tôi sẽ đồng hành và đánh giá chuyên sâu kiến
+                                                    trúc cũng như tư duy kỹ thuật của bạn trong buổi phỏng vấn hôm nay.”
+                                                </div>
                                                 <div class="greeting-asset-note">
-                                                    <span class="badge-status-update">Bản ghi âm lời chào đang cập nhật (Sắp ra mắt)</span>
+                                                    <!-- prettier-ignore -->
+                                                    <span class="badge-status-update" id="badge-greeting-professional">Bản ghi âm lời chào đang cập nhật (Hỗ trợ ElevenLabs AI Voice)</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Hidden alias for regression tests -->
-                                        <span id="persona-tile-pro" class="persona-chip-card active" style="display: none;"></span>
+                                        <span id="persona-tile-pro" class="persona-chip-card active"
+                                            style="display: none;"></span>
                                     </div>
 
                                     <!-- Persona 2: Friendly (Lê Lan Anh) -->
-                                    <div class="persona-card" id="persona-card-friendly" data-persona="friendly" onclick="selectPersonaCard('friendly')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectPersonaCard('friendly');}" role="radio" aria-checked="false" tabindex="0">
+                                    <div class="persona-card" id="persona-card-friendly" data-persona="friendly"
+                                        onclick="selectPersonaCard('friendly')"
+                                        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectPersonaCard('friendly');}"
+                                        role="radio" aria-checked="false" tabindex="0">
                                         <div class="persona-card-header">
                                             <div class="persona-avatar-wrap">
-                                                <div class="persona-avatar-circle" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+                                                <div class="persona-avatar-circle"
+                                                    style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
                                                     <span>LA</span>
                                                 </div>
                                             </div>
@@ -713,33 +1021,49 @@
                                                     <h4 class="persona-name">Lê Lan Anh</h4>
                                                     <span class="persona-badge-pill badge-friendly">Thân thiện</span>
                                                 </div>
-                                                <span class="persona-role">Chuyên viên Nhân sự &amp; Văn hóa Doanh nghiệp</span>
+                                                <span class="persona-role">Chuyên viên Nhân sự &amp; Văn hóa Doanh
+                                                    nghiệp</span>
                                             </div>
                                         </div>
                                         <p class="persona-style-desc">
-                                            Cởi mở, gần gũi. Giúp ứng viên giảm căng thẳng, tự tin chia sẻ kinh nghiệm thực tế, văn hóa và động lực phát triển.
+                                            Cởi mở, gần gũi. Giúp ứng viên giảm căng thẳng, tự tin chia sẻ kinh nghiệm
+                                            thực tế, văn hóa và động lực phát triển.
                                         </p>
                                         <div class="persona-greeting-area">
-                                            <button type="button" class="btn-persona-greeting" id="btn-greeting-friendly" onclick="event.stopPropagation(); togglePersonaGreeting('friendly')" title="Nghe câu chào mở đầu của người phỏng vấn">
+                                            <button type="button" class="btn-persona-greeting"
+                                                id="btn-greeting-friendly"
+                                                onclick="event.stopPropagation(); togglePersonaGreeting('friendly')"
+                                                title="Nghe câu chào mở đầu của người phỏng vấn">
                                                 <span class="greeting-icon">🔊</span>
                                                 <span class="greeting-text">Nghe lời chào</span>
                                             </button>
-                                            <div class="greeting-quote-preview" id="greeting-quote-friendly" style="display: none;">
-                                                <div class="greeting-quote-text">“Xin chào bạn, tôi là nhà tuyển dụng của PrepMate và sẽ là người phỏng vấn bạn ngày hôm nay.”</div>
+                                            <div class="greeting-quote-preview" id="greeting-quote-friendly"
+                                                style="display: none;">
+                                                <div class="greeting-quote-text">“Chào bạn! Tôi là Lê Lan Anh đến từ bộ
+                                                    phận Nhân sự. Buổi phỏng vấn hôm nay là cơ hội để hai bên trò chuyện
+                                                    cởi mở về kinh nghiệm và định hướng phát triển của bạn. Hãy thật tự
+                                                    tin nhé!”</div>
                                                 <div class="greeting-asset-note">
-                                                    <span class="badge-status-update">Bản ghi âm lời chào đang cập nhật (Sắp ra mắt)</span>
+                                                    <span class="badge-status-update" id="badge-greeting-friendly">Bản
+                                                        ghi âm lời chào đang cập nhật (Hỗ trợ ElevenLabs AI
+                                                        Voice)</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Hidden alias for regression tests -->
-                                        <span id="persona-tile-fri" class="persona-chip-card" style="display: none;"></span>
+                                        <span id="persona-tile-fri" class="persona-chip-card"
+                                            style="display: none;"></span>
                                     </div>
 
                                     <!-- Persona 3: Balanced (Nguyễn Hoàng Nam) -->
-                                    <div class="persona-card" id="persona-card-balanced" data-persona="balanced" onclick="selectPersonaCard('balanced')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectPersonaCard('balanced');}" role="radio" aria-checked="false" tabindex="0">
+                                    <div class="persona-card" id="persona-card-balanced" data-persona="balanced"
+                                        onclick="selectPersonaCard('balanced')"
+                                        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectPersonaCard('balanced');}"
+                                        role="radio" aria-checked="false" tabindex="0">
                                         <div class="persona-card-header">
                                             <div class="persona-avatar-wrap">
-                                                <div class="persona-avatar-circle" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);">
+                                                <div class="persona-avatar-circle"
+                                                    style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);">
                                                     <span>HN</span>
                                                 </div>
                                             </div>
@@ -748,30 +1072,42 @@
                                                     <h4 class="persona-name">Nguyễn Hoàng Nam</h4>
                                                     <span class="persona-badge-pill badge-balanced">Cân bằng</span>
                                                 </div>
-                                                <span class="persona-role">Trưởng nhóm Tuyển dụng &amp; Quản lý Kỹ thuật</span>
+                                                <span class="persona-role">Trưởng nhóm Tuyển dụng &amp; Quản lý Kỹ
+                                                    thuật</span>
                                             </div>
                                         </div>
                                         <p class="persona-style-desc">
-                                            Rõ ràng, khách quan. Đánh giá hài hòa giữa kỹ năng chuyên môn, phối hợp liên phòng ban và khung giải quyết bài toán STAR.
+                                            Rõ ràng, khách quan. Đánh giá hài hòa giữa kỹ năng chuyên môn, phối hợp liên
+                                            phòng ban và khung giải quyết bài toán STAR.
                                         </p>
                                         <div class="persona-greeting-area">
-                                            <button type="button" class="btn-persona-greeting" id="btn-greeting-balanced" onclick="event.stopPropagation(); togglePersonaGreeting('balanced')" title="Nghe câu chào mở đầu của người phỏng vấn">
+                                            <button type="button" class="btn-persona-greeting"
+                                                id="btn-greeting-balanced"
+                                                onclick="event.stopPropagation(); togglePersonaGreeting('balanced')"
+                                                title="Nghe câu chào mở đầu của người phỏng vấn">
                                                 <span class="greeting-icon">🔊</span>
                                                 <span class="greeting-text">Nghe lời chào</span>
                                             </button>
-                                            <div class="greeting-quote-preview" id="greeting-quote-balanced" style="display: none;">
-                                                <div class="greeting-quote-text">“Xin chào bạn, tôi là nhà tuyển dụng của PrepMate và sẽ là người phỏng vấn bạn ngày hôm nay.”</div>
+                                            <div class="greeting-quote-preview" id="greeting-quote-balanced"
+                                                style="display: none;">
+                                                <div class="greeting-quote-text">“Xin chào, tôi là Nguyễn Hoàng Nam.
+                                                    Chúng ta sẽ cùng trao đổi về các bài toán thực tế, kỹ năng giải
+                                                    quyết vấn đề và sự phối hợp đội ngũ của bạn.”</div>
                                                 <div class="greeting-asset-note">
-                                                    <span class="badge-status-update">Bản ghi âm lời chào đang cập nhật (Sắp ra mắt)</span>
+                                                    <span class="badge-status-update" id="badge-greeting-balanced">Bản
+                                                        ghi âm lời chào đang cập nhật (Hỗ trợ ElevenLabs AI
+                                                        Voice)</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Hidden alias for regression tests -->
-                                        <span id="persona-tile-bal" class="persona-chip-card" style="display: none;"></span>
+                                        <span id="persona-tile-bal" class="persona-chip-card"
+                                            style="display: none;"></span>
                                     </div>
                                 </div>
 
-                                <select id="interviewer-persona" onchange="saveSelectedPersona()" style="display: none;">
+                                <select id="interviewer-persona" onchange="saveSelectedPersona()"
+                                    style="display: none;">
                                     <option value="professional" selected>Trần Minh Vũ — Giám đốc Chuyên môn</option>
                                     <option value="friendly">Lê Lan Anh — Chuyên viên Nhân sự</option>
                                     <option value="balanced">Nguyễn Hoàng Nam — Trưởng nhóm Tuyển dụng</option>
@@ -780,102 +1116,167 @@
                             </div>
 
                             <!-- 3. GIỌNG NÓI NGƯỜI PHỎNG VẤN AI (ELEVENLABS PRIMARY TTS & VOICE DESIGN) -->
-                            <div class="chamber-input-group" id="chamber-voice-settings-group" style="display: none !important; margin-top: 20px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                    <label class="chamber-input-label" style="margin-bottom: 0;">Giọng nói Người phỏng vấn AI</label>
-                                    <span class="voice-badge-pill" id="voice-service-status-pill" style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: rgba(16, 185, 129, 0.15); color: #10b981; font-weight: 500;">
+                            <div class="chamber-input-group" id="chamber-voice-settings-group"
+                                style="display: none !important; margin-top: 20px;">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <label class="chamber-input-label" style="margin-bottom: 0;">Giọng nói Người phỏng
+                                        vấn AI</label>
+                                    <span class="voice-badge-pill" id="voice-service-status-pill"
+                                        style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: rgba(16, 185, 129, 0.15); color: #10b981; font-weight: 500;">
                                         ElevenLabs Flash v2.5
                                     </span>
                                 </div>
 
                                 <!-- Sub-tab navigation: Library vs Custom Voice Design -->
                                 <div class="compact-segment-control" style="margin-bottom: 14px;">
-                                    <button type="button" class="segment-pill active" id="tab-btn-voice-library" onclick="switchVoiceTab('library')">
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                                    <button type="button" class="segment-pill active" id="tab-btn-voice-library"
+                                        onclick="switchVoiceTab('library')">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                                            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                        </svg>
                                         <span>Thư viện giọng nói</span>
                                     </button>
-                                    <button type="button" class="segment-pill" id="tab-btn-voice-design" onclick="switchVoiceTab('design')">
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <button type="button" class="segment-pill" id="tab-btn-voice-design"
+                                        onclick="switchVoiceTab('design')">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <polygon
+                                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                        </svg>
                                         <span>Thiết kế giọng theo mô tả</span>
                                     </button>
                                 </div>
 
                                 <!-- TAB 1: VOICE LIBRARY -->
                                 <div id="voice-pane-library" class="voice-tab-pane">
-                                    <div class="voice-picker-strip" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                    <div class="voice-picker-strip"
+                                        style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                                         <div style="flex: 1; min-width: 220px;">
-                                            <select id="interviewer-voice-select" class="chamber-select-control" style="width: 100%; padding: 8px 12px; font-size: 13px; border-radius: 6px; border: 1px solid var(--border-color, #334155); background: var(--bg-card, #1e293b); color: var(--text-main, #f8fafc);" onchange="handleVoiceSelectionChange()">
+                                            <select id="interviewer-voice-select" class="chamber-select-control"
+                                                style="width: 100%; padding: 8px 12px; font-size: 13px; border-radius: 6px; border: 1px solid var(--border-color, #334155); background: var(--bg-card, #1e293b); color: var(--text-main, #f8fafc);"
+                                                onchange="handleVoiceSelectionChange()">
                                                 <option value="">Đang tải danh sách giọng...</option>
                                             </select>
                                         </div>
-                                        <button type="button" id="btn-preview-voice" class="btn-preview-voice" onclick="toggleVoicePreview()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 500; font-size: 13px; cursor: pointer; transition: all 0.2s ease;">
+                                        <button type="button" id="btn-preview-voice" class="btn-preview-voice"
+                                            onclick="toggleVoicePreview()"
+                                            style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 500; font-size: 13px; cursor: pointer; transition: all 0.2s ease;">
                                             <span id="preview-voice-icon">▶</span>
                                             <span id="preview-voice-label">Nghe thử</span>
                                         </button>
                                     </div>
 
                                     <!-- Speed Control -->
-                                    <div class="voice-speed-row" style="margin-top: 12px; display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-muted, #94a3b8);">
+                                    <div class="voice-speed-row"
+                                        style="margin-top: 12px; display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-muted, #94a3b8);">
                                         <span style="white-space: nowrap;">Tốc độ đọc:</span>
-                                        <input type="range" id="voice-speed-slider" min="0.9" max="1.1" step="0.05" value="1.0" aria-label="Tốc độ đọc của người phỏng vấn AI" aria-valuemin="0.9" aria-valuemax="1.1" aria-valuenow="1.0" style="flex: 1; cursor: pointer;" oninput="handleSpeedChange(this.value)">
-                                        <span id="voice-speed-badge" style="font-weight: 600; color: var(--text-main, #f8fafc); min-width: 65px; text-align: right;">1.0x (Chuẩn)</span>
+                                        <input type="range" id="voice-speed-slider" min="0.9" max="1.1" step="0.05"
+                                            value="1.0" aria-label="Tốc độ đọc của người phỏng vấn AI"
+                                            aria-valuemin="0.9" aria-valuemax="1.1" aria-valuenow="1.0"
+                                            style="flex: 1; cursor: pointer;" oninput="handleSpeedChange(this.value)">
+                                        <span id="voice-speed-badge"
+                                            style="font-weight: 600; color: var(--text-main, #f8fafc); min-width: 65px; text-align: right;">1.0x
+                                            (Chuẩn)</span>
                                     </div>
 
                                     <!-- Status / Fallback Notice -->
-                                    <div id="voice-library-notice" class="voice-notice-banner hidden" style="margin-top: 10px; padding: 8px 12px; border-radius: 6px; font-size: 12px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; display: flex; align-items: center; gap: 8px;">
+                                    <div id="voice-library-notice" class="voice-notice-banner hidden"
+                                        style="margin-top: 10px; padding: 8px 12px; border-radius: 6px; font-size: 12px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; display: flex; align-items: center; gap: 8px;">
                                         <span>ℹ️</span>
-                                        <span id="voice-notice-text">ElevenLabs API chưa được cấu hình. Hệ thống sẽ tự động dùng giọng đọc của trình duyệt (Web Speech API).</span>
+                                        <span id="voice-notice-text">ElevenLabs API chưa được cấu hình. Hệ thống sẽ tự
+                                            động dùng giọng đọc của trình duyệt (Web Speech API).</span>
                                     </div>
                                 </div>
 
                                 <!-- TAB 2: VOICE DESIGN (CUSTOM VOICE CREATION) -->
                                 <div id="voice-pane-design" class="voice-tab-pane hidden">
                                     <p style="font-size: 12px; color: var(--text-muted, #94a3b8); margin-bottom: 8px;">
-                                        Nhập mô tả đặc điểm người phỏng vấn mong muốn để tạo giọng tùy chỉnh độc bản bằng ElevenLabs Voice Design.
+                                        Nhập mô tả đặc điểm người phỏng vấn mong muốn để tạo giọng tùy chỉnh độc bản
+                                        bằng ElevenLabs Voice Design.
                                     </p>
 
-                                    <textarea id="voice-design-prompt" class="chamber-input-control" rows="3" placeholder="Ví dụ: Giọng nam tiếng Việt tự nhiên, điềm tĩnh nhưng nghiêm túc. Là chuyên gia phỏng vấn kỹ thuật, hỏi sâu về thiết kế hệ thống và tư duy phản biện..." style="width: 100%; padding: 8px 12px; font-size: 13px; border-radius: 6px; border: 1px solid var(--border-color, #334155); background: var(--bg-card, #1e293b); color: var(--text-main, #f8fafc); resize: vertical;"></textarea>
+                                    <textarea id="voice-design-prompt" class="chamber-input-control" rows="3"
+                                        placeholder="Ví dụ: Giọng nam tiếng Việt tự nhiên, điềm tĩnh nhưng nghiêm túc. Là chuyên gia phỏng vấn kỹ thuật, hỏi sâu về thiết kế hệ thống và tư duy phản biện..."
+                                        style="width: 100%; padding: 8px 12px; font-size: 13px; border-radius: 6px; border: 1px solid var(--border-color, #334155); background: var(--bg-card, #1e293b); color: var(--text-main, #f8fafc); resize: vertical;"></textarea>
 
                                     <!-- Industry context shortcuts -->
-                                    <div class="voice-context-tags" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; margin-bottom: 10px;">
-                                        <span style="font-size: 11px; color: var(--text-muted, #94a3b8); align-self: center;">Thêm gợi ý ngữ cảnh:</span>
-                                        <button type="button" class="btn-context-tag" onclick="appendVoiceContext('Software Engineer, kiến trúc hệ thống, tư duy logic')" style="font-size: 11px; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #94a3b8; cursor: pointer;">+ Công nghệ</button>
-                                        <button type="button" class="btn-context-tag" onclick="appendVoiceContext('Marketing Lead, tăng trưởng, chiến lược truyền thông')" style="font-size: 11px; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #94a3b8; cursor: pointer;">+ Marketing</button>
-                                        <button type="button" class="btn-context-tag" onclick="appendVoiceContext('Tài chính &amp; Kế toán, chuẩn mực báo cáo, độ chính xác')" style="font-size: 11px; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #94a3b8; cursor: pointer;">+ Tài chính</button>
-                                        <button type="button" class="btn-context-tag" onclick="appendVoiceContext('HR Partner, thấu cảm, văn hóa doanh nghiệp, STAR')" style="font-size: 11px; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #94a3b8; cursor: pointer;">+ Nhân sự</button>
+                                    <div class="voice-context-tags"
+                                        style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; margin-bottom: 10px;">
+                                        <span
+                                            style="font-size: 11px; color: var(--text-muted, #94a3b8); align-self: center;">Thêm
+                                            gợi ý ngữ cảnh:</span>
+                                        <button type="button" class="btn-context-tag"
+                                            onclick="appendVoiceContext('Software Engineer, kiến trúc hệ thống, tư duy logic')"
+                                            style="font-size: 11px; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #94a3b8; cursor: pointer;">+
+                                            Công nghệ</button>
+                                        <button type="button" class="btn-context-tag"
+                                            onclick="appendVoiceContext('Marketing Lead, tăng trưởng, chiến lược truyền thông')"
+                                            style="font-size: 11px; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #94a3b8; cursor: pointer;">+
+                                            Marketing</button>
+                                        <button type="button" class="btn-context-tag"
+                                            onclick="appendVoiceContext('Tài chính &amp; Kế toán, chuẩn mực báo cáo, độ chính xác')"
+                                            style="font-size: 11px; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #94a3b8; cursor: pointer;">+
+                                            Tài chính</button>
+                                        <button type="button" class="btn-context-tag"
+                                            onclick="appendVoiceContext('HR Partner, thấu cảm, văn hóa doanh nghiệp, STAR')"
+                                            style="font-size: 11px; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #94a3b8; cursor: pointer;">+
+                                            Nhân sự</button>
                                     </div>
 
                                     <!-- Credit, Quota & Privacy Disclosure -->
-                                    <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 12px; background: rgba(30, 41, 59, 0.6); padding: 10px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.08); line-height: 1.5;">
-                                        <div style="display: flex; align-items: flex-start; gap: 6px; margin-bottom: 4px;">
+                                    <div
+                                        style="font-size: 11.5px; color: #94a3b8; margin-bottom: 12px; background: rgba(30, 41, 59, 0.6); padding: 10px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.08); line-height: 1.5;">
+                                        <div
+                                            style="display: flex; align-items: flex-start; gap: 6px; margin-bottom: 4px;">
                                             <span>ℹ️</span>
-                                            <span><strong>Quota &amp; Chi phí:</strong> Tạo bản nghe thử (Preview) tiêu tốn credit ElevenLabs dựa trên độ dài văn bản mẫu. Lưu giọng chính thức sẽ sử dụng 1 Custom Voice Slot theo gói tài khoản ElevenLabs của hệ thống.</span>
+                                            <span><strong>Quota &amp; Chi phí:</strong> Tạo bản nghe thử (Preview) tiêu
+                                                tốn credit ElevenLabs dựa trên độ dài văn bản mẫu. Lưu giọng chính thức
+                                                sẽ sử dụng 1 Custom Voice Slot theo gói tài khoản ElevenLabs của hệ
+                                                thống.</span>
                                         </div>
                                         <div style="display: flex; align-items: flex-start; gap: 6px;">
                                             <span>🛡️</span>
+                                            <!-- prettier-ignore -->
                                             <span><strong>Bảo mật &amp; Quyền riêng tư:</strong> Chỉ văn bản câu hỏi cần đọc được gửi tới dịch vụ TTS. Dữ liệu CV, câu trả lời của ứng viên, luồng micro và camera KHÔNG gửi tới ElevenLabs. Chế độ Zero Retention phụ thuộc chính sách cấp phép Enterprise của tài khoản; khi chưa được kích hoạt hoặc không khả dụng, nội dung câu hỏi có thể được lưu trữ tạm thời theo chính sách của provider.</span>
                                         </div>
                                         <div style="display: flex; align-items: flex-start; gap: 6px; margin-top: 4px;">
                                             <span>🌐</span>
-                                            <span><strong>Model Voice Design:</strong> Sử dụng model eleven_multilingual_ttv_v2 (tách biệt với model TTS eleven_flash_v2_5). Hãy nghe kỹ bản xem trước để đánh giá chất giọng trước khi lưu.</span>
+                                            <span><strong>Model Voice Design:</strong> Sử dụng model
+                                                eleven_multilingual_ttv_v2 (tách biệt với model TTS eleven_flash_v2_5).
+                                                Hãy nghe kỹ bản xem trước để đánh giá chất giọng trước khi lưu.</span>
                                         </div>
                                     </div>
 
                                     <div style="display: flex; gap: 10px;">
-                                        <button type="button" id="btn-create-voice-preview" onclick="executeCreateVoiceDesignPreview()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; border: none; background: #6366f1; color: #fff; font-weight: 500; font-size: 13px; cursor: pointer;">
+                                        <button type="button" id="btn-create-voice-preview"
+                                            onclick="executeCreateVoiceDesignPreview()"
+                                            style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; border: none; background: #6366f1; color: #fff; font-weight: 500; font-size: 13px; cursor: pointer;">
                                             <span>✨</span>
                                             <span id="btn-create-voice-preview-text">Tạo bản nghe thử (Preview)</span>
                                         </button>
                                     </div>
 
                                     <!-- Previews container -->
-                                    <div id="voice-design-previews-container" class="hidden" style="margin-top: 14px; padding: 12px; border-radius: 8px; background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2);">
-                                        <h5 style="font-size: 12px; margin-bottom: 8px; color: #f8fafc; font-weight: 600;">Các bản xem trước đã tạo:</h5>
-                                        <div id="voice-design-previews-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                                    <div id="voice-design-previews-container" class="hidden"
+                                        style="margin-top: 14px; padding: 12px; border-radius: 8px; background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2);">
+                                        <h5
+                                            style="font-size: 12px; margin-bottom: 8px; color: #f8fafc; font-weight: 600;">
+                                            Các bản xem trước đã tạo:</h5>
+                                        <div id="voice-design-previews-list"
+                                            style="display: flex; flex-direction: column; gap: 8px;"></div>
 
-                                        <div id="voice-design-save-form" style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 8px; align-items: center;">
-                                            <input type="text" id="voice-design-save-name" aria-label="Đặt tên cho giọng nói AI tùy chỉnh" placeholder="Đặt tên cho giọng này (VD: Giám đốc Kỹ thuật Vũ)" style="flex: 1; padding: 7px 10px; font-size: 12px; border-radius: 5px; border: 1px solid #334155; background: #1e293b; color: #fff;">
-                                            <button type="button" id="btn-save-designed-voice" onclick="executeSaveDesignedVoice()" style="padding: 7px 14px; border-radius: 5px; border: none; background: #10b981; color: #fff; font-size: 12px; font-weight: 500; cursor: pointer;">
+                                        <div id="voice-design-save-form"
+                                            style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 8px; align-items: center;">
+                                            <input type="text" id="voice-design-save-name"
+                                                aria-label="Đặt tên cho giọng nói AI tùy chỉnh"
+                                                placeholder="Đặt tên cho giọng này (VD: Giám đốc Kỹ thuật Vũ)"
+                                                style="flex: 1; padding: 7px 10px; font-size: 12px; border-radius: 5px; border: 1px solid #334155; background: #1e293b; color: #fff;">
+                                            <button type="button" id="btn-save-designed-voice"
+                                                onclick="executeSaveDesignedVoice()"
+                                                style="padding: 7px 14px; border-radius: 5px; border: none; background: #10b981; color: #fff; font-size: 12px; font-weight: 500; cursor: pointer;">
                                                 💾 Xác nhận &amp; Sử dụng
                                             </button>
                                         </div>
@@ -907,7 +1308,8 @@
                                     <div class="setup-step-badge">4</div>
                                     <div class="setup-card-title-group">
                                         <h3>Kiểm tra &amp; Xác nhận thiết lập</h3>
-                                        <p>Rà soát lại toàn bộ thông số và trạng thái sẵn sàng trước khi bắt đầu phiên phỏng vấn</p>
+                                        <p>Rà soát lại toàn bộ thông số và trạng thái sẵn sàng trước khi bắt đầu phiên
+                                            phỏng vấn</p>
                                     </div>
                                 </div>
                                 <span class="setup-card-step-tag">Bước 4 / 4</span>
@@ -916,65 +1318,86 @@
                             <!-- Summary Review Card with Quick Edit Buttons -->
                             <div class="readiness-summary-card">
                                 <h4 class="readiness-summary-title">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                        <polyline points="10 9 9 9 8 9" />
+                                    </svg>
                                     <span>Tóm tắt thiết lập buổi phỏng vấn</span>
                                 </h4>
                                 <div class="readiness-specs-grid">
                                     <div class="readiness-spec-item">
                                         <div class="readiness-spec-header-sub">
                                             <span class="readiness-spec-label">Khối ngành</span>
-                                            <button type="button" class="btn-spec-edit" onclick="goToStep(1)">Sửa</button>
+                                            <button type="button" class="btn-spec-edit"
+                                                onclick="goToStep(1)">Sửa</button>
                                         </div>
-                                        <span class="readiness-spec-value" id="summary-spec-industry">Công nghệ &amp; Kỹ thuật</span>
+                                        <span class="readiness-spec-value" id="summary-spec-industry">Công nghệ &amp; Kỹ
+                                            thuật</span>
                                     </div>
                                     <div class="readiness-spec-item">
                                         <div class="readiness-spec-header-sub">
                                             <span class="readiness-spec-label">Vị trí &amp; Cấp bậc</span>
-                                            <button type="button" class="btn-spec-edit" onclick="goToStep(1)">Sửa</button>
+                                            <button type="button" class="btn-spec-edit"
+                                                onclick="goToStep(1)">Sửa</button>
                                         </div>
                                         <span class="readiness-spec-value" id="summary-spec-role">Chưa xác định</span>
                                     </div>
                                     <div class="readiness-spec-item">
                                         <div class="readiness-spec-header-sub">
                                             <span class="readiness-spec-label">Doanh nghiệp mục tiêu</span>
-                                            <button type="button" class="btn-spec-edit" onclick="goToStep(1)">Sửa</button>
+                                            <button type="button" class="btn-spec-edit"
+                                                onclick="goToStep(1)">Sửa</button>
                                         </div>
-                                        <span class="readiness-spec-value" id="summary-spec-company">Doanh nghiệp công nghệ</span>
+                                        <span class="readiness-spec-value" id="summary-spec-company">Doanh nghiệp công
+                                            nghệ</span>
                                     </div>
                                     <div class="readiness-spec-item">
                                         <div class="readiness-spec-header-sub">
                                             <span class="readiness-spec-label">Vòng phỏng vấn</span>
-                                            <button type="button" class="btn-spec-edit" onclick="goToStep(1)">Sửa</button>
+                                            <button type="button" class="btn-spec-edit"
+                                                onclick="goToStep(1)">Sửa</button>
                                         </div>
-                                        <span class="readiness-spec-value" id="summary-spec-round">Vòng 2: Chuyên môn</span>
+                                        <span class="readiness-spec-value" id="summary-spec-round">Vòng 2: Chuyên
+                                            môn</span>
                                     </div>
                                     <div class="readiness-spec-item">
                                         <div class="readiness-spec-header-sub">
                                             <span class="readiness-spec-label">Hồ sơ năng lực</span>
-                                            <button type="button" class="btn-spec-edit" onclick="goToStep(2)">Sửa</button>
+                                            <button type="button" class="btn-spec-edit"
+                                                onclick="goToStep(2)">Sửa</button>
                                         </div>
                                         <span class="readiness-spec-value" id="summary-spec-cv">Chưa đính kèm</span>
                                     </div>
                                     <div class="readiness-spec-item">
                                         <div class="readiness-spec-header-sub">
                                             <span class="readiness-spec-label">Ngôn ngữ &amp; Phương thức</span>
-                                            <button type="button" class="btn-spec-edit" onclick="goToStep(3)">Sửa</button>
+                                            <button type="button" class="btn-spec-edit"
+                                                onclick="goToStep(3)">Sửa</button>
                                         </div>
-                                        <span class="readiness-spec-value" id="summary-spec-lang-mode">Tiếng Việt • Giọng nói</span>
+                                        <span class="readiness-spec-value" id="summary-spec-lang-mode">Tiếng Việt •
+                                            Giọng nói</span>
                                     </div>
                                     <div class="readiness-spec-item">
                                         <div class="readiness-spec-header-sub">
                                             <span class="readiness-spec-label">Người phỏng vấn AI</span>
-                                            <button type="button" class="btn-spec-edit" onclick="goToStep(3)">Sửa</button>
+                                            <button type="button" class="btn-spec-edit"
+                                                onclick="goToStep(3)">Sửa</button>
                                         </div>
-                                        <span class="readiness-spec-value" id="summary-spec-persona">Giám đốc Chuyên môn</span>
+                                        <span class="readiness-spec-value" id="summary-spec-persona">Giám đốc Chuyên
+                                            môn</span>
                                     </div>
                                     <div class="readiness-spec-item" id="spec-item-quota">
                                         <div class="readiness-spec-header-sub">
                                             <span class="readiness-spec-label">Hạn mức phỏng vấn</span>
-                                            <a href="../../features/payment/pricing.html" class="btn-spec-edit" id="btn-spec-quota-link" style="text-decoration:none;">Gói</a>
+                                            <a href="../../features/payment/pricing.html" class="btn-spec-edit"
+                                                id="btn-spec-quota-link" style="text-decoration:none;">Gói</a>
                                         </div>
-                                        <span class="readiness-spec-value" id="summary-spec-quota">Đang kiểm tra...</span>
+                                        <span class="readiness-spec-value" id="summary-spec-quota">Đang kiểm
+                                            tra...</span>
                                     </div>
                                 </div>
                             </div>
@@ -985,7 +1408,8 @@
                                     <div class="checklist-tile-icon">✓</div>
                                     <div class="checklist-tile-content">
                                         <strong>Thiết bị Âm thanh &amp; Micro</strong>
-                                        <span id="summary-mic-status">Đảm bảo tai nghe và mic hoạt động rõ ràng nếu chọn chế độ Giọng nói</span>
+                                        <span id="summary-mic-status">Đảm bảo tai nghe và mic hoạt động rõ ràng nếu chọn
+                                            chế độ Giọng nói</span>
                                     </div>
                                     <span class="checklist-status-badge">Sẵn sàng</span>
                                 </div>
@@ -993,7 +1417,8 @@
                                     <div class="checklist-tile-icon">✓</div>
                                     <div class="checklist-tile-content">
                                         <strong>Camera quan sát tác phong</strong>
-                                        <span id="summary-cam-status">Camera mặc định tắt, bạn có thể bật tự do trong phòng phỏng vấn nếu muốn luyện tác phong</span>
+                                        <span id="summary-cam-status">Camera mặc định tắt, bạn có thể bật tự do trong
+                                            phòng phỏng vấn nếu muốn luyện tác phong</span>
                                     </div>
                                     <span class="checklist-status-badge">Tùy chọn trong phòng</span>
                                 </div>
@@ -1010,26 +1435,42 @@
                             <!-- AI Intelligence Preview Card (P2 Honest AI Integration) -->
                             <div class="ai-intelligence-preview-card" id="ai-intelligence-card">
                                 <div class="ai-preview-header">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="16" x2="12" y2="12" />
+                                        <line x1="12" y1="8" x2="12.01" y2="8" />
+                                    </svg>
                                     <span class="ai-preview-title">Định hướng phỏng vấn thông minh từ PrepMate AI</span>
                                     <span class="ai-preview-badge">AI Intelligence</span>
                                 </div>
                                 <div class="ai-preview-body" id="ai-preview-body">
-                                    <span>Hệ thống sẽ tự động bóc tách năng lực từ chức danh, hồ sơ CV và yêu cầu JD để đưa ra các câu hỏi phỏng vấn sát với thực tế chuyên môn của bạn. Hãy tự tin trả lời theo trải nghiệm thực chiến.</span>
+                                    <span>Hệ thống sẽ tự động bóc tách năng lực từ chức danh, hồ sơ CV và yêu cầu JD để
+                                        đưa ra các câu hỏi phỏng vấn sát với thực tế chuyên môn của bạn. Hãy tự tin trả
+                                        lời theo trải nghiệm thực chiến.</span>
                                 </div>
                                 <div class="ai-preview-disclaimer">
-                                    Lưu ý: Các gợi ý và phân tích kỹ năng mang tính chất định hướng ôn luyện, không phải cam kết về câu hỏi thực tế của nhà tuyển dụng.
+                                    Lưu ý: Các gợi ý và phân tích kỹ năng mang tính chất định hướng ôn luyện, không phải
+                                    cam kết về câu hỏi thực tế của nhà tuyển dụng.
                                 </div>
                             </div>
 
                             <!-- Single Commanding Launch CTA Box (Step 4 ONLY) -->
                             <div class="launch-action-card">
-                                <button type="button" id="btn-start-interview" onclick="startInterview()" class="btn-launch-primary">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+                                <button type="button" id="btn-start-interview" onclick="startInterview()"
+                                    class="btn-launch-primary">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path
+                                            d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                                        <path
+                                            d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                                    </svg>
                                     <span>Bắt đầu buổi phỏng vấn ngay</span>
                                     <span style="font-size: 18px;">→</span>
                                 </button>
-                                <div class="launch-subtext" style="margin-top:10px;font-size:13px;color:#64748b;display:flex;align-items:center;justify-content:center;gap:8px;">
+                                <div class="launch-subtext"
+                                    style="margin-top:10px;font-size:13px;color:#64748b;display:flex;align-items:center;justify-content:center;gap:8px;">
                                     <span>Thời lượng ước tính: 15-20 phút</span>
                                     <span>•</span>
                                     <span style="color:#059669;font-weight:700;">AI Sẵn sàng kết nối thích ứng</span>
@@ -1055,23 +1496,34 @@
                  GUEST AUTH GATING MODAL
                  Prompt user to login/register to persist profile review
                  ======================================================== -->
-            <div id="guest-auth-modal" class="modal-backdrop hidden" style="display:none;" onclick="if(event.target === this) closeGuestAuthModal()">
+            <div id="guest-auth-modal" class="modal-backdrop hidden" style="display:none;"
+                onclick="if(event.target === this) closeGuestAuthModal()">
                 <div class="modal-dialog-box" role="dialog" aria-modal="true" aria-labelledby="guest-modal-title">
-                    <button type="button" class="modal-dialog-close" onclick="closeGuestAuthModal()" aria-label="Đóng cửa sổ">&times;</button>
+                    <button type="button" class="modal-dialog-close" onclick="closeGuestAuthModal()"
+                        aria-label="Đóng cửa sổ">&times;</button>
                     <div class="modal-dialog-header">
                         <div class="modal-dialog-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
                         </div>
-                        <h3 id="guest-modal-title" style="margin:0;font-size:16px;font-weight:700;color:var(--prep-text-primary);">Đăng nhập để lưu kết quả phân tích</h3>
+                        <h3 id="guest-modal-title"
+                            style="margin:0;font-size:16px;font-weight:700;color:var(--prep-text-primary);">Đăng nhập để
+                            lưu kết quả phân tích</h3>
                     </div>
                     <p style="margin:12px 0 18px;font-size:13.5px;color:var(--prep-text-secondary);line-height:1.5;">
-                        Bạn đang sử dụng quyền Khách. Để PrepMate lưu giữ phân tích năng lực và gắn liền vào báo cáo lịch sử buổi phỏng vấn này, vui lòng đăng nhập hoặc tạo tài khoản miễn phí.
+                        Bạn đang sử dụng quyền Khách. Để PrepMate lưu giữ phân tích năng lực và gắn liền vào báo cáo
+                        lịch sử buổi phỏng vấn này, vui lòng đăng nhập hoặc tạo tài khoản miễn phí.
                     </p>
                     <div class="modal-dialog-actions" style="display:flex;flex-direction:column;gap:10px;">
-                        <button type="button" class="btn-modal-primary" onclick="saveDraftAndRedirectLogin()" style="width:100%;justify-content:center;padding:11px 16px;">
+                        <button type="button" class="btn-modal-primary" onclick="saveDraftAndRedirectLogin()"
+                            style="width:100%;justify-content:center;padding:11px 16px;">
                             Đăng nhập / Đăng ký để lưu kết quả
                         </button>
-                        <button type="button" class="btn-modal-secondary" onclick="continueAsGuestPreview()" style="width:100%;justify-content:center;padding:10px 16px;">
+                        <button type="button" class="btn-modal-secondary" onclick="continueAsGuestPreview()"
+                            style="width:100%;justify-content:center;padding:10px 16px;">
                             Tiếp tục xem thử nghiệm (không lưu vào lịch sử)
                         </button>
                     </div>
@@ -1085,7 +1537,8 @@
                  ======================================================== -->
             <div class="legacy-test-compat" hidden style="display:none !important;" aria-hidden="true">
                 <div id="industry-taxonomy-section">
-                    <input type="text" id="taxonomy-search-input" aria-label="Tìm kiếm phân loại ngành nghề" value="" oninput="onTaxonomySearch(this.value)">
+                    <input type="text" id="taxonomy-search-input" aria-label="Tìm kiếm phân loại ngành nghề" value=""
+                        oninput="onTaxonomySearch(this.value)">
                     <div id="taxonomy-grid"></div>
                     <button type="button" id="toggle-taxonomy-btn" onclick="toggleTaxonomyDrawer()">
                         <span id="taxonomy-toggle-text">Đổi khối ngành</span>
@@ -1094,10 +1547,14 @@
                 </div>
                 <div id="taxonomy-roles-container">
                     <div class="role-tier-filter-group" role="tablist">
-                        <button type="button" class="role-tier-tab active" data-tier="all" onclick="filterRolesByTier('all')">Tất cả</button>
-                        <button type="button" class="role-tier-tab" data-tier="entry" onclick="filterRolesByTier('entry')">Khởi đầu / Entry</button>
-                        <button type="button" class="role-tier-tab" data-tier="professional" onclick="filterRolesByTier('professional')">Chuyên viên / Pro</button>
-                        <button type="button" class="role-tier-tab" data-tier="senior_lead" onclick="filterRolesByTier('senior_lead')">Quản lý / Lead</button>
+                        <button type="button" class="role-tier-tab active" data-tier="all"
+                            onclick="filterRolesByTier('all')">Tất cả</button>
+                        <button type="button" class="role-tier-tab" data-tier="entry"
+                            onclick="filterRolesByTier('entry')">Khởi đầu / Entry</button>
+                        <button type="button" class="role-tier-tab" data-tier="professional"
+                            onclick="filterRolesByTier('professional')">Chuyên viên / Pro</button>
+                        <button type="button" class="role-tier-tab" data-tier="senior_lead"
+                            onclick="filterRolesByTier('senior_lead')">Quản lý / Lead</button>
                     </div>
                     <div id="taxonomy-roles-list"></div>
                 </div>
@@ -1154,9 +1611,9 @@
     <script src="../../features/dashboard/dashboard.js?v=24"></script>
     <script src="../../features/interview/interview-cv-upload.js"></script>
     <script src="../../features/interview/industry-taxonomy.js"></script>
-    <script src="../../features/interview/interview-persona-manifest.js"></script>
-    <script src="../../features/interview/interview-setup-launch.js"></script>
-    <script src="../../features/interview/interview-tts.js"></script>
+    <script src="../../features/interview/interview-persona-manifest.js?v=20261030b"></script>
+    <script src="../../features/interview/interview-setup-launch.js?v=20261030b"></script>
+    <script src="../../features/interview/interview-tts.js?v=20261030b"></script>
 
     <!-- Page Specific Script: Wizard Stepper, Sync & Interactivity -->
     <script>
@@ -1268,10 +1725,10 @@
         window.goToStep = goToStep;
         function goToStep(stepNumber, force = false) {
             if (typeof stopTTSPreview === "function") {
-                try { stopTTSPreview(); } catch (e) {}
+                try { stopTTSPreview(); } catch (e) { }
             }
             if (window.PrepMatePersonas && typeof window.PrepMatePersonas.stopGreeting === "function") {
-                try { window.PrepMatePersonas.stopGreeting(); } catch (e) {}
+                try { window.PrepMatePersonas.stopGreeting(); } catch (e) { }
             }
             ['professional', 'friendly', 'balanced'].forEach(p => {
                 if (typeof updateGreetingBtnState === 'function') updateGreetingBtnState(p, false);
@@ -1664,6 +2121,36 @@
                 cardFri.setAttribute('aria-checked', personaVal === 'friendly' ? 'true' : 'false');
             }
 
+            // Auto-persist TTS voice configuration matching chosen persona
+            try {
+                const personaObj = (typeof PrepMatePersonas !== 'undefined' && typeof PrepMatePersonas.getPersona === 'function')
+                    ? PrepMatePersonas.getPersona(personaVal)
+                    : null;
+                const voiceId = personaObj?.voiceId || personaObj?.defaultVoiceId || '3BUMLmVV2cgPJQ2pAwBa';
+                const ttsCfg = {
+                    provider: 'elevenlabs',
+                    voiceId: voiceId,
+                    personaId: personaVal,
+                    modelId: 'eleven_flash_v2_5',
+                    speed: 1.0,
+                    pitch: personaObj?.pitch ?? 1.0,
+                    rate: personaObj?.rate ?? 1.0,
+                    fallbackVoiceGender: personaObj?.fallbackVoiceGender || (personaVal === 'friendly' ? 'female' : 'male'),
+                    name: personaObj?.name || ''
+                };
+                localStorage.setItem('prepmate_interviewer_persona', personaVal);
+                localStorage.setItem('prepmate_tts_voice_config', JSON.stringify(ttsCfg));
+                window._selectedTtsVoiceConfig = ttsCfg;
+                if (typeof window.setTtsVoiceConfig === 'function') {
+                    window.setTtsVoiceConfig(ttsCfg);
+                }
+                if (typeof syncVoiceSelectionWithPersona === 'function') {
+                    syncVoiceSelectionWithPersona();
+                }
+            } catch (e) {
+                console.warn('[Persona] Voice config sync notice:', e);
+            }
+
             if (currentStep === 4) updateReadinessSummary();
         }
 
@@ -1672,7 +2159,10 @@
         }
         window.selectPersonaCard = selectPersonaCard;
 
-        function updateGreetingBtnState(personaId, isPlaying) {
+        let _activePersonaAudio = null;
+        let _activePersonaGreetingId = null;
+
+        function updateGreetingBtnState(personaId, isPlaying, customText = null) {
             const btn = document.getElementById(`btn-greeting-${personaId}`);
             if (!btn) return;
             const icon = btn.querySelector('.greeting-icon');
@@ -1680,7 +2170,7 @@
             if (isPlaying) {
                 btn.classList.add('playing');
                 if (icon) icon.textContent = '⏹️';
-                if (text) text.textContent = 'Dừng phát';
+                if (text) text.textContent = customText || 'Dừng phát';
             } else {
                 btn.classList.remove('playing');
                 if (icon) icon.textContent = '🔊';
@@ -1689,17 +2179,158 @@
         }
         window.updateGreetingBtnState = updateGreetingBtnState;
 
-        function togglePersonaGreeting(personaId) {
-            if (window.PrepMatePersonas && PrepMatePersonas.getActivePlayingPersonaId() === personaId) {
-                PrepMatePersonas.stopGreeting();
+        function stopAllPersonaGreetingVoices() {
+            if (_activePersonaAudio) {
+                try {
+                    _activePersonaAudio.pause();
+                    _activePersonaAudio.currentTime = 0;
+                } catch (e) { }
+                _activePersonaAudio = null;
+            }
+            if (window.speechSynthesis) {
+                try { window.speechSynthesis.cancel(); } catch (e) { }
+            }
+            if (window.PrepMatePersonas && typeof window.PrepMatePersonas.stopGreeting === 'function') {
+                try { window.PrepMatePersonas.stopGreeting(); } catch (e) { }
+            }
+            ['professional', 'friendly', 'balanced'].forEach(p => updateGreetingBtnState(p, false));
+            _activePersonaGreetingId = null;
+        }
+
+        async function playPersonaGreetingVoice(personaId) {
+            const persona = (typeof PrepMatePersonas !== 'undefined' && typeof PrepMatePersonas.getPersona === 'function')
+                ? PrepMatePersonas.getPersona(personaId)
+                : null;
+            if (!persona) return;
+
+            stopAllPersonaGreetingVoices();
+            _activePersonaGreetingId = personaId;
+            updateGreetingBtnState(personaId, true, 'Đang tải...');
+
+            // Priority 1: Play ElevenLabs previewUrl directly if available
+            if (persona.previewUrl) {
+                try {
+                    const audio = new Audio(persona.previewUrl);
+                    _activePersonaAudio = audio;
+
+                    audio.onplay = () => {
+                        updateGreetingBtnState(personaId, true, 'Dừng phát');
+                    };
+
+                    audio.onended = () => {
+                        _activePersonaAudio = null;
+                        _activePersonaGreetingId = null;
+                        updateGreetingBtnState(personaId, false);
+                    };
+
+                    audio.onerror = () => {
+                        _activePersonaAudio = null;
+                        // On audio loading error, continue to TTS backend
+                    };
+
+                    await audio.play();
+                    return;
+                } catch (e) {
+                    console.warn('[TTS] Direct preview audio play failed, trying TTS backend:', e);
+                }
+            }
+
+            const voiceId = persona.voiceId || persona.defaultVoiceId || 'cjVigY5qzO86Huf0OWal';
+            const greetingText = persona.greetingText || 'Xin chào bạn, tôi là người phỏng vấn của bạn hôm nay.';
+
+            // Priority 2: Try ElevenLabs backend TTS proxy
+            try {
+                const apiBase = (typeof resolveTtsApiBase === 'function') ? resolveTtsApiBase() : '';
+                const resp = await fetch(`${apiBase}/api/tts/speak`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: greetingText,
+                        voiceId: voiceId,
+                        modelId: 'eleven_flash_v2_5',
+                        speed: 1.0
+                    })
+                });
+
+                if (resp.ok) {
+                    const blob = await resp.blob();
+                    if (blob && blob.size > 0) {
+                        const audioUrl = URL.createObjectURL(blob);
+                        const audio = new Audio(audioUrl);
+                        _activePersonaAudio = audio;
+
+                        audio.onplay = () => {
+                            updateGreetingBtnState(personaId, true, 'Dừng phát');
+                        };
+
+                        audio.onended = () => {
+                            try { URL.revokeObjectURL(audioUrl); } catch (e) { }
+                            _activePersonaAudio = null;
+                            _activePersonaGreetingId = null;
+                            updateGreetingBtnState(personaId, false);
+                        };
+
+                        audio.onerror = () => {
+                            try { URL.revokeObjectURL(audioUrl); } catch (e) { }
+                            _activePersonaAudio = null;
+                            playFallbackWebSpeech(greetingText, personaId);
+                        };
+
+                        await audio.play();
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('[TTS] ElevenLabs audio request failed, falling back to Web Speech:', err);
+            }
+
+            // Fallback: Web Speech API
+            playFallbackWebSpeech(greetingText, personaId);
+        }
+
+        function playFallbackWebSpeech(text, personaId) {
+            if (!window.speechSynthesis) {
                 updateGreetingBtnState(personaId, false);
+                _activePersonaGreetingId = null;
                 return;
             }
 
-            if (window.PrepMatePersonas) {
-                PrepMatePersonas.stopGreeting();
+            try {
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = 'vi-VN';
+                utter.rate = 1.0;
+
+                const voices = window.speechSynthesis.getVoices() || [];
+                const viVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('vi'));
+                if (viVoice) utter.voice = viVoice;
+
+                utter.onstart = () => {
+                    updateGreetingBtnState(personaId, true, 'Dừng phát');
+                };
+                utter.onend = () => {
+                    _activePersonaGreetingId = null;
+                    updateGreetingBtnState(personaId, false);
+                };
+                utter.onerror = () => {
+                    _activePersonaGreetingId = null;
+                    updateGreetingBtnState(personaId, false);
+                };
+
+                window.speechSynthesis.speak(utter);
+            } catch (e) {
+                _activePersonaGreetingId = null;
+                updateGreetingBtnState(personaId, false);
             }
-            ['professional', 'friendly', 'balanced'].forEach(p => updateGreetingBtnState(p, false));
+        }
+
+        function togglePersonaGreeting(personaId) {
+            if (_activePersonaGreetingId === personaId) {
+                stopAllPersonaGreetingVoices();
+                return;
+            }
+
+            stopAllPersonaGreetingVoices();
 
             const quoteEl = document.getElementById(`greeting-quote-${personaId}`);
             const isCurrentlyShown = quoteEl && quoteEl.style.display !== 'none';
@@ -1713,16 +2344,15 @@
                 quoteEl.style.display = 'block';
             }
 
-            if (window.PrepMatePersonas) {
-                PrepMatePersonas.playGreeting(personaId, {
-                    onStart: () => updateGreetingBtnState(personaId, true),
-                    onEnd: () => updateGreetingBtnState(personaId, false),
-                    onError: () => updateGreetingBtnState(personaId, false),
+            // Ensure test framework compatibility: call PrepMatePersonas.playGreeting
+            if (window.PrepMatePersonas && typeof window.PrepMatePersonas.playGreeting === 'function') {
+                window.PrepMatePersonas.playGreeting(personaId, {
                     onUnavailable: () => {
-                        updateGreetingBtnState(personaId, false);
-                        if (quoteEl) quoteEl.style.display = 'block';
+                        playPersonaGreetingVoice(personaId);
                     }
                 });
+            } else {
+                playPersonaGreetingVoice(personaId);
             }
         }
         window.togglePersonaGreeting = togglePersonaGreeting;
@@ -1750,7 +2380,7 @@
                 document.getElementById('mode-tile-voice')?.classList.remove('active');
                 if (voiceGroup) voiceGroup.classList.add('hidden');
                 if (typeof stopTTSPreview === "function") {
-                    try { stopTTSPreview(); } catch (e) {}
+                    try { stopTTSPreview(); } catch (e) { }
                 }
                 if (modeBadge) {
                     modeBadge.innerHTML = '⌨️ Gõ phím văn bản';
@@ -1785,7 +2415,8 @@
                         ? await fetchTTSVoices()
                         : { success: false, voices: [] };
 
-                    if (voicesRes.success && Array.isArray(voicesRes.voices) && voicesRes.voices.length > 0) {
+                    const hasVoices = Array.isArray(voicesRes.voices) && voicesRes.voices.length > 0;
+                    if ((voicesRes.success || voicesRes.configured || hasVoices) && hasVoices) {
                         _loadedTtsVoices = voicesRes.voices;
                         renderVoiceOptions(_loadedTtsVoices, 'elevenlabs');
                         if (statusPill) {
@@ -1887,7 +2518,7 @@
                 voiceSelect.appendChild(otherGroup);
             }
 
-            handleVoiceSelectionChange();
+            syncVoiceSelectionWithPersona();
         }
 
         function switchVoiceTab(tab) {
@@ -1907,8 +2538,8 @@
             if (!voiceSelect) return;
 
             const selectedOption = voiceSelect.options[voiceSelect.selectedIndex];
-            const voiceId = voiceSelect.value;
-            const provider = selectedOption?.dataset.provider || 'elevenlabs';
+            let voiceId = voiceSelect.value;
+            let provider = selectedOption?.dataset.provider || 'elevenlabs';
             const voiceName = selectedOption?.dataset.name || selectedOption?.text || '';
             const speedSlider = document.getElementById('voice-speed-slider');
             const speed = speedSlider ? parseFloat(speedSlider.value) : 1.0;
@@ -1917,10 +2548,29 @@
             _isVoicePreviewing = false;
             resetPreviewBtnUI();
 
+            const persona = typeof getSelectedPersona === 'function' ? getSelectedPersona() : 'professional';
+            const personaObj = (typeof PrepMatePersonas !== 'undefined' && typeof PrepMatePersonas.getPersona === 'function')
+                ? PrepMatePersonas.getPersona(persona)
+                : null;
+            const authenticVoiceId = personaObj?.voiceId || personaObj?.defaultVoiceId || (persona === 'friendly' ? '3BUMLmVV2cgPJQ2pAwBa' : (persona === 'professional' ? 'yTpM1yhZn6oZ0xMLpLFT' : 'GbyYOHheg88tlJBFNEYY'));
+
+            // If voice is browser or mismatched with persona, enforce persona's authentic ElevenLabs voiceId
+            if (!voiceId || voiceId.includes('Microsoft') || voiceId.includes('Google') || voiceId.includes(' (') || voiceId.length < 15) {
+                voiceId = authenticVoiceId;
+                provider = 'elevenlabs';
+            } else if (voiceId && voiceId.length >= 15 && !voiceId.includes(' ')) {
+                provider = 'elevenlabs';
+            }
+
             const cfg = {
                 provider,
-                voiceId,
-                voiceName,
+                voiceId: voiceId || authenticVoiceId,
+                voiceName: voiceName || personaObj?.name || '',
+                personaId: persona,
+                pitch: personaObj?.pitch ?? 1.0,
+                rate: personaObj?.rate ?? 1.0,
+                fallbackVoiceGender: personaObj?.fallbackVoiceGender || (persona === 'friendly' ? 'female' : 'male'),
+                name: personaObj?.name || '',
                 modelId: 'eleven_flash_v2_5',
                 speed
             };
@@ -1929,6 +2579,10 @@
                 window.setTtsVoiceConfig(cfg);
             }
             window._selectedTtsVoiceConfig = cfg;
+            try {
+                localStorage.setItem('prepmate_tts_voice_config', JSON.stringify(cfg));
+                localStorage.setItem('prepmate_interviewer_persona', persona);
+            } catch (e) {}
         }
 
         function handleSpeedChange(val) {
@@ -1944,30 +2598,70 @@
                 cur.speed = num;
                 window.setTtsVoiceConfig(cur);
                 window._selectedTtsVoiceConfig = cur;
+                try {
+                    localStorage.setItem('prepmate_tts_voice_config', JSON.stringify(cur));
+                } catch (e) {}
             }
         }
 
         function syncVoiceSelectionWithPersona() {
             const persona = typeof getSelectedPersona === 'function' ? getSelectedPersona() : 'professional';
             const voiceSelect = document.getElementById('interviewer-voice-select');
-            if (!voiceSelect || voiceSelect.options.length === 0) return;
 
-            // Smart heuristic: match gender preference based on persona
-            const details = typeof getPersonaDetails === 'function' ? getPersonaDetails(persona) : { voiceGender: 'male' };
-            const isMalePreferred = details.voiceGender === 'male';
+            const personaObj = (typeof PrepMatePersonas !== 'undefined' && typeof PrepMatePersonas.getPersona === 'function')
+                ? PrepMatePersonas.getPersona(persona)
+                : null;
+            const targetVoiceId = personaObj?.voiceId || personaObj?.defaultVoiceId || (persona === 'friendly' ? '3BUMLmVV2cgPJQ2pAwBa' : (persona === 'professional' ? 'yTpM1yhZn6oZ0xMLpLFT' : 'GbyYOHheg88tlJBFNEYY'));
 
-            for (let i = 0; i < voiceSelect.options.length; i++) {
-                const opt = voiceSelect.options[i];
-                const text = opt.text.toLowerCase();
-                if (isMalePreferred && /nam|vũ|minh|david|male|boy/i.test(text)) {
-                    voiceSelect.selectedIndex = i;
-                    break;
-                } else if (!isMalePreferred && /nữ|hà|my|hoa|mai|female|girl/i.test(text)) {
-                    voiceSelect.selectedIndex = i;
-                    break;
+            if (voiceSelect && voiceSelect.options && voiceSelect.options.length > 0) {
+                let matchedIndex = -1;
+                // 1. Exact ElevenLabs voiceId match
+                for (let i = 0; i < voiceSelect.options.length; i++) {
+                    if (voiceSelect.options[i].value === targetVoiceId) {
+                        matchedIndex = i;
+                        break;
+                    }
+                }
+
+                // 2. Persona name match
+                if (matchedIndex === -1 && personaObj?.name) {
+                    const lastName = personaObj.name.split(' ').pop().toLowerCase();
+                    for (let i = 0; i < voiceSelect.options.length; i++) {
+                        if (voiceSelect.options[i].text.toLowerCase().includes(lastName)) {
+                            matchedIndex = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (matchedIndex >= 0) {
+                    voiceSelect.selectedIndex = matchedIndex;
                 }
             }
-            handleVoiceSelectionChange();
+
+            const speedSlider = document.getElementById('voice-speed-slider');
+            const speed = speedSlider ? parseFloat(speedSlider.value) : 1.0;
+            const cfg = {
+                provider: 'elevenlabs',
+                voiceId: targetVoiceId,
+                voiceName: personaObj?.name || (persona === 'friendly' ? 'Lê Lan Anh' : (persona === 'professional' ? 'Trần Minh Vũ' : 'Nguyễn Hoàng Nam')),
+                personaId: persona,
+                pitch: personaObj?.pitch ?? 1.0,
+                rate: personaObj?.rate ?? 1.0,
+                fallbackVoiceGender: personaObj?.fallbackVoiceGender || (persona === 'friendly' ? 'female' : 'male'),
+                name: personaObj?.name || '',
+                modelId: 'eleven_flash_v2_5',
+                speed
+            };
+
+            if (typeof window.setTtsVoiceConfig === 'function') {
+                window.setTtsVoiceConfig(cfg);
+            }
+            window._selectedTtsVoiceConfig = cfg;
+            try {
+                localStorage.setItem('prepmate_tts_voice_config', JSON.stringify(cfg));
+                localStorage.setItem('prepmate_interviewer_persona', persona);
+            } catch (e) {}
         }
 
         function resetPreviewBtnUI() {
@@ -2046,7 +2740,7 @@
                     voiceId,
                     sampleText,
                     speed,
-                    () => {},
+                    () => { },
                     () => {
                         _isVoicePreviewing = false;
                         resetPreviewBtnUI();
@@ -2237,13 +2931,21 @@
             }
         }
 
-        // Initialize voice selector when DOM ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                initVoiceSelector();
-            });
-        } else {
+        // Initialize persona and voice selector when DOM ready
+        function initializeChamberPersonaAndVoice() {
+            try {
+                const savedPersona = localStorage.getItem('prepmate_interviewer_persona');
+                if (savedPersona && ['professional', 'friendly', 'balanced'].includes(savedPersona)) {
+                    setChamberPersona(savedPersona);
+                }
+            } catch (e) {}
             initVoiceSelector();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeChamberPersonaAndVoice);
+        } else {
+            initializeChamberPersonaAndVoice();
         }
 
         // ── Role Tier Filter (Legacy/Test Compatibility) ────────────────
@@ -2378,10 +3080,10 @@
             if (!sectors.length) return;
 
             const savedSector = sessionStorage.getItem('prepmate_selected_primary_sector') ||
-                                sessionStorage.getItem('prepmate_selected_industry') || 'tech_engineering';
+                sessionStorage.getItem('prepmate_selected_industry') || 'tech_engineering';
 
             const found = (window.PrepMateTaxonomy.getPrimarySectorById && window.PrepMateTaxonomy.getPrimarySectorById(savedSector)) ||
-                          (window.PrepMateTaxonomy.getIndustryById && window.PrepMateTaxonomy.getIndustryById(savedSector));
+                (window.PrepMateTaxonomy.getIndustryById && window.PrepMateTaxonomy.getIndustryById(savedSector));
             if (found) {
                 activeIndustryId = found.id;
             }
@@ -2970,7 +3672,7 @@
             window._cvAnalysisDismissed = true;
             window._cvAnalysisResult = null;
             if (window._currentCvAnalysisAbortController) {
-                try { window._currentCvAnalysisAbortController.abort(); } catch (e) {}
+                try { window._currentCvAnalysisAbortController.abort(); } catch (e) { }
             }
             const panel = document.getElementById('cv-analysis-panel');
             if (panel) panel.classList.add('hidden');
@@ -3018,7 +3720,7 @@
             }
         }
         window.closeGuestAuthModal = closeGuestAuthModal;
-        window.addEventListener('keydown', function(e) {
+        window.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') closeGuestAuthModal();
         });
 
@@ -3072,7 +3774,7 @@
             window._cvAnalysisDismissed = false;
 
             if (window._currentCvAnalysisAbortController) {
-                try { window._currentCvAnalysisAbortController.abort(); } catch (e) {}
+                try { window._currentCvAnalysisAbortController.abort(); } catch (e) { }
             }
             const abortController = (typeof AbortController !== 'undefined') ? new AbortController() : null;
             window._currentCvAnalysisAbortController = abortController;
@@ -3149,7 +3851,7 @@
 
             window._cvAnalysisDismissed = false;
             if (window._currentCvAnalysisAbortController) {
-                try { window._currentCvAnalysisAbortController.abort(); } catch (e) {}
+                try { window._currentCvAnalysisAbortController.abort(); } catch (e) { }
             }
             const abortController = (typeof AbortController !== 'undefined') ? new AbortController() : null;
             window._currentCvAnalysisAbortController = abortController;
@@ -3372,7 +4074,7 @@
             const repracticeRaw = sessionStorage.getItem('prepmate_repractice_config');
             if (fromParam === 'repractice' || repracticeRaw) {
                 let repractice = null;
-                try { if (repracticeRaw) repractice = JSON.parse(repracticeRaw); } catch(e){}
+                try { if (repracticeRaw) repractice = JSON.parse(repracticeRaw); } catch (e) { }
                 if (repractice) {
                     if (repractice.role) {
                         const jobInput = document.getElementById('job-title');
@@ -3478,76 +4180,76 @@
                 fetch('/api/profile', {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 })
-                .then(r => r.ok ? r.json() : null)
-                .then(prof => {
-                    if (prof) {
-                        const jobInput = document.getElementById('job-title');
-                        if (jobInput && !jobInput.value && prof.targetRole) {
-                            jobInput.value = prof.targetRole;
-                        }
-                        if (prof.experienceLevel) {
-                            const senRadio = document.querySelector(`input[name="seniority"][value="${prof.experienceLevel}"]`);
-                            if (senRadio) {
-                                senRadio.checked = true;
-                                if (typeof onSeniorityChange === 'function') onSeniorityChange(true);
+                    .then(r => r.ok ? r.json() : null)
+                    .then(prof => {
+                        if (prof) {
+                            const jobInput = document.getElementById('job-title');
+                            if (jobInput && !jobInput.value && prof.targetRole) {
+                                jobInput.value = prof.targetRole;
                             }
+                            if (prof.experienceLevel) {
+                                const senRadio = document.querySelector(`input[name="seniority"][value="${prof.experienceLevel}"]`);
+                                if (senRadio) {
+                                    senRadio.checked = true;
+                                    if (typeof onSeniorityChange === 'function') onSeniorityChange(true);
+                                }
+                            }
+                            syncBriefing();
                         }
-                        syncBriefing();
-                    }
-                })
-                .catch(e => console.warn('[PREFILL] Profile fetch warning:', e));
+                    })
+                    .catch(e => console.warn('[PREFILL] Profile fetch warning:', e));
 
                 fetch('/api/cv', {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 })
-                .then(r => r.ok ? r.json() : null)
-                .then(cv => {
-                    if (cv && cv.rawText && !document.getElementById('cv-text')?.value) {
-                        const cvTextarea = document.getElementById('cv-text');
-                        const uploadBox = document.getElementById('upload-box');
-                        const uploadStatus = document.getElementById('upload-status');
-                        const filenameSpan = document.getElementById('status-filename');
-                        const filesizeSpan = document.getElementById('status-filesize');
-                        const savedCvBox = document.getElementById('saved-cv-box');
-                        const savedCvName = document.getElementById('saved-cv-name');
-                        const savedCvMeta = document.getElementById('saved-cv-meta-text');
+                    .then(r => r.ok ? r.json() : null)
+                    .then(cv => {
+                        if (cv && cv.rawText && !document.getElementById('cv-text')?.value) {
+                            const cvTextarea = document.getElementById('cv-text');
+                            const uploadBox = document.getElementById('upload-box');
+                            const uploadStatus = document.getElementById('upload-status');
+                            const filenameSpan = document.getElementById('status-filename');
+                            const filesizeSpan = document.getElementById('status-filesize');
+                            const savedCvBox = document.getElementById('saved-cv-box');
+                            const savedCvName = document.getElementById('saved-cv-name');
+                            const savedCvMeta = document.getElementById('saved-cv-meta-text');
 
-                        if (cvTextarea) cvTextarea.value = cv.rawText;
-                        window._extractedCvText = cv.rawText;
+                            if (cvTextarea) cvTextarea.value = cv.rawText;
+                            window._extractedCvText = cv.rawText;
 
-                        if (filenameSpan) filenameSpan.innerText = cv.fileName || 'CV_Cua_Ban.pdf';
-                        if (filesizeSpan) {
-                            const sizeKb = ((cv.fileSize || cv.rawText.length) / 1024).toFixed(1);
-                            filesizeSpan.innerText = `(${sizeKb} KB • Đã lưu)`;
-                        }
-
-                        if (savedCvBox) {
-                            savedCvBox.classList.remove('hidden');
-                            savedCvBox.classList.add('active');
-                            if (savedCvName) savedCvName.textContent = cv.fileName || 'Hồ sơ CV đã lưu trên PrepMate';
-                            if (savedCvMeta) {
+                            if (filenameSpan) filenameSpan.innerText = cv.fileName || 'CV_Cua_Ban.pdf';
+                            if (filesizeSpan) {
                                 const sizeKb = ((cv.fileSize || cv.rawText.length) / 1024).toFixed(1);
-                                savedCvMeta.textContent = `Dung lượng: ${sizeKb} KB • Sẵn sàng tạo câu hỏi phỏng vấn`;
+                                filesizeSpan.innerText = `(${sizeKb} KB • Đã lưu)`;
                             }
-                        }
 
-                        if (uploadBox) uploadBox.classList.add('hidden');
-                        if (uploadStatus) uploadStatus.classList.remove('hidden');
+                            if (savedCvBox) {
+                                savedCvBox.classList.remove('hidden');
+                                savedCvBox.classList.add('active');
+                                if (savedCvName) savedCvName.textContent = cv.fileName || 'Hồ sơ CV đã lưu trên PrepMate';
+                                if (savedCvMeta) {
+                                    const sizeKb = ((cv.fileSize || cv.rawText.length) / 1024).toFixed(1);
+                                    savedCvMeta.textContent = `Dung lượng: ${sizeKb} KB • Sẵn sàng tạo câu hỏi phỏng vấn`;
+                                }
+                            }
 
-                        // WI-INTERVIEW-PREFLIGHT-01: Explicit opt-in only.
-                        // Prefill saved CV skills in background cache; do NOT auto-show analysis panel without user request.
-                        if (cv.extractedSkills && cv.extractedSkills.length > 0) {
-                            window._savedCvAnalysisCache = {
-                                summary: cv.summary || `Đã bóc tách ${cv.extractedSkills.length} kỹ năng trọng tâm từ CV đã lưu.`,
-                                keySkills: cv.extractedSkills || [],
-                                suitability: cv.readinessScore || 90,
-                                suggestions: cv.suggestions || []
-                            };
+                            if (uploadBox) uploadBox.classList.add('hidden');
+                            if (uploadStatus) uploadStatus.classList.remove('hidden');
+
+                            // WI-INTERVIEW-PREFLIGHT-01: Explicit opt-in only.
+                            // Prefill saved CV skills in background cache; do NOT auto-show analysis panel without user request.
+                            if (cv.extractedSkills && cv.extractedSkills.length > 0) {
+                                window._savedCvAnalysisCache = {
+                                    summary: cv.summary || `Đã bóc tách ${cv.extractedSkills.length} kỹ năng trọng tâm từ CV đã lưu.`,
+                                    keySkills: cv.extractedSkills || [],
+                                    suitability: cv.readinessScore || 90,
+                                    suggestions: cv.suggestions || []
+                                };
+                            }
+                            syncBriefing();
                         }
-                        syncBriefing();
-                    }
-                })
-                .catch(e => console.warn('[PREFILL] CV fetch warning:', e));
+                    })
+                    .catch(e => console.warn('[PREFILL] CV fetch warning:', e));
             }
 
             initIndustryTaxonomy();
@@ -3611,7 +4313,7 @@
         // Cleanup audio on navigation / tab close
         window.addEventListener('beforeunload', () => {
             if (window.PrepMatePersonas && typeof window.PrepMatePersonas.stopGreeting === 'function') {
-                try { window.PrepMatePersonas.stopGreeting(); } catch (e) {}
+                try { window.PrepMatePersonas.stopGreeting(); } catch (e) { }
             }
         });
     </script>

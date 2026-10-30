@@ -62,6 +62,7 @@ namespace backend.Controllers
 
             return Ok(new
             {
+                success = true,
                 configured = true,
                 count = result.Voices.Count,
                 voices = result.Voices

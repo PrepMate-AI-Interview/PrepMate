@@ -92,6 +92,7 @@ function requestJson(url, method, postData = null, token = null) {
 
 function spawnBackend() {
   const env = {
+    PREPMATE_AI_API_KEY: process.env.PREPMATE_AI_API_KEY || 'AIzaSyTestMockKey123456789',
     ...process.env,
     DATABASE_FILE_PATH: TEST_DB_PATH,
     PREPMATE_KEYRING_PATH: TEST_KEYRING_PATH,

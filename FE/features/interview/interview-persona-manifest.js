@@ -35,11 +35,15 @@
       approach: "STAR chuyên sâu · Đào sâu 'Tại sao' · Đánh giá tư duy gốc",
       suitableFor: "Senior, Tech Lead, Chuyên gia kỹ thuật, Quản lý dự án",
       recommendedIndustry: "Công nghệ thông tin, Kỹ thuật, Tài chính",
-      greetingText: "Xin chào bạn, tôi là nhà tuyển dụng của PrepMate và sẽ là người phỏng vấn bạn ngày hôm nay.",
+      voiceId: "yTpM1yhZn6oZ0xMLpLFT",
+      defaultVoiceId: "yTpM1yhZn6oZ0xMLpLFT",
+      previewUrl: "https://storage.googleapis.com/eleven-public-prod/database/workspace/d6c8ae0789cb475597797358f8fe6c23/voices/yTpM1yhZn6oZ0xMLpLFT/cc7e6684-35b1-4dae-b514-99c5e937d103.mp3",
+      greetingText: "Xin chào bạn, tôi là Trần Minh Vũ, Giám đốc Chuyên môn. Tôi sẽ đồng hành và đánh giá chuyên sâu kiến trúc cũng như tư duy kỹ thuật của bạn trong buổi phỏng vấn hôm nay.",
       audioAssetUrl: "assets/audio/personas/professional_greeting.mp3",
       audioAvailable: false, // Verified: No static mp3 asset exists currently in repo
       fallbackVoiceGender: "male",
-      defaultVoiceId: "EXAVITQu4vr4xnSDxMaL"
+      pitch: 1.00,
+      rate: 1.00,
     },
     friendly: {
       id: "friendly",
@@ -56,11 +60,15 @@
       approach: "Hành vi & Tình huống · Lắng nghe tích cực · Đánh giá Culture-fit",
       suitableFor: "Fresher, Junior, Mid-level, Chuyển ngành, Client-facing",
       recommendedIndustry: "Nhân sự, Marketing, Dịch vụ khách hàng, Kinh doanh",
-      greetingText: "Xin chào bạn, tôi là nhà tuyển dụng của PrepMate và sẽ là người phỏng vấn bạn ngày hôm nay.",
+      voiceId: "3BUMLmVV2cgPJQ2pAwBa",
+      defaultVoiceId: "3BUMLmVV2cgPJQ2pAwBa",
+      previewUrl: "https://storage.googleapis.com/eleven-public-prod/database/workspace/d6c8ae0789cb475597797358f8fe6c23/voices/3BUMLmVV2cgPJQ2pAwBa/38c418af-5880-4c19-96d5-604a6426cc06.mp3",
+      greetingText: "Chào bạn! Tôi là Lê Lan Anh đến từ bộ phận Nhân sự. Buổi phỏng vấn hôm nay là cơ hội để hai bên trò chuyện cởi mở về kinh nghiệm và định hướng phát triển của bạn. Hãy thật tự tin nhé!",
       audioAssetUrl: "assets/audio/personas/friendly_greeting.mp3",
       audioAvailable: false,
       fallbackVoiceGender: "female",
-      defaultVoiceId: "EXAVITQu4vr4xnSDxMaL"
+      pitch: 1.00,
+      rate: 1.00,
     },
     balanced: {
       id: "balanced",
@@ -77,11 +85,15 @@
       approach: "Tình huống thực tế · Cân bằng Hard/Soft Skills · Phản hồi đa chiều",
       suitableFor: "Mid-level, Product Owner, Scrum Master, Vị trí liên chức năng",
       recommendedIndustry: "Quản trị kinh doanh, E-commerce, Vận hành, Logistics",
-      greetingText: "Xin chào bạn, tôi là nhà tuyển dụng của PrepMate và sẽ là người phỏng vấn bạn ngày hôm nay.",
+      voiceId: "GbyYOHheg88tlJBFNEYY",
+      defaultVoiceId: "GbyYOHheg88tlJBFNEYY",
+      previewUrl: "https://storage.googleapis.com/eleven-public-prod/database/workspace/d6c8ae0789cb475597797358f8fe6c23/voices/GbyYOHheg88tlJBFNEYY/e4785e02-99bc-4867-b871-dcd5e816848a.mp3",
+      greetingText: "Xin chào, tôi là Nguyễn Hoàng Nam. Chúng ta sẽ cùng trao đổi về các bài toán thực tế, kỹ năng giải quyết vấn đề và sự phối hợp đội ngũ của bạn.",
       audioAssetUrl: "assets/audio/personas/balanced_greeting.mp3",
       audioAvailable: false,
       fallbackVoiceGender: "male",
-      defaultVoiceId: "EXAVITQu4vr4xnSDxMaL"
+      pitch: 1.00,
+      rate: 1.00,
     }
   };
 
@@ -101,7 +113,7 @@
       try {
         _activeAudio.pause();
         _activeAudio.currentTime = 0;
-      } catch (e) {}
+      } catch (e) { }
       _activeAudio = null;
     }
     const prevId = _activePersonaId;
