@@ -250,7 +250,7 @@ async function runTests() {
   const readinessPill = elements.get("hero-readiness-pill");
   const confidencePill = elements.get("hero-confidence-pill");
   assert(readinessPill.className.includes("ready"), "Test 5.1: Readiness pill has ready class");
-  assert(readinessPill.textContent.includes("READY • SẴN SÀNG"), "Test 5.2: Readiness pill label is accurate");
+  assert(readinessPill.textContent.includes("SẴN SÀNG"), "Test 5.2: Readiness pill label is accurate");
   assert(confidencePill.textContent.includes("CAO"), "Test 5.3: Confidence pill displays CAO");
 
   // TEST 6: 6 Performance Dimensions Rendered

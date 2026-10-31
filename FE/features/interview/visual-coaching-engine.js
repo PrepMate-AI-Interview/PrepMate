@@ -1259,7 +1259,7 @@
     if (facingCameraRate >= 70) {
       structuredObservations.push({
         dimension: "HEAD_ORIENTATION",
-        title: "Hướng Đầu & Giao Tiếp Trực Diện (Head Orientation & Engagement)",
+        title: "Hướng Đầu & Giao Tiếp Trực Diện",
         observation: `Ứng viên duy trì hướng đầu thẳng về phía camera trong ${facingCameraRate}% thời lượng (${facingCameraCount}/${totalSamples} mẫu quan sát).`,
         context: "Trong suốt quá trình diễn đạt câu trả lời các lượt phỏng vấn.",
         limitation: "Ước lượng hướng đầu tương đối (Head Orientation) dựa trên phân bố hình học khuôn mặt trên trình duyệt; không phải công nghệ theo dõi cử động đồng tử (Eye Gaze Tracking).",
@@ -1271,7 +1271,7 @@
       const downRate = Math.round((tiltedDownCount / totalSamples) * 100);
       structuredObservations.push({
         dimension: "HEAD_ORIENTATION",
-        title: "Hướng Đầu & Giao Tiếp Trực Diện (Head Orientation & Engagement)",
+        title: "Hướng Đầu & Giao Tiếp Trực Diện",
         observation: `Phát hiện xu hướng cúi đầu xuống trong ${downRate}% thời lượng (${tiltedDownCount}/${totalSamples} mẫu quan sát).`,
         context: "Trong các đoạn suy nghĩ hoặc trình bày chi tiết.",
         limitation: "Hệ thống chỉ đo độ lệch tâm hình học khuôn mặt; có thể do người dùng nhìn xuống bàn phím hoặc đọc tài liệu ghi chú.",
@@ -1282,7 +1282,7 @@
     } else {
       structuredObservations.push({
         dimension: "HEAD_ORIENTATION",
-        title: "Hướng Đầu & Giao Tiếp Trực Diện (Head Orientation & Engagement)",
+        title: "Hướng Đầu & Giao Tiếp Trực Diện",
         observation: `Ứng viên giữ hướng nhìn trực diện trong ${facingCameraRate}% thời lượng; có sự dịch chuyển góc nhìn sang hai bên trong ${lookingAwayRate}% thời lượng.`,
         context: "Trong khi diễn giải các ý tưởng phỏng vấn.",
         limitation: "Ước lượng hướng đầu tương đối trên trình duyệt, không phân tích ánh mắt hay suy đoán tâm lý lo âu.",
@@ -1296,7 +1296,7 @@
     if (totalSamples > 0 && shouldersOutOfFrameCount / totalSamples >= 0.60) {
       structuredObservations.push({
         dimension: "UPPER_BODY_POSTURE",
-        title: "Tư Thế Thân Trên & Trục Cân Bằng (Upper Body Posture)",
+        title: "Tư Thế Thân Trên & Trục Cân Bằng",
         observation: `Khung hình tập trung cận cảnh khuôn mặt nên phần vai nằm ngoài góc nhìn camera trong ${Math.round((shouldersOutOfFrameCount / totalSamples) * 100)}% thời lượng.`,
         context: "Tại các khoảng cách ghi hình cận cảnh.",
         limitation: "Không đủ thông tin biên viền vai để đo độ nghiêng thân mình; hệ thống minh bạch báo cáo giới hạn thay vì phỏng đoán.",
@@ -1307,7 +1307,7 @@
     } else if (uprightRate >= 65) {
       structuredObservations.push({
         dimension: "UPPER_BODY_POSTURE",
-        title: "Tư Thế Thân Trên & Trục Cân Bằng (Upper Body Posture)",
+        title: "Tư Thế Thân Trên & Trục Cân Bằng",
         observation: `Tư thế thân trên giữ cân đối ở trục giữa trong ${uprightRate}% thời lượng phân tích.`,
         context: "Xuyên suốt phiên trả lời.",
         limitation: "Phân tích dựa trên đường viền vai và phân bố tương phản hai bên cơ thể trên Canvas cục bộ.",
@@ -1319,7 +1319,7 @@
       const dominantLean = leanLeftCount > leanRightCount ? "trái" : "phải";
       structuredObservations.push({
         dimension: "UPPER_BODY_POSTURE",
-        title: "Tư Thế Thân Trên & Trục Cân Bằng (Upper Body Posture)",
+        title: "Tư Thế Thân Trên & Trục Cân Bằng",
         observation: `Xu hướng nghiêng thân mình về bên ${dominantLean} chiếm ${leaningRate}% thời lượng mẫu.`,
         context: "Trong các phần trả lời câu hỏi chuyên sâu.",
         limitation: "Chỉ ghi nhận độ bất đối xứng của vùng thân trên; không đo tư thế cột sống hay kết cấu ghế ngồi.",
@@ -1333,7 +1333,7 @@
     if (totalSamples > 0 && handsOutOfFrameCount / totalSamples >= 0.70) {
       structuredObservations.push({
         dimension: "HAND_GESTURES",
-        title: "Cử Chỉ Tay & Tương Tác Minh Họa (Hand Gestures & Visibility)",
+        title: "Cử Chỉ Tay & Tương Tác Minh Họa",
         observation: `Bàn tay nằm ngoài góc nhìn camera trong ${Math.round((handsOutOfFrameCount / totalSamples) * 100)}% thời lượng (${handsOutOfFrameCount}/${totalSamples} mẫu).`,
         context: "Góc máy đặt ngang tầm mặt/ngực.",
         limitation: "Camera chỉ quan sát được cử chỉ khi bàn tay đưa vào tầm quét khung hình; không gán nhãn cử chỉ là đúng hay sai.",
@@ -1344,7 +1344,7 @@
     } else {
       structuredObservations.push({
         dimension: "HAND_GESTURES",
-        title: "Cử Chỉ Tay & Tương Tác Minh Họa (Hand Gestures & Visibility)",
+        title: "Cử Chỉ Tay & Tương Tác Minh Họa",
         observation: `Bàn tay xuất hiện trong khung hình ${handsVisibleRate}% thời lượng (trong đó có ${gesturingRate}% thời lượng có cử chỉ minh họa năng động).`,
         context: "Trong các lượt giải thích luận điểm.",
         limitation: "Nhận diện dựa trên cụm sắc tố da chuyển động ở nửa dưới khung hình; không suy diễn cử chỉ thành cảm xúc cá nhân.",

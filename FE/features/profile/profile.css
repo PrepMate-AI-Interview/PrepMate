@@ -52,7 +52,7 @@ body.dashboard-body {
 
 .hero-left h1 {
     font-size: 24px;
-    font-weight: 800;
+    font-weight: var(--pm-font-weight-bold, 652);
     color: var(--profile-text-primary);
     margin: 0 0 6px;
     letter-spacing: -0.5px;
@@ -78,7 +78,7 @@ body.dashboard-body {
 
 .hero-stat-item .num {
     font-size: 18px;
-    font-weight: 800;
+    font-weight: var(--pm-font-weight-bold, 652);
     color: var(--profile-primary);
     line-height: 1.2;
 }

@@ -67,9 +67,11 @@ namespace backend.Services
                     Prompt = prompt,
                     SystemInstruction = systemInstruction,
                     IsJsonMode = isJsonMode,
-                    SessionId = sessionId
+                    SessionId = sessionId,
+                    MaxTokensOverride = GetOptimalMaxTokensForTask(taskType)
                 };
 
+                Console.WriteLine($"[AI_GATEWAY_DISPATCH] TaskType={taskType}, MaxTokens={reqContext.MaxTokensOverride}, IsJsonMode={isJsonMode}, PromptLength={prompt.Length}");
                 var result = await _router.RouteAndExecuteAsync(reqContext, cancellationToken);
                 if (!result.Success)
                 {
@@ -163,6 +165,25 @@ namespace backend.Services
             }
 
             return health;
+        }
+        public static int? GetOptimalMaxTokensForTask(string taskType)
+        {
+            return taskType switch
+            {
+                AITaskType.IntroductionAnalysis => 350,
+                AITaskType.AnswerEvaluation => 400,
+                AITaskType.QuestionGeneration => 350,
+                AITaskType.TechnicalAssessment => 350,
+                AITaskType.BehavioralAssessment => 400,
+                AITaskType.SituationalAssessment => 400,
+                AITaskType.CandidateQuestion => 350,
+                AITaskType.Closing => 250,
+                AITaskType.ReportGeneration => 2500,
+                AITaskType.CvAnalysis => 1000,
+                AITaskType.JobRecommendation => 1000,
+                AITaskType.CareerRoadmap => 1200,
+                _ => null
+            };
         }
     }
 }

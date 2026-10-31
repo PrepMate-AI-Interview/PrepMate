@@ -79,11 +79,11 @@ function showExperienceWidget() {
 
     if (currentUser) {
         title.innerText = `Xin chào, ${currentUser.fullname}`;
-        subtitle.innerText = 'Bạn đã đăng nhập. Tiếp tục tới Dashboard hoặc đăng xuất.';
+        subtitle.innerText = 'Bạn đã đăng nhập. Tiếp tục tới Bảng điều khiển hoặc đăng xuất.';
 
         const dashboardBtn = document.createElement('button');
         dashboardBtn.className = 'btn btn-primary btn-sm';
-        dashboardBtn.innerText = 'Vào Dashboard';
+        dashboardBtn.innerText = 'Vào Bảng điều khiển';
         dashboardBtn.onclick = () => window.location.href = 'dashboard.html';
 
         const logoutBtn = document.createElement('button');
@@ -97,7 +97,7 @@ function showExperienceWidget() {
         actions.append(dashboardBtn, logoutBtn);
     } else {
         title.innerText = 'Đăng nhập / Đăng ký';
-        subtitle.innerText = 'Đăng nhập để lưu tiến trình và tiếp tục trải nghiệm dashboard.';
+        subtitle.innerText = 'Đăng nhập để lưu tiến trình và tiếp tục trải nghiệm bảng điều khiển.';
 
         const loginBtn = document.createElement('button');
         loginBtn.className = 'btn btn-primary btn-sm';
@@ -168,11 +168,11 @@ const TRANSLATIONS = {
         profileTheme: "Chế độ sáng/tối",
         profileThemeSettings: "Tùy chỉnh giao diện",
         profileSaveInfo: "Lưu thông tin",
-        profileBioPlaceholder: "Mô tả ngắn về bạn...",
+        profileBioPlaceholder: "Mô tả ngắn về bạn và vị trí bạn đang hướng tới...",
         profileBio: "Giới thiệu ngắn:",
         profilePhone: "Số điện thoại:",
         profileEmail: "Email:",
-        profileFullNamePlaceholder: "Nhập tên của bạn",
+        profileFullNamePlaceholder: "Nhập họ và tên của bạn",
         profileFullName: "Họ và tên:",
         profilePersonalInfo: "Thông tin cá nhân",
         profileSaveVoiceKey: "Lưu Voice Key",
@@ -194,7 +194,7 @@ const TRANSLATIONS = {
         documentTitleIndex: 'PrepMate - Nền tảng luyện phỏng vấn giả lập AI thế hệ mới',
         documentTitleAuth: 'PrepMate - Đăng nhập & Đăng ký',
         documentTitleHelp: 'PrepMate - Trợ giúp & Hỏi đáp',
-        documentTitleDashboard: 'PrepMate - Dashboard',
+        documentTitleDashboard: 'PrepMate - Bảng điều khiển',
         documentTitleInterview: 'PrepMate - Phòng phỏng vấn AI',
         documentTitleProfile: 'PrepMate - Hồ sơ & Cài đặt',
         navHome: 'Trang chủ',
@@ -485,9 +485,7 @@ function applyUserSettings() {
     if (settings.themeMode) {
         applyTheme(settings.themeMode);
     }
-    if (settings.language) {
-        applyLanguage(settings.language);
-    }
+    applyLanguage(settings.language || 'vi');
 }
 
 let isLoadingHistory = false;
@@ -516,12 +514,14 @@ async function loadHistory() {
             if (historyList) {
                 historyList.innerHTML = `
                     <div class="empty-state-new">
-                        <div class="empty-icon">📋</div>
+                        <div class="empty-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        </div>
                         <h4 class="empty-title">Bạn chưa có buổi phỏng vấn nào</h4>
                         <p class="empty-desc">Bắt đầu buổi phỏng vấn đầu tiên để hệ thống phân tích năng lực và lập báo cáo chi tiết.</p>
                         <a href="../../features/interview/interview-info.html" class="btn-empty-cta">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                            <span>Tạo phiên phỏng vấn mới</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            Tạo phiên phỏng vấn mới
                         </a>
                     </div>
                 `;
@@ -544,12 +544,14 @@ async function loadHistory() {
                         if (historyList) {
                             historyList.innerHTML = `
                                 <div class="empty-state-new">
-                                    <div class="empty-icon">📋</div>
+                                    <div class="empty-icon">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                    </div>
                                     <h4 class="empty-title">Bạn chưa có buổi phỏng vấn nào</h4>
                                     <p class="empty-desc">Bắt đầu buổi phỏng vấn đầu tiên để hệ thống phân tích năng lực và lập báo cáo chi tiết.</p>
                                     <a href="../../features/interview/interview-info.html" class="btn-empty-cta">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                                        <span>Tạo phiên phỏng vấn mới</span>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                        Tạo phiên phỏng vấn mới
                                     </a>
                                 </div>
                             `;
@@ -571,11 +573,14 @@ async function loadHistory() {
         if (historyList) {
             historyList.innerHTML = `
                 <div class="empty-state-new" style="padding:32px 20px;text-align:center;">
-                    <div class="empty-icon" style="width:48px;height:48px;font-size:22px;margin:0 auto 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:50%;display:flex;align-items:center;justify-content:center;">⚠️</div>
+                    <div class="empty-icon error-icon" style="width:48px;height:48px;margin:0 auto 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#dc2626;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
                     <h4 style="font-size:15px;font-weight:700;color:#dc2626;margin:0 0 6px;">Không thể tải lịch sử phỏng vấn</h4>
                     <p style="font-size:13px;color:#64748b;margin:0 0 16px;">Đã xảy ra lỗi khi đọc dữ liệu lưu trữ. Vui lòng thử lại.</p>
                     <button type="button" onclick="loadHistory()" class="btn btn-sm btn-outline" style="display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:8px;font-weight:600;cursor:pointer;">
-                        🔄 Thử lại
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        <span>Thử lại</span>
                     </button>
                 </div>
             `;
@@ -606,7 +611,7 @@ function renderDashboardRecommendations(sessions) {
     const latestSession = sessions[0];
     if (latestSession.jobRecommendations && latestSession.jobRecommendations.length) {
         suggestionsList.innerHTML = latestSession.jobRecommendations
-            .map(item => `<div style="margin-bottom:12px;"><strong>${item.role}</strong><p style="margin:6px 0 0 0;color:#cbd5e1;">${item.reason}</p></div>`)
+            .map(item => `<div style="margin-bottom:12px;"><strong>${escapeHtml(item.role)}</strong><p style="margin:6px 0 0 0;color:var(--pm-text-muted, #64748b);">${escapeHtml(item.reason)}</p></div>`)
             .join("");
     } else {
         suggestionsList.innerHTML =
@@ -615,7 +620,7 @@ function renderDashboardRecommendations(sessions) {
 
     if (latestSession.careerRoadmap && latestSession.careerRoadmap.length) {
         roadmapList.innerHTML = latestSession.careerRoadmap
-            .map(item => `<div style="margin-bottom:12px;"><strong>Bước ${item.step}</strong><p style="margin:6px 0 0 0;color:#cbd5e1;">${item.advice}</p></div>`)
+            .map(item => `<div style="margin-bottom:12px;"><strong>Bước ${item.step}</strong><p style="margin:6px 0 0 0;color:var(--pm-text-muted, #64748b);">${escapeHtml(item.advice)}</p></div>`)
             .join("");
     } else {
         roadmapList.innerHTML =
@@ -651,74 +656,105 @@ function renderHistoryList(sessions) {
 
             const normalized = Math.round(numericScore <= 10 && numericScore > 0 ? numericScore * 10 : numericScore);
             displayScore = String(normalized);
-            scoreColor = normalized >= 80 ? '#059669' : normalized >= 60 ? '#d97706' : '#dc2626';
-            scoreBg = normalized >= 80 ? '#ecfdf5' : normalized >= 60 ? '#fffbeb' : '#fef2f2';
-            scoreBorder = normalized >= 80 ? '#a7f3d0' : normalized >= 60 ? '#fde68a' : '#fecaca';
+            scoreColor = normalized >= 80 ? 'var(--pm-emerald, #059669)' : normalized >= 60 ? 'var(--pm-amber, #d97706)' : 'var(--pm-red, #dc2626)';
+            scoreBg = normalized >= 80 ? 'var(--pm-emerald-soft, #ecfdf5)' : normalized >= 60 ? 'var(--pm-amber-soft, #fffbeb)' : 'var(--pm-red-soft, #fef2f2)';
+            scoreBorder = normalized >= 80 ? 'var(--pm-emerald-border, #a7f3d0)' : normalized >= 60 ? 'var(--pm-amber-border, #fde68a)' : 'var(--pm-red-border, #fecaca)';
         }
 
         const jobTitle = session.jobTitle || 'Buổi phỏng vấn';
-        const jobIcon = (jobTitle.includes('Frontend') || jobTitle.includes('Backend') || jobTitle.includes('DevOps') || jobTitle.includes('Engineer')) ? '💻' :
-            jobTitle.includes('Designer') || jobTitle.includes('Design') ? '🎨' :
-            jobTitle.includes('Marketing') ? '📈' :
-            jobTitle.includes('Tài chính') || jobTitle.includes('Kế toán') ? '📊' :
-            jobTitle.includes('Nhân sự') ? '👥' : '💼';
-
         const sessionDate = session.date ? new Date(session.date).toLocaleDateString('vi-VN') : (session.createdAt ? new Date(session.createdAt).toLocaleDateString('vi-VN') : 'Gần đây');
         const compName = session.company || session.companyName || session.targetCompany || 'Doanh nghiệp';
         const lang = session.language === 'en' || session.language === 'English' ? 'English' : 'Tiếng Việt';
-        const flag = lang === 'English' ? '🇬🇧' : '🇻🇳';
-        const level = session.level || session.targetLevel || 'Middle';
-        const diffClass = level === 'Senior' || level === 'Lead' ? 'hard' : level === 'Junior' || level === 'Fresher' ? 'basic' : 'medium';
-        const diffDots = level === 'Senior' || level === 'Lead' ? '●●●' : level === 'Junior' || level === 'Fresher' ? '●○○' : '●●○';
+
+        // 1. Candidate Seniority / Experience Level (Cấp bậc ứng tuyển)
+        const rawLevel = session.level || session.targetLevel || session.experienceLevel || 'Middle';
+        const levelMap = {
+            'intern': 'Thực tập sinh (Intern)',
+            'fresher': 'Mới tốt nghiệp (Fresher)',
+            'junior': 'Sơ cấp (Junior)',
+            'mid': 'Trung cấp (Mid-level)',
+            'mid-level': 'Trung cấp (Mid-level)',
+            'middle': 'Trung cấp (Mid-level)',
+            'senior': 'Cao cấp (Senior)',
+            'lead': 'Trưởng nhóm (Lead)'
+        };
+        const displayLevel = levelMap[rawLevel.toLowerCase()] || rawLevel;
+
+        // 2. Genuine Interview/Question Difficulty (if explicitly present in session data)
+        let difficultyBadgeHtml = '';
+        const rawDiff = session.difficulty || session.adaptiveDifficulty || session.qualityState?.currentDifficulty;
+        if (rawDiff) {
+            const diffStr = String(rawDiff).toLowerCase();
+            let diffLabel = 'Trung bình';
+            let diffClass = 'medium';
+            if (diffStr.includes('easy') || diffStr.includes('basic') || diffStr.includes('foundation')) {
+                diffLabel = 'Dễ';
+                diffClass = 'easy';
+            } else if (diffStr.includes('hard') || diffStr.includes('advanced') || diffStr.includes('challenging')) {
+                diffLabel = 'Khó';
+                diffClass = 'hard';
+            }
+            difficultyBadgeHtml = `<span class="pm-diff-badge ${diffClass}" title="Độ khó buổi phỏng vấn: ${diffLabel}"><span class="pm-diff-label">Độ khó: ${diffLabel}</span></span>`;
+        }
 
         let statusBadgeHtml = '';
         let actionButtonsHtml = '';
         const sessId = session.backendSessionId || session.id || session.sessionId;
 
         if (isCompleted) {
-            statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Hoàn thành</span>`;
+            statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Đã hoàn thành</span>`;
             const reportUrl = sessId ? `../report/report.html?sessionId=${encodeURIComponent(sessId)}` : `../report/report.html?index=${idx}`;
             actionButtonsHtml = `
-                <a href="${reportUrl}" class="btn-action-report" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-weight:700;border-radius:9px;padding:7px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:13px;text-decoration:none;">
-                    <span>📊</span> Xem báo cáo
+                <a href="${reportUrl}" class="btn-action-report" title="Xem báo cáo chi tiết buổi phỏng vấn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>Xem báo cáo</span>
                 </a>
             `;
         } else if (isInProgress) {
-            statusBadgeHtml = `<span class="pm-status-pill in-progress" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;"><span class="pm-status-dot" style="background:#2563eb;"></span> Đang phỏng vấn</span>`;
+            statusBadgeHtml = `<span class="pm-status-pill in-progress" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;"><span class="pm-status-dot" style="background:#2563eb;"></span> Đang thực hiện</span>`;
             const resumeUrl = sessId ? `../interview/interview-practice.html?resume=${encodeURIComponent(sessId)}` : `../interview/interview-practice.html`;
             actionButtonsHtml = `
-                <a href="${resumeUrl}" style="background:#1d4ed8;color:#ffffff;border:none;font-weight:700;border-radius:9px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;font-size:13px;">
-                    <span>▶️</span> Tiếp tục phỏng vấn
+                <a href="${resumeUrl}" class="btn-action-resume" title="Tiếp tục buổi phỏng vấn đang diễn ra">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Tiếp tục phỏng vấn</span>
                 </a>
             `;
         } else {
             statusBadgeHtml = `<span class="pm-status-pill incomplete" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;"><span class="pm-status-dot" style="background:#dc2626;"></span> Chưa hoàn thành</span>`;
             actionButtonsHtml = `
-                <a href="../interview/interview-info.html" style="background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;font-weight:700;border-radius:9px;padding:7px 12px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;font-size:13px;">
-                    <span>🔄</span> Luyện tập lại
+                <a href="../interview/interview-info.html" class="btn-action-restart" title="Bắt đầu lại phiên phỏng vấn mới">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    <span>Luyện tập lại</span>
                 </a>
             `;
         }
 
         historyItem.innerHTML = `
-            <div class="history-item-score" style="background: ${scoreBg}; border: 2px solid ${scoreBorder}; color: ${scoreColor}; font-weight: 800;">
+            <div class="history-item-score" style="background: ${scoreBg}; border: 2px solid ${scoreBorder}; color: ${scoreColor}; font-weight: 800;" title="Điểm đánh giá tổng quan (0-100)">
                 ${displayScore}
             </div>
             <div class="history-item-info">
-                <div class="history-item-title" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
-                    <span style="font-weight:700;font-size:14.5px;color:#0f172a;">${jobIcon} ${escapeHtml(jobTitle)}</span>
-                    <span class="pm-company-pill"><span class="comp-icon">🏢</span> ${escapeHtml(compName)}</span>
+                <div class="history-item-title-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+                    <span class="history-item-job-title">${escapeHtml(jobTitle)}</span>
+                    <span class="pm-company-pill">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22.01"/><line x1="15" y1="22" x2="15" y2="22.01"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="9" y2="18.01"/><line x1="15" y1="18" x2="15" y2="18.01"/></svg>
+                        <span>${escapeHtml(compName)}</span>
+                    </span>
                 </div>
-                <div class="pm-meta-row" style="margin-top:4px;">
-                    <span class="pm-flag-badge"><span class="flag-icon">${flag}</span> ${lang}</span>
-                    <span class="pm-time-badge"><span class="time-glyph">◷</span> ${session.duration || 15} phút</span>
-                    <span class="pm-tag-pill blue">💬 ${session.questionsAnswered || 5} câu hỏi</span>
-                    <span class="pm-diff-badge ${diffClass}"><span class="pm-diff-dots">${diffDots}</span> ${level}</span>
+                <div class="pm-meta-row">
+                    <span class="pm-flag-badge">${escapeHtml(lang)}</span>
+                    <span class="pm-time-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span>${session.duration || 15} phút</span>
+                    </span>
+                    <span class="pm-questions-badge">${session.questionsAnswered || 5} câu hỏi</span>
+                    <span class="pm-seniority-chip" title="Cấp bậc ứng tuyển: ${escapeHtml(displayLevel)}">Cấp bậc: ${escapeHtml(displayLevel)}</span>
+                    ${difficultyBadgeHtml}
                     ${statusBadgeHtml}
-                    <span style="font-size:11.5px;color:#64748b;margin-left:auto;">📅 ${sessionDate}</span>
+                    <span class="history-item-date">${sessionDate}</span>
                 </div>
             </div>
-            <div class="history-item-actions" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+            <div class="history-item-actions">
                 ${actionButtonsHtml}
             </div>
         `;
@@ -730,8 +766,9 @@ function renderHistoryList(sessions) {
         const viewAllRow = document.createElement('div');
         viewAllRow.style.cssText = 'text-align:center;padding:12px 0 6px;';
         viewAllRow.innerHTML = `
-            <a href="../interview/history.html" class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:7px 16px;border-radius:8px;font-weight:700;">
-                <span>🕒</span> Xem toàn bộ lịch sử (${sessions.length} buổi) →
+            <a href="../interview/history.html" class="btn btn-outline btn-sm history-view-all-btn" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:7px 16px;border-radius:8px;font-weight:700;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Xem toàn bộ lịch sử (${sessions.length} buổi) →</span>
             </a>
         `;
         historyList.appendChild(viewAllRow);
@@ -804,22 +841,20 @@ function updateDashboardStats(sessions) {
         }
 
         if (streakBadge) {
-            streakBadge.textContent = streak > 0 ? `Chuỗi ${streak} ngày 🔥` : 'Chưa có chuỗi';
-            streakBadge.style.color = streak > 0 ? '#059669' : '#64748b';
-            streakBadge.style.background = streak > 0 ? '#ecfdf5' : '#f1f5f9';
-            streakBadge.style.borderColor = streak > 0 ? '#a7f3d0' : '#e2e8f0';
+            streakBadge.textContent = streak > 0 ? `Chuỗi ${streak} ngày` : 'Chưa có chuỗi';
+            streakBadge.style.color = streak > 0 ? 'var(--pm-emerald, #059669)' : 'var(--pm-text-muted, #64748b)';
+            streakBadge.style.background = streak > 0 ? 'var(--pm-emerald-soft, #ecfdf5)' : 'var(--pm-surface-secondary, #f1f5f9)';
+            streakBadge.style.borderColor = streak > 0 ? 'var(--pm-emerald-border, #a7f3d0)' : 'var(--pm-border, #e2e8f0)';
         }
         if (weekText) weekText.textContent = `${weekCount} / ${weekTarget} buổi (${weekPct}%)`;
         if (weekBar) weekBar.style.width = `${weekPct}%`;
         if (weekDesc) weekDesc.textContent = 'Duy trì ít nhất 3 buổi phỏng vấn mô phỏng mỗi tuần để tăng 40% tốc độ phản xạ và cấu trúc câu trả lời STAR.';
     }
 
-    // Cập nhật icon điểm
+    // Cập nhật icon điểm nếu tồn tại hook
     const scoreIcon = document.getElementById('score-icon');
     if (scoreIcon) {
-        if (avgScore >= 80) scoreIcon.innerText = '🔥';
-        else if (avgScore >= 60) scoreIcon.innerText = '📈';
-        else scoreIcon.innerText = '📊';
+        scoreIcon.style.display = 'none';
     }
 }
 

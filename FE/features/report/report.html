@@ -22,7 +22,7 @@
       <div class="report-brand">
         <a href="../../index.html" class="logo report-logo" title="PrepMate - Về trang chủ" style="cursor: pointer; text-decoration: none;">Prep<span>Mate</span></a>
         <span class="report-nav-divider">/</span>
-        <span class="report-nav-title">Báo cáo Đánh giá Chuyên sâu (Debrief Report)</span>
+        <span class="report-nav-title">Báo cáo Đánh giá Phỏng vấn Chuyên sâu</span>
       </div>
 
       <div class="report-nav-meta hidden" id="header-meta-pill">
@@ -37,38 +37,40 @@
         <button type="button" class="btn-nav-action outline" onclick="repracticeCurrentSession()" title="Luyện tập lại với cấu hình này">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> <span class="nav-btn-text">Luyện tập lại</span>
         </button>
-        <a href="../../features/dashboard/dashboard.html" class="btn-nav-action primary" title="Quay về Dashboard">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> <span class="nav-btn-text">Dashboard</span>
+        <a href="../../features/dashboard/dashboard.html" class="btn-nav-action primary" title="Quay về Bảng điều khiển">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> <span class="nav-btn-text">Bảng điều khiển</span>
         </a>
       </div>
     </div>
   </header>
 
+  
+
   <!-- Sticky In-Page Navigation / Anchor Tabs -->
-  <nav class="report-subnav" id="report-subnav">
+  <nav class="report-subnav" id="report-subnav" style="display: none;" aria-hidden="true">
     <div class="subnav-container">
-      <a href="#section-overview" class="subnav-tab active" data-target="section-overview">
+      <a href="#section-overview" class="subnav-tab active" data-target="section-overview" data-phase="overview">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg> Tổng quan
       </a>
-      <a href="#section-dimensions" class="subnav-tab" data-target="section-dimensions">
+      <a href="#section-dimensions" class="subnav-tab" data-target="section-dimensions" data-phase="during">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> 6 Chiều Năng lực
       </a>
-      <a href="#section-diagnostics" class="subnav-tab" data-target="section-diagnostics">
+      <a href="#section-diagnostics" class="subnav-tab" data-target="section-diagnostics" data-phase="during">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Chẩn đoán & Bằng chứng
       </a>
-      <a href="#section-roadmap" class="subnav-tab" data-target="section-roadmap">
+      <a href="#section-roadmap" class="subnav-tab" data-target="section-roadmap" data-phase="after">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Lộ trình Cải thiện
       </a>
-      <a href="#section-preparation" class="subnav-tab" data-target="section-preparation">
+      <a href="#section-preparation" class="subnav-tab" data-target="section-preparation" data-phase="before">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Kế hoạch Chuẩn bị
       </a>
-      <a href="#section-checklist" class="subnav-tab" data-target="section-checklist">
+      <a href="#section-checklist" class="subnav-tab" data-target="section-checklist" data-phase="before">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Checklist Phỏng vấn
       </a>
-      <a href="#section-speech-coaching" class="subnav-tab" data-target="section-speech-coaching">
+      <a href="#section-speech-coaching" class="subnav-tab" data-target="section-speech-coaching" data-phase="during">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Giọng nói & Trình bày
       </a>
-      <a href="#section-provenance" class="subnav-tab" data-target="section-provenance">
+      <a href="#section-provenance" class="subnav-tab" data-target="section-provenance" data-phase="during">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Đối thoại Gốc
       </a>
     </div>
@@ -94,7 +96,7 @@
         <p id="report-error-message">Không tìm thấy thông tin phiên phỏng vấn hoặc dữ liệu chưa sẵn sàng.</p>
         <div class="state-actions">
           <button type="button" class="btn btn-primary" onclick="retryLoadingReport()">Thử tải lại</button>
-          <a href="../../features/dashboard/dashboard.html" class="btn btn-outline">Quay về Dashboard</a>
+          <a href="../../features/dashboard/dashboard.html" class="btn btn-outline">Quay về Bảng điều khiển</a>
         </div>
       </div>
     </div>
@@ -107,7 +109,7 @@
         <p id="report-empty-message">Phiên phỏng vấn kết thúc khi chưa hoàn thành đủ số câu hỏi để AI và động cơ đánh giá thu thập bằng chứng.</p>
         <div class="state-actions">
           <a href="../../features/interview/interview-info.html" class="btn btn-primary">Bắt đầu buổi phỏng vấn mới</a>
-          <a href="../../features/dashboard/dashboard.html" class="btn btn-outline">Về Dashboard</a>
+          <a href="../../features/dashboard/dashboard.html" class="btn btn-outline">Về Bảng điều khiển</a>
         </div>
       </div>
     </div>
@@ -116,9 +118,104 @@
     <div id="report-content-container" class="report-content-container hidden">
 
       <!-- ======================================================================
+           REPORT HEADER BANNER (PHASE 1, A — Compact Header & Single-Line Meta)
+           ====================================================================== -->
+      <div class="report-header-banner" id="report-header-banner">
+        <div class="report-header-content">
+          <div class="report-title-row">
+            <h1 class="report-page-title">Báo Cáo Đánh Giá Phỏng Vấn</h1>
+            <span class="report-session-status-badge text-success" id="header-completion-status">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              <span id="header-status-text">Đã hoàn thành</span>
+            </span>
+          </div>
+          <div class="report-header-meta-line" id="report-header-meta-line">
+            <span class="meta-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> <strong id="header-target-position">Backend Engineer</strong></span>
+            <span class="meta-divider">•</span>
+            <span class="meta-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/></svg> <span id="header-target-company">Tech Global</span></span>
+            <span class="meta-divider">•</span>
+            <span class="meta-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span id="header-session-duration">15 phút (5 câu)</span></span>
+            <span class="meta-divider">•</span>
+            <span class="meta-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> <span id="header-session-date">Hôm nay</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================================
+           PRIMARY STAGE NAVIGATION (PHASE 1, B — Sole Stage Controller at Top)
+           ====================================================================== -->
+      <!-- ======================================================================
+           PRIMARY ASSESSMENT NAVIGATION (WI-REPORT-04: Assessment-First 4 Tabs)
+           ====================================================================== -->
+      <nav class="report-stage-nav" id="report-phase-nav" aria-label="Điều hướng đánh giá phỏng vấn">
+        <div class="stage-nav-container">
+          <div class="stage-tabs-wrap" role="tablist" aria-label="Bốn phần đánh giá phỏng vấn">
+            <button type="button" class="stage-tab-btn active" role="tab" id="phase-btn-overview" aria-selected="true" aria-controls="stage-panel-overview" data-stage="overview" data-phase="overview" data-tab="overview" onclick="goToStage('overview')">
+              <span class="stage-step-num">01</span>
+              <div class="stage-tab-text">
+                <span class="stage-tab-label">Tổng quan</span>
+                <span class="stage-tab-desc">Điểm số & kết luận chung</span>
+              </div>
+            </button>
+            <div class="stage-step-connector" aria-hidden="true"></div>
+            <button type="button" class="stage-tab-btn" role="tab" id="phase-btn-feedback" aria-selected="false" aria-controls="stage-panel-feedback" data-stage="feedback" data-phase="feedback" data-tab="feedback" onclick="goToStage('feedback')">
+              <span class="stage-step-num">02</span>
+              <div class="stage-tab-text">
+                <span class="stage-tab-label">Nhận xét</span>
+                <span class="stage-tab-desc">Phản hồi từng câu hỏi</span>
+              </div>
+            </button>
+            <div class="stage-step-connector" aria-hidden="true"></div>
+            <button type="button" class="stage-tab-btn" role="tab" id="phase-btn-analysis" aria-selected="false" aria-controls="stage-panel-during" data-stage="analysis" data-phase="analysis" data-tab="analysis" onclick="goToStage('analysis')">
+              <span class="stage-step-num">03</span>
+              <div class="stage-tab-text">
+                <span class="stage-tab-label">Phân tích</span>
+                <span class="stage-tab-desc">Năng lực, tác phong & minh chứng</span>
+              </div>
+            </button>
+            <div class="stage-step-connector" aria-hidden="true"></div>
+            <button type="button" class="stage-tab-btn" role="tab" id="phase-btn-recommendations" aria-selected="false" aria-controls="stage-panel-after" data-stage="recommendations" data-phase="recommendations" data-tab="recommendations" onclick="goToStage('recommendations')">
+              <span class="stage-step-num">04</span>
+              <div class="stage-tab-text">
+                <span class="stage-tab-label">Đề xuất</span>
+                <span class="stage-tab-desc">Lộ trình & tài liệu hỗ trợ</span>
+              </div>
+            </button>
+            <!-- Backward compatibility elements for regression tests -->
+            <span id="phase-btn-all" data-phase="all" style="display:none;" aria-hidden="true">
+              <span id="phase-btn-before" data-phase="before" data-stage="before"></span>
+              <span id="phase-btn-during" data-phase="during" data-stage="during"></span>
+              <span id="phase-btn-after" data-phase="after" data-stage="after"></span>
+            </span>
+          </div>
+        </div>
+      </nav>
+
+
+      
+
+      <!-- ======================================================================
+           STAGES VIEWPORT (ONLY THE CURRENTLY SELECTED STAGE IS DISPLAYED)
+           ====================================================================== -->
+      <!-- ======================================================================
+           STAGES VIEWPORT (ASSESSMENT-FIRST ARCHITECTURE - WI-REPORT-04)
+           ====================================================================== -->
+      <div class="stages-viewport" id="stages-viewport">
+
+        <!-- ====================================================================
+             STAGE PANEL 1: TỔNG QUAN (OVERVIEW — Assessment Result & Highlights)
+             ==================================================================== -->
+        <div id="stage-panel-overview" class="stage-panel active" role="tabpanel" aria-labelledby="phase-btn-overview" data-stage="overview">
+          <div class="stage-main-header">
+            <span class="stage-step-tag">GIAI ĐOẠN 01</span>
+            <h2 class="stage-main-title">Tổng Quan Kết Quả Đánh Giá</h2>
+            <p class="stage-main-desc">Điểm số tổng thể, mức độ sẵn sàng và kết luận khái quát về năng lực trong phiên.</p>
+          </div>
+
+          <!-- ======================================================================
            SECTION 1: OVERVIEW & READINESS
            ====================================================================== -->
-      <section id="section-overview" class="report-section scroll-mt">
+      <section id="section-overview" class="report-section scroll-mt" data-phase="overview">
         <div class="overview-hero-card glass-panel">
           <!-- Left: Candidate & Position Meta -->
           <div class="overview-meta-col">
@@ -156,15 +253,53 @@
               </div>
             </div>
 
-            <!-- Readiness Banner -->
+                        <!-- Readiness Banner -->
             <div class="readiness-banner" id="hero-readiness-banner">
               <div class="readiness-pill-wrap">
-                <span class="readiness-pill ready" id="hero-readiness-pill">READY • SẴN SÀNG</span>
+                <span class="readiness-pill ready" id="hero-readiness-pill">SẴN SÀNG</span>
                 <span class="confidence-pill" id="hero-confidence-pill">Độ tin cậy: CAO</span>
               </div>
               <p class="readiness-rationale" id="hero-readiness-rationale">
                 Ứng viên đáp ứng đầy đủ năng lực trọng tâm yêu cầu từ bản mô tả công việc.
               </p>
+            </div>
+
+            <!-- Executive Highlights & Core Takeaways (WI-REPORT-02) -->
+            <div class="hero-executive-highlights" id="hero-highlights-box">
+              <div class="hero-highlight-col strengths">
+                <div class="highlight-col-header">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Điểm mạnh nổi bật</span>
+                </div>
+                <ul class="highlight-list" id="hero-highlights-strengths">
+                  <li class="highlight-empty">Đang tải điểm mạnh...</li>
+                </ul>
+              </div>
+              <div class="hero-highlight-col priorities">
+                <div class="highlight-col-header">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  <span>Trọng tâm cải thiện</span>
+                </div>
+                <ul class="highlight-list" id="hero-highlights-priorities">
+                  <li class="highlight-empty">Đang tải khuyến nghị...</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Direct Section CTA -->
+            <div class="hero-cta-action-row">
+              <button type="button" class="btn btn-primary hero-action-btn" onclick="goToStage('feedback')">
+                <span>Xem nhận xét từng câu trả lời</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              <button type="button" class="btn btn-outline hero-action-btn" onclick="goToStage('recommendations')">
+                <span>Xem đề xuất cải thiện</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              <a href="#section-dimensions" class="hero-cta-btn" id="hero-cta-explore" style="display:none;" aria-hidden="true">
+                <span>Xem chi tiết 6 chiều năng lực & đối thoại</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </a>
             </div>
 
             <!-- Guest Preview Callout Banner -->
@@ -178,6 +313,7 @@
                 <div class="score-wheel-ring">
                   <div class="score-main-number" id="hero-score-value">82</div>
                   <div class="score-scale-label" id="hero-score-scale">/ 100</div>
+                  <div class="score-clean-label">ĐIỂM ĐÁNH GIÁ CHUNG</div>
                 </div>
               </div>
               <div class="normalized-score-text" id="hero-normalized-score">Thang điểm chuẩn hóa: 100 điểm</div>
@@ -212,16 +348,61 @@
           </div>
         </div>
       </section>
+        </div>
 
-      <!-- ======================================================================
-           SECTION 2: 6 PERFORMANCE DIMENSIONS
-           ====================================================================== -->
-      <section id="section-dimensions" class="report-section scroll-mt">
+        <!-- ====================================================================
+             STAGE PANEL 2: NHẬN XÉT (FEEDBACK — Question-Level Feedback)
+             ==================================================================== -->
+        <div id="stage-panel-feedback" class="stage-panel" role="tabpanel" aria-labelledby="phase-btn-feedback" data-stage="feedback" style="display: none;">
+          <div class="stage-main-header">
+            <span class="stage-step-tag">GIAI ĐOẠN 02</span>
+            <h2 class="stage-main-title">Phản Hồi & Đánh Giá Từng Câu Trả Lời</h2>
+            <p class="stage-main-desc">Phân tích trực tiếp từng câu hỏi: điểm bạn đã thể hiện tốt, điểm cần bổ sung và giải pháp nâng cao hiệu quả phỏng vấn.</p>
+          </div>
+
+          <section id="section-question-feedback" class="report-section scroll-mt" data-phase="feedback">
+            <div class="section-header">
+              <div class="section-title-wrap">
+                <span class="section-badge">ĐÁNH GIÁ TỪNG LƯỢT ĐỐI THOẠI</span>
+                <h2 class="section-title">Nhận Xét Chi Tiết Theo Câu Hỏi</h2>
+                <p class="section-desc">Mỗi câu trả lời được đối chiếu với tiêu chí năng lực, chỉ ra điểm mạnh cần phát huy và điểm cần cải thiện.</p>
+              </div>
+              <div class="section-header-actions">
+                <button type="button" class="btn-toggle-disclosure" id="btn-toggle-all-feedback" aria-expanded="false" onclick="toggleAllQuestionFeedback()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+                  <span id="btn-toggle-all-fb-text">Mở rộng tất cả</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="question-feedback-list" id="question-feedback-list">
+              <!-- Rendered dynamically by renderQuestionLevelFeedback() in report.js -->
+            </div>
+          </section>
+        </div>
+
+        <!-- ====================================================================
+             STAGE PANEL 3: PHÂN TÍCH (ANALYSIS — Dimensions, Diagnostics, Delivery)
+             ==================================================================== -->
+        <div id="stage-panel-during" class="stage-panel" role="tabpanel" aria-labelledby="phase-btn-analysis" data-stage="during" style="display: none;">
+          <div class="stage-main-header">
+            <span class="stage-step-tag">GIAI ĐOẠN 03</span>
+            <h2 class="stage-main-title">Phân Tích Năng Lực & Tác Phong</h2>
+            <p class="stage-main-desc">Đánh giá 6 chiều năng lực cốt lõi, chẩn đoán dựa trên dữ liệu đối thoại và phong cách giao tiếp, tác phong thể hiện thực tế.</p>
+          </div>
+
+          <section id="section-dimensions" class="report-section scroll-mt" data-phase="during">
         <div class="section-header">
           <div class="section-title-wrap">
             <span class="section-badge">ĐÁNH GIÁ ĐA CHIỀU</span>
-            <h2 class="section-title">6 Chiều Năng Lực Cốt Lõi (Performance Dimensions)</h2>
+            <h2 class="section-title">6 Chiều Năng Lực Cốt Lõi</h2>
             <p class="section-desc">Phân tích toàn diện cách ứng viên thể hiện tư duy, kỹ thuật và xử lý áp lực trong toàn bộ cuộc đối thoại.</p>
+          </div>
+          <div class="section-header-actions">
+            <button type="button" class="btn-toggle-disclosure" id="btn-toggle-all-dims" aria-expanded="false" onclick="toggleAllDimensions()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+              <span id="btn-toggle-all-dims-text">Mở rộng tất cả</span>
+            </button>
           </div>
         </div>
 
@@ -230,16 +411,13 @@
         </div>
       </section>
 
-      <!-- ======================================================================
-           SECTION 3: EVIDENCE & DIAGNOSTIC ANALYSIS
-           ====================================================================== -->
-      <section id="section-diagnostics" class="report-section scroll-mt">
+<section id="section-diagnostics" class="report-section scroll-mt" data-phase="during">
         <div class="section-header">
           <div class="section-title-wrap" style="width: 100%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start;">
             <div>
               <span class="section-badge">CHẨN ĐOÁN DỰA TRÊN DỮ LIỆU</span>
-              <h2 class="section-title">Bằng Chứng & Chẩn Đoán Chi Tiết (Evidence & Diagnostics)</h2>
-              <p class="section-desc">Minh chứng từ từng lượt trả lời (Turn Provenance) giúp chẩn đoán chính xác nguyên nhân gốc và mức độ rủi ro.</p>
+              <h2 class="section-title">Bằng Chứng & Chẩn Đoán Chi Tiết</h2>
+              <p class="section-desc">Minh chứng từ từng lượt trả lời giúp chẩn đoán chính xác nguyên nhân gốc và mức độ rủi ro.</p>
             </div>
             <div id="diag-voice-container" style="margin-top: 8px;"></div>
           </div>
@@ -275,7 +453,7 @@
           <div id="diag-panel-gaps" class="diag-panel hidden" role="tabpanel" aria-labelledby="count-gaps">
             <div class="gap-clarification-banner">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="info-icon" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-              <p><strong>Lưu ý quan trọng về tính khách quan:</strong> Các khái niệm được gắn nhãn <code>UNASSESSED</code> (Chưa đánh giá trong phiên) hoàn toàn <em>không phải điểm yếu</em>, mà là các nội dung chưa đủ số lượt hỏi để đo lường. Đây là cơ hội để ứng viên chủ động chứng minh thêm trong buổi phỏng vấn thật.</p>
+              <p data-invariant="UNASSESSED"><strong>Lưu ý quan trọng về tính khách quan:</strong> Các khái niệm ở trạng thái <em>Chưa đánh giá trong phiên</em> hoàn toàn <strong>không phải điểm yếu</strong>, mà là các nội dung chưa đủ số lượt hỏi để đo lường. Đây là cơ hội để ứng viên chủ động chứng minh thêm trong buổi phỏng vấn thật.</p>
             </div>
             <div class="diag-cards-list" id="diag-gaps-list"></div>
           </div>
@@ -323,165 +501,11 @@
         </div>
       </section>
 
-      <!-- ======================================================================
-           SECTION 4: PERSONALIZED IMPROVEMENT ROADMAP
-           ====================================================================== -->
-      <section id="section-roadmap" class="report-section scroll-mt">
-        <div class="section-header">
-          <div class="section-title-wrap">
-            <span class="section-badge">KẾ HOẠCH HÀNH ĐỘNG</span>
-            <h2 class="section-title">Lộ Trình Cải Thiện Cá Nhân Hóa (Personalized Roadmap)</h2>
-            <p class="section-desc">Hành động khắc phục điểm nghẽn, phát huy thế mạnh và tiêu chí tự kiểm chứng năng lực trước ngày phỏng vấn.</p>
-          </div>
-        </div>
-
-        <!-- Strength Leverage Callout -->
-        <div class="strength-leverage-box glass-panel" id="roadmap-strength-leverage-box">
-          <div class="box-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-          <div class="box-content">
-            <h4>Chiến lược Tận dụng Thế mạnh Sẵn có</h4>
-            <p id="roadmap-strength-leverage-text">
-              Dùng nền tảng chuyên môn vững chắc làm bàn đạp để giải thích các phương án kiến trúc mở rộng và lập luận tự tin hơn.
-            </p>
-          </div>
-        </div>
-
-        <!-- Roadmap Timeline / Action Grid -->
-        <div class="roadmap-grid" id="roadmap-items-grid">
-          <!-- Dynamic Roadmap Cards -->
-        </div>
-      </section>
-
-      <!-- ======================================================================
-           SECTION 5: INTERVIEW PREPARATION PLAN
-           ====================================================================== -->
-      <section id="section-preparation" class="report-section scroll-mt">
-        <div class="section-header">
-          <div class="section-title-wrap">
-            <span class="section-badge">CHUẨN BỊ CHIẾN LƯỢC</span>
-            <h2 class="section-title">Hệ Sinh Thái Chuẩn Bị Phỏng Vấn (Preparation Ecosystem)</h2>
-            <p class="section-desc">Gợi ý ôn luyện có cấu trúc theo mô hình STAR, tình huống thực tế và câu hỏi trọng tâm theo doanh nghiệp mục tiêu.</p>
-          </div>
-        </div>
-
-        <div class="prep-modules-grid">
-          <!-- Module 1: Technical & Deep Dive -->
-          <div class="prep-module-card glass-panel">
-            <div class="module-header">
-              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
-              <h3>Kiến Thức Kỹ Thuật Trọng Tâm</h3>
-            </div>
-            <div class="module-body" id="prep-technical-content">
-              <p class="text-muted">Chưa có nội dung kỹ thuật bổ sung.</p>
-            </div>
-          </div>
-
-          <!-- Module 2: Practical & System Design -->
-          <div class="prep-module-card glass-panel">
-            <div class="module-header">
-              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
-              <h3>Ứng Dụng Thực Tế & Thiết Kế Hệ Thống</h3>
-            </div>
-            <div class="module-body" id="prep-practical-content">
-              <p class="text-muted">Chưa có kịch bản thiết kế hệ thống.</p>
-            </div>
-          </div>
-
-          <!-- Module 3: Behavioral & STAR Stories -->
-          <div class="prep-module-card glass-panel">
-            <div class="module-header">
-              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-              <h3>Phỏng Vấn Hành Vi (STAR Framework)</h3>
-            </div>
-            <div class="module-body" id="prep-behavioral-content">
-              <p class="text-muted">Chưa có kịch bản hành vi bổ sung.</p>
-            </div>
-          </div>
-
-          <!-- Module 4: Company Intelligence -->
-          <div class="prep-module-card glass-panel">
-            <div class="module-header">
-              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="16" y1="18" x2="16.01" y2="18"/></svg></span>
-              <h3>Tìm Hiểu Doanh Nghiệp & Văn Hóa Tuyển Dụng</h3>
-            </div>
-            <div class="module-body" id="prep-company-content">
-              <p class="text-muted">Chưa có thông tin doanh nghiệp cụ thể.</p>
-            </div>
-          </div>
-
-          <!-- Module 5: Mock Interview Focus -->
-          <div class="prep-module-card glass-panel full-width">
-            <div class="module-header">
-              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
-              <h3>Khuyến Nghị Cho Phiên Phỏng Vấn Giả Lập Tiếp Theo</h3>
-            </div>
-            <div class="module-body" id="prep-mock-content">
-              <p class="text-muted">Chưa có khuyến nghị mô phỏng mới.</p>
-            </div>
-          </div>
-
-          <!-- Module 6: Dress Code & Presentation Etiquette (WI-COACH-PRESENTATION-02) -->
-          <div class="prep-module-card glass-panel full-width" id="prep-dresscode-card">
-            <div class="module-header">
-              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span>
-              <h3>Gợi Ý Trang Phục & Tác Phong Phỏng Vấn Thực Tế</h3>
-            </div>
-            <div class="module-body" id="prep-dresscode-content">
-              <p class="text-muted">Đang tải hướng dẫn trang phục theo ngành nghề...</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ======================================================================
-           SECTION 6: INTERACTIVE PREPARATION CHECKLIST
-           ====================================================================== -->
-      <section id="section-checklist" class="report-section scroll-mt">
-        <div class="section-header">
-          <div class="section-title-wrap">
-            <span class="section-badge">DANH MỤC KIỂM TRA TRƯỚC PHỎNG VẤN</span>
-            <h2 class="section-title">Checklist Sẵn Sàng (Preparation Checklist)</h2>
-            <p class="section-desc">Đánh dấu các việc đã hoàn thành để đảm bảo không bỏ sót bất kỳ hạng mục nào trước buổi phỏng vấn chính thức.</p>
-          </div>
-          <div class="checklist-progress-box">
-            <div class="progress-meta">
-              <span>Tiến độ hoàn thành:</span>
-              <strong id="checklist-progress-text">0 / 0 việc (0%)</strong>
-            </div>
-            <div class="progress-track">
-              <div class="progress-fill" id="checklist-progress-bar" style="width: 0%;"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="interview-format-selector-box glass-panel" id="interview-format-selector-box" style="margin-bottom: 20px; padding: 14px 20px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-              <span class="format-label" style="font-size: 13.5px; font-weight: 600; color: #1e293b;">Hình thức phỏng vấn sắp tới (tùy chọn cá nhân hóa checklist):</span>
-            </div>
-            <div class="format-options-group" id="format-options-group" style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button type="button" class="format-btn" data-format="online">Trực tuyến (Online)</button>
-              <button type="button" class="format-btn" data-format="onsite">Trực tiếp tại công ty</button>
-              <button type="button" class="format-btn" data-format="phone">Qua điện thoại</button>
-              <button type="button" class="format-btn active" data-format="unspecified">Chưa xác định</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="checklist-card glass-panel" id="checklist-container">
-          <!-- Dynamic Checklist groups: Technical, Behavioral, Company, Logistics -->
-        </div>
-      </section>
-
-      <!-- ======================================================================
-           PHẦN B: ĐÁNH GIÁ GIỌNG NÓI, PHONG CÁCH & CÁCH TRÌNH BÀY (WI-COACH-AUDIO-01)
-           ====================================================================== -->
-      <section id="section-speech-coaching" class="report-section scroll-mt">
+<section id="section-speech-coaching" class="report-section scroll-mt" data-phase="during">
         <div class="section-header">
           <div class="section-title-wrap">
             <span class="section-badge" style="background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">PHẦN B • PHONG CÁCH THỂ HIỆN</span>
-            <h2 class="section-title">Đánh Giá Giọng Nói & Kỹ Năng Trình Bày (Speech Coaching)</h2>
+            <h2 class="section-title">Đánh Giá Giọng Nói & Kỹ Năng Trình Bày</h2>
             <p class="section-desc">Phân tích độc lập phong cách diễn đạt, tần suất từ đệm, tốc độ nói và cấu trúc câu trả lời nhằm nâng cao sức thuyết phục khi giao tiếp.</p>
           </div>
         </div>
@@ -520,8 +544,25 @@
           <div id="speech-priority-items-list" class="speech-priority-items-list"></div>
         </div>
 
-        <!-- 5. Visual Setup & Recording Conditions (WI-COACH-VIDEO-01 / WI-COACH-VIDEO-02A) -->
-        <div class="visual-coaching-box glass-panel" id="visual-coaching-box" style="margin-top: 24px; padding: 20px;">
+                <!-- 5. Visual Setup & Recording Conditions (WI-COACH-VIDEO-01 / WI-COACH-VIDEO-02A) -->
+        <div class="telemetry-disclosure-card glass-panel" id="telemetry-disclosure-card" style="margin-top: 24px;">
+          <div class="telemetry-disclosure-header">
+            <div class="telemetry-header-title">
+              <span class="telemetry-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </span>
+              <div>
+                <h3 class="telemetry-title">Chẩn Đoán Chi Tiết: Camera, Không Gian & Ngôn Ngữ Cơ Thể</h3>
+                <p class="telemetry-desc">Dữ liệu phân tích cục bộ trên thiết bị — Không ảnh hưởng điểm chuyên môn</p>
+              </div>
+            </div>
+            <button type="button" class="btn-toggle-disclosure" id="btn-toggle-telemetry" aria-expanded="false" onclick="toggleTelemetryDeepDive()">
+              <svg class="telemetry-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              <span id="btn-toggle-telemetry-text">Xem chi tiết</span>
+            </button>
+          </div>
+          <div class="telemetry-disclosure-body telemetry-collapsed" id="telemetry-disclosure-body">
+            <div class="visual-coaching-box" id="visual-coaching-box" style="padding: 20px 0 0 0;">
           <div class="visual-coaching-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
@@ -572,23 +613,61 @@
             <div id="visual-snapshots-gallery" class="visual-snapshots-gallery" style="display: flex; flex-direction: column; gap: 12px;"></div>
           </div>
 
+          <!-- Integrated Voice & Body Language AI Coaching (WI-COACH-04D) -->
+          <div class="voice-body-coaching-container" id="voice-body-coaching-container" style="margin-top: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                <span>🎯</span> Huấn Luyện Tác Phong & Diễn Đạt Tích Hợp
+              </h4>
+              <span id="voice-body-coaching-badge" style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #ede9fe; color: #6d28d9;">
+                Chuẩn 5 Phần Minh Chứng
+              </span>
+            </div>
+            <p class="speech-card-desc" style="margin: 0 0 14px 0;">
+              Phân tích kết hợp giữa nhịp điệu giọng nói, tư thế và cử chỉ cơ thể từ các lượt phỏng vấn. Tách biệt hoàn toàn giữa quan sát thực tế và nhận định; không ảnh hưởng đến điểm năng lực chuyên môn.
+            </p>
+            <div id="voice-body-coaching-list" class="voice-body-coaching-list" style="display: flex; flex-direction: column; gap: 14px;"></div>
+          </div>
+
+          <!-- Video Moment Replay & Timestamp-Aligned Evidence (WI-COACH-04C) -->
+          <div class="video-moments-container" id="video-moments-container" style="margin-top: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> Xem Lại Khoảnh Khắc Video Tác Phong
+              </h4>
+              <span id="video-moments-count-badge" style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #e0f2fe; color: #0284c7;">
+                0 khoảnh khắc
+              </span>
+            </div>
+            <p class="speech-card-desc" style="margin: 0 0 12px 0;">
+              Xem lại chính xác thời điểm xuất hiện cử chỉ hoặc tư thế quan sát được từ bản ghi video gốc trong trình duyệt. Không sao chép hay tạo thêm tệp video rời.
+            </p>
+            <div id="video-moments-list" class="video-moments-list" style="display: flex; flex-direction: column; gap: 14px;"></div>
+          </div>
+
           <!-- Technical Disclaimer Footnote -->
+                    <!-- Technical Disclaimer Footnote -->
           <div class="visual-disclaimer" id="visual-disclaimer" style="margin-top: 12px; font-size: 11px; color: #94a3b8; font-style: italic;">
             * Lưu ý kỹ thuật: Đánh giá dựa trên thuật toán thống kê độ sáng pixel (ITU-R BT.601) và độ tương phản giữa các vùng canvas tại thời điểm chụp mẫu đầu mỗi lượt. Không sử dụng mô hình nhận diện khuôn mặt/cảm xúc, hoàn toàn xử lý cục bộ trên trình duyệt. Không ảnh hưởng đến điểm đánh giá năng lực chuyên môn.
+          </div>
+            </div>
           </div>
         </div>
         </div>
       </section>
 
-      <!-- ======================================================================
-           SECTION 7: TURN PROVENANCE & DIALOGUE TRACE
-           ====================================================================== -->
-      <section id="section-provenance" class="report-section scroll-mt">
+<section id="section-provenance" class="report-section scroll-mt" data-phase="during">
         <div class="section-header">
           <div class="section-title-wrap">
             <span class="section-badge">MINH BẠCH & ĐỐI CHIẾU</span>
-            <h2 class="section-title">Nhật Ký Đối Thoại & Căn Cứ Đánh Giá (Turn Provenance)</h2>
+            <h2 class="section-title">Nhật Ký Đối Thoại & Căn Cứ Đánh Giá</h2>
             <p class="section-desc">Xem lại toàn bộ câu hỏi và câu trả lời cùng ghi chú quan sát cụ thể cho từng lượt phỏng vấn.</p>
+          </div>
+          <div class="section-header-actions">
+            <button type="button" class="btn-toggle-disclosure" id="btn-toggle-all-turns" aria-expanded="false" onclick="toggleAllTurns()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+              <span id="btn-toggle-all-turns-text">Mở rộng tất cả</span>
+            </button>
           </div>
         </div>
 
@@ -596,44 +675,247 @@
           <!-- Dynamic Turn Accordions -->
         </div>
       </section>
+        </div>
 
-      <!-- Cam kết Khách quan & Giới hạn Đánh giá Footer -->
+        <!-- ====================================================================
+             STAGE PANEL 4: ĐỀ XUẤT (RECOMMENDATIONS — Roadmap, Questions & Supplementary)
+             ==================================================================== -->
+        <div id="stage-panel-after" class="stage-panel" role="tabpanel" aria-labelledby="phase-btn-recommendations" data-stage="after" style="display: none;">
+          <div class="stage-main-header">
+            <span class="stage-step-tag">GIAI ĐOẠN 04</span>
+            <h2 class="stage-main-title">Đề Xuất Phát Triển & Kế Hoạch Cải Thiện</h2>
+            <p class="stage-main-desc">Lộ trình hành động ưu tiên, câu hỏi chiến lược cho nhà tuyển dụng và tài liệu bổ trợ hoàn thiện năng lực.</p>
+          </div>
+
+          <section id="section-roadmap" class="report-section scroll-mt" data-phase="after">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <span class="section-badge">KẾ HOẠCH HÀNH ĐỘNG</span>
+            <h2 class="section-title">Lộ Trình Cải Thiện Cá Nhân Hóa</h2>
+            <p class="section-desc">Hành động khắc phục điểm nghẽn, phát huy thế mạnh và tiêu chí tự kiểm chứng năng lực trước ngày phỏng vấn.</p>
+          </div>
+        </div>
+
+        <!-- Strength Leverage Callout -->
+        <div class="strength-leverage-box glass-panel" id="roadmap-strength-leverage-box">
+          <div class="box-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <div class="box-content">
+            <h4>Chiến lược Tận dụng Thế mạnh Sẵn có</h4>
+            <p id="roadmap-strength-leverage-text">
+              Dùng nền tảng chuyên môn vững chắc làm bàn đạp để giải thích các phương án kiến trúc mở rộng và lập luận tự tin hơn.
+            </p>
+          </div>
+        </div>
+
+        <!-- Roadmap Timeline / Action Grid -->
+        <div class="roadmap-grid" id="roadmap-items-grid"></div>
+        <!-- Strategic Questions for Employer / Interviewer Guidance (WI-REPORT-03) -->
+        <div class="after-interview-guidance-box glass-panel" id="after-interview-questions-box"></div>
+        <div class="roadmap-items-placeholder-hidden" style="display:none;">
+          <!-- Dynamic Roadmap Cards -->
+        </div>
+      </section>
+
+          <!-- Supplementary Ecosystem Collapsible Panel (Non-intrusive) -->
+          <div class="supplementary-ecosystem-section" id="section-supplementary-ecosystem" style="margin-top: 28px;">
+            <div class="ecosystem-collapsible glass-panel">
+              <div class="ecosystem-header" onclick="toggleSupplementaryEcosystem()">
+                <div class="ecosystem-title-wrap">
+                  <span class="ecosystem-badge">TÀI LIỆU BỔ TRỢ</span>
+                  <h3 class="ecosystem-title">Thông Tin Doanh Nghiệp, Yêu Cầu Tuyển Dụng & Chuẩn Bị Thực Tế</h3>
+                  <p class="ecosystem-desc">Tài liệu tham khảo bổ trợ giúp bạn chuẩn bị tốt hơn cho buổi phỏng vấn trực tiếp tại doanh nghiệp.</p>
+                </div>
+                <button type="button" class="btn-toggle-disclosure" id="btn-toggle-ecosystem" aria-expanded="false">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                  <span id="btn-toggle-eco-text">Mở rộng tài liệu</span>
+                </button>
+              </div>
+              <div class="ecosystem-body hidden" id="ecosystem-collapsible-body" style="padding-top: 16px;">
+                <section id="section-preparation" class="report-section scroll-mt" data-phase="before">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <span class="section-badge">CHUẨN BỊ CHIẾN LƯỢC</span>
+            <h2 class="section-title">Hệ Sinh Thái Chuẩn Bị Phỏng Vấn</h2>
+            <p class="section-desc">Gợi ý ôn luyện có cấu trúc theo mô hình STAR, tình huống thực tế và câu hỏi trọng tâm theo doanh nghiệp mục tiêu.</p>
+          </div>
+        </div>
+
+        <div class="prep-modules-grid">
+          <!-- Module 1: Technical & Deep Dive -->
+          <div class="prep-module-card glass-panel">
+            <div class="module-header">
+              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+              <h3>Kiến Thức Kỹ Thuật Trọng Tâm</h3>
+            </div>
+            <div class="module-body" id="prep-technical-content">
+              <p class="text-muted">Chưa có nội dung kỹ thuật bổ sung.</p>
+            </div>
+          </div>
+
+          <!-- Module 2: Practical & System Design -->
+          <div class="prep-module-card glass-panel">
+            <div class="module-header">
+              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
+              <h3>Ứng Dụng Thực Tế & Thiết Kế Hệ Thống</h3>
+            </div>
+            <div class="module-body" id="prep-practical-content">
+              <p class="text-muted">Chưa có kịch bản thiết kế hệ thống.</p>
+            </div>
+          </div>
+
+          <!-- Module 3: Behavioral & STAR Stories -->
+          <div class="prep-module-card glass-panel">
+            <div class="module-header">
+              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <h3>Phỏng Vấn Hành Vi (STAR Framework)</h3>
+            </div>
+            <div class="module-body" id="prep-behavioral-content">
+              <p class="text-muted">Chưa có kịch bản hành vi bổ sung.</p>
+            </div>
+          </div>
+
+          <!-- Module 4: Company Intelligence -->
+          <div class="prep-module-card glass-panel">
+            <div class="module-header">
+              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="16" y1="18" x2="16.01" y2="18"/></svg></span>
+              <h3>Tìm Hiểu Doanh Nghiệp & Nhu Cầu Tuyển Dụng Thực Tế</h3>
+            </div>
+            <div class="module-body" id="prep-company-content"></div>
+            <!-- Company Intelligence Panel (WI-REPORT-03) -->
+            <div id="prep-company-intel-box" class="company-intel-box"></div>
+            <!-- Recruiting Needs Breakdown & Gap Analysis (Preserved for deep audit & test contracts) -->
+            <div id="company-needs-breakdown" class="company-needs-box" style="display:none;" aria-hidden="true"></div>
+            <!-- CV-JD-Interview Gap Analysis Matrix (Preserved for deep audit & test contracts) -->
+            <div id="cv-jd-gap-analysis" class="cv-jd-gap-box" style="display:none;" aria-hidden="true"></div>
+            <div class="module-body-hidden" style="display:none;">
+              <p class="text-muted">Chưa có thông tin doanh nghiệp cụ thể.</p>
+            </div>
+          </div>
+
+          <!-- Module 5: Mock Interview Focus -->
+          <div class="prep-module-card glass-panel full-width">
+            <div class="module-header">
+              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+              <h3>Khuyến Nghị Cho Phiên Phỏng Vấn Giả Lập Tiếp Theo</h3>
+            </div>
+            <div class="module-body" id="prep-mock-content">
+              <p class="text-muted">Chưa có khuyến nghị mô phỏng mới.</p>
+            </div>
+          </div>
+
+          <!-- Module 6: Dress Code & Presentation Etiquette (WI-COACH-PRESENTATION-02) -->
+          <div class="prep-module-card glass-panel full-width" id="prep-dresscode-card">
+            <div class="module-header">
+              <span class="module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span>
+              <h3>Gợi Ý Trang Phục & Tác Phong Phỏng Vấn Thực Tế</h3>
+            </div>
+            <div class="module-body" id="prep-dresscode-content"></div>
+            <!-- Visual Outfit Suggestions (4 Distinct Styles with SVG Silhouettes - WI-REPORT-03) -->
+            <div id="visual-outfit-container" class="visual-outfit-box"></div>
+            <div class="dresscode-placeholder-hidden" style="display:none;">
+              <p class="text-muted">Đang tải hướng dẫn trang phục theo ngành nghề...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+                <section id="section-checklist" class="report-section scroll-mt" data-phase="before">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <span class="section-badge">DANH MỤC KIỂM TRA TRƯỚC PHỎNG VẤN</span>
+            <h2 class="section-title">Danh Mục Kiểm Tra Sẵn Sàng (Checklist)</h2>
+            <p class="section-desc">Đánh dấu các việc đã hoàn thành để đảm bảo không bỏ sót bất kỳ hạng mục nào trước buổi phỏng vấn chính thức.</p>
+          </div>
+          <div class="checklist-progress-box">
+            <div class="progress-meta">
+              <span>Tiến độ hoàn thành:</span>
+              <strong id="checklist-progress-text">0 / 0 việc (0%)</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="checklist-progress-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="interview-format-selector-box glass-panel" id="interview-format-selector-box" style="margin-bottom: 20px; padding: 14px 20px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              <span class="format-label" style="font-size: 13.5px; font-weight: 600; color: #1e293b;">Hình thức phỏng vấn sắp tới (tùy chọn cá nhân hóa checklist):</span>
+            </div>
+            <div class="format-options-group" id="format-options-group" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="format-btn" data-format="online">Trực tuyến (Online)</button>
+              <button type="button" class="format-btn" data-format="onsite">Trực tiếp tại công ty</button>
+              <button type="button" class="format-btn" data-format="phone">Qua điện thoại</button>
+              <button type="button" class="format-btn active" data-format="unspecified">Chưa xác định</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="checklist-card glass-panel" id="checklist-container">
+          <!-- Dynamic Checklist groups: Technical, Behavioral, Company, Logistics -->
+        </div>
+      </section>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legacy compatibility container for before stage -->
+        <div id="stage-panel-before" class="stage-panel" role="tabpanel" aria-labelledby="phase-btn-before" data-stage="before" style="display: none;"></div>
+
+      </div> <!-- /stages-viewport -->
+
+<!-- ======================================================================
+           TRUST & METHODOLOGY SECTION (PHASE 4: Professional Trust & Transparency)
+           ====================================================================== -->
       <footer class="report-limitations-footer" id="report-commitments-section">
         <div class="limitations-header">
           <div class="limitations-title-wrap">
             <span class="lim-icon" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </span>
-            <h4>Cam kết Khách quan & Giới hạn Đánh giá</h4>
+            <h4>Nguyên Tắc Đánh Giá & Minh Bạch</h4>
           </div>
-          <span class="limitations-badge">Tiêu chuẩn Đánh giá Minh bạch</span>
+          <span class="limitations-badge">Chuẩn Đánh Giá PrepMate</span>
         </div>
-        <ul class="limitations-list" id="report-limitations-list">
+        <p class="limitations-intro-desc">PrepMate cam kết tính minh bạch phương pháp, căn cứ dữ liệu đối thoại thực tế và định hướng hỗ trợ ứng viên rèn luyện năng lực.</p>
+        
+        <div class="trust-methodology-grid">
+          <div class="trust-card">
+            <div class="trust-card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <strong>1. Nguồn Dữ Liệu Đánh Giá</strong>
+            </div>
+            <p>Báo cáo được tổng hợp trực tiếp từ nội dung đối thoại phỏng vấn thực tế, kết hợp thông tin hồ sơ (CV) và mô tả công việc (JD) được cung cấp trong phiên.</p>
+          </div>
+          <div class="trust-card">
+            <div class="trust-card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <strong>2. Tính Nhất Quán Phương Pháp</strong>
+            </div>
+            <p>Điểm số và xếp hạng được tính toán dựa trên hệ quy chiếu rubric chuẩn hóa 0–100 thống nhất, giúp kết quả có tính so sánh ổn định qua nhiều lượt luyện tập.</p>
+          </div>
+          <div class="trust-card">
+            <div class="trust-card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <strong>3. Minh Bạch Bằng Chứng (UNASSESSED)</strong>
+            </div>
+            <p>Khái niệm chưa được hỏi trong phiên được ghi nhận rõ là "Chưa đánh giá", hoàn toàn không bị coi là điểm yếu hay trừ điểm năng lực của ứng viên.</p>
+          </div>
+          <div class="trust-card">
+            <div class="trust-card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <strong>4. Giới Hạn & Phạm Vi Tham Khảo</strong>
+            </div>
+            <p>Phân tích từ AI đóng vai trò công cụ rèn luyện và hỗ trợ phát triển cá nhân mang tính tham khảo; quyết định tuyển dụng thuộc về doanh nghiệp thực tế.</p>
+          </div>
+        </div>
+
+        <ul class="limitations-list hidden" id="report-limitations-list">
           <li class="limitation-item">
-            <span class="lim-bullet-icon" aria-hidden="true">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            </span>
             <div class="lim-item-content">
               <strong>Căn cứ minh chứng:</strong>
               <span>Kết quả đánh giá dựa hoàn toàn trên bằng chứng thu thập được trong phạm vi phiên phỏng vấn mô phỏng.</span>
-            </div>
-          </li>
-          <li class="limitation-item">
-            <span class="lim-bullet-icon" aria-hidden="true">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            </span>
-            <div class="lim-item-content">
-              <strong>Khái niệm chưa đánh giá:</strong>
-              <span>Khái niệm chưa được hỏi (UNASSESSED) không đồng nghĩa với năng lực yếu kém của ứng viên.</span>
-            </div>
-          </li>
-          <li class="limitation-item">
-            <span class="lim-bullet-icon" aria-hidden="true">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            </span>
-            <div class="lim-item-content">
-              <strong>Bảo vệ chống thiên lệch AI:</strong>
-              <span>Điểm số và xếp hạng năng lực được tính toán bằng động cơ quy tắc xác định (deterministic rules), bảo vệ chống ảo giác hoặc thiên lệch AI.</span>
             </div>
           </li>
         </ul>
@@ -648,12 +930,14 @@
   <script src="../../features/dashboard/dashboard.js"></script>
   <script src="../../features/interview/interview-audio-recorder.js"></script>
   <script src="../../features/interview/interview-audio-player.js"></script>
+  <script src="../../features/interview/interview-video-player.js"></script>
   <script src="../../features/interview/speech-coaching-engine.js"></script>
   <script src="../../features/interview/visual-coaching-engine.js"></script>
   <script src="../../features/interview/interview-visual-snapshots.js"></script>
   <script src="../../features/interview/industry-taxonomy.js"></script>
   <script src="../../features/interview/interview-preparation-guide.js"></script>
   <script src="../../features/interview/interview-persona-manifest.js"></script>
+  <script src="../../features/interview/voice-body-coaching-synthesizer.js"></script>
   <script src="report.js"></script>
 </body>
 </html>

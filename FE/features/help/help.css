@@ -34,7 +34,7 @@ body.dark-mode {
 body {
     background-color: var(--help-bg);
     color: var(--help-primary);
-    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--pm-font-sans, var(--font-sans));
     margin: 0;
     padding: 0;
     line-height: var(--pm-line-height-normal, 1.5);
@@ -89,7 +89,7 @@ body.dark-mode .help-hero p {
 
 .support-section-header h2 {
     font-size: var(--pm-font-size-h2, 1.375rem);
-    font-weight: 750;
+    font-weight: var(--pm-font-weight-bold, 652);
     letter-spacing: -0.3px;
     color: var(--help-primary);
     margin: 0 0 8px;
@@ -184,7 +184,7 @@ body.dark-mode .channel-card:hover {
 
 .zalo-icon-text {
     font-size: 11.5px;
-    font-weight: 800;
+    font-weight: var(--pm-font-weight-bold, 652);
     letter-spacing: -0.2px;
     line-height: 1;
 }
@@ -216,7 +216,7 @@ body.dark-mode .channel-icon-wrap {
 
 .contact-value {
     display: inline-block;
-    font-weight: 650;
+    font-weight: var(--pm-font-weight-semibold, 600);
     color: var(--help-primary);
     font-size: 0.8125rem;
     margin-bottom: 2px;
@@ -340,7 +340,7 @@ body.dark-mode .channel-card p {
     align-items: center;
     gap: 6px;
     font-size: 11px;
-    font-weight: 650;
+    font-weight: var(--pm-font-weight-semibold, 600);
     padding: 2px 8px;
     border-radius: 9999px;
     margin-bottom: 14px;
@@ -409,7 +409,7 @@ body.dark-mode .channel-status-pill.active {
 .indicator-badge {
     display: inline-block;
     font-size: 11px;
-    font-weight: 750;
+    font-weight: var(--pm-font-weight-bold, 652);
     text-transform: uppercase;
     background: var(--help-accent);
     color: #ffffff;
@@ -436,7 +436,7 @@ body.dark-mode .faq-view-indicator {
     padding: 8px 16px;
     border-radius: 8px;
     font-size: 13.5px;
-    font-weight: 650;
+    font-weight: var(--pm-font-weight-semibold, 600);
     text-decoration: none;
     transition: all 0.15s ease;
     cursor: pointer;
@@ -627,7 +627,7 @@ body.dark-mode .help-tab-btn.active {
 
 .empty-search-state .empty-title {
     font-size: 16px;
-    font-weight: 750;
+    font-weight: var(--pm-font-weight-bold, 652);
     color: var(--help-primary);
     margin: 0 0 6px;
 }
@@ -741,7 +741,7 @@ body.dark-mode .faq-category-badge {
 
 .faq-question-title {
     font-size: var(--pm-font-size-h4, 0.9375rem);
-    font-weight: 650;
+    font-weight: var(--pm-font-weight-semibold, 600);
     margin: 0;
     color: var(--help-primary);
     line-height: 1.4;
@@ -840,7 +840,7 @@ body.dark-mode .legal-referral-banner {
 
 .legal-referral-text h3 {
     font-size: 16px;
-    font-weight: 750;
+    font-weight: var(--pm-font-weight-bold, 652);
     margin: 0 0 6px;
     color: var(--help-primary);
 }
@@ -876,7 +876,7 @@ body.dark-mode .legal-referral-text p {
     padding: 10px 20px;
     border-radius: 8px;
     font-size: 13.5px;
-    font-weight: 650;
+    font-weight: var(--pm-font-weight-semibold, 600);
     text-decoration: none;
     background: var(--pm-primary, #1d4ed8);
     color: #ffffff;

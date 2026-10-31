@@ -985,9 +985,30 @@
                                     <div class="checklist-tile-icon">✓</div>
                                     <div class="checklist-tile-content">
                                         <strong>Thiết bị Âm thanh &amp; Micro</strong>
-                                        <span id="summary-mic-status">Đảm bảo tai nghe và mic hoạt động rõ ràng nếu chọn chế độ Giọng nói</span>
+                                        <span id="summary-mic-status">Đảm bảo tai nghe và micro hoạt động rõ ràng nếu chọn chế độ Giọng nói</span>
                                     </div>
                                     <span class="checklist-status-badge">Sẵn sàng</span>
+                                </div>
+                                <!-- Device Pre-selection & Testing (WI-COACH-04A) -->
+                                <div class="device-preflight-selection-box" style="margin-top: 10px; margin-bottom: 12px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                                    <div style="font-size: 12.5px; font-weight: 700; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                                        <span>⚙️ Chọn Thiết bị Micro &amp; Camera</span>
+                                        <button type="button" id="btn-refresh-devices" onclick="refreshPreflightDevices()" style="font-size: 11px; background: #e0f2fe; color: #0284c7; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer;">Làm mới danh sách</button>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                        <div>
+                                            <label for="preflight-audio-device-select" style="display: block; font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 3px;">🎙️ Micro đầu vào:</label>
+                                            <select id="preflight-audio-device-select" class="form-select" style="width: 100%; font-size: 11.5px; padding: 5px 7px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;" onchange="onPreflightAudioDeviceChange(this.value)">
+                                                <option value="">Mặc định hệ thống</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="preflight-video-device-select" style="display: block; font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 3px;">📹 Camera:</label>
+                                            <select id="preflight-video-device-select" class="form-select" style="width: 100%; font-size: 11.5px; padding: 5px 7px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;" onchange="onPreflightVideoDeviceChange(this.value)">
+                                                <option value="">Mặc định hệ thống</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="checklist-tile">
                                     <div class="checklist-tile-icon">✓</div>
@@ -1514,7 +1535,7 @@
             const micStatusEl = document.getElementById('summary-mic-status');
             if (micStatusEl) {
                 micStatusEl.textContent = (modeVal === 'text')
-                    ? 'Chế độ gõ phím (Chat): Không bắt buộc microphone'
+                    ? 'Chế độ gõ phím (Chat): Không bắt buộc micro'
                     : 'Đảm bảo tai nghe và micro hoạt động rõ ràng cho chế độ Giọng nói';
             }
 
@@ -3615,7 +3636,66 @@
             }
         });
     </script>
-    <script src="../../shared/js/components.js"></script>
+    <script src="../../shared/js/components.js">
+        // Device Preflight Helpers (WI-COACH-04A)
+        async function refreshPreflightDevices() {
+            if (!navigator.mediaDevices?.enumerateDevices) return;
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const audioSelect = document.getElementById('preflight-audio-device-select');
+                const videoSelect = document.getElementById('preflight-video-device-select');
+                const savedAudio = localStorage.getItem('prepmate_selected_audio_device') || '';
+                const savedVideo = localStorage.getItem('prepmate_selected_video_device') || '';
+
+                if (audioSelect) {
+                    audioSelect.innerHTML = '<option value="">Mặc định hệ thống</option>';
+                    devices.filter(d => d.kind === 'audioinput').forEach((d, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = d.deviceId;
+                        opt.textContent = d.label || ('Microphone ' + (idx + 1));
+                        if (savedAudio && d.deviceId === savedAudio) opt.selected = true;
+                        audioSelect.appendChild(opt);
+                    });
+                }
+
+                if (videoSelect) {
+                    videoSelect.innerHTML = '<option value="">Mặc định hệ thống</option>';
+                    devices.filter(d => d.kind === 'videoinput').forEach((d, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = d.deviceId;
+                        opt.textContent = d.label || ('Camera ' + (idx + 1));
+                        if (savedVideo && d.deviceId === savedVideo) opt.selected = true;
+                        videoSelect.appendChild(opt);
+                    });
+                }
+            } catch (e) {
+                console.warn('[PREFLIGHT] Error enumerating devices:', e);
+            }
+        }
+
+        function onPreflightAudioDeviceChange(devId) {
+            if (typeof PrepMateAudioRecorder !== 'undefined' && PrepMateAudioRecorder.setSelectedAudioDevice) {
+                PrepMateAudioRecorder.setSelectedAudioDevice(devId);
+            } else {
+                if (devId) localStorage.setItem('prepmate_selected_audio_device', devId);
+                else localStorage.removeItem('prepmate_selected_audio_device');
+            }
+        }
+
+        function onPreflightVideoDeviceChange(devId) {
+            if (typeof PrepMateAudioRecorder !== 'undefined' && PrepMateAudioRecorder.setSelectedVideoDevice) {
+                PrepMateAudioRecorder.setSelectedVideoDevice(devId);
+            } else {
+                if (devId) localStorage.setItem('prepmate_selected_video_device', devId);
+                else localStorage.removeItem('prepmate_selected_video_device');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshPreflightDevices();
+        });
+
+</script>
 </body>
 
 </html>
