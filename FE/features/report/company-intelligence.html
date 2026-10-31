@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phân tích Doanh nghiệp & Nhu cầu Tuyển dụng — PrepMate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/css/tokens.css">
+  <link rel="stylesheet" href="../../shared/css/base.css">
+  <link rel="stylesheet" href="../../shared/css/layout.css">
+  <link rel="stylesheet" href="../../shared/css/components.css">
+  <link rel="stylesheet" href="../../shared/css/style.css">
+  <link rel="stylesheet" href="report.css">
+  <link rel="stylesheet" href="company-intelligence.css">
+</head>
+<body class="company-page-body">
+
+  <!-- Top Navigation Header -->
+  <header class="company-navbar">
+    <div class="company-nav-container">
+      <div class="company-brand">
+        <a href="../../index.html" class="logo" title="PrepMate - Về trang chủ">Prep<span>Mate</span></a>
+        <span class="nav-divider">/</span>
+        <span class="nav-page-title">Phân tích Doanh nghiệp</span>
+      </div>
+
+      <div class="company-nav-actions">
+        <button type="button" class="btn btn-outline btn-back-report" id="btn-back-to-report" onclick="goBackToReport()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <span>Quay lại Báo cáo phỏng vấn</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="company-main-wrap">
+
+    <!-- Loading State -->
+    <div id="company-loading-state" class="state-container">
+      <div class="loading-spinner-box glass-panel">
+        <div class="report-spinner"></div>
+        <h3>Đang tổng hợp hồ sơ doanh nghiệp & nhu cầu tuyển dụng...</h3>
+        <p class="text-muted">Hệ thống đang trích xuất dữ liệu từ mô tả công việc (JD) và đối sánh năng lực.</p>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="company-empty-state" class="state-container hidden">
+      <div class="empty-box glass-panel">
+        <div class="state-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="16" y1="18" x2="16.01" y2="18"/></svg>
+        </div>
+        <h3>Chưa Có Thông Tin Doanh Nghiệp Cụ Thể</h3>
+        <p class="text-muted" style="margin: 12px 0 20px;">Phiên phỏng vấn này được khởi tạo ở chế độ luyện tập chung hoặc chưa đính kèm mô tả công việc (JD) của doanh nghiệp mục tiêu.</p>
+        <div class="state-actions">
+          <button type="button" class="btn btn-primary" onclick="goBackToReport()">Quay lại Báo cáo phỏng vấn</button>
+          <a href="../../features/dashboard/dashboard.html" class="btn btn-outline">Về Bảng điều khiển</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Populated Content Container -->
+    <div id="company-content-container" class="company-container hidden">
+
+      <!-- Breadcrumb Bar -->
+      <nav class="company-breadcrumb" aria-label="Đường dẫn điều hướng">
+        <a href="javascript:void(0)" onclick="goBackToReport()">Báo cáo phỏng vấn</a>
+        <span class="bc-sep">/</span>
+        <span class="bc-current">Phân tích Doanh nghiệp & Nhu cầu Tuyển dụng</span>
+      </nav>
+
+      <!-- Hero Header Banner -->
+      <section class="company-hero-banner glass-panel">
+        <div class="hero-header-row">
+          <div class="hero-titles">
+            <span class="hero-eyebrow">HỒ SƠ TUYỂN DỤNG & ĐỐI SÁNH NĂNG LỰC</span>
+            <h1 class="hero-company-name" id="hero-company-name">Doanh Nghiệp Mục Tiêu</h1>
+            <div class="hero-badges-row">
+              <span class="company-pill pill-job" id="pill-job-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <span id="txt-job-title">Chuyên viên chuyên môn</span>
+              </span>
+              <span class="company-pill pill-industry" id="pill-industry">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span id="txt-industry">Công nghệ thông tin</span>
+              </span>
+              <span class="provenance-tag provenance-jd" id="hero-provenance-tag">Theo JD</span>
+            </div>
+          </div>
+          <div class="hero-actions-right">
+            <button type="button" class="btn btn-outline btn-sm" onclick="window.print()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span>In trang này</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section A: Tổng quan Doanh nghiệp -->
+      <section class="company-section" id="sec-company-overview">
+        <div class="company-section-header">
+          <div class="sec-badge">PHẦN A</div>
+          <h2 class="sec-title">Tổng Quan Doanh Nghiệp & Môi Trường</h2>
+          <p class="sec-desc">Thông tin tổng hợp về lĩnh vực hoạt động, văn hóa tổ chức và chuẩn mực kỹ thuật theo dữ liệu xác minh hoặc mô tả công việc.</p>
+        </div>
+
+        <div class="overview-cards-grid" id="company-overview-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- Section B: Nhu Cầu Tuyển Dụng Chi Tiết (6 Nhóm) -->
+      <section class="company-section" id="sec-hiring-needs">
+        <div class="company-section-header">
+          <div class="sec-badge">PHẦN B</div>
+          <h2 class="sec-title">Nhu Cầu Tuyển Dụng Chi Tiết (6 Nhóm Tiêu Chí)</h2>
+          <p class="sec-desc">Bóc tách toàn diện các tiêu chí đánh giá của nhà tuyển dụng từ kỹ năng bắt buộc, chuyên môn sâu đến phẩm chất hành vi.</p>
+        </div>
+
+        <div class="needs-vertical-stack" id="hiring-needs-stack">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- Section C: Phân Tích Vị Trí & Ma Trận Đối Sánh Khoảng Cách Năng Lực -->
+      <section class="company-section" id="sec-gap-matrix">
+        <div class="company-section-header">
+          <div class="sec-badge">PHẦN C</div>
+          <h2 class="sec-title">Đối Sánh Năng Lực Ứng Viên Với Yêu Cầu Tuyển Dụng</h2>
+          <p class="sec-desc">Ma trận đối chiếu giữa hồ sơ ứng viên (CV), thể hiện thực tế trong phiên phỏng vấn và các yêu cầu cốt lõi của doanh nghiệp.</p>
+        </div>
+
+        <div class="gap-matrix-card glass-panel" id="company-gap-matrix-container">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- Section D: Nguồn Thông Tin & Minh Bạch -->
+      <section class="company-section" id="sec-transparency">
+        <div class="company-section-header">
+          <div class="sec-badge">PHẦN D</div>
+          <h2 class="sec-title">Nguồn Thông Tin, Phương Pháp & Giới Hạn Tham Khảo</h2>
+          <p class="sec-desc">Minh bạch về cơ sở dữ liệu đối sánh, thuật toán phân tích và giới hạn pháp lý của bản phân tích.</p>
+        </div>
+
+        <div class="transparency-grid">
+          <div class="transparency-card glass-panel">
+            <div class="t-card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <strong>1. Nguồn Dữ Liệu Đối Sánh</strong>
+            </div>
+            <p>Phân tích được tổng hợp trực tiếp từ văn bản mô tả công việc (JD) do người dùng cung cấp trong phiên phỏng vấn, đối chiếu với hồ sơ (CV) và câu trả lời thực tế.</p>
+          </div>
+
+          <div class="transparency-card glass-panel">
+            <div class="t-card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+              <strong>2. Phân Định Minh Bạch Nguồn Nhận Định</strong>
+            </div>
+            <p>Mọi hạng mục đều gắn nhãn nguồn gốc minh bạch: <code>Đã xác minh</code> (nguồn chính thống), <code>Theo JD</code> (trích xuất từ tin tuyển dụng) hoặc <code>Nhận định AI</code> (suy luận chuyên môn).</p>
+          </div>
+
+          <div class="transparency-card glass-panel">
+            <div class="t-card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <strong>3. Minh Bạch Bằng Chứng (UNASSESSED)</strong>
+            </div>
+            <p>Các kỹ năng chưa xuất hiện trong phiên đối thoại được ghi nhận là <code>Chưa đánh giá</code> để làm cơ sở ôn tập, hoàn toàn không bị quy kết là điểm yếu hay trừ điểm năng lực.</p>
+          </div>
+
+          <div class="transparency-card glass-panel">
+            <div class="t-card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <strong>4. Phạm Vi Tham Khảo & Giới Hạn</strong>
+            </div>
+            <p>Bản phân tích có tính chất hỗ trợ ứng viên chuẩn bị kỹ lưỡng trước buổi phỏng vấn chính thức, không đại diện cho phát ngôn hoặc cam kết tuyển dụng từ doanh nghiệp.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Return Row -->
+      <div class="company-bottom-actions">
+        <button type="button" class="btn btn-primary" onclick="goBackToReport()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <span>Quay lại Báo cáo phỏng vấn</span>
+        </button>
+        <a href="../../features/dashboard/dashboard.html" class="btn btn-outline">Quay về Bảng điều khiển</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../../shared/js/components.js"></script>
+  <script src="../../features/auth/auth.js"></script>
+  <script src="company-intelligence.js"></script>
+</body>
+</html>

@@ -139,7 +139,7 @@ function setMicState(state, detail = "") {
       if (consoleMicBtn) {
         consoleMicBtn.classList.remove("recording");
         consoleMicBtn.classList.add("off");
-        consoleMicBtn.title = "Nói để trả lời (Bật microphone)";
+        consoleMicBtn.title = "Nói để trả lời (Bật micro)";
         if (typeof consoleMicBtn.setAttribute === "function") {
           consoleMicBtn.setAttribute("aria-label", "Nói để trả lời");
           consoleMicBtn.setAttribute("aria-pressed", "false");
@@ -215,8 +215,8 @@ function setMicState(state, detail = "") {
         micBtn.classList.remove("recording");
         micBtn.classList.add("off");
         micBtn.innerHTML = icons.micMuted || "";
-        micBtn.title = detail || "Lỗi microphone. Bạn có thể nhập câu trả lời.";
-        micBtn.setAttribute("aria-label", "Lỗi microphone");
+        micBtn.title = detail || "Lỗi micro. Bạn có thể nhập câu trả lời.";
+        micBtn.setAttribute("aria-label", "Lỗi micro");
       }
       if (candidateTile) candidateTile.classList.remove("speaking");
       if (candidateMicBadge) {
@@ -318,16 +318,16 @@ function initSpeech() {
 
   if (location.protocol === "file:") {
     if (micBtn) {
-      micBtn.title = "Microphone yêu cầu mở qua web server hoặc HTTPS";
+      micBtn.title = "Micro yêu cầu mở qua web server hoặc HTTPS";
       micBtn.style.opacity = "0.4";
       micBtn.style.cursor = "not-allowed";
       micBtn.onclick = () => {
         if (typeof showToast === "function") {
-          showToast("Microphone yêu cầu mở qua kết nối web server hoặc HTTPS", "warning");
+          showToast("Micro yêu cầu mở qua kết nối web server hoặc HTTPS", "warning");
         }
       };
     }
-    setMicState(MIC_STATE.UNSUPPORTED, "Microphone yêu cầu mở qua web server hoặc HTTPS");
+    setMicState(MIC_STATE.UNSUPPORTED, "Micro yêu cầu mở qua web server hoặc HTTPS");
     if (typeof debugInterview === "function") {
       debugInterview("SPEECH", "Disabled because page is running on file://");
     }
@@ -407,12 +407,12 @@ function initSpeech() {
       }
 
       if (e.error === "not-allowed") {
-        setMicState(MIC_STATE.NO_PERMISSION, "Không thể truy cập microphone. Bạn có thể tiếp tục nhập văn bản.");
+        setMicState(MIC_STATE.NO_PERMISSION, "Không thể truy cập micro. Bạn có thể tiếp tục nhập văn bản.");
         if (typeof showToast === "function") {
-          showToast("Không thể truy cập microphone. Bạn có thể tiếp tục nhập văn bản.", "warning");
+          showToast("Không thể truy cập micro. Bạn có thể tiếp tục nhập văn bản.", "warning");
         }
       } else {
-        setMicState(MIC_STATE.ERROR, `Lỗi microphone (${e.error}). Bạn có thể nhập câu trả lời.`);
+        setMicState(MIC_STATE.ERROR, `Lỗi micro (${e.error}). Bạn có thể nhập câu trả lời.`);
       }
     };
 
@@ -528,7 +528,8 @@ function toggleMic() {
     if (PrepMateAudioRecorder.isRecordingPaused && PrepMateAudioRecorder.isRecordingPaused()) {
       PrepMateAudioRecorder.resumeAudioRecording();
     } else if (typeof PrepMateAudioRecorder.startAudioRecording === "function") {
-      PrepMateAudioRecorder.startAudioRecording(turnIdx, qText);
+      const isCamOn = (typeof currentCamState !== "undefined" && currentCamState === CAM_STATE.ON);
+      PrepMateAudioRecorder.startAudioRecording(turnIdx, qText, { includeVideo: isCamOn });
     }
   }
 

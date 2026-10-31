@@ -38,7 +38,7 @@
           <a
             href="../../features/dashboard/dashboard.html"
             class="ir-brand-badge"
-            title="Quay về Dashboard"
+            title="Quay về Bảng điều khiển"
           >
             <span class="ir-brand-dot">P</span>
             <span class="ir-brand-name">PrepMate</span>
@@ -249,6 +249,7 @@
                   muted
                   style="display: none"
                 ></video>
+                <div id="body-language-status-badge" class="body-language-badge" style="display: none; position: absolute; top: 12px; left: 12px; background: rgba(15, 23, 42, 0.75); color: #38bdf8; font-size: 11px; padding: 3px 8px; border-radius: 4px; backdrop-filter: blur(4px); pointer-events: none; z-index: 10;">Chuyển động (On-device)</div>
                 <div class="camera-placeholder" id="camera-placeholder">
                   <div class="avatar-user-ring" id="candidate-avatar-ring">
                     <div class="avatar-user" id="candidate-avatar-preview">
@@ -365,6 +366,21 @@
                   </button>
                   <button
                     type="button"
+                    onclick="toggleDeviceSettingsPopover()"
+                    id="btn-device-settings"
+                    class="in-tile-icon-btn in-tile-gear"
+                    title="Cài đặt Thiết bị (Micro & Camera)"
+                    aria-label="Cài đặt thiết bị"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="3"/>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
                     onclick="toggleCamera()"
                     id="btn-toggle-cam"
                     class="in-tile-icon-btn in-tile-cam off"
@@ -395,7 +411,32 @@
                       />
                     </svg>
                   </button>
+                
+                <!-- Device Selection Popover (WI-COACH-04A) -->
+                <div id="device-settings-popover" class="device-settings-popover" style="display: none; position: absolute; bottom: 58px; right: 12px; z-index: 100; width: 280px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15); padding: 14px; font-size: 13px;" role="dialog" aria-label="Cài đặt Micro và Camera">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 700; color: #1e293b;">
+                    <span>Cài đặt Thiết bị Đầu vào</span>
+                    <button type="button" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #64748b; line-height: 1;" onclick="toggleDeviceSettingsPopover(false)" aria-label="Đóng">&times;</button>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div>
+                      <label for="practice-audio-device-select" style="display: block; font-size: 11.5px; color: #64748b; font-weight: 600; margin-bottom: 4px;">Micro:</label>
+                      <select id="practice-audio-device-select" style="width: 100%; font-size: 12px; padding: 6px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;" onchange="onPracticeAudioDeviceChange(this.value)">
+                        <option value="">Mặc định hệ thống</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="practice-video-device-select" style="display: block; font-size: 11.5px; color: #64748b; font-weight: 600; margin-bottom: 4px;">Camera:</label>
+                      <select id="practice-video-device-select" style="width: 100%; font-size: 12px; padding: 6px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;" onchange="onPracticeVideoDeviceChange(this.value)">
+                        <option value="">Mặc định hệ thống</option>
+                      </select>
+                    </div>
+                    <div style="font-size: 11px; color: #059669; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; padding: 6px 8px; margin-top: 2px;">
+                      Thiết bị được lưu và tự động đồng bộ cho các lượt phỏng vấn tiếp theo.
+                    </div>
+                  </div>
                 </div>
+</div>
               </div>
             </div>
           </section>
@@ -465,7 +506,7 @@
                 <div class="ir-live-speech-pill" id="speech-status-indicator">
                   <span class="speech-dot">●</span>
                   <span id="speech-status-text-hint"
-                    >Bật Mic trên camera hoặc nhập nội dung</span
+                    >Bật micro trên camera hoặc nhập nội dung</span
                   >
                 </div>
 
@@ -501,7 +542,7 @@
                   id="btn-console-mic"
                   class="ir-btn-console-mic off"
                   onclick="toggleMic()"
-                  title="Nói để trả lời (Bật microphone)"
+                  title="Nói để trả lời (Bật micro)"
                   aria-label="Nói để trả lời"
                   disabled
                 >
@@ -531,7 +572,7 @@
             <!-- Auxiliary Guidance & Hotkeys -->
             <div class="ir-response-helper-bar">
               <span class="ir-helper-tip">
-                Mẹo: Nhấn "Nói để trả lời" hoặc nhập trực tiếp • Kiểm tra microphone trước khi gửi
+                Mẹo: Nhấn "Nói để trả lời" hoặc nhập trực tiếp • Kiểm tra micro trước khi gửi
               </span>
               <span class="ir-key-hint">Enter để gửi • Shift + Enter xuống dòng</span>
             </div>
@@ -691,7 +732,7 @@
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
                 </div>
                 <div class="chk-info">
-                  <div class="chk-name">Microphone</div>
+                  <div class="chk-name">Micro</div>
                   <div class="chk-desc" id="chk-mic-text">
                     Sẵn sàng nhận giọng nói và chuyển đổi thành văn bản
                   </div>
@@ -833,7 +874,7 @@
               gap: 6px;
             "
           >
-            Về Dashboard
+            Về Bảng điều khiển
           </a>
           <a
             href="../../features/interview/interview-info.html"
@@ -888,6 +929,7 @@
     <script src="../../features/interview/interview-visual-snapshots.js"></script>
     <script src="../../features/interview/visual-coaching-engine.js"></script>
     <script src="../../features/interview/interview-camera.js"></script>
+    <script src="../../features/interview/body-language-analyzer.js"></script>
 
     <!-- Interview timer subsystem module -->
     <script src="../../features/interview/interview-timer.js"></script>

@@ -797,11 +797,16 @@ namespace backend.Services.Evaluation
                 });
             }
 
-            // 6. Summary Synthesis
-            evaluation.Summary = GenerateEvaluationSummary(evaluation);
-
-            // 7. Phase 3 Step 3: Performance & Competency Analysis
+            // 6. Phase 3 Step 3: Performance & Competency Analysis (Run before summary to supply verified strengths)
             evaluation.PerformanceAssessment = _performanceService.AnalyzePerformance(session, evaluation);
+
+            if (evaluation.KeyStrengths.Count == 0 && evaluation.PerformanceAssessment?.Strengths?.Count > 0)
+            {
+                evaluation.KeyStrengths.AddRange(evaluation.PerformanceAssessment.Strengths);
+            }
+
+            // 7. Summary Synthesis
+            evaluation.Summary = GenerateEvaluationSummary(evaluation);
 
             // 8. Phase 3 Step 4: Diagnostic Analysis
             evaluation.DiagnosticAnalysis = _diagnosticService.AnalyzeSession(session, evaluation);
@@ -843,7 +848,8 @@ namespace backend.Services.Evaluation
                 ? string.Join("; ", eval.KeyWeaknesses.Take(3))
                 : (eval.MissingEvidence.Count > 0 ? string.Join("; ", eval.MissingEvidence.Take(2)) : "Không có lỗ hổng lớn");
 
-            return $"Đánh giá tổng thể vị trí {eval.TargetPosition} ({eval.TargetLevel}): Điểm số {eval.OverallScore}/10.0 (Xếp loại: {eval.OverallLevelAssessment}, Độ tin cậy: {eval.OverallConfidence}). Điểm mạnh: {strengthsPart}. Lỗ hổng cần lưu ý: {gapsPart}.";
+            var score100 = Math.Round(eval.OverallScore * 10.0);
+            return $"Đánh giá tổng thể vị trí {eval.TargetPosition} ({eval.TargetLevel}): Điểm số {score100}/100 (Xếp loại: {eval.OverallLevelAssessment}, Độ tin cậy: {eval.OverallConfidence}). Điểm mạnh: {strengthsPart}. Lỗ hổng cần lưu ý: {gapsPart}.";
         }
     }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrepMate — Ngân hàng Câu hỏi & Core Knowledge AI</title>
+    <title>PrepMate — Ngân hàng Câu hỏi & Kiến thức cốt lõi AI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -47,18 +47,12 @@
             <div class="hero-left">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
                     <span class="qbank-hero-pill-blue">Thư viện chuyên đề thực chiến</span>
-                    <span class="qbank-hero-pill-emerald">Tích hợp AI Follow-up & STAR</span>
+                    <span class="qbank-hero-pill-emerald">Tích hợp AI hỏi đào sâu & STAR</span>
                 </div>
-                <h1 style="font-size:24px;margin-bottom:8px;">Ngân hàng Câu hỏi & Core Knowledge AI</h1>
-                <p style="font-size:14px;color:#475569;margin-bottom:16px;max-width:650px;">
-                    Bộ câu hỏi mô phỏng phỏng vấn thực tế từ các doanh nghiệp hàng đầu đa lĩnh vực. Bấm <strong>"Chi tiết"</strong> để xem bối cảnh và câu hỏi phản biện của AI, hoặc <strong>"Luyện tập"</strong> để vào phòng mô phỏng 1-1 ngay.
+                <h1 style="font-size:24px;margin-bottom:8px;">Ngân hàng Câu hỏi & Kiến thức cốt lõi AI</h1>
+                <p style="font-size:14px;color:#475569;margin-bottom:0;max-width:650px;">
+                    Bộ câu hỏi mô phỏng phỏng vấn thực tế từ các doanh nghiệp hàng đầu đa lĩnh vực. Bấm <strong>"Chi tiết"</strong> để xem bối cảnh và câu hỏi phản biện của AI, hoặc <strong>"Luyện tập"</strong> trên từng câu hỏi để vào phòng mô phỏng 1-1.
                 </p>
-                <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-                    <a href="../interview/interview-info.html" class="btn-start-interview">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        Vào phòng luyện câu hỏi
-                    </a>
-                </div>
             </div>
             <div class="hero-stats">
                 <div class="hero-stat-item">
@@ -71,7 +65,7 @@
                 </div>
                 <div class="hero-stat-item">
                     <span class="num" style="color:#7c3aed;">100%</span>
-                    <span class="lbl">Kèm AI Follow-up</span>
+                    <span class="lbl">Kèm AI hỏi đào sâu</span>
                 </div>
             </div>
         </div>
@@ -98,47 +92,91 @@
                     </div>
                 </div>
 
-                <!-- 1. Category Chips Bar (Lĩnh vực ngành nghề) -->
-                <div class="filter-group-label">
-                    <span>1. Phân loại theo Lĩnh vực Ngành nghề</span>
-                </div>
-                <div class="qbank-category-bar" id="category-chips-bar">
-                    <button type="button" class="qbank-cat-chip active" onclick="setIndustryFilter('all', this)">
-                        <span>Tất cả</span>
-                        <span class="chip-count" id="count-all">24</span>
-                    </button>
-                    <button type="button" class="qbank-cat-chip" onclick="setIndustryFilter('it', this)">
-                        <span>Công nghệ thông tin</span>
-                        <span class="chip-count" id="count-it">6</span>
-                    </button>
-                    <button type="button" class="qbank-cat-chip" onclick="setIndustryFilter('marketing', this)">
-                        <span>Marketing & Truyền thông</span>
-                        <span class="chip-count" id="count-marketing">3</span>
-                    </button>
-                    <button type="button" class="qbank-cat-chip" onclick="setIndustryFilter('design', this)">
-                        <span>Thiết kế & Sáng tạo</span>
-                        <span class="chip-count" id="count-design">3</span>
-                    </button>
-                    <button type="button" class="qbank-cat-chip" onclick="setIndustryFilter('sales', this)">
-                        <span>Kinh doanh & Bán hàng</span>
-                        <span class="chip-count" id="count-sales">3</span>
-                    </button>
-                    <button type="button" class="qbank-cat-chip" onclick="setIndustryFilter('languages', this)">
-                        <span>Ngôn ngữ & Dịch thuật</span>
-                        <span class="chip-count" id="count-languages">3</span>
-                    </button>
-                    <button type="button" class="qbank-cat-chip" onclick="setIndustryFilter('finance', this)">
-                        <span>Tài chính & Kế toán</span>
-                        <span class="chip-count" id="count-finance">2</span>
-                    </button>
-                    <button type="button" class="qbank-cat-chip" onclick="setIndustryFilter('hr', this)">
-                        <span>Nhân sự & Tuyển dụng</span>
-                        <span class="chip-count" id="count-hr">2</span>
-                    </button>
-                    <button type="button" class="qbank-cat-chip" onclick="setIndustryFilter('softskills', this)">
-                        <span>Kỹ năng mềm & Quản trị</span>
-                        <span class="chip-count" id="count-softskills">2</span>
-                    </button>
+                <!-- 1. Industry Selector (Phân loại theo Lĩnh vực Ngành nghề) -->
+                <div class="qbank-industry-selector-wrapper">
+                    <div class="industry-selector-header">
+                        <div class="filter-group-label" style="margin-bottom:0;">
+                            <span>1. Lĩnh vực Ngành nghề</span>
+                        </div>
+                        <div class="industry-active-display" id="industry-active-display">
+                            <span class="active-badge" id="industry-selected-badge">
+                                <span class="active-dot"></span>
+                                <span id="industry-selected-name">Tất cả ngành nghề</span>
+                                <span class="active-count" id="industry-selected-count">24</span>
+                            </span>
+                            <button type="button" class="btn-clear-industry" id="btn-clear-industry" onclick="setIndustryFilter('all', null)" style="display:none;" title="Bỏ chọn ngành" aria-label="Bỏ chọn ngành">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+                        <button type="button" class="btn-toggle-industry-panel" id="btn-toggle-industry-panel" onclick="toggleIndustryPanel()" aria-expanded="false" aria-controls="category-chips-bar">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            <span>Chọn lĩnh vực (8)</span>
+                            <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+
+                    <!-- Collapsible Industry Panel with Search & Grouping -->
+                    <div class="qbank-category-bar collapsed" id="category-chips-bar" role="region" aria-label="Danh sách ngành nghề">
+                        <div class="industry-search-subwrap">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="industry-search-input" class="industry-search-input" placeholder="Lọc nhanh ngành nghề..." oninput="filterIndustryChips(this.value)">
+                        </div>
+                        <div class="industry-chips-grid">
+                            <div class="industry-group-section" data-group="all">
+                                <button type="button" class="qbank-cat-chip active" data-industry="all" data-name="Tất cả ngành nghề" onclick="setIndustryFilter('all', this)">
+                                    <span>Tất cả</span>
+                                    <span class="chip-count" id="count-all">24</span>
+                                </button>
+                            </div>
+                            <div class="industry-group-section" data-group="tech">
+                                <span class="industry-group-heading">Kỹ thuật & Công nghệ</span>
+                                <div class="industry-group-chips">
+                                    <button type="button" class="qbank-cat-chip" data-industry="it" data-name="Công nghệ thông tin" onclick="setIndustryFilter('it', this)">
+                                        <span>Công nghệ thông tin</span>
+                                        <span class="chip-count" id="count-it">6</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="industry-group-section" data-group="business">
+                                <span class="industry-group-heading">Kinh doanh & Tăng trưởng</span>
+                                <div class="industry-group-chips">
+                                    <button type="button" class="qbank-cat-chip" data-industry="marketing" data-name="Marketing & Truyền thông" onclick="setIndustryFilter('marketing', this)">
+                                        <span>Marketing & Truyền thông</span>
+                                        <span class="chip-count" id="count-marketing">3</span>
+                                    </button>
+                                    <button type="button" class="qbank-cat-chip" data-industry="design" data-name="Thiết kế & Sáng tạo" onclick="setIndustryFilter('design', this)">
+                                        <span>Thiết kế & Sáng tạo</span>
+                                        <span class="chip-count" id="count-design">3</span>
+                                    </button>
+                                    <button type="button" class="qbank-cat-chip" data-industry="sales" data-name="Kinh doanh & Bán hàng" onclick="setIndustryFilter('sales', this)">
+                                        <span>Kinh doanh & Bán hàng</span>
+                                        <span class="chip-count" id="count-sales">3</span>
+                                    </button>
+                                    <button type="button" class="qbank-cat-chip" data-industry="finance" data-name="Tài chính & Kế toán" onclick="setIndustryFilter('finance', this)">
+                                        <span>Tài chính & Kế toán</span>
+                                        <span class="chip-count" id="count-finance">2</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="industry-group-section" data-group="operations">
+                                <span class="industry-group-heading">Vận hành & Ngôn ngữ</span>
+                                <div class="industry-group-chips">
+                                    <button type="button" class="qbank-cat-chip" data-industry="languages" data-name="Ngôn ngữ & Dịch thuật" onclick="setIndustryFilter('languages', this)">
+                                        <span>Ngôn ngữ & Dịch thuật</span>
+                                        <span class="chip-count" id="count-languages">3</span>
+                                    </button>
+                                    <button type="button" class="qbank-cat-chip" data-industry="hr" data-name="Nhân sự & Tuyển dụng" onclick="setIndustryFilter('hr', this)">
+                                        <span>Nhân sự & Tuyển dụng</span>
+                                        <span class="chip-count" id="count-hr">2</span>
+                                    </button>
+                                    <button type="button" class="qbank-cat-chip" data-industry="softskills" data-name="Kỹ năng mềm & Quản trị" onclick="setIndustryFilter('softskills', this)">
+                                        <span>Kỹ năng mềm & Quản trị</span>
+                                        <span class="chip-count" id="count-softskills">2</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 2. Secondary Filter Grid (Tiêu đề chuẩn, tìm kiếm & dropdowns) -->
@@ -176,9 +214,9 @@
                         <label for="select-difficulty">4. Cấp bậc / Độ khó</label>
                         <select id="select-difficulty" class="qbank-select" onchange="applyAllFilters()">
                             <option value="all">Tất cả độ khó</option>
-                            <option value="easy">●○○ Cơ bản (Fresher / Junior)</option>
-                            <option value="medium">●●○ Trung cấp (Mid-level)</option>
-                            <option value="hard">●●● Nâng cao (Senior / Lead)</option>
+                            <option value="easy">Cơ bản (Fresher / Junior)</option>
+                            <option value="medium">Trung cấp (Mid-level)</option>
+                            <option value="hard">Nâng cao (Senior / Lead)</option>
                         </select>
                     </div>
 
@@ -187,9 +225,9 @@
                         <label for="select-lang">5. Ngôn ngữ phỏng vấn</label>
                         <select id="select-lang" class="qbank-select" onchange="applyAllFilters()">
                             <option value="all">Tất cả ngôn ngữ</option>
-                            <option value="vi">🇻🇳 Tiếng Việt</option>
-                            <option value="en">🇬🇧 English</option>
-                            <option value="ja">🇯🇵 日本語 (Tiếng Nhật)</option>
+                            <option value="vi">Tiếng Việt</option>
+                            <option value="en">English</option>
+                            <option value="ja">日本語 (Tiếng Nhật)</option>
                         </select>
                     </div>
 
@@ -300,7 +338,7 @@
                 <div class="modal-ai-box">
                     <div class="modal-ai-header">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        Tình huống AI Đào sâu (Follow-up Probes)
+                        Tình huống AI hỏi đào sâu
                     </div>
                     <p class="modal-ai-content" id="modal-followup">Nội dung câu hỏi AI đào sâu</p>
                 </div>
@@ -347,7 +385,7 @@
             <!-- Modal Footer -->
             <div class="qbank-modal-footer">
                 <div class="modal-duration-tag">
-                    <span style="font-size:15px;">◷</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                     <span id="modal-time">Thời lượng ước tính: 5-8 phút</span>
                 </div>
                 <div class="modal-footer-actions">
@@ -589,6 +627,7 @@
                             const el = document.getElementById(`count-${facet.key}`);
                             if (el) el.innerText = facet.count;
                         });
+                        updateIndustryActiveDisplay(currentFilters.industry);
                     }
 
                     renderQuestions(activeQuestions, false);
@@ -669,6 +708,7 @@
                 document.querySelectorAll('#category-chips-bar .qbank-cat-chip').forEach(el => el.classList.remove('active'));
                 const firstChip = document.querySelector('#category-chips-bar .qbank-cat-chip');
                 if (firstChip) firstChip.classList.add('active');
+                updateIndustryActiveDisplay('all');
             } else if (filterKey === 'keyword') {
                 currentFilters.keyword = '';
                 const input = document.getElementById('qbank-search-input');
@@ -754,12 +794,105 @@
         // ============================================================
         // EVENT HANDLERS & FILTERS
         // ============================================================
+        function updateIndustryActiveDisplay(key) {
+            const nameEl = document.getElementById('industry-selected-name');
+            const countEl = document.getElementById('industry-selected-count');
+            const clearBtn = document.getElementById('btn-clear-industry');
+            const toggleBtn = document.getElementById('btn-toggle-industry-panel');
+
+            const industryMap = {
+                all: { name: 'Tất cả ngành nghề', countId: 'count-all' },
+                it: { name: 'Công nghệ thông tin', countId: 'count-it' },
+                marketing: { name: 'Marketing & Truyền thông', countId: 'count-marketing' },
+                design: { name: 'Thiết kế & Sáng tạo', countId: 'count-design' },
+                sales: { name: 'Kinh doanh & Bán hàng', countId: 'count-sales' },
+                languages: { name: 'Ngôn ngữ & Dịch thuật', countId: 'count-languages' },
+                finance: { name: 'Tài chính & Kế toán', countId: 'count-finance' },
+                hr: { name: 'Nhân sự & Tuyển dụng', countId: 'count-hr' },
+                softskills: { name: 'Kỹ năng mềm & Quản trị', countId: 'count-softskills' }
+            };
+
+            const info = industryMap[key] || { name: key, countId: 'count-' + key };
+            if (nameEl) nameEl.textContent = info.name;
+            if (countEl) {
+                const sourceCount = document.getElementById(info.countId);
+                countEl.textContent = sourceCount ? sourceCount.textContent : '';
+            }
+            if (clearBtn) {
+                clearBtn.style.display = (key !== 'all') ? 'inline-flex' : 'none';
+            }
+            if (toggleBtn) {
+                const labelSpan = toggleBtn.querySelector('span');
+                if (labelSpan) {
+                    labelSpan.textContent = (key === 'all') ? 'Chọn lĩnh vực (8)' : 'Đổi lĩnh vực';
+                }
+            }
+        }
+
+        function toggleIndustryPanel() {
+            const bar = document.getElementById('category-chips-bar');
+            const toggleBtn = document.getElementById('btn-toggle-industry-panel');
+            if (!bar) return;
+            const isCollapsed = bar.classList.contains('collapsed');
+            if (isCollapsed) {
+                bar.classList.remove('collapsed');
+                if (toggleBtn) {
+                    toggleBtn.setAttribute('aria-expanded', 'true');
+                    toggleBtn.classList.add('active');
+                }
+                const search = document.getElementById('industry-search-input');
+                if (search) {
+                    search.value = '';
+                    filterIndustryChips('');
+                    search.focus();
+                }
+            } else {
+                bar.classList.add('collapsed');
+                if (toggleBtn) {
+                    toggleBtn.setAttribute('aria-expanded', 'false');
+                    toggleBtn.classList.remove('active');
+                }
+            }
+        }
+
+        function filterIndustryChips(val) {
+            const kw = (val || '').trim().toLowerCase();
+            const chips = document.querySelectorAll('#category-chips-bar .qbank-cat-chip');
+            chips.forEach(chip => {
+                const text = (chip.getAttribute('data-name') || chip.textContent).toLowerCase();
+                const match = !kw || text.includes(kw);
+                chip.style.display = match ? 'inline-flex' : 'none';
+            });
+
+            // Check sections
+            document.querySelectorAll('#category-chips-bar .industry-group-section').forEach(sec => {
+                const visibleChips = sec.querySelectorAll('.qbank-cat-chip:not([style*="display: none"])');
+                sec.style.display = (visibleChips.length > 0) ? 'flex' : 'none';
+            });
+        }
+
         function setIndustryFilter(industryKey, btnElement) {
             currentFilters.industry = industryKey;
             currentPage = 1;
 
             document.querySelectorAll('#category-chips-bar .qbank-cat-chip').forEach(el => el.classList.remove('active'));
+            if (!btnElement) {
+                btnElement = document.querySelector(`#category-chips-bar .qbank-cat-chip[data-industry="${industryKey}"]`) || document.querySelector('#category-chips-bar .qbank-cat-chip');
+            }
             if (btnElement) btnElement.classList.add('active');
+
+            updateIndustryActiveDisplay(industryKey);
+
+            // Close panel on selection if it was open
+            const bar = document.getElementById('category-chips-bar');
+            const toggleBtn = document.getElementById('btn-toggle-industry-panel');
+            if (bar && !bar.classList.contains('collapsed')) {
+                bar.classList.add('collapsed');
+                if (toggleBtn) {
+                    toggleBtn.setAttribute('aria-expanded', 'false');
+                    toggleBtn.classList.remove('active');
+                }
+            }
 
             loadQBankData();
         }
@@ -822,6 +955,8 @@
             const firstChip = document.querySelector('#category-chips-bar .qbank-cat-chip');
             if (firstChip) firstChip.classList.add('active');
 
+            updateIndustryActiveDisplay('all');
+
             loadQBankData();
         }
 
@@ -865,11 +1000,11 @@
             container.innerHTML = items.map(item => {
                 let diffHtml = '';
                 if (item.difficulty === 'easy') {
-                    diffHtml = `<span class="pm-diff-badge easy"><span class="pm-diff-dots">●○○</span> Cơ bản</span>`;
+                    diffHtml = `<span class="pm-diff-badge easy">Cơ bản</span>`;
                 } else if (item.difficulty === 'medium') {
-                    diffHtml = `<span class="pm-diff-badge medium"><span class="pm-diff-dots">●●○</span> Trung cấp</span>`;
+                    diffHtml = `<span class="pm-diff-badge medium">Trung cấp</span>`;
                 } else {
-                    diffHtml = `<span class="pm-diff-badge hard"><span class="pm-diff-dots">●●●</span> ${item.difficultyLabel || 'Nâng cao'}</span>`;
+                    diffHtml = `<span class="pm-diff-badge hard">${item.difficultyLabel || 'Nâng cao'}</span>`;
                 }
 
                 const companyBadge = item.company ? `
@@ -894,11 +1029,11 @@
                                 <span class="badge-industry ind-${item.industry}">${item.industryLabel || item.industry}</span>
                                 <span class="badge-role-tag">${item.role}</span>
                                 <span class="badge-qtype">${item.typeLabel || item.type}</span>
-                                <span class="pm-flag-badge">${item.langFlag || '🇻🇳'} ${item.langLabel || 'Tiếng Việt'}</span>
+                                <span class="pm-flag-badge">${item.langLabel || 'Tiếng Việt'}</span>
                             </div>
                             <h4 class="qbank-row-title">${item.title}</h4>
                             <div class="qbank-row-submeta">
-                                <span><span style="font-size:14px;color:#2563eb;">◷</span> ${item.duration || '6-8 phút'}</span>
+                                <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-primary);vertical-align:-1px;margin-right:3px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>${item.duration || '6-8 phút'}</span>
                                 <span><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="color:#d97706;vertical-align:-1px;margin-right:3px;" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Kèm AI đào sâu</span>
                                 <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#7c3aed;vertical-align:-1px;margin-right:3px;" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Khung đánh giá STAR</span>
                             </div>
@@ -968,15 +1103,15 @@
             const metaTop = document.getElementById('modal-meta-top');
             if (metaTop) {
                 let diffBadge = (item.difficulty === 'easy') 
-                    ? `<span class="pm-diff-badge easy"><span class="pm-diff-dots">●○○</span> Cơ bản</span>`
+                    ? `<span class="pm-diff-badge easy">Cơ bản</span>`
                     : (item.difficulty === 'medium')
-                    ? `<span class="pm-diff-badge medium"><span class="pm-diff-dots">●●○</span> Trung cấp</span>`
-                    : `<span class="pm-diff-badge hard"><span class="pm-diff-dots">●●●</span> ${item.difficultyLabel || 'Nâng cao'}</span>`;
+                    ? `<span class="pm-diff-badge medium">Trung cấp</span>`
+                    : `<span class="pm-diff-badge hard">${item.difficultyLabel || 'Nâng cao'}</span>`;
 
                 metaTop.innerHTML = `
                     <span class="badge-industry ind-${item.industry}">${item.industryLabel || item.industry}</span>
                     <span class="badge-role-tag">${item.role}</span>
-                    <span class="pm-flag-badge">${item.langFlag || '🇻🇳'} ${item.langLabel || 'Tiếng Việt'}</span>
+                    <span class="pm-flag-badge">${item.langLabel || 'Tiếng Việt'}</span>
                     <span class="badge-qtype">${item.typeLabel || item.type}</span>
                     ${diffBadge}
                 `;

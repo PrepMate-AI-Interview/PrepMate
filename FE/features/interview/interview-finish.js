@@ -372,6 +372,17 @@
 
     // WI-02B3: DO NOT save fake completed session to localStorage.interview_sessions!
     // saveCompletedInterviewSession() is omitted because session is NOT completed.
+    try {
+      const getSessId = (s) => String(s?.id || s?.backendSessionId || s?.sessionId || s?.Id || "").trim();
+      const currentId = getSessId(currentInterviewSession);
+      if (currentId && typeof localStorage !== "undefined") {
+        let sessions = JSON.parse(localStorage.getItem("interview_sessions")) || [];
+        if (Array.isArray(sessions)) {
+          sessions = sessions.filter((s) => getSessId(s) !== currentId);
+          localStorage.setItem("interview_sessions", JSON.stringify(sessions));
+        }
+      }
+    } catch (e) {}
 
     showFinishModal();
   }

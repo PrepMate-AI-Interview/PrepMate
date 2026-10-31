@@ -478,7 +478,7 @@
                         </div>
                         <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
                             <input type="checkbox" id="config-clear-api-key" style="width:auto;">
-                            <label for="config-clear-api-key" style="font-size:12px;color:#b91c1c;margin:0;cursor:pointer;font-weight:normal;">Xóa khóa API đã lưu trong database (Clear stored key)</label>
+                            <label for="config-clear-api-key" style="font-size:12px;color:#b91c1c;margin:0;cursor:pointer;font-weight:normal;">Xóa khóa API đã lưu trong cơ sở dữ liệu</label>
                         </div>
                         <span class="field-help" id="config-api-key-status">Để trống nếu muốn giữ nguyên khóa API hiện tại trên máy chủ. Khóa mới sẽ được mã hóa an toàn bằng ASP.NET Core Data Protection.</span>
                     </div>
@@ -1285,7 +1285,7 @@
                             </div>
                         </div>
                     </td>
-                    <td><span style="font-family:monospace;font-size:12.5px;">${safeEmail}</span></td>
+                    <td><span style="font-family:var(--pm-font-mono, monospace);font-size:12.5px;">${safeEmail}</span></td>
                     <td>${roleBadge}</td>
                     <td>${planBadge}</td>
                     <td>${statusBadge}</td>

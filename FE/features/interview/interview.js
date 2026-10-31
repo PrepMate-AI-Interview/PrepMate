@@ -39,6 +39,7 @@ window._topicsAsked = [];
 let isProcessingAnswer = false;
 let isInterviewPaused = false;
 let isQuestionSpeaking = false;
+let currentInterviewUIState = "not_started";
 let _lastAppendedAiMessage = "";
 
 // TTS Subsystem extracted to interview-tts.js in WI 1.18-B
@@ -89,6 +90,11 @@ function setInterviewUIState(state, customStatusText = "") {
   }
 
   debugInterview("INTERVIEW STATE", "Transitioning to state:", state, customStatusText);
+  currentInterviewUIState = state;
+
+  if (state !== "processing" && typeof stopProcessingStatusProgression === "function") {
+    stopProcessingStatusProgression();
+  }
 
   const startBtn = document.getElementById("btn-start-interview");
   const endBtn = document.getElementById("btn-end-interview");
@@ -483,6 +489,7 @@ function upsertActiveSessionToUserStorage(session) {
       localStorage.setItem("interview_sessions", JSON.stringify(sessions));
     }
   } catch (err) {
+    stopProcessingStatusProgression();
     console.warn("[INTERVIEW] Failed to upsert active session to local storage:", err);
   }
 }
@@ -848,7 +855,9 @@ async function submitIntroduction(introductionText) {
   debugInterview("INTERVIEW API", "POST /api/ai/introduction with sessionId:", sessionId);
 
   try {
+    startProcessingStatusProgression("Đang phân tích phần giới thiệu...");
     const data = await InterviewApiClient.submitIntroduction(sessionId, introductionText);
+    stopProcessingStatusProgression();
 
     debugInterview("INTERVIEW API", "Introduction analysis response:", data);
 
@@ -925,6 +934,7 @@ async function submitIntroduction(introductionText) {
       showAdaptiveQuestion();
     }, 300);
   } catch (error) {
+    stopProcessingStatusProgression();
     console.error("[INTERVIEW API] Introduction submission failed:", error);
 
     const errorInfo = typeof categorizeInterviewError === "function"
@@ -967,6 +977,25 @@ async function submitIntroduction(introductionText) {
 }
 
 // ==========================================
+let _processingStatusTimer = null;
+
+function startProcessingStatusProgression(initialText = "Đang phân tích câu trả lời...") {
+  stopProcessingStatusProgression();
+  setInterviewUIState("processing", initialText);
+
+  _processingStatusTimer = setTimeout(() => {
+    if (isProcessingAnswer && currentInterviewUIState === "processing") {
+      setInterviewUIState("processing", "Đang chuẩn bị câu hỏi tiếp theo...");
+    }
+  }, 3200);
+}
+
+function stopProcessingStatusProgression() {
+  if (_processingStatusTimer) {
+    clearTimeout(_processingStatusTimer);
+    _processingStatusTimer = null;
+  }
+}
 // SEND MESSAGE (RULE 11 & 12: UNIFIED ANSWER SUBMIT)
 // ==========================================
 
@@ -1009,8 +1038,8 @@ async function sendMessage() {
     clearThinkTimeCountdown();
   }
 
-  // Set processing UI state
-  setInterviewUIState("processing");
+  // Set processing UI state with progressive status updates
+  startProcessingStatusProgression("Đang phân tích câu trả lời...");
 
   // Ensure deferred session creation has resolved before submitting answer
   if (window._sessionCreationPromise) {
@@ -1066,6 +1095,7 @@ async function sendMessage() {
 
   try {
     const data = await InterviewApiClient.submitAnswer(sessionId, currentQuestion, userInput);
+    stopProcessingStatusProgression();
 
     debugInterview("INTERVIEW API", "Adaptive response received:", data);
 
@@ -1148,6 +1178,7 @@ async function sendMessage() {
       showAdaptiveQuestion();
     }, 300);
   } catch (error) {
+    stopProcessingStatusProgression();
     console.error("[INTERVIEW API] Respond error:", error);
 
     const errorInfo = typeof categorizeInterviewError === "function"
@@ -1594,6 +1625,9 @@ window.getCurrentQuestionIndex = () => currentQuestionIndex;
 window.getInterviewQuestions = () => interviewQuestions;
 window.getUserResponses = () => userResponses;
 window.isProcessingAnswer = () => isProcessingAnswer;
+window.setIsProcessingAnswer = (val) => {
+  isProcessingAnswer = Boolean(val);
+};
 window.isInterviewPaused = () => isInterviewPaused;
 window.setIsInterviewPaused = (val) => {
   isInterviewPaused = Boolean(val);
@@ -1611,6 +1645,7 @@ window.clearInterviewPause = () => {
   if (overlay) overlay.remove();
 };
 window.setInterviewUIState = setInterviewUIState;
+window.getInterviewUIState = () => currentInterviewUIState;
 
 window.initInterviewPractice = initInterviewPractice;
 
@@ -1624,3 +1659,98 @@ if (typeof window !== "undefined" && window.location.pathname.endsWith("intervie
     initInterviewPractice();
   }
 }
+
+
+// ==========================================
+// IN-ROOM DEVICE SELECTION & POPOVER (WI-COACH-04A)
+// ==========================================
+
+async function toggleDeviceSettingsPopover(explicitShow = null) {
+  const popover = document.getElementById("device-settings-popover");
+  const gearBtn = document.getElementById("btn-device-settings");
+  if (!popover) return;
+
+  const isVisible = popover.style.display !== "none";
+  const shouldShow = explicitShow !== null ? Boolean(explicitShow) : !isVisible;
+
+  popover.style.display = shouldShow ? "block" : "none";
+  if (gearBtn) {
+    gearBtn.setAttribute("aria-expanded", shouldShow ? "true" : "false");
+  }
+
+  if (shouldShow) {
+    await populatePracticeDeviceSelectors();
+  }
+}
+window.toggleDeviceSettingsPopover = toggleDeviceSettingsPopover;
+
+async function populatePracticeDeviceSelectors() {
+  if (!navigator.mediaDevices?.enumerateDevices) return;
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const audioSelect = document.getElementById("practice-audio-device-select");
+    const videoSelect = document.getElementById("practice-video-device-select");
+
+    const savedAudio = (typeof PrepMateAudioRecorder !== "undefined" && PrepMateAudioRecorder.getSelectedAudioDevice)
+      ? PrepMateAudioRecorder.getSelectedAudioDevice()
+      : (localStorage.getItem("prepmate_selected_audio_device") || "");
+
+    const savedVideo = (typeof PrepMateAudioRecorder !== "undefined" && PrepMateAudioRecorder.getSelectedVideoDevice)
+      ? PrepMateAudioRecorder.getSelectedVideoDevice()
+      : (localStorage.getItem("prepmate_selected_video_device") || "");
+
+    if (audioSelect) {
+      audioSelect.innerHTML = '<option value="">Mặc định hệ thống</option>';
+      devices.filter(d => d.kind === "audioinput").forEach((d, idx) => {
+        const opt = document.createElement("option");
+        opt.value = d.deviceId;
+        opt.textContent = d.label || ("Microphone " + (idx + 1));
+        if (savedAudio && d.deviceId === savedAudio) opt.selected = true;
+        audioSelect.appendChild(opt);
+      });
+    }
+
+    if (videoSelect) {
+      videoSelect.innerHTML = '<option value="">Mặc định hệ thống</option>';
+      devices.filter(d => d.kind === "videoinput").forEach((d, idx) => {
+        const opt = document.createElement("option");
+        opt.value = d.deviceId;
+        opt.textContent = d.label || ("Camera " + (idx + 1));
+        if (savedVideo && d.deviceId === savedVideo) opt.selected = true;
+        videoSelect.appendChild(opt);
+      });
+    }
+  } catch (e) {
+    console.warn("[DEVICE SELECT] Error populating devices:", e);
+  }
+}
+window.populatePracticeDeviceSelectors = populatePracticeDeviceSelectors;
+
+function onPracticeAudioDeviceChange(deviceId) {
+  if (typeof PrepMateAudioRecorder !== "undefined" && typeof PrepMateAudioRecorder.setSelectedAudioDevice === "function") {
+    PrepMateAudioRecorder.setSelectedAudioDevice(deviceId);
+  } else {
+    if (deviceId) localStorage.setItem("prepmate_selected_audio_device", deviceId);
+    else localStorage.removeItem("prepmate_selected_audio_device");
+  }
+  if (typeof showToast === "function") {
+    showToast("Đã cập nhật micro.", "info");
+  }
+}
+window.onPracticeAudioDeviceChange = onPracticeAudioDeviceChange;
+
+function onPracticeVideoDeviceChange(deviceId) {
+  if (typeof PrepMateAudioRecorder !== "undefined" && typeof PrepMateAudioRecorder.setSelectedVideoDevice === "function") {
+    PrepMateAudioRecorder.setSelectedVideoDevice(deviceId);
+  } else {
+    if (deviceId) localStorage.setItem("prepmate_selected_video_device", deviceId);
+    else localStorage.removeItem("prepmate_selected_video_device");
+  }
+  if (typeof switchCameraDevice === "function") {
+    switchCameraDevice(deviceId);
+  }
+  if (typeof showToast === "function") {
+    showToast("Đã cập nhật Camera.", "info");
+  }
+}
+window.onPracticeVideoDeviceChange = onPracticeVideoDeviceChange;

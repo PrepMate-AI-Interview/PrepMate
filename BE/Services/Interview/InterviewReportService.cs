@@ -142,7 +142,8 @@ namespace backend.Services.Interview
 
                 var json =
                     await _geminiService
-                        .CallGeminiApiAsync(
+                        .CallGeminiApiForTaskAsync(
+                            backend.Models.AI.AITaskType.ReportGeneration,
                             prompt,
                             isJsonMode: true
                         );

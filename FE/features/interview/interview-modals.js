@@ -69,7 +69,7 @@ function showZoomEndConfirmDialog(answeredCount, totalCount) {
             }
           </p>
           <div class="zoom-confirm-tip">
-            💡 AI sẽ phân tích toàn diện các câu trả lời theo <strong>chuẩn STAR</strong>, tính toán điểm năng lực và xuất <strong>Báo cáo Phân tích Phỏng vấn Chuyên sâu (Debrief Report)</strong>.
+            💡 AI sẽ phân tích toàn diện các câu trả lời theo <strong>chuẩn STAR</strong>, tính toán điểm năng lực và xuất <strong>Báo cáo Phân tích Phỏng vấn Chuyên sâu</strong>.
           </div>
         </div>
         <div class="zoom-confirm-actions">

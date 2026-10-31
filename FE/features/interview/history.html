@@ -93,7 +93,7 @@
                 <option value="Intern">Intern / Thực tập</option>
                 <option value="Fresher">Fresher</option>
                 <option value="Junior">Junior</option>
-                <option value="Middle">Mid-level</option>
+                <option value="Middle">Trung cấp (Mid-level)</option>
                 <option value="Senior">Senior</option>
                 <option value="Lead">Lead</option>
             </select>
@@ -317,7 +317,7 @@
                 const sessId = session.backendSessionId || session.id || session.sessionId;
 
                 if (isCompleted) {
-                    statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Hoàn thành</span>`;
+                    statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Đã hoàn thành</span>`;
                     const reportUrl = sessId ? `../report/report.html?sessionId=${encodeURIComponent(sessId)}` : `../report/report.html?index=${originalIdx}`;
                     actionButtonsHtml = `
                         <a href="${reportUrl}" class="btn-action-report">
@@ -328,7 +328,7 @@
                         </button>
                     `;
                 } else if (isInProgress) {
-                    statusBadgeHtml = `<span class="pm-status-pill in-progress"><span class="pm-status-dot"></span> Đang phỏng vấn</span>`;
+                    statusBadgeHtml = `<span class="pm-status-pill in-progress"><span class="pm-status-dot"></span> Đang thực hiện</span>`;
                     const resumeUrl = sessId ? `interview-practice.html?resume=${encodeURIComponent(sessId)}` : `interview-practice.html`;
                     actionButtonsHtml = `
                         <a href="${resumeUrl}" class="btn-action-resume">
