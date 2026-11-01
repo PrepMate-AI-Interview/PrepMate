@@ -34,6 +34,13 @@
   let _isRecordingPaused = false;
   let _micPermissionDenied = false;
 
+  // WI-COACH-04A: Master recording, device selection & timeline state
+  let _selectedAudioDeviceId = (typeof localStorage !== "undefined" && localStorage.getItem("prepmate_selected_audio_device")) || "";
+  let _selectedVideoDeviceId = (typeof localStorage !== "undefined" && localStorage.getItem("prepmate_selected_video_device")) || "";
+  let _isCombinedVideo = false;
+  let _turnTimelineEvents = [];
+  let _pauseIntervals = [];
+
   // Preflight preview state (WI-INTERVIEW-PREFLIGHT-01)
   let _preflightAudioContext = null;
   let _preflightAnalyser = null;
@@ -488,6 +495,23 @@
     }
   }
 
+  function getSupportedVideoMimeType() {
+    if (typeof MediaRecorder === "undefined") return "";
+    const types = [
+      "video/webm;codecs=vp8,opus",
+      "video/webm;codecs=vp9,opus",
+      "video/webm",
+      "video/mp4;codecs=avc1,mp4a.40.2",
+      "video/mp4"
+    ];
+    for (const t of types) {
+      if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) {
+        return t;
+      }
+    }
+    return "";
+  }
+
   function getSupportedMimeType() {
     if (typeof MediaRecorder === "undefined") return "";
     const types = [
@@ -508,7 +532,10 @@
   /**
    * Starts recording audio for the given turn index and question text.
    */
-  async function startAudioRecording(turnIndex, questionText = "") {
+  /**
+   * Starts recording audio (or synchronized master audio/video) for the given turn index.
+   */
+  async function startAudioRecording(turnIndex, questionText = "", options = {}) {
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
       console.warn("[AUDIO RECORDER] getUserMedia not supported");
       updateRecordingUI("unavailable");
@@ -528,23 +555,62 @@
     _recordingStartTime = Date.now();
     _recordingTotalPausedTime = 0;
     _isRecordingPaused = false;
+    _turnTimelineEvents = [];
+    _pauseIntervals = [];
 
     try {
-      // Re-use or request audio stream
-      if (!_mediaStream || !_mediaStream.active || _mediaStream.getAudioTracks().every(t => t.readyState === "ended")) {
-        _mediaStream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true
-          }
-        });
+      const audioConstraints = {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      };
+      if (_selectedAudioDeviceId) {
+        audioConstraints.deviceId = { exact: _selectedAudioDeviceId };
       }
 
-      const mimeType = getSupportedMimeType();
-      const options = mimeType ? { mimeType } : {};
+      // Re-use or request audio stream with deviceId support
+      if (!_mediaStream || !_mediaStream.active || _mediaStream.getAudioTracks().every(t => t.readyState === "ended")) {
+        try {
+          _mediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
+        } catch (devErr) {
+          if (_selectedAudioDeviceId) {
+            console.warn("[AUDIO RECORDER] Selected audio device failed, falling back to default:", devErr);
+            _mediaStream = await navigator.mediaDevices.getUserMedia({
+              audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+            });
+          } else {
+            throw devErr;
+          }
+        }
+      }
 
-      _mediaRecorder = new MediaRecorder(_mediaStream, options);
+      // Check if video is active and should be combined into master recording (WI-COACH-04A)
+      const videoStream = options.videoStream || (typeof window !== "undefined" ? window._userWebcamStream : null);
+      const isVideoActive = Boolean(
+        options.includeVideo !== false &&
+        videoStream &&
+        videoStream.active &&
+        videoStream.getVideoTracks &&
+        videoStream.getVideoTracks().some(t => t.readyState === "live" && t.enabled !== false)
+      );
+
+      let recordStream = _mediaStream;
+      let mimeType = "";
+
+      if (isVideoActive) {
+        _isCombinedVideo = true;
+        recordStream = new MediaStream([
+          ..._mediaStream.getAudioTracks(),
+          ...videoStream.getVideoTracks()
+        ]);
+        mimeType = getSupportedVideoMimeType() || getSupportedMimeType();
+      } else {
+        _isCombinedVideo = false;
+        mimeType = getSupportedMimeType();
+      }
+
+      const mrOptions = mimeType ? { mimeType } : {};
+      _mediaRecorder = new MediaRecorder(recordStream, mrOptions);
 
       _mediaRecorder.ondataavailable = (event) => {
         if (event.data && event.data.size > 0) {
@@ -554,21 +620,40 @@
 
       _mediaRecorder.onstart = () => {
         _isRecordingActive = true;
+        recordTimelineEvent({ type: "start", label: "Bắt đầu thu âm", startMs: 0 });
         updateRecordingUI("recording");
       };
 
       _mediaRecorder.onpause = () => {
         _isRecordingPaused = true;
         _recordingPauseStart = Date.now();
+        const pauseOffset = Date.now() - _recordingStartTime;
+        _pauseIntervals.push({
+          startOffsetMs: pauseOffset,
+          mediaOffsetSec: Number((pauseOffset / 1000).toFixed(3)),
+          endOffsetMs: null,
+          durationMs: 0
+        });
+        recordTimelineEvent({ type: "pause", label: "Tạm dừng câu trả lời", startMs: pauseOffset });
         updateRecordingUI("paused");
       };
 
       _mediaRecorder.onresume = () => {
         _isRecordingPaused = false;
         if (_recordingPauseStart > 0) {
-          _recordingTotalPausedTime += (Date.now() - _recordingPauseStart);
+          const pauseDur = Date.now() - _recordingPauseStart;
+          _recordingTotalPausedTime += pauseDur;
+          if (_pauseIntervals.length > 0) {
+            const lastPause = _pauseIntervals[_pauseIntervals.length - 1];
+            if (lastPause && lastPause.endOffsetMs === null) {
+              lastPause.endOffsetMs = Date.now() - _recordingStartTime;
+              lastPause.durationMs = pauseDur;
+            }
+          }
           _recordingPauseStart = 0;
         }
+        const resumeOffset = Date.now() - _recordingStartTime;
+        recordTimelineEvent({ type: "resume", label: "Tiếp tục trả lời", startMs: resumeOffset });
         updateRecordingUI("recording");
       };
 
@@ -804,13 +889,29 @@
         }
 
         const recordId = `${sessionId}_turn_${turnIndex}`;
+        const isMaster = Boolean(_isCombinedVideo);
         const record = {
           id: recordId,
           sessionId: sessionId || "unassigned",
           turnIndex: typeof turnIndex === "number" ? turnIndex : 0,
           question: questionText || _currentQuestionText || "",
           audioBlob: audioBlob,
+          videoBlob: isMaster ? audioBlob : null,
+          isMasterMedia: isMaster,
           mimeType: mimeType,
+          timeline: {
+            sessionId: sessionId || "unassigned",
+            turnIndex: typeof turnIndex === "number" ? turnIndex : 0,
+            mediaType: isMaster ? "master_video_audio" : "audio_only",
+            hasAudio: true,
+            hasVideo: isMaster,
+            startEpochMs: _recordingStartTime,
+            endEpochMs: effectiveEndTime,
+            durationMs: totalDurationMs,
+            totalPausedMs: _recordingTotalPausedTime,
+            pauseIntervals: [..._pauseIntervals],
+            events: [..._turnTimelineEvents]
+          },
           durationMs: totalDurationMs,
           speechActiveMs: vadResult ? vadResult.speechActiveMs : null,
           silenceMs: vadResult ? vadResult.silenceMs : null,
@@ -820,6 +921,11 @@
           speechSegments: vadResult ? (vadResult.speechSegments || []) : [],
           vadReliable: vadResult ? vadResult.isReliable : false,
           vadBasis: vadResult ? vadResult.basis : "turn_elapsed",
+          bodyLanguageAnalysis: (typeof window !== "undefined" && window._lastTurnBodyLanguageSummary)
+            ? window._lastTurnBodyLanguageSummary
+            : ((typeof window !== "undefined" && window.PrepMateBodyLanguageAnalyzer && window.PrepMateBodyLanguageAnalyzer.isActive())
+              ? window.PrepMateBodyLanguageAnalyzer.stopTurn()
+              : null),
           recordedAt: new Date().toISOString()
         };
 
@@ -1010,6 +1116,207 @@
   // 4. EXPORTS
   // --------------------------------------------------------------------------
 
+
+  // --------------------------------------------------------------------------
+  // 2B. DEVICE ENUMERATION, TIMELINE & STORAGE RETENTION (WI-COACH-04A)
+  // --------------------------------------------------------------------------
+
+  async function getAvailableDevices() {
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.enumerateDevices) {
+      return { audioInputs: [], videoInputs: [] };
+    }
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const audioInputs = devices
+        .filter(d => d.kind === "audioinput")
+        .map((d, idx) => ({
+          deviceId: d.deviceId,
+          label: d.label || `Microphone ${idx + 1}`,
+          groupId: d.groupId
+        }));
+      const videoInputs = devices
+        .filter(d => d.kind === "videoinput")
+        .map((d, idx) => ({
+          deviceId: d.deviceId,
+          label: d.label || `Camera ${idx + 1}`,
+          groupId: d.groupId
+        }));
+      return { audioInputs, videoInputs };
+    } catch (e) {
+      console.warn("[AUDIO RECORDER] Error enumerating devices:", e);
+      return { audioInputs: [], videoInputs: [] };
+    }
+  }
+
+  function setSelectedAudioDevice(deviceId) {
+    _selectedAudioDeviceId = String(deviceId || "");
+    if (typeof localStorage !== "undefined") {
+      if (_selectedAudioDeviceId) localStorage.setItem("prepmate_selected_audio_device", _selectedAudioDeviceId);
+      else localStorage.removeItem("prepmate_selected_audio_device");
+    }
+    if (!_isRecordingActive && _mediaStream) {
+      closeAllAudioTracks();
+    }
+  }
+
+  function getSelectedAudioDevice() {
+    return _selectedAudioDeviceId;
+  }
+
+  function setSelectedVideoDevice(deviceId) {
+    _selectedVideoDeviceId = String(deviceId || "");
+    if (typeof localStorage !== "undefined") {
+      if (_selectedVideoDeviceId) localStorage.setItem("prepmate_selected_video_device", _selectedVideoDeviceId);
+      else localStorage.removeItem("prepmate_selected_video_device");
+    }
+    if (typeof window !== "undefined") {
+      window._selectedVideoDeviceId = _selectedVideoDeviceId;
+      if (typeof window.switchCameraDevice === "function") {
+        window.switchCameraDevice(_selectedVideoDeviceId);
+      }
+    }
+  }
+
+  function getSelectedVideoDevice() {
+    return _selectedVideoDeviceId;
+  }
+
+  function recordTimelineEvent(event) {
+    if (!event || typeof event !== "object") return;
+    const now = Date.now();
+    const relMs = typeof event.startMs === "number" ? event.startMs : (_recordingStartTime > 0 ? (now - _recordingStartTime) : 0);
+    const evt = {
+      type: event.type || "generic_event",
+      label: event.label || "",
+      startMs: relMs,
+      endMs: typeof event.endMs === "number" ? event.endMs : null,
+      mediaOffsetSec: Number((relMs / 1000).toFixed(3)),
+      wallClockEpochMs: now,
+      metadata: event.metadata || {}
+    };
+    _turnTimelineEvents.push(evt);
+  }
+
+  function getTurnTimelineEvents() {
+    return [..._turnTimelineEvents];
+  }
+
+  async function measureStorageUsage(sessionId = null) {
+    try {
+      const db = await openDatabase();
+      let records = [];
+      if (!db) {
+        records = Array.from(_memoryStore.values());
+      } else {
+        records = await new Promise((resolve) => {
+          const tx = db.transaction([STORE_NAME], "readonly");
+          const store = tx.objectStore(STORE_NAME);
+          const req = store.getAll();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => resolve([]);
+        });
+      }
+
+      let totalBytes = 0;
+      let sessionBytes = 0;
+      let targetCount = 0;
+
+      for (const rec of records) {
+        let recBytes = 0;
+        if (rec.audioBlob && rec.audioBlob.size) recBytes += rec.audioBlob.size;
+        if (rec.videoBlob && rec.videoBlob.size && rec.videoBlob !== rec.audioBlob) {
+          recBytes += rec.videoBlob.size;
+        }
+        totalBytes += recBytes;
+
+        if (!sessionId || rec.sessionId === sessionId) {
+          sessionBytes += recBytes;
+          targetCount++;
+        }
+      }
+
+      return {
+        sessionId: sessionId || "all",
+        sessionBytes,
+        sessionMb: Number((sessionBytes / (1024 * 1024)).toFixed(2)),
+        totalBytes,
+        totalMb: Number((totalBytes / (1024 * 1024)).toFixed(2)),
+        recordCount: targetCount,
+        allRecordCount: records.length
+      };
+    } catch (e) {
+      console.warn("[AUDIO RECORDER] Error measuring storage usage:", e);
+      return { sessionBytes: 0, sessionMb: 0, totalBytes: 0, totalMb: 0, recordCount: 0 };
+    }
+  }
+
+  async function cleanupExpiredRecordings(maxAgeHours = 72) {
+    const cutoffTime = Date.now() - (maxAgeHours * 3600 * 1000);
+    let deletedCount = 0;
+    let freedBytes = 0;
+
+    for (const [key, val] of _memoryStore.entries()) {
+      const recordedTime = val.recordedAt ? new Date(val.recordedAt).getTime() : 0;
+      if (recordedTime > 0 && recordedTime < cutoffTime) {
+        if (val.audioBlob?.size) freedBytes += val.audioBlob.size;
+        _memoryStore.delete(key);
+        deletedCount++;
+      }
+    }
+
+    try {
+      const db = await openDatabase();
+      if (!db) {
+        return { deletedCount, freedBytes, status: "memory_cleaned" };
+      }
+
+      await new Promise((resolve) => {
+        const tx = db.transaction([STORE_NAME], "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.openCursor();
+
+        req.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (cursor) {
+            const val = cursor.value;
+            const recordedTime = val.recordedAt ? new Date(val.recordedAt).getTime() : 0;
+            if (recordedTime > 0 && recordedTime < cutoffTime) {
+              if (val.audioBlob?.size) freedBytes += val.audioBlob.size;
+              cursor.delete();
+              deletedCount++;
+            }
+            cursor.continue();
+          } else {
+            resolve();
+          }
+        };
+        req.onerror = () => resolve();
+      });
+
+      return {
+        deletedCount,
+        freedBytes,
+        freedMb: Number((freedBytes / (1024 * 1024)).toFixed(2)),
+        maxAgeHours,
+        status: "success"
+      };
+    } catch (err) {
+      console.warn("[AUDIO RECORDER] Error during retention cleanup:", err);
+      return { deletedCount, freedBytes, error: err.message };
+    }
+  }
+
+  async function deleteSessionMedia(sessionId) {
+    if (!sessionId) return false;
+    const ok = await deleteRecordingsForSession(sessionId);
+    if (typeof window !== "undefined" && window.PrepMateVisualSnapshotStore?.deleteSnapshotsForSession) {
+      try {
+        await window.PrepMateVisualSnapshotStore.deleteSnapshotsForSession(sessionId);
+      } catch (e) {}
+    }
+    return ok;
+  }
+
   const PrepMateAudioRecorder = {
     startAudioRecording,
     pauseAudioRecording,
@@ -1033,7 +1340,18 @@
     extractSpeechSegments,
     audioBufferToWavBlob,
     sliceAndConcatenateAudio,
-    createSpeechOnlyAudioBlob
+    createSpeechOnlyAudioBlob,
+    getAvailableDevices,
+    setSelectedAudioDevice,
+    getSelectedAudioDevice,
+    setSelectedVideoDevice,
+    getSelectedVideoDevice,
+    recordTimelineEvent,
+    getTurnTimelineEvents,
+    measureStorageUsage,
+    cleanupExpiredRecordings,
+    deleteSessionMedia,
+    isMasterMediaActive: () => _isCombinedVideo
   };
 
   if (typeof window !== "undefined") {

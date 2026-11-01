@@ -25,7 +25,7 @@ const Header = {
 
           <div class="d-flex align-center gap-3">
             ${isAuth ? `
-              <a href="${root}features/dashboard/dashboard.html" class="btn btn-primary btn-sm">Vào Dashboard</a>
+              <a href="${root}features/dashboard/dashboard.html" class="btn btn-primary btn-sm">Vào Bảng điều khiển</a>
             ` : `
               <a href="${root}features/auth/auth.html" class="btn btn-secondary btn-sm">Đăng nhập</a>
               <a href="${root}features/auth/auth.html#register" class="btn btn-primary btn-sm">Đăng ký</a>

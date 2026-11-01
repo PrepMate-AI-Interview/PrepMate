@@ -50,6 +50,35 @@ namespace backend.Services
             var cvText = request.CvText ?? string.Empty;
             var jdText = request.JdText ?? string.Empty;
 
+            var cvForPrompt = cvText.Length > 6000
+                ? cvText[..6000]
+                : cvText;
+
+            var jdForPrompt = jdText.Length > 5000
+                ? jdText[..5000]
+                : jdText;
+
+            var requestSkills = request.Skills ?? new List<string>();
+
+            var skills = requestSkills.Count > 0
+                ? string.Join(", ", requestSkills)
+                : "Chưa cung cấp";
+
+            var prompt = backend.Prompts.Context.InterviewContextPrompt.Build(
+                request,
+                cvForPrompt,
+                jdForPrompt,
+                skills,
+                request.InterviewLanguage ?? request.Language ?? backend.Models.InterviewLanguage.Vietnamese
+            );
+
+            // Performance Optimization: Run Context Prompt asynchronously in parallel with Company Context & Blueprint
+            var contextPromptTask = _geminiService.CallGeminiApiForTaskAsync(
+                backend.Models.AI.AITaskType.CvAnalysis,
+                prompt,
+                isJsonMode: true
+            );
+
             // Phase 2 Step 5: Extract Company Context (if company name or description is provided)
             CompanyContext? companyContext = null;
             if (!string.IsNullOrWhiteSpace(request.TargetCompany) || !string.IsNullOrWhiteSpace(request.CompanyDescription))
@@ -127,34 +156,9 @@ namespace backend.Services
                 }
             }
 
-            var cvForPrompt = cvText.Length > 6000
-                ? cvText[..6000]
-                : cvText;
-
-            var jdForPrompt = jdText.Length > 5000
-                ? jdText[..5000]
-                : jdText;
-
-            var requestSkills = request.Skills ?? new List<string>();
-
-            var skills = requestSkills.Count > 0
-                ? string.Join(", ", requestSkills)
-                : "Chưa cung cấp";
-
-            var prompt = backend.Prompts.Context.InterviewContextPrompt.Build(
-                request,
-                cvForPrompt,
-                jdForPrompt,
-                skills,
-                request.InterviewLanguage ?? request.Language ?? backend.Models.InterviewLanguage.Vietnamese
-            );
-
             try
             {
-                var json = await _geminiService.CallGeminiApiAsync(
-                    prompt,
-                    isJsonMode: true
-                );
+                var json = await contextPromptTask;
                 Console.WriteLine("========== INTERVIEW CONTEXT RAW RESPONSE ==========");
                 Console.WriteLine(json);
                 Console.WriteLine("========== END INTERVIEW CONTEXT RAW RESPONSE ==========");

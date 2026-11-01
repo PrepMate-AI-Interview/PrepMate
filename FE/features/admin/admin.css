@@ -23,7 +23,7 @@
         body.dashboard-body {
             background-color: var(--pm-admin-bg) !important;
             color: var(--pm-admin-text-main);
-            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: var(--pm-font-sans, var(--font-sans));
             transition: background-color 0.2s ease, color 0.2s ease;
         }
 
@@ -46,7 +46,7 @@
 
         .admin-header-titles h1 {
             font-size: 24px;
-            font-weight: 850;
+            font-weight: var(--pm-font-weight-bold, 652);
             margin: 0 0 6px;
             color: var(--pm-admin-text-main);
             display: flex;
@@ -172,7 +172,7 @@
 
         .kpi-value {
             font-size: 24px;
-            font-weight: 850;
+            font-weight: var(--pm-font-weight-bold, 652);
             color: var(--pm-admin-text-main);
             margin: 0;
             line-height: 1.2;
@@ -216,7 +216,7 @@
 
         .panel-title-block h3 {
             font-size: 18px;
-            font-weight: 800;
+            font-weight: var(--pm-font-weight-bold, 652);
             margin: 0 0 4px;
             color: var(--pm-admin-text-main);
             display: flex;
@@ -295,7 +295,7 @@
         .admin-data-table th {
             background: var(--pm-admin-bg);
             padding: 12px 16px;
-            font-weight: 750;
+            font-weight: var(--pm-font-weight-semibold, 600);
             font-size: 12px;
             color: var(--pm-admin-text-muted);
             text-transform: uppercase;
@@ -338,7 +338,7 @@
             padding: 3px 9px;
             border-radius: 100px;
             font-size: 11px;
-            font-weight: 750;
+            font-weight: var(--pm-font-weight-semibold, 600);
             text-transform: uppercase;
             letter-spacing: 0.3px;
             line-height: 1.3;
@@ -445,7 +445,7 @@
 
         .empty-state-title {
             font-size: 16px;
-            font-weight: 800;
+            font-weight: var(--pm-font-weight-bold, 652);
             color: var(--pm-admin-text-main);
             margin: 0 0 6px;
         }
@@ -491,7 +491,7 @@
 
         .admin-plan-title {
             font-size: 20px;
-            font-weight: 850;
+            font-weight: var(--pm-font-weight-bold, 652);
             color: var(--pm-admin-text-main);
             margin: 0 0 4px;
         }
@@ -505,7 +505,7 @@
 
         .admin-plan-price {
             font-size: 28px;
-            font-weight: 900;
+            font-weight: var(--pm-font-weight-bold, 652);
             color: var(--pm-admin-text-main);
         }
 
@@ -545,7 +545,7 @@
 
         .admin-plan-features li span.tick {
             color: #059669;
-            font-weight: 800;
+            font-weight: var(--pm-font-weight-bold, 652);
             font-size: 14px;
         }
 
@@ -611,7 +611,7 @@
         .admin-modal-header h3 {
             margin: 0;
             font-size: 19px;
-            font-weight: 850;
+            font-weight: var(--pm-font-weight-bold, 652);
             color: var(--pm-admin-text-main);
         }
 
@@ -637,7 +637,7 @@
         .form-group-admin label {
             display: block;
             font-size: 13px;
-            font-weight: 750;
+            font-weight: var(--pm-font-weight-semibold, 600);
             color: var(--pm-admin-text-main);
             margin-bottom: 6px;
         }

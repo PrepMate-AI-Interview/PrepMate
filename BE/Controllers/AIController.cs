@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using backend.Models;
+using backend.Models.AI;
 using backend.Services;
 using backend.Services.Interview;
 using backend.Services.AI;
@@ -25,6 +26,7 @@ namespace backend.Controllers
         private readonly JobRecommendationService _jobRecommendationService;
         private readonly CareerRoadmapService _careerRoadmapService;
         private readonly IInterviewQuotaService _quotaService;
+        private readonly CoachingSynthesisService? _coachingSynthesisService;
 
         public AIController(
             FileDb fileDb,
@@ -34,7 +36,8 @@ namespace backend.Controllers
             CvAnalysisService cvAnalysisService,
             JobRecommendationService jobRecommendationService,
             CareerRoadmapService careerRoadmapService,
-            IInterviewQuotaService quotaService)
+            IInterviewQuotaService quotaService,
+            CoachingSynthesisService? coachingSynthesisService = null)
         {
             _fileDb = fileDb;
             _interviewFlowService = interviewFlowService;
@@ -44,6 +47,7 @@ namespace backend.Controllers
             _jobRecommendationService = jobRecommendationService;
             _careerRoadmapService = careerRoadmapService;
             _quotaService = quotaService;
+            _coachingSynthesisService = coachingSynthesisService;
         }
 
         private IActionResult? ValidateSessionAccess(string? sessionId, bool allowMutate = true)
@@ -334,6 +338,34 @@ namespace backend.Controllers
                 result.StatusCode,
                 result.Data
             );
+        }
+
+        [HttpPost("coaching-synthesis")]
+        public async Task<IActionResult> SynthesizeCoaching(
+            [FromBody] CoachingSynthesisRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new { error = "Dữ liệu yêu cầu tổng hợp huấn luyện không được để trống." });
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.SessionId) && _fileDb.Sessions.ContainsKey(request.SessionId))
+            {
+                var accessCheck = ValidateSessionAccess(request.SessionId, allowMutate: false);
+                if (accessCheck != null)
+                {
+                    return accessCheck;
+                }
+            }
+
+            if (request.Turns != null && request.Turns.Count > 50)
+            {
+                return BadRequest(new { error = "Số lượt đối thoại vượt quá giới hạn cho phép (tối đa 50 lượt)." });
+            }
+
+            var service = _coachingSynthesisService ?? new CoachingSynthesisService();
+            var response = await service.SynthesizeAsync(request);
+            return Ok(response);
         }
 
         [Authorize]

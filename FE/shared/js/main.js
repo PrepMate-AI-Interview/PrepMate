@@ -817,7 +817,7 @@ async function getSupportBotReply(userMessage) {
     lowerText.includes("tài khoản") ||
     lowerText.includes("đăng ký")
   ) {
-    return "Bạn có thể sử dụng trang Đăng nhập/Đăng ký để tạo tài khoản rồi mở Dashboard để bắt đầu luyện tập.";
+    return "Bạn có thể sử dụng trang Đăng nhập/Đăng ký để tạo tài khoản rồi mở Bảng điều khiển để bắt đầu luyện tập.";
   }
 
   if (lowerText.includes("phỏng vấn") || lowerText.includes("mock")) {

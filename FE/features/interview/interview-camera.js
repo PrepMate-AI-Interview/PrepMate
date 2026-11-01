@@ -232,7 +232,7 @@ function getActiveTurnIndex() {
 }
 window.getActiveTurnIndex = getActiveTurnIndex;
 
-async function requestCameraAccess(customMediaDevices) {
+async function requestCameraAccess(customMediaDevices, deviceId = null) {
   const mediaDevices = customMediaDevices || (typeof navigator !== "undefined" ? navigator.mediaDevices : null);
   const doc = typeof document !== "undefined" ? document : null;
   const videoElement = doc ? doc.getElementById("webcam-video") : null;
@@ -320,6 +320,19 @@ function toggleCamera() {
   }
 }
 window.toggleCamera = toggleCamera;
+
+async function switchCameraDevice(deviceId) {
+  if (typeof window !== "undefined") {
+    window._selectedVideoDeviceId = deviceId;
+  }
+  if (currentCamState === CAM_STATE.ON) {
+    stopCamera();
+    return await requestCameraAccess(null, deviceId);
+  }
+  return true;
+}
+window.switchCameraDevice = switchCameraDevice;
+
 
 function updateCandidateAvatarAndName() {
   try {
@@ -515,6 +528,12 @@ function stopInTurnSampling() {
 
 function handleInterviewTurnStarted(turnIndex) {
   debugInterviewSafe("CAMERA", "handleInterviewTurnStarted:", turnIndex);
+  if (typeof window !== "undefined" && window.PrepMateBodyLanguageAnalyzer) {
+    try {
+      const activeSid = (typeof getActiveSessionId === "function") ? getActiveSessionId() : "unassigned";
+      window.PrepMateBodyLanguageAnalyzer.startTurn(turnIndex, activeSid);
+    } catch (e) {}
+  }
   const isCamActive = Boolean(
     window._userWebcamStream &&
     window._userWebcamStream.active &&
@@ -531,6 +550,11 @@ function handleInterviewTurnStarted(turnIndex) {
 function handleInterviewTurnCompleted(turnIndex) {
   debugInterviewSafe("CAMERA", "handleInterviewTurnCompleted:", turnIndex);
   stopInTurnSampling();
+  if (typeof window !== "undefined" && window.PrepMateBodyLanguageAnalyzer && window.PrepMateBodyLanguageAnalyzer.isActive()) {
+    try {
+      window._lastTurnBodyLanguageSummary = window.PrepMateBodyLanguageAnalyzer.stopTurn();
+    } catch (e) {}
+  }
 
   const numericTurn = Number.isInteger(Number(turnIndex)) ? Number(turnIndex) : 0;
   const isCamActive = Boolean(

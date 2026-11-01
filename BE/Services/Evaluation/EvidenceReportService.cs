@@ -107,6 +107,30 @@ namespace backend.Services.Evaluation
                 }
             }
 
+            // Inherit verified performance dimension strengths if concept strengths were not isolated
+            if (report.Strengths.Count == 0 && evaluation.PerformanceAssessment?.Dimensions != null)
+            {
+                foreach (var dim in evaluation.PerformanceAssessment.Dimensions)
+                {
+                    bool isStrong = string.Equals(dim.Level, "STRONG", StringComparison.OrdinalIgnoreCase) ||
+                                   string.Equals(dim.Level, "SENIOR", StringComparison.OrdinalIgnoreCase);
+                    if (isStrong && dim.Score >= 7.5)
+                    {
+                        var turns = dim.TurnReferences != null && dim.TurnReferences.Count > 0
+                            ? dim.TurnReferences.Select(t => $"Lượt {t}").ToList()
+                            : new List<string> { "Đánh giá thực tế" };
+
+                        report.Strengths.Add(new ReportStrengthItem
+                        {
+                            Title = dim.Name,
+                            Description = dim.Summary,
+                            SupportingCompetencies = new List<string> { dim.Dimension.ToString() },
+                            EvidenceReferences = turns
+                        });
+                    }
+                }
+            }
+
             // 3. Weaknesses (Evidence-backed: Candidate tested and demonstrated deficiency; NEVER for NOT_TESTED!)
             foreach (var comp in evaluation.Competencies)
             {

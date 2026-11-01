@@ -225,7 +225,8 @@ A{i + 1}: {x.Answer}
             );
 
             var json =
-                await _geminiService.CallGeminiApiAsync(
+                await _geminiService.CallGeminiApiForTaskAsync(
+                    AITaskType.QuestionGeneration,
                     prompt,
                     isJsonMode: true
                 );

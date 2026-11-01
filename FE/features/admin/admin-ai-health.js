@@ -68,11 +68,11 @@ function renderAiHealth(health) {
     if (state === 'HEALTHY') {
         badge.style.background = '#dcfce7';
         badge.style.color = '#15803d';
-        badge.innerHTML = '🟢 Hoạt động tốt (Healthy)';
+        badge.innerHTML = '🟢 Hoạt động tốt';
     } else if (state === 'UNHEALTHY') {
         badge.style.background = '#fee2e2';
         badge.style.color = '#b91c1c';
-        badge.innerHTML = '🔴 Lỗi kết nối (Unhealthy)';
+        badge.innerHTML = '🔴 Lỗi kết nối';
     } else if (state === 'NOT_CONFIGURED') {
         badge.style.background = '#fef3c7';
         badge.style.color = '#92400e';

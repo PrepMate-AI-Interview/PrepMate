@@ -26,6 +26,9 @@ namespace backend.Prompts.Interview
             var langInstruction = PromptLanguagePolicy.GetInstruction(lang);
 
             var targetEval = targetEvaluation ?? state.ActiveTargetEvaluation;
+            var jdExcerpt = string.IsNullOrWhiteSpace(context.JdText)
+                ? string.Empty
+                : (context.JdText.Length > 1500 ? context.JdText[..1500] + "..." : context.JdText);
 
             var targetEvaluationSection = string.Empty;
             if (targetEval != null && !string.IsNullOrWhiteSpace(targetEval.ConceptName))
@@ -192,7 +195,7 @@ PHẦN 2: THÔNG TIN VỊ TRÍ & ỨNG VIÊN
 - Chủ đề ứng viên đã làm: {{string.Join(", ", context.CandidateTopics)}}
 - Chủ đề trọng tâm cần khảo sát: {{string.Join(", ", context.ExpectedTopics)}}
 
-{{PromptContextBoundary.Wrap("JOB_DESCRIPTION", context.JdText)}}
+{{PromptContextBoundary.Wrap("JOB_DESCRIPTION", jdExcerpt)}}
 
 ==================================================
 PHẦN 3: TRẠNG THÁI HIỆN TẠI CỦA BUỔI PHỎNG VẤN

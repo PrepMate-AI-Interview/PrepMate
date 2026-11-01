@@ -70,7 +70,7 @@ body.auth-body.light-mode {
   background-color: var(--auth-bg-main) !important;
   color: var(--auth-text-main) !important;
   overflow-x: hidden;
-  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--pm-font-sans, var(--font-sans));
   position: relative;
   display: flex;
   flex-direction: column;
@@ -208,7 +208,7 @@ html[data-theme="dark"] .auth-card {
 .auth-brand-logo {
   display: inline-block;
   font-size: 26px;
-  font-weight: 800;
+  font-weight: var(--pm-font-weight-bold, 652);
   margin-bottom: 12px;
   color: var(--auth-text-main);
   letter-spacing: -0.5px;

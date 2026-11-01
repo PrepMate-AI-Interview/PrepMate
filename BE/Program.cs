@@ -256,6 +256,7 @@ builder.Services.AddScoped<IInterviewStageOrchestrator, InterviewStageOrchestrat
 builder.Services.AddScoped<InterviewContextBuilder>();
 builder.Services.AddScoped<InterviewFlowService>();
 builder.Services.AddScoped<InterviewReportService>();
+builder.Services.AddScoped<CoachingSynthesisService>();
 builder.Services.AddScoped<LegacyQuestionService>();
 builder.Services.AddScoped<CvAnalysisService>();
 builder.Services.AddScoped<JobRecommendationService>();

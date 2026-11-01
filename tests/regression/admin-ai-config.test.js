@@ -343,7 +343,7 @@ function testModelInactiveGuidanceRendering() {
   const badge = getElementById('ai-health-badge');
   const guidance = getElementById('ai-health-guidance');
 
-  assert(badge.innerHTML.includes('Lỗi kết nối (Unhealthy)'), 'Health badge reflects UNHEALTHY state');
+  assert(badge.innerHTML.includes('Lỗi kết nối'), 'Health badge reflects UNHEALTHY state');
   assert(guidance.style.display === 'block', 'Guidance block is displayed for ModelInactive');
   assert(guidance.innerHTML.includes('MODEL_INACTIVE'), 'Guidance highlights MODEL_INACTIVE condition');
   assert(guidance.innerHTML.includes('ag/gemini-2.0-flash'), 'Guidance suggests active alternative ag/gemini-2.0-flash');
