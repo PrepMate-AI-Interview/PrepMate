@@ -9,6 +9,7 @@ using backend.Services.Security;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using backend.Services.Storage;
 
 namespace backend.Services
 {
@@ -16,8 +17,10 @@ namespace backend.Services
     {
         private readonly string _filePath;
         private readonly object _lock = new object();
+        private readonly PostgresSyncService? _postgresSync;
 
         public string FilePath => _filePath;
+        public PostgresSyncService? PostgresSync => _postgresSync;
 
         public ConcurrentDictionary<string, User> Users { get; set; } = new();
         public ConcurrentDictionary<string, Session> Sessions { get; set; } = new();
@@ -35,6 +38,17 @@ namespace backend.Services
         public FileDb(IConfiguration? config, IWebHostEnvironment? env = null, string? explicitPath = null)
         {
             _filePath = ResolveDatabasePath(config, env, explicitPath);
+
+            var pgConnStr = Environment.GetEnvironmentVariable("NEON_CONNECTION_STRING")
+                         ?? Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING")
+                         ?? Environment.GetEnvironmentVariable("DATABASE_URL")
+                         ?? config?["ConnectionStrings:Neon"]
+                         ?? config?["ConnectionStrings:Postgres"];
+
+            if (!string.IsNullOrWhiteSpace(pgConnStr))
+            {
+                _postgresSync = new PostgresSyncService(pgConnStr);
+            }
 
             Console.WriteLine($"[FileDb] Database SSOT path: {_filePath}");
 
@@ -278,6 +292,7 @@ namespace backend.Services
                             Console.WriteLine($"[FileDb] Successfully provisioned initial database at '{_filePath}'.");
                             LoadFromPath();
                             BootstrapAdminPasswordIfConfigured();
+                            SyncPostgresIfEnabled();
                             return;
                         }
 
@@ -289,12 +304,31 @@ namespace backend.Services
 
                     Console.WriteLine($"[FileDb] No database found at '{_filePath}'. Initializing fresh database with default seed data for Development/Demo environment.");
                     SeedData();
-                    Save();
+                    SaveLocalFile();
+                    SyncPostgresIfEnabled();
                     return;
                 }
 
                 // Authoritative load
                 LoadFromPath();
+                SyncPostgresIfEnabled();
+            }
+        }
+
+        private void SyncPostgresIfEnabled()
+        {
+            if (_postgresSync != null && _postgresSync.IsEnabled)
+            {
+                try
+                {
+                    Console.WriteLine("[FileDb] Synchronizing with Neon Postgres Cloud...");
+                    _postgresSync.InitializeAsync(this).GetAwaiter().GetResult();
+                    SaveLocalFile();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[FileDb] Postgres initialization warning: {ex.Message}. Falling back to local FileDb.");
+                }
             }
         }
 
@@ -733,6 +767,12 @@ namespace backend.Services
         }
 
         public void Save()
+        {
+            SaveLocalFile();
+            _postgresSync?.EnqueuePush(this);
+        }
+
+        private void SaveLocalFile()
         {
             lock (_lock)
             {

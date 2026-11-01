@@ -111,6 +111,7 @@ PrepMate hỗ trợ cấu hình qua biến môi trường hệ điều hành ho�
 | `PORT` | - | Tùy chọn | Container/PaaS | `5000` | Cổng Kestrel (tương thích Cloud Run, Heroku, Render) |
 | `WEB_ROOT_PATH` | - | Tùy chọn | Tùy chỉnh | `(auto-detect FE)` | Đường dẫn thư mục giao diện tĩnh Frontend |
 | `DATABASE_FILE_PATH` | `Database:FilePath` | Khuyến nghị | Production | `data/db.json` | Đường dẫn tệp cơ sở dữ liệu FileDb SSOT |
+| `NEON_CONNECTION_STRING` | `ConnectionStrings:Neon` | Khuyến nghị | Prod/Container | `postgresql://...` | Chuỗi kết nối Neon Postgres (Bảo toàn dữ liệu vĩnh viễn khi redeploy) |
 | `PREPMATE_KEYRING_PATH` | `DataProtection:KeyDirectory` | Khuyến nghị | Production | `/var/prepmate/keys` | Thư mục lưu trữ khóa mã hóa DataProtection |
 | `JWT__SECRET` | `Jwt:Secret` | **Bắt buộc** | Production | `REPLACE_ON_DEPLOYMENT` | Khóa ký số JWT token (tối thiểu 32 ký tự / 256-bit) |
 | `JWT__ISSUER` | `Jwt:Issuer` | Tùy chọn | Tất cả | `PrepMateBackend` | Định danh tổ chức phát hành token |

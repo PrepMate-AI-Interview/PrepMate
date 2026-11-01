@@ -46,6 +46,9 @@ else
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions { Args = args, WebRootPath = resolvedWebRoot });
 
+builder.Configuration.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
+builder.Configuration.AddJsonFile("appsettings.Development.local.json", optional: true, reloadOnChange: true);
+
 var envUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ?? Environment.GetEnvironmentVariable("DOTNET_URLS");
 var envPort = Environment.GetEnvironmentVariable("PORT");
 if (!string.IsNullOrWhiteSpace(envUrls))
