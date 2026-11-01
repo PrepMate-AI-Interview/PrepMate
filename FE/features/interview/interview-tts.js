@@ -23,9 +23,19 @@
     }
   }
 
-  // TTS Global State (strictly unified)
+  // TTS Global State (strictly unified & persisted)
+  let initialTtsEnabled = true;
+  try {
+    if (typeof window !== "undefined" && window.localStorage) {
+      const stored = localStorage.getItem("tts_enabled");
+      if (stored !== null) {
+        initialTtsEnabled = stored === "true";
+      }
+    }
+  } catch (e) { }
+
   if (typeof window.ttsEnabled === "undefined") {
-    window.ttsEnabled = true;
+    window.ttsEnabled = initialTtsEnabled;
   }
   let ttsEnabled = Boolean(window.ttsEnabled);
 
@@ -72,11 +82,11 @@
 
   function cancelCurrentSpeech(reason = "cancelled") {
     if (window._activeTtsAbortController) {
-      try { window._activeTtsAbortController.abort(); } catch (e) {}
+      try { window._activeTtsAbortController.abort(); } catch (e) { }
       window._activeTtsAbortController = null;
     }
     if (typeof stopTTSPreview === "function") {
-      try { stopTTSPreview(); } catch (e) {}
+      try { stopTTSPreview(); } catch (e) { }
     }
     if (currentSpeechState === SPEECH_STATE.SPEAKING || currentSpeechState === SPEECH_STATE.PAUSED) {
       debugTTS("TTS", `cancelCurrentSpeech: cancelling active speech #${currentSpeechSessionId}, reason: ${reason}`);
@@ -84,14 +94,21 @@
     }
 
     if (window.speechSynthesis) {
-      try { window.speechSynthesis.cancel(); } catch (e) {}
+      try { window.speechSynthesis.cancel(); } catch (e) { }
     }
     if (window._currentAIAudio) {
       try {
         window._currentAIAudio.pause();
         window._currentAIAudio.currentTime = 0;
-      } catch (e) {}
+      } catch (e) { }
       window._currentAIAudio = null;
+    }
+    if (window._waitingRoomAudio) {
+      try {
+        window._waitingRoomAudio.pause();
+        window._waitingRoomAudio.currentTime = 0;
+      } catch (e) { }
+      window._waitingRoomAudio = null;
     }
     if (window._ttsResumeInterval) {
       clearInterval(window._ttsResumeInterval);
@@ -123,19 +140,56 @@
     window.ttsEnabled = ttsEnabled;
     try {
       localStorage.setItem("tts_enabled", String(ttsEnabled));
-    } catch (e) {}
+    } catch (e) { }
     debugTTS("TTS", "Toggled TTS state:", ttsEnabled, "currentSpeechState:", currentSpeechState);
 
     if (!ttsEnabled) {
       // If currently SPEAKING, pause speech gracefully without destroying session or calling callback
       if (currentSpeechState === SPEECH_STATE.SPEAKING) {
         currentSpeechState = SPEECH_STATE.PAUSED;
-        if (window.speechSynthesis) {
-          try { window.speechSynthesis.pause(); } catch (e) {}
-        }
-        if (window._currentAIAudio && !window._currentAIAudio.paused) {
-          try { window._currentAIAudio.pause(); } catch (e) {}
-        }
+      }
+
+      // Hard stop any Web Speech playback
+      if (window.speechSynthesis) {
+        try { window.speechSynthesis.pause(); } catch (e) { }
+        try { window.speechSynthesis.cancel(); } catch (e) { }
+      }
+
+      // Hard stop turn audio
+      if (window._currentAIAudio && !window._currentAIAudio.paused) {
+        try { window._currentAIAudio.pause(); } catch (e) { }
+      }
+
+      // Hard stop waiting room audio
+      if (window._waitingRoomAudio) {
+        try {
+          window._waitingRoomAudio.pause();
+          window._waitingRoomAudio.currentTime = 0;
+        } catch (e) { }
+        window._waitingRoomAudio = null;
+      }
+
+      // Hard stop preview audio
+      if (typeof stopTTSPreview === "function") {
+        try { stopTTSPreview(); } catch (e) { }
+      }
+
+      // Abort active fetch controller
+      if (window._activeTtsAbortController) {
+        try { window._activeTtsAbortController.abort(); } catch (e) { }
+        window._activeTtsAbortController = null;
+      }
+
+      // Clear visual speaking indicators
+      const avatarPreview = document.getElementById("interviewer-avatar-preview");
+      const interviewerBox = document.getElementById("interviewer-video-box") || avatarPreview?.closest(".ir-interviewer-tile");
+      if (avatarPreview) avatarPreview.classList.remove("speaking-pulse");
+      if (interviewerBox) interviewerBox.classList.remove("speaking");
+
+      if (typeof setInterviewerState === "function") {
+        setInterviewerState("idle", "Sẵn sàng");
+      } else if (typeof window.setInterviewerState === "function") {
+        window.setInterviewerState("idle", "Sẵn sàng");
       }
 
       updateTTSButtonUI(false);
@@ -151,10 +205,10 @@
     if (currentSpeechState === SPEECH_STATE.PAUSED) {
       currentSpeechState = SPEECH_STATE.SPEAKING;
       if (window.speechSynthesis) {
-        try { window.speechSynthesis.resume(); } catch (e) {}
+        try { window.speechSynthesis.resume(); } catch (e) { }
       }
       if (window._currentAIAudio && window._currentAIAudio.paused) {
-        try { window._currentAIAudio.play(); } catch (e) {}
+        try { window._currentAIAudio.play(); } catch (e) { }
       }
     }
 
@@ -178,6 +232,15 @@
   let _previewAbortCtrl = null;
 
   function getTtsVoiceConfig() {
+    const pSettings = resolveActivePersonaVoiceSettings();
+    if (pSettings && pSettings.personaId) {
+      _currentTtsVoiceConfig.personaId = pSettings.personaId;
+      _currentTtsVoiceConfig.voiceId = pSettings.voiceId;
+      _currentTtsVoiceConfig.name = pSettings.name;
+      _currentTtsVoiceConfig.provider = "elevenlabs";
+      _currentTtsVoiceConfig.pitch = 1.0;
+      _currentTtsVoiceConfig.rate = 1.0;
+    }
     return { ..._currentTtsVoiceConfig };
   }
 
@@ -191,7 +254,7 @@
       if (typeof window !== "undefined" && window.localStorage) {
         localStorage.setItem("prepmate_tts_voice_config", JSON.stringify(_currentTtsVoiceConfig));
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   // Auto-load persisted voice config on startup
@@ -205,7 +268,7 @@
             if (initData.ttsVoice) {
               _currentTtsVoiceConfig = { ..._currentTtsVoiceConfig, ...initData.ttsVoice };
             }
-          } catch (e) {}
+          } catch (e) { }
         }
       }
       if (window.localStorage && !_currentTtsVoiceConfig.voiceId) {
@@ -214,11 +277,99 @@
           try {
             const savedCfg = JSON.parse(savedCfgStr);
             if (savedCfg) _currentTtsVoiceConfig = { ..._currentTtsVoiceConfig, ...savedCfg };
-          } catch (e) {}
+          } catch (e) { }
+        }
+      }
+
+      // Purge stale browser provider, mismatched persona voices, or browser voice names
+      const startupSettings = resolveActivePersonaVoiceSettings();
+      _currentTtsVoiceConfig.provider = "elevenlabs";
+      _currentTtsVoiceConfig.personaId = startupSettings.personaId;
+      _currentTtsVoiceConfig.voiceId = startupSettings.voiceId;
+      _currentTtsVoiceConfig.name = startupSettings.name;
+      _currentTtsVoiceConfig.modelId = "eleven_flash_v2_5";
+      _currentTtsVoiceConfig.pitch = 1.0;
+      _currentTtsVoiceConfig.rate = 1.0;
+
+      if (!_currentTtsVoiceConfig.voiceId || !_currentTtsVoiceConfig.personaId) {
+        let pId = _currentTtsVoiceConfig.personaId || "";
+        try {
+          if (!pId && window.sessionStorage) {
+            const iStr = window.sessionStorage.getItem("interview_init_data");
+            if (iStr) {
+              const parsed = JSON.parse(iStr);
+              pId = parsed.interviewerPersona || (parsed.ttsVoice && parsed.ttsVoice.personaId) || "";
+            }
+          }
+          if (!pId && window.localStorage) {
+            pId = window.localStorage.getItem("prepmate_interviewer_persona") || "";
+          }
+        } catch (e) { }
+        if (!pId) pId = "professional";
+        _currentTtsVoiceConfig.personaId = pId;
+        if (typeof window.PrepMatePersonas !== "undefined" && typeof window.PrepMatePersonas.getPersona === "function") {
+          const pObj = window.PrepMatePersonas.getPersona(pId);
+          if (pObj && (pObj.voiceId || pObj.defaultVoiceId)) {
+            _currentTtsVoiceConfig.voiceId = pObj.voiceId || pObj.defaultVoiceId;
+            _currentTtsVoiceConfig.provider = "elevenlabs";
+            _currentTtsVoiceConfig.modelId = "eleven_flash_v2_5";
+          }
         }
       }
     }
-  } catch (e) {}
+  } catch (e) { }
+
+  function resolveActivePersonaVoiceSettings() {
+    let personaId = "";
+    if (typeof window !== "undefined") {
+      if (window.currentInterviewSession && window.currentInterviewSession.interviewerPersona) {
+        personaId = window.currentInterviewSession.interviewerPersona;
+      }
+      if (!personaId) {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          personaId = params.get("persona") || "";
+        } catch (e) {}
+      }
+      if (!personaId && window.sessionStorage) {
+        try {
+          const initStr = window.sessionStorage.getItem("interview_init_data");
+          if (initStr) {
+            const init = JSON.parse(initStr);
+            personaId = init.interviewerPersona || (init.ttsVoice && init.ttsVoice.personaId) || "";
+          }
+        } catch (e) {}
+      }
+      if (!personaId && window.localStorage) {
+        personaId = window.localStorage.getItem("prepmate_interviewer_persona") || "";
+      }
+    }
+    if (!personaId && _currentTtsVoiceConfig && _currentTtsVoiceConfig.personaId) {
+      personaId = _currentTtsVoiceConfig.personaId;
+    }
+    if (!personaId) personaId = "professional";
+
+    let personaObj = null;
+    if (typeof window !== "undefined" && window.PrepMatePersonas && typeof window.PrepMatePersonas.getPersona === "function") {
+      personaObj = window.PrepMatePersonas.getPersona(personaId);
+    }
+
+    const isFemale = personaObj?.fallbackVoiceGender === "female" || personaId === "friendly";
+    const defaultPitch = 1.00;
+    const defaultRate = 1.00;
+
+    const voiceId = personaObj?.voiceId || personaObj?.defaultVoiceId || (isFemale ? "3BUMLmVV2cgPJQ2pAwBa" : (personaId === "professional" ? "yTpM1yhZn6oZ0xMLpLFT" : "GbyYOHheg88tlJBFNEYY"));
+
+    return {
+      personaId,
+      personaObj,
+      gender: isFemale ? "female" : "male",
+      pitch: typeof personaObj?.pitch === "number" ? personaObj.pitch : defaultPitch,
+      rate: typeof personaObj?.rate === "number" ? personaObj.rate : defaultRate,
+      name: personaObj?.name || (isFemale ? "Lê Lan Anh" : (personaId === "professional" ? "Trần Minh Vũ" : "Nguyễn Hoàng Nam")),
+      voiceId
+    };
+  }
 
   function resolveTtsApiBase() {
     return (typeof window !== "undefined" && window.InterviewApiClient && typeof window.InterviewApiClient.resolveBaseUrl === "function")
@@ -253,7 +404,10 @@
   async function previewTTSVoice(voiceId, text, speed = 1.0, onStart, onEnd, onError) {
     stopTTSPreview();
     const sampleText = (text || "Xin chào, tôi là người phỏng vấn của bạn hôm nay tại PrepMate. Bạn đã sẵn sàng bắt đầu chưa?").trim();
-    _previewAbortCtrl = new AbortController();
+    const AbortCtrl = (typeof AbortController !== "undefined")
+      ? AbortController
+      : (typeof window !== "undefined" && window.AbortController ? window.AbortController : null);
+    _previewAbortCtrl = AbortCtrl ? new AbortCtrl() : { signal: undefined, abort: () => {} };
 
     try {
       if (typeof onStart === "function") onStart();
@@ -278,7 +432,7 @@
           if (errData && errData.message) {
             errMsg = errData.message;
           }
-        } catch (e) {}
+        } catch (e) { }
         throw new Error(errMsg);
       }
 
@@ -292,13 +446,13 @@
       _previewAudio = audio;
 
       audio.onended = () => {
-        try { URL.revokeObjectURL(url); } catch (e) {}
+        try { URL.revokeObjectURL(url); } catch (e) { }
         _previewAudio = null;
         if (typeof onEnd === "function") onEnd();
       };
 
       audio.onerror = (e) => {
-        try { URL.revokeObjectURL(url); } catch (err) {}
+        try { URL.revokeObjectURL(url); } catch (err) { }
         _previewAudio = null;
         if (typeof onError === "function") onError(e);
       };
@@ -318,18 +472,18 @@
 
   function stopTTSPreview() {
     if (_previewAbortCtrl) {
-      try { _previewAbortCtrl.abort(); } catch (e) {}
+      try { _previewAbortCtrl.abort(); } catch (e) { }
       _previewAbortCtrl = null;
     }
     if (_previewAudio) {
       try {
         _previewAudio.pause();
         _previewAudio.currentTime = 0;
-      } catch (e) {}
+      } catch (e) { }
       _previewAudio = null;
     }
     if (typeof window !== "undefined" && window.speechSynthesis) {
-      try { window.speechSynthesis.cancel(); } catch (e) {}
+      try { window.speechSynthesis.cancel(); } catch (e) { }
     }
   }
 
@@ -361,18 +515,30 @@
     return await resp.json();
   }
 
-  async function speakElevenLabs(text, onEndCallback = null, sessionId = null) {
-    const voiceCfg = getTtsVoiceConfig();
-    const voiceId = voiceCfg.voiceId || (typeof window !== "undefined" && window._selectedTtsVoiceId) || "";
-    if (!voiceId) return false;
+  let _hasShownElevenLabsRestrictedToast = false;
 
-    const speed = typeof voiceCfg.speed === "number" ? Math.min(1.2, Math.max(0.7, voiceCfg.speed)) : 1.0;
-    const modelId = voiceCfg.modelId || "eleven_flash_v2_5";
+  async function speakElevenLabs(text, onEndCallback = null, sessionId = null, targetIdentity = null) {
+    if (!ttsEnabled || (typeof window.isTTSEnabled === "function" && !window.isTTSEnabled())) {
+      return false;
+    }
+
+    const pSettings = resolveActivePersonaVoiceSettings();
+    // Authentic persona ElevenLabs voice ID SSOT:
+    // friendly (Lê Lan Anh) -> 3BUMLmVV2cgPJQ2pAwBa
+    // professional (Trần Minh Vũ) -> yTpM1yhZn6oZ0xMLpLFT
+    // balanced (Nguyễn Hoàng Nam) -> GbyYOHheg88tlJBFNEYY
+    const voiceId = pSettings.voiceId || (pSettings.personaId === "friendly" ? "3BUMLmVV2cgPJQ2pAwBa" : (pSettings.personaId === "professional" ? "yTpM1yhZn6oZ0xMLpLFT" : "GbyYOHheg88tlJBFNEYY"));
+    const provider = "elevenlabs";
+    const speed = 1.0;
+    const modelId = "eleven_flash_v2_5";
 
     if (window._activeTtsAbortController) {
-      try { window._activeTtsAbortController.abort(); } catch (e) {}
+      try { window._activeTtsAbortController.abort(); } catch (e) { }
     }
-    const abortCtrl = new AbortController();
+    const AbortCtrl = (typeof AbortController !== "undefined")
+      ? AbortController
+      : (typeof window !== "undefined" && window.AbortController ? window.AbortController : null);
+    const abortCtrl = AbortCtrl ? new AbortCtrl() : { signal: undefined, abort: () => {} };
     window._activeTtsAbortController = abortCtrl;
     currentSpeechState = SPEECH_STATE.SPEAKING;
     isQuestionSpeaking = true;
@@ -397,7 +563,18 @@
       });
 
       if (!resp.ok) {
-        debugTTS("TTS", `Backend TTS proxy returned HTTP ${resp.status}`);
+        let errJson = null;
+        try {
+          errJson = await resp.json();
+        } catch (e) {}
+        debugTTS("TTS", `Backend TTS proxy returned HTTP ${resp.status}`, errJson);
+
+        if (resp.status === 401 && errJson?.error === "ELEVENLABS_ACCOUNT_RESTRICTED") {
+          if (!_hasShownElevenLabsRestrictedToast && typeof showToast === "function") {
+            _hasShownElevenLabsRestrictedToast = true;
+            showToast(`Lưu ý: Tài khoản ElevenLabs bị giới hạn (Free Tier - Unusual Activity). Để nghe đúng giọng ElevenLabs ${pSettings.name}, vui lòng nâng cấp gói hoặc cập nhật API key trong BE/appsettings.json. Hệ thống đang dùng tạm giọng trình duyệt.`, "warning", 8000);
+          }
+        }
         return false;
       }
 
@@ -423,7 +600,10 @@
 
       audio.onended = () => {
         window._currentAIAudio = null;
-        try { URL.revokeObjectURL(url); } catch (e) {}
+        try { URL.revokeObjectURL(url); } catch (e) { }
+        if (typeof setInterviewerState === "function") {
+          setInterviewerState("idle", "Sẵn sàng");
+        }
         if (sessionId !== null) {
           completeSpeechOnce(sessionId, "elevenlabs_ended");
         } else {
@@ -437,8 +617,11 @@
 
       audio.onerror = (audioErr) => {
         window._currentAIAudio = null;
-        try { URL.revokeObjectURL(url); } catch (e) {}
+        try { URL.revokeObjectURL(url); } catch (e) { }
         debugTTS("TTS", "Audio playback error:", audioErr);
+        if (typeof setInterviewerState === "function") {
+          setInterviewerState("idle", "Sẵn sàng");
+        }
         if (sessionId !== null) {
           completeSpeechOnce(sessionId, "elevenlabs_error");
         }
@@ -450,8 +633,32 @@
         window.setInterviewerState("speaking", "Đang đọc câu hỏi");
       }
 
-      await audio.play();
-      return true;
+      try {
+        await audio.play();
+        return true;
+      } catch (playErr) {
+        if (playErr && playErr.name === "NotAllowedError") {
+          debugTTS("TTS", "Audio play blocked by browser autoplay policy. Awaiting user interaction...");
+          const unlockAudio = (evt) => {
+            document.removeEventListener("click", unlockAudio);
+            document.removeEventListener("keydown", unlockAudio);
+            if (evt && evt.target && (evt.target.closest("#btn-start-interview") || evt.target.closest("#confirm-modal-start-btn"))) {
+              return;
+            }
+            if (window._currentAIAudio === audio && window.ttsEnabled) {
+              if (window._isInterviewSessionStarted && targetIdentity === "waiting_room_prompt") {
+                debugTTS("TTS", "Interview already started; suppressing delayed waiting room audio.");
+                return;
+              }
+              audio.play().catch(e => debugTTS("TTS", "Playback on unlock failed:", e));
+            }
+          };
+          document.addEventListener("click", unlockAudio, { once: true });
+          document.addEventListener("keydown", unlockAudio, { once: true });
+          return true;
+        }
+        throw playErr;
+      }
     } catch (e) {
       if (e.name === "AbortError") {
         debugTTS("TTS", "ElevenLabs fetch aborted.");
@@ -491,11 +698,11 @@
 
     // If a previous utterance was still speaking/paused with a different identity, cancel it cleanly
     if (window._activeTtsAbortController) {
-      try { window._activeTtsAbortController.abort(); } catch (e) {}
+      try { window._activeTtsAbortController.abort(); } catch (e) { }
       window._activeTtsAbortController = null;
     }
     if (typeof stopTTSPreview === "function") {
-      try { stopTTSPreview(); } catch (e) {}
+      try { stopTTSPreview(); } catch (e) { }
     }
     if (currentSpeechState === SPEECH_STATE.SPEAKING || currentSpeechState === SPEECH_STATE.PAUSED) {
       cancelCurrentSpeech("superseded_by_new_speech");
@@ -522,7 +729,7 @@
     }
 
     // Try ElevenLabs first if configured
-    const usedEL = await speakElevenLabs(cleanText, onEndCallback, thisSessionId);
+    const usedEL = await speakElevenLabs(cleanText, onEndCallback, thisSessionId, targetIdentity);
     if (usedEL) return;
 
     // Fallback to browser Web Speech API
@@ -549,20 +756,39 @@
       window._activeUtterance = utt; // Strong global reference to prevent Chromium garbage collection during UI events
       utt.lang = speechLang;
 
-      const getVoice = typeof getPreferredSpeechVoice === "function" ? getPreferredSpeechVoice : (typeof window.getPreferredSpeechVoice === "function" ? window.getPreferredSpeechVoice : null);
-      if (getVoice) {
-        const selectedVoice = getVoice();
-        if (selectedVoice) utt.voice = selectedVoice;
+      const personaVoiceSettings = resolveActivePersonaVoiceSettings();
+      const allVoices = (window.speechSynthesis && window.speechSynthesis.getVoices()) || [];
+      const viVoices = allVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith("vi"));
+
+      let matchedVoice = null;
+      if (personaVoiceSettings.gender === "female") {
+        matchedVoice = viVoices.find(v => /hoaimy|hoài|my|linh|mai|lan|nữ|female|girl/i.test(v.name))
+          || allVoices.find(v => /hoaimy|hoài|my|linh|mai|lan|nữ|female|girl/i.test(v.name));
+      } else {
+        matchedVoice = viVoices.find(v => /nam|vũ|minh|an|male|boy|man/i.test(v.name))
+          || allVoices.find(v => /nam|vũ|minh|an|male|boy|man/i.test(v.name));
       }
 
-      utt.rate = typeof _currentTtsVoiceConfig.speed === "number" ? _currentTtsVoiceConfig.speed : 1.0;
-      utt.pitch = 1.0;
+      if (!matchedVoice && viVoices.length > 0) {
+        matchedVoice = viVoices[0];
+      }
+      if (!matchedVoice) {
+        const getVoice = typeof getPreferredSpeechVoice === "function" ? getPreferredSpeechVoice : (typeof window.getPreferredSpeechVoice === "function" ? window.getPreferredSpeechVoice : null);
+        if (getVoice) {
+          matchedVoice = getVoice();
+        }
+      }
+      if (matchedVoice) utt.voice = matchedVoice;
+
+      const userSpeed = typeof _currentTtsVoiceConfig.speed === "number" ? _currentTtsVoiceConfig.speed : 1.0;
+      utt.pitch = 1.00; // Always use natural un-distorted pitch
+      utt.rate = Math.min(1.5, Math.max(0.7, (personaVoiceSettings.rate || 1.0) * userSpeed));
 
       // Temporarily pause mic while AI is speaking
       const activeRec = typeof recognition !== "undefined" ? recognition : window.recognition;
       const activeListening = typeof isListening !== "undefined" ? isListening : window.isListening;
       if (activeRec && activeListening) {
-        try { activeRec.stop(); } catch (e) {}
+        try { activeRec.stop(); } catch (e) { }
       }
 
       utt.onend = () => {
@@ -662,4 +888,5 @@
   window.stopTTSPreview = stopTTSPreview;
   window.createVoiceDesignPreview = createVoiceDesignPreview;
   window.saveVoiceDesignVoice = saveVoiceDesignVoice;
+  window.resolveActivePersonaVoiceSettings = resolveActivePersonaVoiceSettings;
 })();

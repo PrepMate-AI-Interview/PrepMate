@@ -82,6 +82,13 @@ namespace backend.Services.AI
                 Confidence = 0.7
             };
 
+            if (!analysis.DoesNotKnow)
+            {
+                var concept = string.IsNullOrWhiteSpace(targetCompetency) ? "General" : targetCompetency;
+                analysis.Concepts.Add(concept);
+                analysis.CorrectConcepts.Add(concept);
+            }
+
             if (analysis.DoesNotKnow)
             {
                 analysis.Depth = 1;
