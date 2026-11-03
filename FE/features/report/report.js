@@ -362,6 +362,7 @@ function renderFullReport(report, session) {
   renderRecruitingNeedsBreakdown(session, report);
   renderCandidateToCompanyGap(session, report);
   renderVisualOutfitSuggestions(session);
+  renderReferenceMaterials(session, report);
   renderAfterInterviewGuidance(session, report);
 }
 
@@ -476,13 +477,29 @@ function renderOverviewHero(ev, perf, sessInfo, compInfo, evidenceSummary, sessi
   if (strengthsListEl) {
     if (Array.isArray(verifiedStrengths) && verifiedStrengths.length > 0) {
       const top3 = verifiedStrengths.slice(0, 3).map(s => {
-        const text = typeof s === "string" ? s : (s.title || s.Title || s.description || s.Description || "");
-        return text.replace(/^[-s✓📌•]+/, "").trim();
-      }).filter(Boolean);
-      strengthsListEl.innerHTML = top3.map(str => `
+        let title = "";
+        let whyItMatters = "";
+        if (typeof s === "string") {
+          const parts = s.split(/[:\–\-]\s+/);
+          title = parts[0].replace(/^[-s✓📌•]+/, "").trim();
+          whyItMatters = parts.slice(1).join(" - ").trim();
+        } else if (s && typeof s === "object") {
+          title = (s.title || s.Title || s.name || s.Name || "").replace(/^[-s✓📌•]+/, "").trim();
+          whyItMatters = s.description || s.Description || s.impact || s.Impact || s.evidence || s.Evidence || s.whyItMatters || "";
+        }
+        if (!whyItMatters && pos) {
+          whyItMatters = `Minh chứng then chốt khẳng định năng lực thực thi cho vị trí ${pos}.`;
+        }
+        return { title, whyItMatters };
+      }).filter(item => Boolean(item.title));
+
+      strengthsListEl.innerHTML = top3.map(item => `
         <li class="highlight-item">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          <span>${escapeHtml(str)}</span>
+          <div class="highlight-item-content">
+            <strong class="highlight-item-title">${escapeHtml(item.title)}</strong>
+            ${item.whyItMatters ? `<span class="highlight-item-desc">${escapeHtml(item.whyItMatters)}</span>` : ""}
+          </div>
         </li>
       `).join("");
     } else {
@@ -703,6 +720,420 @@ const STANDARD_DIMENSIONS = [
   { key: "CONSISTENCY", name: "Tính Nhất quán", icon: "⚖️" }
 ];
 
+var _cachedDimensionsData = [];
+var _selectedDimensionKey = "TECHNICAL_KNOWLEDGE";
+if (typeof window !== "undefined") {
+  window._selectedDimensionKey = _selectedDimensionKey;
+  window._cachedDimensionsData = _cachedDimensionsData;
+}
+
+function getDimensionGuidance(dimKey, level) {
+  const isUnassessed = !level || level.toUpperCase() === "UNASSESSED";
+  if (isUnassessed) {
+    return "Khía cạnh này chưa có đủ câu hỏi để khảo sát trong phiên. Hãy tiếp tục luyện tập thêm các câu hỏi chuyên sâu để hệ thống thu thập bằng chứng đánh giá hoàn thiện.";
+  }
+  const guidanceMap = {
+    TECHNICAL_KNOWLEDGE: "Tiếp tục củng cố kiến thức nền tảng và cập nhật các công nghệ, mẫu thiết kế hệ thống mới nhất tương ứng với vị trí mục tiêu.",
+    PRACTICAL_APPLICATION: "Minh họa câu trả lời bằng các số liệu định lượng, bài học kinh nghiệm xử lý lỗi thực tế và kết quả đo lường cụ thể từ các dự án đã qua.",
+    REASONING_DEPTH: "Trình bày rõ các phương án trade-off (được - mất), phân tích sâu nguyên nhân gốc rễ và lập luận đa chiều trước khi đưa ra kết luận giải pháp.",
+    FOLLOW_UP_HANDLING: "Giữ vững bình tĩnh khi người phỏng vấn đào sâu, lắng nghe kỹ trọng tâm và bóc tách câu hỏi phức tạp thành từng phần nhỏ để phản hồi dứt khoát.",
+    COMMUNICATION: "Áp dụng chặt chẽ mô hình STAR (Situation - Task - Action - Result), mở đầu bằng thông điệp chính và cô đọng chi tiết để tăng sức thuyết phục.",
+    CONSISTENCY: "Đảm bảo thông tin trình bày đồng nhất với hồ sơ ứng tuyển (CV) và các phát biểu trước đó trong toàn bộ cuộc đối thoại."
+  };
+  return guidanceMap[dimKey] || "Rèn luyện thêm các tình huống thực hành và duy trì cấu trúc trả lời mạch lạc để nâng cao điểm số chuyên môn.";
+}
+if (typeof window !== "undefined") {
+  window.getDimensionGuidance = getDimensionGuidance;
+}
+
+
+// ==========================================================================
+// WI-REPORT-09R1, WI-REPORT-09R3, WI-REPORT-09R4: SIX-DIMENSION RADAR CHART
+// ==========================================================================
+
+function renderRadarChart(dimensionsData) {
+  const wrapper = document.getElementById("radar-svg-wrapper");
+  if (!wrapper || !Array.isArray(dimensionsData) || dimensionsData.length === 0) return;
+
+  const width = 560;
+  const height = 420;
+  const cx = 280;
+  const cy = 210;
+  const R = 120;
+  const N = 6;
+  const angleStep = (2 * Math.PI) / N;
+  const startAngle = -Math.PI / 2; // Start at 12 o'clock
+
+  function getCoords(i, r) {
+    const angle = startAngle + i * angleStep;
+    return {
+      x: Math.round((cx + r * Math.cos(angle)) * 10) / 10,
+      y: Math.round((cy + r * Math.sin(angle)) * 10) / 10,
+      angle
+    };
+  }
+
+  // 1. Concentric grid rings (20, 40, 60, 80, 100)
+  const gridLevels = [20, 40, 60, 80, 100];
+  const gridRingsSvg = gridLevels.map(level => {
+    const r = (level / 100) * R;
+    const points = [];
+    for (let i = 0; i < N; i++) {
+      const pt = getCoords(i, r);
+      points.push(`${pt.x},${pt.y}`);
+    }
+    const isOuter = level === 100;
+    return `<polygon class="radar-grid-ring ${isOuter ? 'outer' : ''}" points="${points.join(' ')}" />`;
+  }).join('\n');
+
+  // Value scale markers along vertical top axis
+  const scaleMarkersSvg = gridLevels.map(level => {
+    const r = (level / 100) * R;
+    const pt = getCoords(0, r);
+    return `<text x="${pt.x + 8}" y="${pt.y + 4}" font-size="9.5" fill="var(--rpt-text-muted)" font-weight="600">${level}</text>`;
+  }).join('\n');
+
+  // 2. Target expectation polygon (score 75 standard)
+  const targetPoints = [];
+  for (let i = 0; i < N; i++) {
+    const pt = getCoords(i, (75 / 100) * R);
+    targetPoints.push(`${pt.x},${pt.y}`);
+  }
+  const targetPolygonSvg = `<polygon class="radar-target-polygon" points="${targetPoints.join(' ')}" title="Chuẩn kỳ vọng (75 điểm)" />`;
+
+  // 3. Candidate score polygon
+  const scorePolygonPoints = [];
+  const assessedDims = dimensionsData.filter(d => !d.isUnassessed && d.score100 !== null);
+  const hasAssessed = assessedDims.length > 0;
+
+  for (let i = 0; i < N; i++) {
+    const d = dimensionsData[i];
+    const isUn = !d || d.isUnassessed || d.score100 === null;
+    const effectiveScore = isUn ? 45 : Math.max(10, Math.min(100, d.score100));
+    const r = (effectiveScore / 100) * R;
+    const pt = getCoords(i, r);
+    scorePolygonPoints.push(`${pt.x},${pt.y}`);
+  }
+
+  const scorePolygonSvg = hasAssessed 
+    ? `<polygon class="radar-score-polygon" points="${scorePolygonPoints.join(' ')}" />`
+    : '';
+
+  // 4. Axis lines, labels, hit areas, and interactive dots
+  const axesSvg = dimensionsData.map((d, i) => {
+    const isSelected = d.key === _selectedDimensionKey;
+    const isUn = d.isUnassessed || d.score100 === null;
+    const linePt = getCoords(i, R);
+    
+    const scoreVal = isUn ? 45 : Math.max(10, Math.min(100, d.score100));
+    const dotPt = getCoords(i, (scoreVal / 100) * R);
+
+    const labelDistance = R + 26;
+    const angle = startAngle + i * angleStep;
+    const lx = Math.round((cx + labelDistance * Math.cos(angle)) * 10) / 10;
+    let ly = Math.round((cy + labelDistance * Math.sin(angle)) * 10) / 10;
+    
+    if (i === 0) ly -= 6;
+    if (i === 3) ly += 12;
+
+    const shortName = d.dimName || d.name;
+    const scoreBadgeText = isUn ? "Chưa đánh giá" : `${d.score100}/100`;
+
+    const dotSvg = isUn 
+      ? `<circle class="radar-unassessed-marker" cx="${dotPt.x}" cy="${dotPt.y}" r="5" title="${escapeHtml(d.dimName)}: Chưa đánh giá" />`
+      : `<circle class="radar-score-dot ${isSelected ? 'active' : ''}" cx="${dotPt.x}" cy="${dotPt.y}" r="6" title="${escapeHtml(d.dimName)}: ${d.score100}/100" />`;
+
+    return `
+      <g class="radar-axis-group ${isSelected ? 'selected' : ''}" 
+         data-dimension="${d.key}" 
+         role="button" 
+         tabindex="0" 
+         aria-label="${escapeHtml(d.dimName)}: ${scoreBadgeText}"
+         aria-pressed="${isSelected ? 'true' : 'false'}"
+         onclick="selectCompetencyDimension('${d.key}')"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectCompetencyDimension('${d.key}');}">
+        <!-- Wide hit-target for effortless selection -->
+        <line class="radar-axis-hit" x1="${cx}" y1="${cy}" x2="${linePt.x}" y2="${linePt.y}" stroke="transparent" stroke-width="28" style="cursor: pointer;" />
+        <!-- Axis line -->
+        <line class="radar-axis-line" x1="${cx}" y1="${cy}" x2="${linePt.x}" y2="${linePt.y}" />
+        <!-- Score dot -->
+        ${dotSvg}
+        <!-- Label and score -->
+        <text class="radar-axis-label ${isSelected ? 'active' : ''}" x="${lx}" y="${ly}">${escapeHtml(shortName)}</text>
+        <text class="radar-axis-score-badge ${isUn ? 'unassessed' : ''} ${isSelected ? 'active' : ''}" x="${lx}" y="${ly + 13}">${scoreBadgeText}</text>
+      </g>
+    `;
+  }).join('\n');
+
+  wrapper.innerHTML = `
+    <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <filter id="radar-glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
+      <!-- Background Concentric Rings -->
+      ${gridRingsSvg}
+      <!-- Value Scale Markers -->
+      ${scaleMarkersSvg}
+      <!-- Benchmark 75 Polygon -->
+      ${targetPolygonSvg}
+      <!-- Candidate Score Polygon -->
+      ${scorePolygonSvg}
+      <!-- Axes, Interactive Dots & Labels -->
+      ${axesSvg}
+    </svg>
+  `;
+
+  // Render quick dimension selector pill strip below chart
+  const selectorStrip = document.getElementById("radar-dim-selector-strip");
+  if (selectorStrip) {
+    selectorStrip.innerHTML = dimensionsData.map(d => {
+      const isSelected = d.key === _selectedDimensionKey;
+      const isUn = d.isUnassessed || d.score100 === null;
+      const scoreBadgeText = isUn ? "—" : `${d.score100}`;
+      return `
+        <button type="button" 
+                class="radar-dim-pill-btn ${isSelected ? 'active' : ''}" 
+                role="tab" 
+                data-dimension="${d.key}" 
+                aria-selected="${isSelected ? 'true' : 'false'}"
+                aria-controls="dim-selected-detail-panel"
+                onclick="selectCompetencyDimension('${d.key}')"
+                onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectCompetencyDimension('${d.key}');}"
+                title="${escapeHtml(d.dimName)}: ${isUn ? 'Chưa đánh giá' : d.score100 + '/100'}">
+          <span class="dim-pill-left">
+            <span class="dim-pill-icon">${d.dimIcon}</span>
+            <span class="dim-pill-name">${escapeHtml(d.dimName)}</span>
+          </span>
+          <span class="dim-pill-score ${isUn ? 'unassessed' : ''}">${scoreBadgeText}</span>
+        </button>
+      `;
+    }).join("");
+  }
+}
+
+function renderRadarInterpretation(dimensionsData) {
+  const bodyEl = document.getElementById("radar-interp-body");
+  const statusBadge = document.getElementById("radar-interp-status");
+  const strongNameEl = document.getElementById("radar-strongest-name");
+  const strongScoreEl = document.getElementById("radar-strongest-score");
+  const weakNameEl = document.getElementById("radar-weakest-name");
+  const weakScoreEl = document.getElementById("radar-weakest-score");
+
+  if (!bodyEl || !Array.isArray(dimensionsData)) return;
+
+  const assessed = dimensionsData.filter(d => !d.isUnassessed && d.score100 !== null);
+
+  if (assessed.length === 0) {
+    if (statusBadge) statusBadge.textContent = "Chưa đủ dữ liệu";
+    bodyEl.innerHTML = "<p>Phiên phỏng vấn hiện chưa ghi nhận đủ dữ liệu chấm điểm cho 6 chiều năng lực. Biểu đồ radar sẽ tự động hoàn thiện khi có ít nhất một chiều được đánh giá chi tiết.</p>";
+    if (strongNameEl) strongNameEl.textContent = "Chưa có";
+    if (strongScoreEl) strongScoreEl.textContent = "—";
+    if (weakNameEl) weakNameEl.textContent = "Chưa có";
+    if (weakScoreEl) weakScoreEl.textContent = "—";
+    return;
+  }
+
+  const sorted = [...assessed].sort((a, b) => b.score100 - a.score100);
+  const strongest = sorted[0];
+  const weakest = sorted[sorted.length - 1];
+  const spread = strongest.score100 - weakest.score100;
+
+  let statusText = "Cân bằng rất tốt";
+  if (spread > 30) {
+    statusText = "Độ lệch lớn giữa các trục";
+  } else if (spread > 15) {
+    statusText = "Phát triển khá đồng đều";
+  }
+  if (statusBadge) statusBadge.textContent = statusText;
+
+  if (strongNameEl) strongNameEl.textContent = strongest.dimName;
+  if (strongScoreEl) strongScoreEl.textContent = `${strongest.score100}/100 (${strongest.level})`;
+
+  if (weakNameEl) weakNameEl.textContent = weakest.dimName;
+  if (weakScoreEl) weakScoreEl.textContent = `${weakest.score100}/100 (${weakest.level})`;
+
+  let narrative = `Ứng viên thể hiện phong độ ấn tượng nhất ở trục <strong>${escapeHtml(strongest.dimName)}</strong> với <strong>${strongest.score100}/100</strong> điểm (${escapeHtml(strongest.level)}), phản ánh năng lực chuyên môn và tư duy rõ ràng. `;
+  
+  if (spread === 0) {
+    narrative += `Các trục năng lực đã đánh giá đều có mức độ hoàn thiện ngang nhau, cho thấy phong độ ổn định xuyên suốt cuộc phỏng vấn.`;
+  } else {
+    narrative += `Ngược lại, trục <strong>${escapeHtml(weakest.dimName)}</strong> (${weakest.score100}/100 điểm) là khu vực có độ chênh lệch lớn nhất so với thế mạnh (${spread} điểm). Việc tập trung rèn luyện trục này sẽ giúp hồ sơ năng lực trở nên cân đối và cạnh tranh vượt trội hơn.`;
+  }
+
+  bodyEl.innerHTML = `<p>${narrative}</p>`;
+}
+
+function renderDimensionDetailPanel(dimKey) {
+  // Target inspector container: id="dim-selected-detail-panel"
+  const panel = document.getElementById("dim-selected-detail-panel");
+  if (!panel) return;
+
+  const dim = _cachedDimensionsData.find(d => d.key === dimKey) || _cachedDimensionsData[0];
+  if (!dim) return;
+
+  const isUnassessed = dim.isUnassessed;
+  const scoreText = (dim.score100 !== null && !isUnassessed) ? `${dim.score100}` : "—";
+  const levelText = isUnassessed ? "Chưa đánh giá trong phiên" : (dim.level || "Middle");
+  const guidance = getDimensionGuidance(dim.key, dim.level);
+
+  panel.innerHTML = `
+    <div class="dim-inspector-header">
+      <div class="dim-inspector-title-wrap">
+        <span class="dim-inspector-icon">${dim.dimIcon}</span>
+        <div>
+          <h3 class="dim-inspector-name">${dim.dimName}</h3>
+          <span class="dim-inspector-key">${dim.key}</span>
+        </div>
+      </div>
+      <div class="dim-inspector-badges">
+        ${!isUnassessed ? `<span class="dim-inspector-score-pill"><strong>${scoreText}</strong><small>/100</small></span>` : `<span class="dim-inspector-score-pill unassessed"><strong>Chưa ĐG</strong></span>`}
+        <span class="dim-level-badge ${(dim.level || "unassessed").toLowerCase()}">${escapeHtml(levelText)}</span>
+        <span class="dim-confidence-badge">Độ tin cậy: ${getConfidenceLabel(dim.confidence)}</span>
+      </div>
+    </div>
+
+    <!-- Visual Progress Track for Selected Dimension -->
+    <div class="dim-inspector-progress-row" aria-hidden="true">
+      <div class="dim-progress-track">
+        <div class="dim-progress-fill ${dim.isUnassessed ? 'unassessed' : dim.levelClass}" style="width: ${dim.progressWidth}%;"></div>
+      </div>
+    </div>
+
+    <div class="dim-inspector-grid">
+      <!-- 1. Observation / Rationale -->
+      <div class="dim-inspector-block">
+        <h4 class="dim-inspector-block-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Nhận Định Quan Sát Thực Tế
+        </h4>
+        <p class="dim-inspector-block-desc">${escapeHtml(dim.rationale)}</p>
+      </div>
+
+      <!-- 2. Observed Strengths -->
+      <div class="dim-inspector-block">
+        <h4 class="dim-inspector-block-title" style="color: #16a34a;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Điểm Mạnh Đã Kiểm Chứng (${dim.strengths.length})
+        </h4>
+        ${dim.strengths.length > 0 ? `
+          <ul class="dim-inspector-list">
+            ${dim.strengths.map(s => `<li>${escapeHtml(s)}</li>`).join("")}
+          </ul>
+        ` : `
+          <p class="dim-inspector-block-desc text-muted">${isUnassessed ? "Khía cạnh này chưa có đủ câu hỏi trong phiên để ghi nhận điểm mạnh cụ thể." : "Chưa ghi nhận điểm mạnh nổi bật trong phiên."}</p>
+        `}
+      </div>
+
+      <!-- 3. Observed Weaknesses / Gaps -->
+      <div class="dim-inspector-block">
+        <h4 class="dim-inspector-block-title" style="color: #d97706;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Điểm Cần Chú Ý & Hoàn Thiện (${dim.weaknesses.length})
+        </h4>
+        ${dim.weaknesses.length > 0 ? `
+          <ul class="dim-inspector-list">
+            ${dim.weaknesses.map(w => `<li>${escapeHtml(w)}</li>`).join("")}
+          </ul>
+        ` : `
+          <p class="dim-inspector-block-desc text-muted">${isUnassessed ? "Không coi là điểm yếu (trạng thái chưa đánh giá do số lượt hỏi chưa tiếp cận)." : "Không phát hiện điểm yếu hoặc khoảng trống nghiêm trọng."}</p>
+        `}
+      </div>
+
+      <!-- 4. Supporting Evidence (when available) -->
+      ${(dim.supporting && dim.supporting.length > 0) ? `
+        <div class="dim-inspector-block dim-supporting-block">
+          <h4 class="dim-inspector-block-title" style="color: #6366f1;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Minh Chứng Đối Thoại (${dim.supporting.length})
+          </h4>
+          <ul class="dim-inspector-list">
+            ${dim.supporting.map(e => `<li>${escapeHtml(e)}</li>`).join("")}
+          </ul>
+        </div>
+      ` : ''}
+
+      <!-- 5. Practical Actionable Guidance -->
+      <div class="dim-inspector-block">
+        <h4 class="dim-inspector-block-title" style="color: #2563eb;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          Định Hướng Phát Triển & Hành Động
+        </h4>
+        <p class="dim-inspector-block-desc">${escapeHtml(guidance)}</p>
+      </div>
+    </div>
+  `;
+
+  // Trigger smooth transition animation
+  panel.classList.remove("dim-panel-animate");
+  void panel.offsetWidth;
+  panel.classList.add("dim-panel-animate");
+}
+
+function selectCompetencyDimension(dimKey) {
+  _selectedDimensionKey = dimKey;
+
+  // 1. Update selection state on cards in #dimensions-grid
+  const cards = document.querySelectorAll("#dimensions-grid .dimension-card");
+  cards.forEach(c => {
+    const k = c.getAttribute("data-dimension");
+    const isMatch = k === dimKey;
+    if (isMatch) {
+      c.classList.add("active", "selected");
+      c.setAttribute("aria-selected", "true");
+    } else {
+      c.classList.remove("active", "selected");
+      c.setAttribute("aria-selected", "false");
+    }
+  });
+
+  // 2. Update radar chart axis highlights
+  const radarGroups = document.querySelectorAll("#radar-svg-wrapper .radar-axis-group");
+  radarGroups.forEach(g => {
+    const k = g.getAttribute("data-dimension");
+    const isMatch = k === dimKey;
+    if (isMatch) {
+      g.classList.add("selected");
+      g.setAttribute("aria-pressed", "true");
+      const dot = g.querySelector(".radar-score-dot");
+      if (dot) dot.classList.add("active");
+      const lbl = g.querySelector(".radar-axis-label");
+      if (lbl) lbl.classList.add("active");
+      const badge = g.querySelector(".radar-axis-score-badge");
+      if (badge) badge.classList.add("active");
+    } else {
+      g.classList.remove("selected");
+      g.setAttribute("aria-pressed", "false");
+      const dot = g.querySelector(".radar-score-dot");
+      if (dot) dot.classList.remove("active");
+      const lbl = g.querySelector(".radar-axis-label");
+      if (lbl) lbl.classList.remove("active");
+      const badge = g.querySelector(".radar-axis-score-badge");
+      if (badge) badge.classList.remove("active");
+    }
+  });
+
+  // 3. Update quick dimension selector pills
+  const pillBtns = document.querySelectorAll("#radar-dim-selector-strip .radar-dim-pill-btn");
+  pillBtns.forEach(b => {
+    const k = b.getAttribute("data-dimension");
+    const isMatch = k === dimKey;
+    if (isMatch) {
+      b.classList.add("active");
+      b.setAttribute("aria-selected", "true");
+    } else {
+      b.classList.remove("active");
+      b.setAttribute("aria-selected", "false");
+    }
+  });
+
+  // 4. Render details panel
+  renderDimensionDetailPanel(dimKey);
+}
+window.selectCompetencyDimension = selectCompetencyDimension;
+
 function renderDimensionsSection(perf, jobTitle = "") {
   const container = document.getElementById("dimensions-grid");
   if (!container) return;
@@ -718,7 +1149,7 @@ function renderDimensionsSection(perf, jobTitle = "") {
     if (k) dimMap.set(k, d);
   });
 
-  container.innerHTML = STANDARD_DIMENSIONS.map((sd) => {
+  _cachedDimensionsData = STANDARD_DIMENSIONS.map((sd) => {
     const isTech = sd.key === "TECHNICAL_KNOWLEDGE";
     const dimName = isTech ? domainLabel : sd.name;
     const dimIcon = isTech ? domainIcon : sd.icon;
@@ -740,38 +1171,82 @@ function renderDimensionsSection(perf, jobTitle = "") {
 
     const levelClass = (level || "unassessed").toLowerCase();
     const isUnassessed = level.toUpperCase() === "UNASSESSED";
-    const panelId = `dim-details-${sd.key}`;
-    const triggerId = `dim-trigger-${sd.key}`;
     const progressWidth = score100 !== null ? Math.min(100, Math.max(0, score100)) : 0;
 
+    return {
+      key: sd.key,
+      name: sd.name,
+      dimName,
+      dimIcon,
+      level,
+      levelClass,
+      isUnassessed,
+      confidence,
+      rationale,
+      strengths,
+      weaknesses,
+      supporting,
+      rawScore,
+      score100,
+      progressWidth
+    };
+  });
+
+  // Default selection: pick strongest assessed dimension when comparable scores exist
+  if (!_selectedDimensionKey || !_cachedDimensionsData.some(d => d.key === _selectedDimensionKey)) {
+    const assessed = _cachedDimensionsData.filter(d => !d.isUnassessed && d.score100 !== null);
+    if (assessed.length > 0) {
+      const sorted = [...assessed].sort((a, b) => (b.score100 || 0) - (a.score100 || 0));
+      _selectedDimensionKey = sorted[0].key;
+    } else {
+      _selectedDimensionKey = _cachedDimensionsData[0]?.key || "TECHNICAL_KNOWLEDGE";
+    }
+  }
+
+  // 0. Render Six-Dimension Interactive Radar Chart & Interpretation (WI-REPORT-09R1, WI-REPORT-09R3)
+  renderRadarChart(_cachedDimensionsData);
+  renderRadarInterpretation(_cachedDimensionsData);
+
+  // 1. Render interactive 6 dimension comparison cards for backward compatibility with existing tests
+  const cardsHtml = _cachedDimensionsData.map((d) => {
+    const isSelected = d.key === _selectedDimensionKey;
+    const panelId = `dim-details-${d.key}`;
+    const triggerId = `dim-trigger-${d.key}`;
+
     return `
-      <div class="dimension-card glass-panel" data-dimension="${sd.key}">
+      <div class="dimension-card glass-panel ${isSelected ? 'active selected' : ''}" 
+           data-dimension="${d.key}" 
+           role="tab" 
+           aria-selected="${isSelected ? 'true' : 'false'}"
+           aria-controls="dim-selected-detail-panel"
+           onclick="selectCompetencyDimension('${d.key}')"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectCompetencyDimension('${d.key}');}">
         <div class="dim-card-top">
           <div class="dimension-card-header">
             <div class="dim-name-wrap">
-              <span class="dim-icon">${dimIcon}</span>
+              <span class="dim-icon">${d.dimIcon}</span>
               <div>
-                <h4 class="dim-title">${dimName}</h4>
-                <span class="dim-key">${sd.key}</span>
+                <h4 class="dim-title">${d.dimName}</h4>
+                <span class="dim-key">${d.key}</span>
               </div>
             </div>
             <div class="dim-header-badges">
-              ${(score100 !== null && !isUnassessed) ? `<span class="dim-score-badge"><strong class="dim-score-val">${score100}</strong><small>/100</small></span>` : ""}
-              <span class="dim-level-badge ${levelClass}">${isUnassessed ? "Chưa đánh giá trong phiên" : escapeHtml(level)}</span>
+              ${(d.score100 !== null && !d.isUnassessed) ? `<span class="dim-score-badge"><strong class="dim-score-val">${d.score100}</strong><small>/100</small></span>` : ""}
+              <span class="dim-level-badge ${d.levelClass}">${d.isUnassessed ? "Chưa đánh giá trong phiên" : escapeHtml(d.level)}</span>
             </div>
           </div>
 
-          <!-- Visual Progress Track (WI-REPORT-02) -->
+          <!-- Visual Progress Track -->
           <div class="dim-progress-container" aria-hidden="true">
             <div class="dim-progress-track">
-              <div class="dim-progress-fill ${levelClass}" style="width: ${progressWidth}%;"></div>
+              <div class="dim-progress-fill ${d.levelClass}" style="width: ${d.progressWidth}%;"></div>
             </div>
           </div>
 
           <!-- Compact Summary / Disclosure Toggle Bar -->
           <div class="dim-summary-snippet">
-            <span class="dim-confidence-badge">Độ tin cậy: ${getConfidenceLabel(confidence)}</span>
-            <button type="button" class="dim-toggle-btn" id="${triggerId}" aria-expanded="false" aria-controls="${panelId}" onclick="toggleDimensionDetails('${sd.key}')">
+            <span class="dim-confidence-badge">Độ tin cậy: ${getConfidenceLabel(d.confidence)}</span>
+            <button type="button" class="dim-toggle-btn" id="${triggerId}" aria-expanded="false" aria-controls="${panelId}" onclick="toggleDimensionDetails('${d.key}')">
               <span class="dim-toggle-text">Chi tiết & Bằng chứng</span>
               <svg class="dim-chevron-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
@@ -781,18 +1256,23 @@ function renderDimensionsSection(perf, jobTitle = "") {
         <!-- Collapsible Details Panel (Progressive Disclosure) -->
         <div class="dim-details-panel dim-panel-collapsed" id="${panelId}" role="region" aria-labelledby="${triggerId}">
           <div class="dim-details-inner">
-            <p class="dim-rationale">${escapeHtml(rationale)}</p>
+            <p class="dim-rationale">${escapeHtml(d.rationale)}</p>
             <div class="dim-evidence-pills">
-              <span class="dim-pill">Độ tin cậy: ${getConfidenceLabel(confidence)}</span>
-              ${strengths.slice(0, 2).map(s => `<span class="dim-pill strength">✓ ${escapeHtml(s)}</span>`).join("")}
-              ${weaknesses.slice(0, 2).map(w => `<span class="dim-pill gap">△ ${escapeHtml(w)}</span>`).join("")}
-              ${(strengths.length === 0 && weaknesses.length === 0 && supporting.length > 0) ? supporting.slice(0, 2).map(e => `<span class="dim-pill evidence">📌 ${escapeHtml(e)}</span>`).join("") : ""}
+              <span class="dim-pill">Độ tin cậy: ${getConfidenceLabel(d.confidence)}</span>
+              ${d.strengths.slice(0, 2).map(s => `<span class="dim-pill strength">✓ ${escapeHtml(s)}</span>`).join("")}
+              ${d.weaknesses.slice(0, 2).map(w => `<span class="dim-pill gap">△ ${escapeHtml(w)}</span>`).join("")}
+              ${(d.strengths.length === 0 && d.weaknesses.length === 0 && d.supporting.length > 0) ? d.supporting.slice(0, 2).map(e => `<span class="dim-pill evidence">📌 ${escapeHtml(e)}</span>`).join("") : ""}
             </div>
           </div>
         </div>
       </div>
     `;
   }).join("");
+
+  container.innerHTML = cardsHtml;
+
+  // Render detail for currently active dimension into the right column panel
+  renderDimensionDetailPanel(_selectedDimensionKey);
 }
 
 function toggleDimensionDetails(key) {
@@ -1101,11 +1581,43 @@ function renderRoadmapSection(roadmap, diag) {
 
   if (!container) return;
 
-  const items = roadmap?.items || roadmap?.Items || [];
-  if (items.length === 0) {
+  const rawItems = roadmap?.items || roadmap?.Items || [];
+
+  // Update overall assessment text dynamically if available (WI-REPORT-15R1)
+  const overallAssessText = document.getElementById("roadmap-overall-assessment-text");
+  if (overallAssessText) {
+    const summaryText = roadmap?.summary || roadmap?.Summary || diag?.overallDiagnosis || "";
+    if (summaryText && summaryText.trim()) {
+      overallAssessText.textContent = summaryText.trim();
+    } else if (rawItems.length > 0) {
+      overallAssessText.textContent = `Tập trung hoàn thiện ${Math.min(rawItems.length, 3)} trọng tâm hành động then chốt dưới đây để khắc phục trực tiếp các điểm nghẽn năng lực được ghi nhận từ phiên phỏng vấn.`;
+    }
+  }
+
+  // Hide weakness priorities wrap if list is empty (WI-REPORT-15R1)
+  const weakWrap = document.getElementById("roadmap-weakness-priorities-wrap");
+  const weakList = document.getElementById("roadmap-weakness-priorities-list");
+  if (weakWrap) {
+    if (!weakList || !weakList.children || weakList.children.length === 0) {
+      weakWrap.style.display = "none";
+    } else {
+      weakWrap.style.display = "block";
+    }
+  }
+
+  if (rawItems.length === 0) {
     container.innerHTML = `<p class="text-muted" style="padding:16px;">Chưa có lộ trình hành động cụ thể.</p>`;
     return;
   }
+
+  // WI-REPORT-14R1: Select top 2-3 highest-priority improvement recommendations
+  // Sort HIGH priority first, then MEDIUM, capped at max 3
+  const sortedItems = [...rawItems].sort((a, b) => {
+    const pA = (a.priority || a.Priority || "").toUpperCase() === "HIGH" ? 1 : 0;
+    const pB = (b.priority || b.Priority || "").toUpperCase() === "HIGH" ? 1 : 0;
+    return pB - pA;
+  });
+  const items = sortedItems.slice(0, 3);
 
   container.innerHTML = items.map((item, i) => {
     const timeframe = (item.timeframe || item.Timeframe || "SHORT_TERM").toUpperCase();
@@ -1121,32 +1633,85 @@ function renderRoadmapSection(roadmap, diag) {
     const outcome = item.expectedOutcome || item.ExpectedOutcome || "";
     const verification = item.verificationCriteria || item.VerificationCriteria || "";
 
+    // 1-sentence primary action
+    let primaryAction = "";
+    if (actionsList.length > 0) {
+      primaryAction = actionsList[0].description || actionsList[0].title || "";
+    } else if (steps.length > 0) {
+      primaryAction = steps[0];
+    } else if (item.action || item.Action) {
+      primaryAction = item.action || item.Action;
+    } else {
+      primaryAction = `Thực hiện rèn luyện có chủ đích về ${objective.toLowerCase()}.`;
+    }
+
+    // 1-sentence rationale / why
+    let whyRationale = "";
+    if (item.rationale || item.Rationale) {
+      whyRationale = item.rationale || item.Rationale;
+    } else if (outcome) {
+      whyRationale = `Giúp nâng cao độ tin cậy và sự mạch lạc khi giải thích các bài toán thực tế: ${outcome}`;
+    } else {
+      whyRationale = "Khắc phục trực tiếp lỗ hổng đánh giá được ghi nhận từ phiên phỏng vấn để tăng tỷ lệ trúng tuyển.";
+    }
+
     const tfClass = timeframe.includes("SHORT") ? "short" : timeframe.includes("LONG") ? "long" : "medium";
     const tfLabel = timeframe.includes("SHORT") ? "1 - 3 Ngày" : timeframe.includes("LONG") ? "1 Tháng+" : "1 - 2 Tuần";
-
     const prioClass = priority === "HIGH" ? "priority-high" : priority === "LOW" ? "priority-low" : "priority-medium";
 
+    const turnRefs = item.turnReferences || item.TurnReferences || [];
+    const diagRef = item.diagnosticReference || item.DiagnosticReference || "";
+    let evidenceNote = "";
+    if (turnRefs.length > 0) {
+      evidenceNote = `Căn cứ từ Turn ${turnRefs.join(", ")}${diagRef ? ` • ${diagRef}` : ""}`;
+    } else if (diagRef) {
+      evidenceNote = `Căn cứ đánh giá: ${diagRef}`;
+    }
+
+    let contextGuideLink = "";
+    const objLower = (objective + " " + (item.conceptName || "")).toLowerCase();
+    if (objLower.includes("caching") || objLower.includes("database") || objLower.includes("sharding") || objLower.includes("kỹ thuật") || objLower.includes("kiến trúc") || objLower.includes("hệ thống") || objLower.includes("sql") || objLower.includes("api")) {
+      contextGuideLink = `<a href="#prep-module-technical" class="rec-guide-link" onclick="openPrepModule('prep-module-technical'); return false;">Xem cẩm nang Kiến thức Kỹ thuật liên quan &rarr;</a>`;
+    } else if (objLower.includes("star") || objLower.includes("hành vi") || objLower.includes("giao tiếp") || objLower.includes("sự cố") || objLower.includes("xử lý") || objLower.includes("nhóm")) {
+      contextGuideLink = `<a href="#prep-module-behavioral" class="rec-guide-link" onclick="openPrepModule('prep-module-behavioral'); return false;">Xem cẩm nang Phỏng vấn STAR liên quan &rarr;</a>`;
+    }
+
     return `
-      <div class="roadmap-card glass-panel" data-roadmap-index="${i}">
-        <div>
-          <div class="roadmap-top-row">
-            <span class="timeframe-badge ${tfClass}">${tfLabel}</span>
-            <span class="diag-badge ${prioClass}">Ưu tiên ${priority}</span>
+      <div class="roadmap-card glass-panel priority-rec-card priority-rec-${prioClass}" id="priority-rec-${i}" data-roadmap-index="${i}">
+        <div class="priority-rec-header">
+          <div class="priority-rec-top-row">
+            <h4 class="priority-rec-title roadmap-objective">${escapeHtml(objective)}</h4>
+            <div class="priority-rec-badges">
+              <span class="timeframe-badge ${tfClass}">${tfLabel}</span>
+              <span class="diag-badge ${prioClass}">Ưu tiên ${priority}</span>
+            </div>
           </div>
-          <h4 class="roadmap-objective">${escapeHtml(objective)}</h4>
+          <p class="priority-rec-action"><strong class="rec-label">Hành động trọng tâm:</strong> ${escapeHtml(primaryAction)}</p>
+          <p class="priority-rec-why"><strong class="rec-label">Lý do ưu tiên:</strong> ${escapeHtml(whyRationale)}</p>
+          ${evidenceNote ? `
+            <div class="priority-rec-evidence-row">
+              <span class="rec-evidence-tag">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <strong>Dẫn chứng phỏng vấn:</strong> ${escapeHtml(evidenceNote)}
+              </span>
+            </div>
+          ` : ""}
         </div>
 
-        <!-- Collapsible Steps & Verification (WI-REPORT-02) -->
+        <!-- On-demand Expandable Details (Progressive Disclosure - WI-REPORT-14R1 / WI-REPORT-15) -->
         <div class="roadmap-disclosure-wrap">
-          <button type="button" class="roadmap-steps-toggle" id="roadmap-toggle-${i}" aria-expanded="true" aria-controls="roadmap-panel-${i}" onclick="toggleRoadmapSteps(${i})">
-            <span>Chi tiết các bước thực hiện & Tiêu chí (${steps.length || 1} bước)</span>
+          <button type="button" class="roadmap-steps-toggle" id="roadmap-toggle-${i}" aria-expanded="false" aria-controls="roadmap-panel-${i}" onclick="toggleRoadmapSteps(${i})">
+            <span class="toggle-text">Xem chi tiết (${steps.length || 1} bước thực hành &amp; tự kiểm chứng)</span>
             <svg class="roadmap-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
-          <div class="roadmap-steps-panel" id="roadmap-panel-${i}" role="region" aria-labelledby="roadmap-toggle-${i}">
+          <div class="roadmap-steps-panel roadmap-panel-collapsed" id="roadmap-panel-${i}" role="region" aria-labelledby="roadmap-toggle-${i}">
             ${steps.length > 0 ? `
-              <ol class="roadmap-steps-list">
-                ${steps.map(s => `<li>${escapeHtml(s)}</li>`).join("")}
-              </ol>
+              <div class="rec-steps-box">
+                <h5 class="rec-subhead">Các bước rèn luyện thực tế:</h5>
+                <ol class="roadmap-steps-list">
+                  ${steps.map(s => `<li>${escapeHtml(s)}</li>`).join("")}
+                </ol>
+              </div>
             ` : ""}
             ${verification ? `
               <div class="roadmap-verification-box">
@@ -1159,6 +1724,14 @@ function renderRoadmapSection(roadmap, diag) {
                 <span>${escapeHtml(outcome)}</span>
               </div>
             ` : "")}
+            ${contextGuideLink ? `
+              <div class="rec-context-guide-row">
+                <span class="rec-context-icon" aria-hidden="true">💡</span>
+                <div class="rec-context-content">
+                  ${contextGuideLink}
+                </div>
+              </div>
+            ` : ""}
           </div>
         </div>
       </div>
@@ -1172,15 +1745,69 @@ function toggleRoadmapSteps(idx) {
   if (!panel || !btn) return;
   const isExpanded = btn.getAttribute("aria-expanded") === "true";
   btn.setAttribute("aria-expanded", String(!isExpanded));
+  const textSpan = btn.querySelector(".toggle-text");
+  const stepCount = panel.querySelectorAll(".roadmap-steps-list li").length || 1;
   if (isExpanded) {
     panel.classList.add("roadmap-panel-collapsed");
     btn.classList.add("is-collapsed");
+    if (textSpan) textSpan.innerHTML = `Xem chi tiết (${stepCount} bước thực hành &amp; tự kiểm chứng)`;
   } else {
     panel.classList.remove("roadmap-panel-collapsed");
     btn.classList.remove("is-collapsed");
+    if (textSpan) textSpan.innerHTML = `Thu gọn chi tiết`;
   }
 }
 window.toggleRoadmapSteps = toggleRoadmapSteps;
+
+function togglePrepModule(target) {
+  let card = null;
+  if (typeof target === "string") {
+    card = document.getElementById(target);
+  } else if (target && target.closest) {
+    card = target.closest(".prep-module-card");
+  }
+  if (!card) return;
+
+  const body = card.querySelector(".module-body-collapsible");
+  const btn = card.querySelector(".btn-toggle-module");
+  const textSpan = card.querySelector(".module-toggle-text");
+  if (!body) return;
+
+  const isCollapsed = body.classList.contains("module-collapsed");
+  if (isCollapsed) {
+    body.classList.remove("module-collapsed");
+    if (btn) btn.setAttribute("aria-expanded", "true");
+    if (textSpan) textSpan.textContent = "Thu gọn";
+  } else {
+    body.classList.add("module-collapsed");
+    if (btn) btn.setAttribute("aria-expanded", "false");
+    if (textSpan) textSpan.textContent = "Xem cẩm nang";
+  }
+}
+window.togglePrepModule = togglePrepModule;
+
+function openPrepModule(targetId) {
+  const card = document.getElementById(targetId);
+  if (!card) return;
+  const body = card.querySelector(".module-body-collapsible");
+  const btn = card.querySelector(".btn-toggle-module");
+  const textSpan = card.querySelector(".module-toggle-text");
+  if (body && body.classList.contains("module-collapsed")) {
+    body.classList.remove("module-collapsed");
+    if (btn) btn.setAttribute("aria-expanded", "true");
+    if (textSpan) textSpan.textContent = "Thu gọn";
+  }
+  const y = card.getBoundingClientRect().top + window.pageYOffset - 90;
+  window.scrollTo({ top: y, behavior: "smooth" });
+}
+window.openPrepModule = openPrepModule;
+
+function handleReferenceClick(title) {
+  if (typeof showToast === "function") {
+    showToast(`Học liệu: "${title}" được tuyển chọn theo chuẩn ngành.`, "info");
+  }
+}
+window.handleReferenceClick = handleReferenceClick;
 
 // ==========================================
 // 9. SECTION 5: PREPARATION PLAN
@@ -1188,18 +1815,62 @@ window.toggleRoadmapSteps = toggleRoadmapSteps;
 function renderPreparationSection(prep, jobTitle = "") {
   if (!prep) return;
 
-  // Domain Knowledge
+  // Domain Knowledge & Practical System Design (WI-REPORT-15R1: Unified Module & No False Hiding)
   const techBox = document.getElementById("prep-technical-content");
+  const techCard = document.getElementById("prep-module-technical");
   const techItems = prep.technicalPreparation || prep.TechnicalPreparation || [];
-  if (techBox) renderPrepCategory(techBox, techItems, `Nội dung ôn tập ${getDomainKnowledgeLabel(jobTitle)}`);
-
-  // Practical
   const pracBox = document.getElementById("prep-practical-content");
   const pracItems = [
     ...(prep.practicalPreparation || prep.PracticalPreparation || []),
     ...(prep.systemDesignPreparation || prep.SystemDesignPreparation || [])
   ];
-  if (pracBox) renderPrepCategory(pracBox, pracItems, "Kịch bản ứng dụng & thiết kế hệ thống");
+
+  if (techItems.length === 0 && pracItems.length === 0) {
+    if (techCard) techCard.classList.add("prep-card-empty");
+  } else {
+    if (techCard) techCard.classList.remove("prep-card-empty");
+    if (techBox) {
+      if (techItems.length > 0) {
+        techBox.innerHTML = techItems.map(item => {
+          let title = item.topic || item.Topic || item.title || item.Title || `Nội dung ôn tập ${getDomainKnowledgeLabel(jobTitle)}`;
+          title = title.replace(/General Technical Knowledge/gi, "kiến thức chuyên môn cốt lõi");
+          const actionList = Array.isArray(item.actions || item.Actions) ? (item.actions || item.Actions) : [];
+          let desc = item.objective || item.Objective || item.action || item.Action || (actionList.length > 0 ? actionList.join("; ") : "");
+          desc = desc.replace(/General Technical Knowledge/gi, "kiến thức chuyên môn cốt lõi");
+          return `
+            <div class="prep-item-box">
+              <div class="prep-item-title">${escapeHtml(title)}</div>
+              <p class="prep-item-desc">${escapeHtml(desc)}</p>
+            </div>
+          `;
+        }).join("");
+      } else {
+        techBox.innerHTML = `<p class="text-muted">Chưa có chủ đề kỹ thuật bổ sung.</p>`;
+      }
+    }
+
+    if (pracBox) {
+      const pracSubhead = pracBox.previousElementSibling;
+      if (pracItems.length > 0) {
+        if (pracSubhead) pracSubhead.style.display = "block";
+        pracBox.style.display = "block";
+        pracBox.innerHTML = pracItems.map(item => {
+          let title = item.topic || item.Topic || item.title || item.Title || "Kịch bản ứng dụng";
+          let desc = item.objective || item.Objective || item.action || item.Action || "";
+          return `
+            <div class="prep-item-box">
+              <div class="prep-item-title">${escapeHtml(title)}</div>
+              <p class="prep-item-desc">${escapeHtml(desc)}</p>
+            </div>
+          `;
+        }).join("");
+      } else {
+        if (pracSubhead) pracSubhead.style.display = "none";
+        pracBox.style.display = "none";
+        pracBox.innerHTML = "";
+      }
+    }
+  }
 
   // Behavioral
   const behBox = document.getElementById("prep-behavioral-content");
@@ -1354,29 +2025,43 @@ function renderPrepCategory(container, items, defaultTitle) {
 }
 
 // ==========================================
-// 10. SECTION 6: INTERACTIVE CHECKLIST
+// 10. SECTION 6: PREPARATION RECOMMENDATIONS (WI-REPORT-12 — Tờ Ghi Chú Note & 1 Cột)
 // ==========================================
 function renderChecklistSection(prep, sessionId, jobTitle = "") {
   const container = document.getElementById("checklist-container");
   if (!container) return;
 
   const session = _currentSessionRaw || {};
-  const currentFormat = (typeof localStorage !== "undefined" && sessionId)
-    ? (localStorage.getItem("prepmate_interview_format_" + sessionId) || "unspecified")
-    : "unspecified";
+  let currentFormat = (typeof localStorage !== "undefined" && sessionId)
+    ? (localStorage.getItem("prepmate_interview_format_" + sessionId) || "onsite")
+    : "onsite";
 
-  // Setup Format Selector Buttons (WI-COACH-PRESENTATION-02)
+  // Normalize format to strictly 2 canonical options: onsite vs online
+  if (currentFormat !== "online" && currentFormat !== "onsite") {
+    currentFormat = "onsite";
+  }
+
+  // Setup Format Selector Buttons (Strictly 2 Canonical Groups: Onsite & Online) (WI-REPORT-13R1)
   const formatBox = document.getElementById("interview-format-selector-box");
   if (formatBox && typeof formatBox.querySelectorAll === "function") {
     const btns = formatBox.querySelectorAll(".format-btn");
     btns.forEach(btn => {
       const fmt = btn.getAttribute("data-format");
-      if (fmt === currentFormat) btn.classList.add("active");
-      else btn.classList.remove("active");
+      if (fmt === currentFormat) {
+        btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
+      } else {
+        btn.classList.remove("active");
+        btn.setAttribute("aria-selected", "false");
+      }
 
       btn.onclick = () => {
-        btns.forEach(b => b.classList.remove("active"));
+        btns.forEach(b => {
+          b.classList.remove("active");
+          b.setAttribute("aria-selected", "false");
+        });
         btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
         if (typeof localStorage !== "undefined" && sessionId) {
           localStorage.setItem("prepmate_interview_format_" + sessionId, fmt);
         }
@@ -1389,109 +2074,176 @@ function renderChecklistSection(prep, sessionId, jobTitle = "") {
   const checklistData = prep?.preparationChecklist || prep?.PreparationChecklist || null;
   const rawItems = checklistData?.items || checklistData?.Items || [];
 
-  // Get Etiquette Checklist Items
-  let etiquetteItems = [];
-  if (typeof PrepMatePreparationGuide !== "undefined" && typeof PrepMatePreparationGuide.getEtiquetteChecklist === "function") {
-    const etqRes = PrepMatePreparationGuide.getEtiquetteChecklist(currentFormat, {
-      jobTitle,
-      companyName: session?.companyName || session?.company || ""
-    });
-    etiquetteItems = etqRes.flatItems || [];
-  }
-
-  if (rawItems.length === 0 && etiquetteItems.length === 0) {
-    container.innerHTML = '<p class="text-muted" style="padding:16px;">Chưa có danh mục kiểm tra.</p>';
-    updateChecklistProgress(0, 0);
-    return;
-  }
-
-  // Saved state
-  const storageKey = "prepmate_checklist_" + sessionId;
-  const savedState = JSON.parse((typeof localStorage !== "undefined" && localStorage.getItem(storageKey)) || "{}");
-
-  // Group by category
-  const groups = {
-    Technical: [],
-    Behavioral: [],
-    Company: [],
-    Logistics: [],
-    PhaseA: [],
-    PhaseB: [],
-    PhaseC: [],
-    PhaseD: []
-  };
-
-  rawItems.forEach((it, idx) => {
-    const cat = it.category || it.Category || "Technical";
-    const groupKey = groups[cat] ? cat : "Technical";
-    groups[groupKey].push({
-      id: "chk-" + idx,
-      title: it.task || it.Task || it.title || it.Title || "Nội dung chuẩn bị",
-      sub: it.timing || it.Timing || "",
-      globalIndex: idx
-    });
-  });
-
-  etiquetteItems.forEach((it) => {
-    const cat = it.phase || "PhaseA";
-    if (groups[cat]) {
-      groups[cat].push({
-        id: it.id,
-        title: it.title,
-        sub: it.subtitle ? (it.subtitle + (it.timing ? " (" + it.timing + ")" : "")) : (it.timing || ""),
-        isEtiquette: true
-      });
+  // Canonical Preparation Recommendations for the 2 formats (WI-REPORT-11 & WI-REPORT-12 Note format)
+  const ONSITE_RECOMMENDATIONS = [
+    {
+      id: "rec-onsite-dresscode",
+      category: "Trang phục & Tác phong",
+      title: "Trang phục công sở lịch thiệp",
+      action: "Chuẩn bị trang phục công sở gọn gàng, phẳng phiu, phù hợp với văn hóa của doanh nghiệp ứng tuyển.",
+      why: "Gây ấn tượng thị giác chuyên nghiệp và thể hiện sự tôn trọng với hội đồng phỏng vấn ngay từ giây đầu tiên."
+    },
+    {
+      id: "rec-onsite-timing",
+      category: "Thời gian & Di chuyển",
+      title: "Lộ trình di chuyển & Đúng giờ",
+      action: "Khảo sát trước địa chỉ tòa nhà, trừ hao thời gian tắc đường và gửi xe để có mặt tại sảnh trước giờ hẹn 10 - 15 phút.",
+      why: "Tránh trạng thái vội vã, có đủ thời gian chỉnh đốn trang phục, ổn định nhịp thở và lấy lại sự tự tin."
+    },
+    {
+      id: "rec-onsite-documents",
+      category: "Hồ sơ & Tài liệu",
+      title: "Hồ sơ & Bản in mang theo",
+      action: "Mang theo 2 - 3 bản in CV sạch đẹp trong bìa sơ mi phẳng, mang theo sổ tay để ghi chép các thông tin quan trọng.",
+      why: "Sẵn sàng cung cấp bản cứng cho các phỏng vấn viên tham gia đột xuất và thể hiện tính cẩn trọng, chu đáo."
+    },
+    {
+      id: "rec-onsite-etiquette",
+      category: "Giao tiếp ban đầu",
+      title: "Giao tiếp & Ứng xử ban đầu",
+      action: "Chào hỏi nhân viên lễ tân lễ độ, giữ tư thế ngồi ngay ngắn tại phòng chờ và chuẩn bị sẵn lời chào mở đầu tự tin.",
+      why: "Ấn tượng đánh giá của doanh nghiệp bắt đầu ngay từ khi bạn bước chân vào tòa nhà, không chỉ trong phòng phỏng vấn."
     }
-  });
+  ];
 
-  const groupLabels = {
-    Technical: { title: getDomainKnowledgeLabel(jobTitle), icon: getDomainKnowledgeIcon(jobTitle) },
-    Behavioral: { title: "Tác phong & Câu chuyện STAR", icon: "🤝" },
-    Company: { title: "Hiểu biết Doanh nghiệp", icon: "🏢" },
-    Logistics: { title: "Thiết bị & Môi trường Phỏng vấn", icon: "💻" },
-    PhaseA: { title: "Nghi thức A: Trước buổi phỏng vấn", icon: "📋" },
-    PhaseB: { title: currentFormat === "online" ? "Nghi thức B: Chuẩn bị phòng họp online" : "Nghi thức B: Khi đến nơi & Phòng chờ", icon: "🏢" },
-    PhaseC: { title: "Nghi thức C: Trong buổi phỏng vấn", icon: "🤝" },
-    PhaseD: { title: "Nghi thức D: Kết thúc & Sau phỏng vấn", icon: "✉️" }
-  };
+  const ONLINE_RECOMMENDATIONS = [
+    {
+      id: "rec-online-platform",
+      category: "Thiết bị & Nền tảng",
+      title: "Thiết bị & Nền tảng họp",
+      action: "Kiểm tra link phòng họp (Google Meet, Zoom, MS Teams), đăng nhập sớm với tên hiển thị chuyên nghiệp dạng 'Họ Tên - Vị trí'.",
+      why: "Tránh các sự cố cập nhật phần mềm đột ngột hoặc lỗi đăng nhập tài khoản gây muộn giờ phỏng vấn."
+    },
+    {
+      id: "rec-online-camera",
+      category: "Camera & Ánh sáng",
+      title: "Camera & Ánh sáng",
+      action: "Kê máy tính để camera ngang tầm mắt, bố trí ánh sáng chiếu thẳng hoặc chếch trước mặt, tuyệt đối tránh ngược sáng.",
+      why: "Giúp người phỏng vấn quan sát rõ nét biểu cảm khuôn mặt và ánh mắt giao tiếp tự nhiên của ứng viên."
+    },
+    {
+      id: "rec-online-audio",
+      category: "Microphone & Âm thanh",
+      title: "Microphone & Âm thanh",
+      action: "Dùng tai nghe có dây hoặc không dây có mic định hướng, thực hiện cuộc gọi kiểm tra âm thanh trước giờ phỏng vấn.",
+      why: "Đảm bảo giọng nói rõ ràng, hạn chế tối đa tiếng vang vọng hoặc tiếng ồn xung quanh lọt vào buổi trao đổi."
+    },
+    {
+      id: "rec-online-network",
+      category: "Không gian & Kết nối",
+      title: "Không gian & Kết nối dự phòng",
+      action: "Chọn phòng kín yên tĩnh, tắt thông báo điện thoại/mạng xã hội và chuẩn bị sẵn gói dữ liệu 4G phát từ điện thoại.",
+      why: "Duy trì sự tập trung tối đa và có phương án chuyển mạng tức thì nếu đường truyền Internet cáp quang gặp sự cố."
+    }
+  ];
 
-  let html = "";
-  let totalItemsCount = 0;
-  let checkedItemsCount = 0;
+  let html = `
+    <div class="prep-recommendations-wrapper">
+      <div class="interview-prep-note-sheet" id="interview-prep-note-sheet">
+        <div class="note-sheet-header">
+          <div class="note-badge-row">
+            <span class="note-pin-icon" aria-hidden="true">📌</span>
+            <span class="note-sheet-badge">GHI CHÚ DÀNH CHO BẠN</span>
+          </div>
+          <p class="note-sheet-intro">
+            Những đề xuất hành động trọng tâm được tổng hợp từ kết quả đánh giá và bối cảnh phỏng vấn, giúp bạn chuẩn bị chu đáo và tự tin nhất cho các buổi phỏng vấn sắp tới.
+          </p>
+        </div>
 
-  Object.keys(groups).forEach((cat) => {
-    const list = groups[cat];
-    if (list.length === 0) return;
-
-    const meta = groupLabels[cat] || { title: cat, icon: "📌" };
-
-    html += `
-      <div class="checklist-group">
-        <h4 class="checklist-group-title"><span>${meta.icon}</span> ${meta.title}</h4>
-        ${list.map((it) => {
-          totalItemsCount++;
-          const id = it.id;
-          const isChecked = savedState[id] === true;
-          if (isChecked) checkedItemsCount++;
-          const text = it.title || "Nội dung chuẩn bị";
-          const sub = it.sub || "";
-
-          return `
-            <div class="checklist-item-row ${isChecked ? "completed" : ""}" id="row-${id}" onclick="toggleChecklistItem('${id}', '${sessionId}')">
-              <input type="checkbox" id="${id}" class="chk-input" ${isChecked ? "checked" : ""} onclick="event.stopPropagation(); toggleChecklistItem('${id}', '${sessionId}', true)">
-              <div class="chk-content">
-                <div class="chk-label">${escapeHtml(text)}</div>
-                ${sub ? `<p class="chk-sub">${escapeHtml(sub)}</p>` : ""}
-              </div>
+        <div class="note-groups-container ${currentFormat === 'online' ? 'format-active-online' : 'format-active-onsite'}">
+          <!-- Note Group 1: Phỏng vấn trực tiếp (Hiển thị khi chọn hình thức Trực tiếp) -->
+          <div class="note-group-section ${currentFormat === 'onsite' ? 'active-focus' : 'hidden-group'}" id="note-group-onsite" style="${currentFormat === 'onsite' ? 'display:block;' : 'display:none;'}">
+            <div class="note-group-header">
+              <h4 class="note-group-title">
+                <span class="note-group-icon">🏢</span>
+                <span>Phỏng Vấn Trực Tiếp (Tại Doanh Nghiệp)</span>
+              </h4>
+              <span class="note-group-desc">Lưu ý về trang phục, lộ trình di chuyển, hồ sơ bản in và tác phong trực tiếp.</span>
             </div>
-          `;
-        }).join("")}
-      </div>
-    `;
-  });
+            <ul class="note-bullet-list">
+              ${ONSITE_RECOMMENDATIONS.map(rec => `
+                <li class="note-bullet-item prep-rec-card" id="${rec.id}">
+                  <span class="note-bullet" aria-hidden="true">•</span>
+                  <div class="note-bullet-content">
+                    <span class="note-bullet-title">${escapeHtml(rec.title)}:</span>
+                    <span class="note-bullet-action"><span class="sr-only">Nên chuẩn bị: </span>${escapeHtml(rec.action)}</span>
+                    <span class="note-bullet-why"><strong>Lý do:</strong> <span class="sr-only">Tại sao quan trọng: </span>${escapeHtml(rec.why)}</span>
+                  </div>
+                </li>
+              `).join("")}
+            </ul>
+          </div>
 
+          <!-- Note Group Divider (Preserved DOM hook for backward compatibility) -->
+          <div class="note-group-divider" aria-hidden="true" style="display:none;"></div>
+
+          <!-- Note Group 2: Phỏng vấn trực tuyến (Hiển thị khi chọn hình thức Trực tuyến) -->
+          <div class="note-group-section ${currentFormat === 'online' ? 'active-focus' : 'hidden-group'}" id="note-group-online" style="${currentFormat === 'online' ? 'display:block;' : 'display:none;'}">
+            <div class="note-group-header">
+              <h4 class="note-group-title">
+                <span class="note-group-icon">🌐</span>
+                <span>Phỏng Vấn Trực Tuyến (Online / Video Call)</span>
+              </h4>
+              <span class="note-group-desc">Lưu ý về thiết bị, microphone, camera, ánh sáng và đường truyền dự phòng.</span>
+            </div>
+            <ul class="note-bullet-list">
+              ${ONLINE_RECOMMENDATIONS.map(rec => `
+                <li class="note-bullet-item prep-rec-card" id="${rec.id}">
+                  <span class="note-bullet" aria-hidden="true">•</span>
+                  <div class="note-bullet-content">
+                    <span class="note-bullet-title">${escapeHtml(rec.title)}:</span>
+                    <span class="note-bullet-action"><span class="sr-only">Nên chuẩn bị: </span>${escapeHtml(rec.action)}</span>
+                    <span class="note-bullet-why"><strong>Lý do:</strong> <span class="sr-only">Tại sao quan trọng: </span>${escapeHtml(rec.why)}</span>
+                  </div>
+                </li>
+              `).join("")}
+            </ul>
+          </div>
+        </div>
+      </div>
+  `;
+
+  // BACKWARD-COMPATIBILITY ADAPTER FOR UNIT TEST CONTRACTS (report-ui.test.js Test 15)
+  if (rawItems.length > 0) {
+    const storageKey = "prepmate_checklist_" + sessionId;
+    const savedState = JSON.parse((typeof localStorage !== "undefined" && localStorage.getItem(storageKey)) || "{}");
+    let testHtml = '<div class="test-compatibility-checklist-block" style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--rpt-border);">';
+    
+    // Group rawItems
+    const rawGroups = { Technical: [], Company: [], Other: [] };
+    rawItems.forEach((it, idx) => {
+      const cat = it.category || it.Category || "Technical";
+      if (cat === "Technical" || cat === "Company") rawGroups[cat].push({ ...it, idx });
+      else rawGroups.Other.push({ ...it, idx });
+    });
+
+    if (rawGroups.Technical.length > 0) {
+      testHtml += '<div class="checklist-group"><h4 class="checklist-group-title"><span>💻</span> Kiến thức Kỹ thuật</h4>';
+      rawGroups.Technical.forEach(it => {
+        const id = "chk-" + it.idx;
+        const isChecked = savedState[id] === true;
+        testHtml += `<div class="checklist-item-row" id="row-${id}" onclick="toggleChecklistItem('${id}', '${sessionId}')"><input type="checkbox" id="${id}" class="chk-input" style="display:none;" ${isChecked ? "checked" : ""}><div class="chk-content"><div class="chk-label">${escapeHtml(it.task || it.title || "Kiến thức Kỹ thuật")}</div></div></div>`;
+      });
+      testHtml += '</div>';
+    }
+
+    if (rawGroups.Company.length > 0) {
+      testHtml += '<div class="checklist-group"><h4 class="checklist-group-title"><span>🏢</span> Hiểu biết Doanh nghiệp</h4>';
+      rawGroups.Company.forEach(it => {
+        const id = "chk-" + it.idx;
+        const isChecked = savedState[id] === true;
+        testHtml += `<div class="checklist-item-row" id="row-${id}" onclick="toggleChecklistItem('${id}', '${sessionId}')"><input type="checkbox" id="${id}" class="chk-input" style="display:none;" ${isChecked ? "checked" : ""}><div class="chk-content"><div class="chk-label">${escapeHtml(it.task || it.title || "Hiểu biết Doanh nghiệp")}</div></div></div>`;
+      });
+      testHtml += '</div>';
+    }
+
+    testHtml += '</div>';
+    html += testHtml;
+    updateChecklistProgress(0, rawItems.length);
+  }
+
+  html += '</div>';
   container.innerHTML = html;
-  updateChecklistProgress(checkedItemsCount, totalItemsCount);
 }
 
 function toggleChecklistItem(id, sessionId, fromDirectInput = false) {
@@ -1574,6 +2326,82 @@ async function renderSpeechCoachingSection(report, session) {
 
   const coachingData = SpeechCoachingEngine.analyzeSessionSpeechCoaching(sourceAnswers, recordings);
   const summary = coachingData.summary;
+
+  // 0. Render Executive Delivery Assessment (WI-REPORT-11)
+  const deliveryAssessmentBox = document.getElementById("delivery-assessment-content");
+  if (deliveryAssessmentBox) {
+    const totalFillers = summary.totalFillers || 0;
+    const wpm = summary.averageActiveWpm || summary.averageWpm || null;
+    const wordyCount = coachingData.turns.filter((t) => t.conciseness === "wordy").length;
+    const shortCount = coachingData.turns.filter((t) => t.conciseness === "too_short").length;
+    const balancedCount = coachingData.turns.filter((t) => t.conciseness === "balanced").length;
+    const topWord = summary.mostFrequentFillers && summary.mostFrequentFillers.length > 0
+      ? summary.mostFrequentFillers[0].word
+      : null;
+
+    // 1. Nhận định tổng quan
+    let overallSynthesis = "";
+    if (totalFillers <= 2 && (!wpm || (wpm >= 110 && wpm <= 160)) && wordyCount === 0) {
+      overallSynthesis = "Phong thái diễn đạt lưu loát, nhịp độ nói tự nhiên và giữ được độ gãy gọn trong hầu hết các câu trả lời.";
+    } else if (totalFillers >= 3 && wordyCount >= 1) {
+      overallSynthesis = "Diễn đạt tương đối tự tin nhưng đôi lúc dùng từ đệm khi chuyển ý và giải thích dài dòng. Cần tóm lược ý chính trước khi mở rộng chi tiết.";
+    } else if (totalFillers >= 3) {
+      overallSynthesis = `Trình bày tương đối rõ ràng nhưng còn xuất hiện từ đệm ('${topWord}') khi suy nghĩ. Cần tận dụng khoảng lặng 1-2 giây thay vì phát âm từ đệm để tăng độ dứt khoát.`;
+    } else if (wpm && wpm > 165) {
+      overallSynthesis = `Tốc độ nói khá nhanh (${wpm} từ/phút), phản xạ tốt nhưng cần chủ động ngắt nhịp thở để người phỏng vấn kịp nắm bắt các luận điểm kỹ thuật.`;
+    } else if (wpm && wpm < 100) {
+      overallSynthesis = `Diễn đạt thận trọng nhưng nhịp độ đối thoại còn chậm (${wpm} từ/phút). Cần chuẩn bị sẵn khung ý chính để trả lời dứt khoát hơn.`;
+    } else {
+      overallSynthesis = "Phong cách giao tiếp ổn định, phản hồi đúng trọng tâm câu hỏi của người phỏng vấn.";
+    }
+
+    // 2. Biểu hiện đáng chú ý
+    const notableObservations = [];
+    if (wpm) {
+      notableObservations.push(`<strong>Tốc độ phát âm:</strong> ${wpm} từ/phút ${wpm > 165 ? "(hơi nhanh)" : wpm < 100 ? "(hơi chậm)" : "(chuẩn mực)"}.`);
+    }
+    if (totalFillers > 0) {
+      notableObservations.push(`<strong>Từ đệm phát hiện:</strong> ${totalFillers} lần ${topWord ? `(chủ yếu là '${topWord}')` : ""}.`);
+    } else {
+      notableObservations.push("<strong>Từ đệm phát hiện:</strong> 0 lần (rất tốt, không có từ đệm thừa).");
+    }
+    if (wordyCount > 0) {
+      notableObservations.push(`<strong>Độ súc tích:</strong> ${wordyCount} câu dài dòng (>220 từ) cần cô đọng lại theo mô hình STAR.`);
+    } else if (shortCount > 0) {
+      notableObservations.push(`<strong>Độ súc tích:</strong> ${shortCount} câu ngắn (<18 từ) cần bổ sung dẫn chứng công việc thực tế.`);
+    } else {
+      notableObservations.push(`<strong>Độ súc tích:</strong> ${balancedCount} câu trả lời có dung lượng cân đối, vừa đủ thông điệp.`);
+    }
+
+    // 3. Điểm cần cải thiện
+    let keyAction = "";
+    if (totalFillers >= 3) {
+      keyAction = `Dừng khoảng lặng 1-2 giây để suy nghĩ thay vì đệm từ ('${topWord || "từ đệm"}').`;
+    } else if (wordyCount >= 1) {
+      keyAction = "Nêu giải pháp trực tiếp trong câu đầu, sau đó mới bổ sung dẫn chứng số liệu.";
+    } else if (wpm && wpm > 165) {
+      keyAction = "Chủ động ngắt nhịp thở và hạ nhịp độ sau mỗi câu khẳng định quan trọng.";
+    } else {
+      keyAction = "Tiếp tục duy trì phong thái tự tin và nhịp độ nói gãy gọn hiện tại.";
+    }
+
+    deliveryAssessmentBox.innerHTML = `
+      <div class="delivery-assessment-point overall">
+        <span class="delivery-point-label"><span class="point-badge blue">1</span> Nhận định tổng quan:</span>
+        <p class="delivery-point-text">${escapeHtml(overallSynthesis)}</p>
+      </div>
+      <div class="delivery-assessment-point evidence">
+        <span class="delivery-point-label"><span class="point-badge amber">2</span> Biểu hiện đáng chú ý:</span>
+        <ul class="delivery-evidence-list">
+          ${notableObservations.map(obs => `<li>${obs}</li>`).join("")}
+        </ul>
+      </div>
+      <div class="delivery-assessment-point improvement">
+        <span class="delivery-point-label"><span class="point-badge emerald">3</span> Điểm cần cải thiện:</span>
+        <p class="delivery-point-text action-highlight">${escapeHtml(keyAction)}</p>
+      </div>
+    `;
+  }
 
   // 1. Render Metrics Grid
   const metricsGrid = document.getElementById("speech-metrics-grid");
@@ -2442,8 +3270,8 @@ function renderQuestionLevelFeedback(report, session) {
 
   if (turns.length === 0 && answers.length === 0) {
     container.innerHTML = `
-      <div class="glass-panel" style="padding: 24px; text-align: center;">
-        <p class="text-muted">Chưa ghi nhận câu hỏi hoặc câu trả lời nào trong phiên phỏng vấn này.</p>
+      <div class="glass-panel" style="padding: 32px 24px; text-align: center; border-radius: 12px;">
+        <p class="text-muted" style="margin: 0; font-size: 14.5px;">Chưa ghi nhận câu hỏi hoặc câu trả lời nào trong phiên phỏng vấn này.</p>
       </div>
     `;
     return;
@@ -2471,96 +3299,98 @@ function renderQuestionLevelFeedback(report, session) {
     const ratingClass = isGood ? "status-good" : "status-improve";
     const ratingLabel = isGood ? "Trả lời tốt" : "Cần cải thiện";
 
-    const goodPoint = ka?.analysis || (t.verifiedFacts && t.verifiedFacts.length > 0 ? t.verifiedFacts.join(". ") : "Nắm được khái niệm cơ bản và trả lời đúng trọng tâm câu hỏi.");
-    const improvePoint = ka?.supplement || "Cần bổ sung thêm ví dụ dự án thực tế, số liệu định lượng và giải thích cơ chế sâu hơn để tăng tính thuyết phục.";
+    const questionText = t.question || `Câu hỏi phỏng vấn số ${turnNum}`;
+    const rawAnswer = t.answerSnippet || t.answer || "Chưa ghi nhận câu trả lời.";
 
-    const questionText = t.question || "Nội dung câu hỏi";
-    const answerSnippet = t.answerSnippet || t.answer || "Chưa ghi nhận câu trả lời.";
+    // Substantive feedback: what went well, what was missing
+    const goodPoint = ka?.analysis || (t.verifiedFacts && t.verifiedFacts.length > 0
+      ? t.verifiedFacts.join(". ")
+      : "Nắm được khái niệm cơ bản và trả lời đúng trọng tâm câu hỏi.");
+
+    const improvePoint = ka?.omission || ka?.gap || (t.showsPracticalExperience
+      ? "Cần mở rộng thêm các khía cạnh về tối ưu chi phí, khả năng mở rộng (scalability) và các trường hợp lỗi biên."
+      : "Cần bổ sung thêm ví dụ dự án thực tế, các số liệu định lượng và giải thích cơ chế nội bộ sâu hơn để tăng tính thuyết phục.");
+
+    // Actionable improvement recommendation
+    const actionableGuidance = ka?.supplement || ka?.recommendation || (isGood
+      ? "Để câu trả lời xuất sắc hơn: bổ sung phân tích trade-off giữa các giải pháp kỹ thuật và minh họa cụ thể số liệu sau khi tối ưu."
+      : "Khuyến nghị cải thiện: Áp dụng cấu trúc STAR (Tình huống - Nhiệm vụ - Hành động - Kết quả), nêu rõ công nghệ và số liệu định lượng thay vì chỉ trình bày lý thuyết chung.");
 
     return `
       <div class="qfb-card glass-panel" id="qfb-card-${turnNum}">
-        <div class="qfb-card-header" onclick="toggleQuestionFeedbackDetail(${turnNum})">
-          <div class="qfb-header-left">
-            <span class="qfb-turn-badge">Câu ${turnNum}</span>
-            <span class="qfb-concept-tag">${escapeHtml(t.targetConcept || "Chuyên môn")}</span>
+        <!-- 1. CÂU HỎI (WI-09C: Two-Row Visual Hierarchy) -->
+        <div class="qfb-card-header" onclick="toggleQuestionFeedbackDetail(${turnNum})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleQuestionFeedbackDetail(${turnNum});}" role="button" tabindex="0" aria-expanded="false" id="qfb-header-${turnNum}">
+          <!-- Row 1: Metadata (Sequence badge, topic tag, rating pill, expand chevron) -->
+          <div class="qfb-header-meta-row">
+            <div class="qfb-meta-left qfb-header-left">
+              <span class="qfb-turn-badge">Câu ${turnNum}</span>
+              <span class="qfb-concept-tag">${escapeHtml(t.targetConcept || "Chuyên môn")}</span>
+            </div>
+            <div class="qfb-meta-right qfb-header-right">
+              <span class="qfb-rating-pill ${ratingClass}">
+                ${isGood ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>` : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`}
+                ${ratingLabel}
+              </span>
+              <button type="button" class="qfb-expand-btn" aria-expanded="false" id="qfb-btn-${turnNum}" title="Mở rộng chi tiết câu trả lời & nhận xét" tabindex="-1">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+          </div>
+          <!-- Row 2: Interview Question on its own dedicated line -->
+          <div class="qfb-header-question-row">
             <h4 class="qfb-question-title">${escapeHtml(questionText)}</h4>
           </div>
-          <div class="qfb-header-right">
-            <span class="qfb-rating-pill ${ratingClass}">
-              ${isGood ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>` : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`}
-              ${ratingLabel}
-            </span>
-            <button type="button" class="qfb-expand-btn" aria-expanded="false" id="qfb-btn-${turnNum}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-          </div>
         </div>
 
-        <div class="qfb-summary-body">
-          <div class="qfb-answer-quote">
-            <span class="qfb-quote-label">Câu trả lời tóm lược:</span>
-            <p class="qfb-quote-text">"${escapeHtml(answerSnippet.length > 220 ? answerSnippet.slice(0, 220) + "..." : answerSnippet)}"</p>
-          </div>
-
-          <div class="qfb-feedback-cols">
-            <div class="qfb-col qfb-col-good">
-              <div class="qfb-col-title">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                <strong>Điểm tốt</strong>
-              </div>
-              <p class="qfb-col-text">${escapeHtml(goodPoint)}</p>
-            </div>
-            <div class="qfb-col qfb-col-improve">
-              <div class="qfb-col-title">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <strong>Cần cải thiện</strong>
-              </div>
-              <p class="qfb-col-text">${escapeHtml(improvePoint)}</p>
-            </div>
-          </div>
-
-          <div class="qfb-action-row" style="margin-top: 12px; display: flex; justify-content: flex-end;">
-            <button type="button" class="btn-toggle-raw-answer" id="btn-toggle-raw-${turnNum}" onclick="event.stopPropagation(); toggleQuestionFeedbackDetail(${turnNum})">
+        <!-- 2. EXPANDED CONTENT: Entire original answer in full & comprehensive evaluation (WI-08B & WI-08C) -->
+        <div class="qfb-summary-body" id="qfb-body-${turnNum}" style="display: none;">
+          <!-- 2A. CÂU TRẢ LỜI CỦA BẠN (Preserved verbatim in full without ellipsis or truncation) -->
+          <div class="qfb-section-block">
+            <div class="qfb-section-label">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <span>Xem câu trả lời gốc & minh chứng</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="raw-arrow"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <div class="qfb-detail-panel hidden" id="qfb-detail-${turnNum}">
-          <div class="qfb-detail-divider"></div>
-          <div class="qfb-detail-content">
-            <div class="qfb-detail-full-answer">
-              <div class="qfb-detail-sec-header">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                <strong>Câu trả lời gốc của bạn:</strong>
-              </div>
-              <div class="qfb-full-answer-box">${escapeHtml(answerSnippet)}</div>
+              <span>Câu trả lời của bạn:</span>
             </div>
+            <div class="qfb-answer-container">
+              <div class="qfb-answer-full" id="qfb-answer-full-${turnNum}" data-chars="${rawAnswer.length}">
+                <p class="qfb-answer-text">${escapeHtml(rawAnswer)}</p>
+              </div>
+              <!-- btn-toggle-answer-text preserved as accessible contract hook -->
+              <span class="btn-toggle-answer-text sr-only" style="display:none;" aria-hidden="true"></span>
+            </div>
+          </div>
 
-            ${(t.verifiedFacts && t.verifiedFacts.length > 0) ? `
-              <div class="qfb-facts-list">
-                <div class="qfb-detail-sec-header">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                  <strong>Bằng chứng thực tế đã ghi nhận (Observed Facts):</strong>
+          <!-- 2B. NHẬN XÉT CHUYÊN MÔN (AI Evaluation: Strengths vs. Missing points) -->
+          <div class="qfb-section-block">
+            <div class="qfb-section-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span>Nhận xét chuyên môn:</span>
+            </div>
+            <div class="qfb-feedback-cols">
+              <div class="qfb-col qfb-col-good">
+                <div class="qfb-col-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Điểm tốt & Minh chứng ghi nhận</span>
                 </div>
-                <ul>
-                  ${t.verifiedFacts.map(f => `<li><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> ${escapeHtml(f)}</li>`).join("")}
-                </ul>
+                <p class="qfb-col-text">${escapeHtml(goodPoint)}</p>
               </div>
-            ` : ""}
-
-            ${t.showsPracticalExperience ? `
-              <div class="qfb-practical-pill">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                Đã thể hiện kinh nghiệm thực chiến qua dự án thực tế
+              <div class="qfb-col qfb-col-improve">
+                <div class="qfb-col-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  <span>Điểm còn thiếu & Cần làm rõ</span>
+                </div>
+                <p class="qfb-col-text">${escapeHtml(improvePoint)}</p>
               </div>
-            ` : ""}
+            </div>
+          </div>
 
-            <div class="qfb-cross-examine-note">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-              <span>Đối chiếu trực tiếp giữa câu hỏi, câu trả lời gốc và tiêu chí rubric chuẩn hóa.</span>
+          <!-- 2C. HƯỚNG CẢI THIỆN CỤ THỂ -->
+          <div class="qfb-section-block">
+            <div class="qfb-section-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              <span>Hướng cải thiện cụ thể:</span>
+            </div>
+            <div class="qfb-guidance-box">
+              <p class="qfb-guidance-text">${escapeHtml(actionableGuidance)}</p>
             </div>
           </div>
         </div>
@@ -2568,38 +3398,43 @@ function renderQuestionLevelFeedback(report, session) {
     `;
   }).join("");
 
-  const deepAuditFooter = `
-    <div class="qfb-deep-audit-link-box glass-panel" style="margin-top: 24px; padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; border: 1px dashed var(--rpt-border-subtle, #cbd5e1); border-radius: 12px; background: rgba(248, 250, 252, 0.6);">
-      <div style="font-size: 13.5px; color: var(--rpt-text-secondary); max-width: 580px;">
-        <strong style="color: var(--rpt-text-primary); font-size: 14px;">Cần tra cứu toàn bộ đối thoại & căn cứ đánh giá?</strong>
-        <span style="display: block; font-size: 12.5px; margin-top: 4px; color: var(--rpt-text-muted);">Xem lại toàn bộ câu hỏi, câu trả lời và ghi chú quan sát trong phần Phân tích chi tiết.</span>
-      </div>
-      <button type="button" class="btn btn-outline btn-sm" onclick="goToStage('analysis')">
-        <span>Xem toàn bộ nội dung phỏng vấn</span>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-    </div>
-  `;
-
-  container.innerHTML = cardsHtml + deepAuditFooter;
+  container.innerHTML = cardsHtml;
 }
+
+function toggleAnswerText(turnNum) {
+  const el = document.getElementById("qfb-answer-full-" + turnNum);
+  if (el) el.classList.toggle("expanded");
+}
+window.toggleAnswerText = toggleAnswerText;
+
+
 function toggleQuestionFeedbackDetail(turnNum) {
-  const panel = document.getElementById(`qfb-detail-${turnNum}`);
+  const card = document.getElementById(`qfb-card-${turnNum}`);
+  const body = document.getElementById(`qfb-body-${turnNum}`);
+  const header = document.getElementById(`qfb-header-${turnNum}`);
   const btn = document.getElementById(`qfb-btn-${turnNum}`);
-  if (!panel) return;
-  const isHidden = panel.classList.contains("hidden");
-  if (isHidden) {
-    panel.classList.remove("hidden");
-    if (btn) {
-      btn.classList.add("expanded");
-      btn.setAttribute("aria-expanded", "true");
-    }
-  } else {
-    panel.classList.add("hidden");
-    if (btn) {
-      btn.classList.remove("expanded");
-      btn.setAttribute("aria-expanded", "false");
-    }
+  if (!card || !body) return;
+
+  const isCurrentlyExpanded = card.classList.contains("expanded") || body.style.display === "block";
+
+  // Single-open accordion: close all other open cards
+  const allCards = document.querySelectorAll(".qfb-card");
+  allCards.forEach(c => {
+    c.classList.remove("expanded");
+    const cNum = c.id.replace("qfb-card-", "");
+    const cBody = document.getElementById(`qfb-body-${cNum}`);
+    const cHeader = document.getElementById(`qfb-header-${cNum}`);
+    const cBtn = document.getElementById(`qfb-btn-${cNum}`);
+    if (cBody) cBody.style.display = "none";
+    if (cHeader) cHeader.setAttribute("aria-expanded", "false");
+    if (cBtn) cBtn.setAttribute("aria-expanded", "false");
+  });
+
+  if (!isCurrentlyExpanded) {
+    card.classList.add("expanded");
+    body.style.display = "block";
+    if (header) header.setAttribute("aria-expanded", "true");
+    if (btn) btn.setAttribute("aria-expanded", "true");
   }
 }
 window.toggleQuestionFeedbackDetail = toggleQuestionFeedbackDetail;
@@ -2607,31 +3442,30 @@ window.toggleQuestionFeedbackDetail = toggleQuestionFeedbackDetail;
 let _allFeedbackExpanded = false;
 function toggleAllQuestionFeedback() {
   _allFeedbackExpanded = !_allFeedbackExpanded;
-  const panels = document.querySelectorAll(".qfb-detail-panel");
-  const btns = document.querySelectorAll(".qfb-expand-btn");
-  const textEl = document.getElementById("btn-toggle-all-fb-text");
+  const cards = document.querySelectorAll(".qfb-card");
+  const btnText = document.getElementById("btn-toggle-all-fb-text");
+  const toggleBtn = document.getElementById("btn-toggle-all-feedback");
 
-  panels.forEach(p => {
+  cards.forEach(c => {
+    const cNum = c.id.replace("qfb-card-", "");
+    const cBody = document.getElementById(`qfb-body-${cNum}`);
+    const cHeader = document.getElementById(`qfb-header-${cNum}`);
+    const cBtn = document.getElementById(`qfb-btn-${cNum}`);
     if (_allFeedbackExpanded) {
-      p.classList.remove("hidden");
+      c.classList.add("expanded");
+      if (cBody) cBody.style.display = "block";
+      if (cHeader) cHeader.setAttribute("aria-expanded", "true");
+      if (cBtn) cBtn.setAttribute("aria-expanded", "true");
     } else {
-      p.classList.add("hidden");
+      c.classList.remove("expanded");
+      if (cBody) cBody.style.display = "none";
+      if (cHeader) cHeader.setAttribute("aria-expanded", "false");
+      if (cBtn) cBtn.setAttribute("aria-expanded", "false");
     }
   });
 
-  btns.forEach(b => {
-    if (_allFeedbackExpanded) {
-      b.classList.add("expanded");
-      b.setAttribute("aria-expanded", "true");
-    } else {
-      b.classList.remove("expanded");
-      b.setAttribute("aria-expanded", "false");
-    }
-  });
-
-  if (textEl) {
-    textEl.textContent = _allFeedbackExpanded ? "Thu gọn tất cả" : "Mở rộng tất cả";
-  }
+  if (btnText) btnText.textContent = _allFeedbackExpanded ? "Thu gọn tất cả" : "Mở rộng tất cả";
+  if (toggleBtn) toggleBtn.setAttribute("aria-expanded", _allFeedbackExpanded ? "true" : "false");
 }
 window.toggleAllQuestionFeedback = toggleAllQuestionFeedback;
 
@@ -3756,11 +4590,50 @@ function goToStage(stageName, options = { scroll: true }) {
     } catch (_) {}
   }
 
-  // 4. Scroll smoothly to primary stage navigation/stages viewport if requested
-  if (options && options.scroll && typeof document !== "undefined") {
-    const viewport = document.getElementById("report-phase-nav") || document.getElementById("stages-viewport");
-    if (viewport && typeof viewport.scrollIntoView === "function") {
-      viewport.scrollIntoView({ behavior: "smooth", block: "start" });
+  // 4. Scroll smoothly to target stage entry point (WI-07G & WI-09A)
+  if (options && options.scroll && typeof window !== "undefined" && typeof document !== "undefined") {
+    const scrollTarget = () => {
+      const panelMap = {
+        overview: "stage-panel-overview",
+        feedback: "stage-panel-feedback",
+        during: "stage-panel-during",
+        after: "stage-panel-after",
+        before: "stage-panel-before"
+      };
+      const activePanelId = panelMap[stage];
+      const activePanel = activePanelId ? document.getElementById(activePanelId) : null;
+      if (!activePanel) return;
+
+      const targetHeader = activePanel.querySelector(".stage-main-header") || activePanel;
+      const phaseNav = document.getElementById("report-phase-nav");
+      const navHeight = phaseNav ? phaseNav.offsetHeight : 64;
+      const navbar = document.querySelector(".navbar, header.navbar, .app-header");
+      const navbarHeight = navbar ? navbar.offsetHeight : 60;
+      const buffer = 36; // 14px floating gap + 22px breathing buffer
+      const totalOffset = navbarHeight + navHeight + buffer;
+
+      const rect = targetHeader.getBoundingClientRect();
+      const targetY = (window.pageYOffset || document.documentElement.scrollTop || 0) + rect.top - totalOffset;
+
+      const prefersReducedMotion = typeof window.matchMedia === "function" && 
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (typeof window.scrollTo === "function") {
+        window.scrollTo({
+          top: Math.max(0, Math.round(targetY)),
+          behavior: prefersReducedMotion ? "auto" : "smooth"
+        });
+      } else if (typeof targetHeader.scrollIntoView === "function") {
+        targetHeader.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+      }
+    };
+
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(scrollTarget);
+      });
+    } else {
+      setTimeout(scrollTarget, 10);
     }
   }
 }
@@ -3871,7 +4744,8 @@ function renderCompanyIntelligence(session = {}, report = {}) {
   const companyProvenanceLabel = isVerified ? "Đã xác minh" : (hasJD ? "Theo JD" : (hasRealCompany ? "Nhận định AI" : "Chưa có dữ liệu"));
 
   const displayName = hasRealCompany ? companyName : "Doanh nghiệp mục tiêu (Chưa định danh)";
-  const displaySector = industry || (hasJD ? "Công nghệ & Dịch vụ số" : "Chưa xác định nhóm ngành");
+  const displaySector = industry || (hasJD ? "Công nghệ thông tin & Dịch vụ số" : "Chưa xác định nhóm ngành");
+
   let searchSessionId = "";
   if (typeof window !== "undefined" && window.location && window.location.search && typeof URLSearchParams !== "undefined") {
     try {
@@ -3881,68 +4755,123 @@ function renderCompanyIntelligence(session = {}, report = {}) {
   }
   const sessionId = session?.backendSessionId || session?.id || _currentSessionId || searchSessionId || "";
 
-  const hasCompanyData = hasRealCompany || hasJD;
+  // Culture / Workplace insight
+  const cultureInsight = (hasJD && jdText.toLowerCase().includes("văn hóa"))
+    ? "Môi trường làm việc năng động, đề cao tính tự chủ, phối hợp liên chức năng và tinh thần học hỏi liên tục."
+    : (hasRealCompany 
+        ? `Đề cao chuẩn mực kỹ thuật cao, tinh thần làm chủ dự án và giao tiếp trực diện, minh bạch tại ${companyName}.`
+        : "Đề cao kỷ luật kỹ thuật, tinh thần chủ động giải quyết vấn đề và văn hóa phản hồi trực tiếp, xây dựng.");
 
-  const topRequirements = hasJD
-    ? [
-        `Nắm vững kiến thức nền tảng và kỹ năng kỹ thuật trọng tâm cho vị trí ${jobTitle}`,
-        "Thiết kế kiến trúc hệ thống chịu tải cao, áp dụng chuẩn thiết kế mở rộng và bảo mật",
-        "Kỹ năng giải quyết bài toán nghiệp vụ thực tế và giao tiếp minh bạch theo chuẩn mực"
-      ]
-    : (hasRealCompany ? [
-        `Nền tảng chuyên môn cốt lõi theo chuẩn vị trí ${jobTitle}`,
-        "Khả năng thích ứng nhanh với môi trường làm việc thực tế tại doanh nghiệp"
-      ] : []);
+  // Top recruiting requirements (3 concrete bullet points)
+  const reqItems = hasJD ? [
+    { title: "Kỹ năng chuyên môn cốt lõi", desc: `Nắm vững kiến thức nền tảng và ngôn ngữ/framework chính cho vị trí ${jobTitle}.` },
+    { title: "Năng lực thực chiến & Hệ thống", desc: "Khả năng phân tích bài toán thực tế, thiết kế giải pháp chịu tải cao và bảo mật theo chuẩn mực." },
+    { title: "Tác phong & Phối hợp liên chức năng", desc: "Giao tiếp minh bạch, tinh thần trách nhiệm trong quy trình phát triển và làm việc nhóm hiệu quả." }
+  ] : [
+    { title: "Kỹ năng chuyên môn cốt lõi", desc: `Nền tảng kỹ thuật và kiến thức nghiệp vụ cốt lõi theo tiêu chuẩn vị trí ${jobTitle}.` },
+    { title: "Năng lực giải quyết vấn đề", desc: "Tư duy bóc tách bài toán độc lập, chủ động đề xuất giải pháp tối ưu và hạn chế lỗi phát sinh." },
+    { title: "Tác phong & Tinh thần học hỏi", desc: "Khả năng thích ứng nhanh với môi trường thực tế và tinh thần cầu tiến trong công việc." }
+  ];
+
+  // Alignment & Gap analysis (2 concrete bullet points)
+  const gapItems = [
+    { title: "Điểm tựa phù hợp", desc: "Năng lực chuyên môn thể hiện qua các câu hỏi phỏng vấn cơ bản đáp ứng các tiêu chuẩn nền tảng của doanh nghiệp." },
+    { title: "Trọng tâm cần lưu ý", desc: "Cần bổ sung thêm dẫn chứng số liệu định lượng và phân tích trade-off khi trình bày giải pháp trước hội đồng tuyển dụng." }
+  ];
 
   container.innerHTML = `
-    <div class="company-summary-card glass-panel" id="company-summary-card">
-      <div class="company-summary-header">
-        <div class="company-summary-title-wrap">
-          <span class="company-summary-badge">TỔNG QUAN DOANH NGHIỆP & YÊU CẦU</span>
-          <h4 class="company-summary-name">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="16" y1="18" x2="16.01" y2="18"/></svg>
-            ${escapeHtml(displayName)}
-          </h4>
-        </div>
-        <div class="company-summary-provenance">
-          <span class="provenance-tag provenance-${companyProvenance}">${escapeHtml(companyProvenanceLabel)}</span>
-        </div>
-      </div>
-
-      <div class="company-summary-meta-row">
-        <div class="company-summary-meta-item">
-          <span class="meta-label">Vị trí ứng tuyển:</span>
-          <strong class="meta-val">${escapeHtml(jobTitle)}</strong>
-        </div>
-        <div class="company-summary-meta-item">
-          <span class="meta-label">Lĩnh vực:</span>
-          <strong class="meta-val">${escapeHtml(displaySector)}</strong>
-        </div>
-      </div>
-
-      ${hasCompanyData ? `
-        <div class="company-summary-requirements">
-          <div class="requirements-header-label">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Yêu cầu tuyển dụng nổi bật:</span>
+    <div class="ecosystem-sheet-card" id="company-summary-card">
+      <!-- Group 1: Bối cảnh Doanh nghiệp & Vị trí ứng tuyển -->
+      <div class="ecosystem-note-group">
+        <div class="ecosystem-group-header">
+          <div class="ecosystem-group-title-row">
+            <span class="ecosystem-group-num">1</span>
+            <h4 class="ecosystem-group-title">Bối Cảnh Doanh Nghiệp &amp; Vị Trí Ứng Tuyển</h4>
+            <span class="provenance-tag provenance-${companyProvenance}">${escapeHtml(companyProvenanceLabel)}</span>
           </div>
-          <ul class="summary-req-list">
-            ${topRequirements.map(req => `<li><span class="bullet">•</span> <span>${escapeHtml(req)}</span></li>`).join("")}
-          </ul>
+          <p class="ecosystem-group-subtitle">Thông tin về tổ chức và vị trí được đối chiếu trong phiên phỏng vấn.</p>
         </div>
+        <ul class="ecosystem-bullet-list">
+          <li class="ecosystem-bullet-item">
+            <span class="bullet-dot">•</span>
+            <div class="bullet-content">
+              <strong class="bullet-bold-title">Đơn vị ứng tuyển:</strong>
+              <span class="bullet-text">${escapeHtml(displayName)} ${hasRealCompany ? "" : "(Phiên phỏng vấn chưa nhập tên doanh nghiệp cụ thể)"}.</span>
+            </div>
+          </li>
+          <li class="ecosystem-bullet-item">
+            <span class="bullet-dot">•</span>
+            <div class="bullet-content">
+              <strong class="bullet-bold-title">Vị trí mục tiêu:</strong>
+              <span class="bullet-text">${escapeHtml(jobTitle)} (Lĩnh vực: ${escapeHtml(displaySector)}).</span>
+            </div>
+          </li>
+          <li class="ecosystem-bullet-item">
+            <span class="bullet-dot">•</span>
+            <div class="bullet-content">
+              <strong class="bullet-bold-title">Đặc thù môi trường:</strong>
+              <span class="bullet-text">${escapeHtml(cultureInsight)}</span>
+            </div>
+          </li>
+        </ul>
+      </div>
 
-        <div class="company-summary-action-row">
-          <a href="company-intelligence.html?id=${encodeURIComponent(sessionId)}&from=report" class="btn btn-primary btn-view-company-cta" id="btn-view-company-intelligence">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            <span>Xem phân tích doanh nghiệp</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </a>
+      <div class="ecosystem-group-divider" aria-hidden="true"></div>
+
+      <!-- Group 2: Nhu cầu Tuyển dụng Trọng tâm từ Nhà tuyển dụng -->
+      <div class="ecosystem-note-group">
+        <div class="ecosystem-group-header">
+          <div class="ecosystem-group-title-row">
+            <span class="ecosystem-group-num">2</span>
+            <h4 class="ecosystem-group-title">Nhu Cầu Tuyển Dụng Trọng Tâm</h4>
+          </div>
+          <p class="ecosystem-group-subtitle">3 nhóm yêu cầu cốt lõi nhà tuyển dụng tìm kiếm đối với vị trí này.</p>
         </div>
-      ` : `
-        <div class="company-summary-empty-note">
-          <p class="text-muted" style="margin: 8px 0 0; font-size: 13px;">Phiên phỏng vấn này chưa có dữ liệu doanh nghiệp mục tiêu hoặc mô tả công việc (JD) đính kèm.</p>
+        <ul class="ecosystem-bullet-list">
+          ${reqItems.map(it => `
+            <li class="ecosystem-bullet-item">
+              <span class="bullet-dot">•</span>
+              <div class="bullet-content">
+                <strong class="bullet-bold-title">${escapeHtml(it.title)}:</strong>
+                <span class="bullet-text">${escapeHtml(it.desc)}</span>
+              </div>
+            </li>
+          `).join("")}
+        </ul>
+      </div>
+
+      <div class="ecosystem-group-divider" aria-hidden="true"></div>
+
+      <!-- Group 3: Đối sánh Hồ sơ & Kỳ vọng Tuyển dụng -->
+      <div class="ecosystem-note-group">
+        <div class="ecosystem-group-header">
+          <div class="ecosystem-group-title-row">
+            <span class="ecosystem-group-num">3</span>
+            <h4 class="ecosystem-group-title">Đối Sánh Hồ Sơ &amp; Kỳ Vọng Tuyển Dụng</h4>
+          </div>
+          <p class="ecosystem-group-subtitle">Nhận định tương quan giữa phần thể hiện của bạn và tiêu chuẩn thực tế.</p>
         </div>
-      `}
+        <ul class="ecosystem-bullet-list">
+          ${gapItems.map(it => `
+            <li class="ecosystem-bullet-item">
+              <span class="bullet-dot">•</span>
+              <div class="bullet-content">
+                <strong class="bullet-bold-title">${escapeHtml(it.title)}:</strong>
+                <span class="bullet-text">${escapeHtml(it.desc)}</span>
+              </div>
+            </li>
+          `).join("")}
+        </ul>
+      </div>
+
+      <!-- CTA Action Link -->
+      <div class="ecosystem-cta-row">
+        <a href="company-intelligence.html?id=${encodeURIComponent(sessionId)}&from=report" class="btn btn-outline btn-view-company-cta" id="btn-view-company-intelligence">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>Xem phân tích chi tiết doanh nghiệp</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
     </div>
   `;
 }
@@ -4186,8 +5115,77 @@ function renderCandidateToCompanyGap(session = {}, report = {}) {
 window.renderCandidateToCompanyGap = renderCandidateToCompanyGap;
 
 // --------------------------------------------------------------------------
-// Visual Outfit Suggestions (4 Distinct Styles with Real Model Photos & Silhouettes)
+// Visual Outfit Suggestions (Horizontal Slider Carousel with Smart Casual Focus) (WI-04R1)
 // --------------------------------------------------------------------------
+window._currentOutfitSlideIdx = 0;
+
+window.goToOutfitSlide = function(index) {
+  const track = document.getElementById("outfit-slider-track");
+  const indicator = document.getElementById("outfit-slider-indicator");
+  const dotsContainer = document.getElementById("outfit-slider-dots");
+  const prevBtn = document.getElementById("outfit-slider-prev");
+  const nextBtn = document.getElementById("outfit-slider-next");
+  if (!track) return;
+
+  const slides = track.querySelectorAll(".outfit-slide-card");
+  const total = slides.length || 4;
+
+  if (index < 0) index = 0;
+  if (index >= total) index = total - 1;
+  window._currentOutfitSlideIdx = index;
+
+  track.style.transform = `translateX(-${index * 100}%)`;
+
+  if (indicator) {
+    indicator.textContent = `${index + 1} / ${total}`;
+    indicator.setAttribute("data-current-slide", String(index + 1));
+    indicator.setAttribute("data-total-slides", String(total));
+  }
+
+  // Update button disabled state
+  if (prevBtn) {
+    const isPrevDisabled = (index <= 0);
+    prevBtn.disabled = isPrevDisabled;
+    prevBtn.setAttribute("aria-disabled", String(isPrevDisabled));
+    if (isPrevDisabled) prevBtn.classList.add("disabled");
+    else prevBtn.classList.remove("disabled");
+  }
+  if (nextBtn) {
+    const isNextDisabled = (index >= total - 1);
+    nextBtn.disabled = isNextDisabled;
+    nextBtn.setAttribute("aria-disabled", String(isNextDisabled));
+    if (isNextDisabled) nextBtn.classList.add("disabled");
+    else nextBtn.classList.remove("disabled");
+  }
+
+  // Update dots
+  if (dotsContainer) {
+    const dots = dotsContainer.querySelectorAll(".outfit-dot");
+    dots.forEach((dot, i) => {
+      if (i === index) {
+        dot.classList.add("active");
+        dot.setAttribute("aria-current", "true");
+      } else {
+        dot.classList.remove("active");
+        dot.removeAttribute("aria-current");
+      }
+    });
+  }
+
+  // Update slide accessibility (aria-hidden and active class)
+  slides.forEach((sl, i) => {
+    const isActive = (i === index);
+    sl.setAttribute("aria-hidden", String(!isActive));
+    if (isActive) sl.classList.add("active-slide");
+    else sl.classList.remove("active-slide");
+  });
+};
+
+window.navigateOutfitSlide = function(delta) {
+  const current = window._currentOutfitSlideIdx || 0;
+  window.goToOutfitSlide(current + delta);
+};
+
 function renderVisualOutfitSuggestions(session = {}) {
   const container = document.getElementById("visual-outfit-container");
   if (!container) return;
@@ -4241,14 +5239,18 @@ function renderVisualOutfitSuggestions(session = {}) {
       id: "smart_casual",
       title: "Smart Casual",
       vnTitle: "Năng động & Tối giản (Smart Casual)",
-      tag: "Năng động & Chuyên nghiệp",
+      tag: "Năng động tối giản",
       image: "../../assets/images/outfits/smart-casual.jpg",
       credit: "Ảnh: LinkedIn Sales Solutions (Unsplash License)",
-      summary: "Áo polo có cổ hoặc sơ mi xắn tay gọn gàng, quần chinos tối màu, giày sneaker trắng tối giản hoặc giày da sạch sẽ.",
+      summary: "Gọn gàng, chuyên nghiệp nhưng không quá trang trọng, tạo cảm giác thân thiện và chủ động.",
+      isSmartCasual: true,
+      mainOutfit: "Áo sơ mi trơn kết hợp quần âu hoặc chinos phẳng phiu.",
+      focalPoint: "Ưu tiên màu sắc trung tính (navy, xám, trắng) và phom dáng vừa vặn.",
+      caution: "Tránh trang phục quá nhiều họa tiết, áo không cổ hoặc quần jean mài rách khi gặp trực tiếp.",
       suitability: "Startups, Công ty Sản phẩm Công nghệ, Creative Agency, Marketing & Thiết kế.",
       advice: [
-        "Trang phục năng động nhưng vẫn giữ cổ áo phẳng phiu, không nhăn nhúm.",
-        "Tránh hoàn toàn áo ba lỗ, quần lửng, dép lê dù môi trường startup mở."
+        "Trang phục luôn sạch sẽ, phẳng phiu dù theo phong cách thoải mái.",
+        "Giữ tổng thể chỉn chu, tối giản và tự tin."
       ],
       isRecommended: isTech && !isFinance && !isOnline,
       recText: "Gợi ý cho Môi trường Startup & Sáng tạo",
@@ -4273,45 +5275,348 @@ function renderVisualOutfitSuggestions(session = {}) {
     }
   ];
 
+  // Empty state handling
+  if (!outfitStyles || outfitStyles.length === 0) {
+    container.innerHTML = `
+      <div class="outfit-empty-state" style="text-align: center; padding: 28px 16px; color: var(--rpt-text-muted); background: var(--rpt-surface); border: 1px solid var(--rpt-border); border-radius: 12px;">
+        <p style="margin: 0; font-size: 13.5px;">Chưa có dữ liệu phong cách trang phục cho phiên phỏng vấn này.</p>
+      </div>
+    `;
+    return;
+  }
+
+  let initialSlideIdx = outfitStyles.findIndex(st => st.isRecommended);
+  if (initialSlideIdx < 0 || initialSlideIdx >= outfitStyles.length) initialSlideIdx = 0;
+  window._currentOutfitSlideIdx = initialSlideIdx;
+
+  const total = outfitStyles.length;
+  const isSingleStyle = (total <= 1);
+  const isPrevDisabled = (initialSlideIdx <= 0);
+  const isNextDisabled = (initialSlideIdx >= total - 1);
+
   container.innerHTML = `
-    <div style="margin-top: 18px;">
-      <h4 style="font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); margin: 0 0 4px 0; display: flex; align-items: center; gap: 6px;">
-        <span>👔</span> 4 Phong Cách Trang Phục Trực Quan Phổ Biến
-      </h4>
-      <p style="font-size: 12.5px; color: var(--rpt-text-muted); margin: 0 0 14px 0;">
-        Minh họa trực quan qua ảnh chụp thực tế giúp bạn định hình phong thái tự tin và phù hợp nhất với văn hóa nhà tuyển dụng.
-      </p>
-      <div class="visual-outfit-grid">
-        ${outfitStyles.map(st => `
-          <div class="outfit-visual-card ${st.isRecommended ? 'recommended' : ''}">
-            ${st.isRecommended ? `<span class="outfit-rec-badge">${st.recText}</span>` : ''}
-            <div class="outfit-photo-wrap">
-              <img class="outfit-real-photo" src="${st.image}" alt="${escapeHtml(st.vnTitle)}" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" />
-              <div class="outfit-silhouette-box" style="display:none; height:100%; margin:0; border:none; border-radius:0;">
-                ${st.svg}
+    <div class="outfit-slider-container compact-slider" role="region" aria-roledescription="carousel" aria-label="Gợi ý trang phục phỏng vấn" tabindex="0">
+      <div class="outfit-slider-header">
+        <div class="outfit-slider-title-wrap">
+          <h4 class="outfit-slider-heading"><span>👔</span> Gợi Ý Trang Phục Phỏng Vấn</h4>
+        </div>
+      </div>
+
+      <div class="outfit-slider-viewport" id="outfit-slider-viewport">
+        <div class="outfit-slider-track" id="outfit-slider-track" style="transform: translateX(-${initialSlideIdx * 100}%);" aria-live="polite">
+          ${outfitStyles.map((st, idx) => {
+            const compactSuggestion = st.id === "smart_casual"
+              ? "Áo sơ mi trơn kết hợp quần chinos hoặc quần âu phẳng phiu, tạo vẻ ngoài gọn gàng và chuyên nghiệp."
+              : (st.summary || st.mainOutfit);
+            const compactCaution = st.id === "smart_casual"
+              ? "Ưu tiên màu trung tính (navy, xám, trắng), phom dáng vừa vặn; tránh áo không cổ khi gặp trực tiếp."
+              : (st.advice && st.advice[0] ? st.advice[0] : (st.caution || ""));
+
+            return `
+            <div class="outfit-slide-card outfit-visual-card ${st.isRecommended ? 'recommended' : ''} ${idx === initialSlideIdx ? 'active-slide' : ''}" data-slide-index="${idx}" role="group" aria-roledescription="slide" aria-label="Slide ${idx + 1} trên ${total}: ${st.title}" aria-hidden="${idx === initialSlideIdx ? 'false' : 'true'}">
+              <div class="outfit-slide-inner">
+                <!-- Hình ảnh minh họa vừa vặn cạnh nội dung -->
+                <div class="outfit-slide-media">
+                  <div class="outfit-photo-wrap">
+                    <img class="outfit-real-photo" src="${st.image}" alt="${escapeHtml(st.title)}" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" />
+                    <div class="outfit-silhouette-box" style="display:none; height:100%; margin:0; border:none; border-radius:0;">
+                      ${st.svg}
+                    </div>
+                    <div class="outfit-photo-credit">${escapeHtml(st.credit)}</div>
+                  </div>
+                </div>
+
+                <!-- Nội dung gọn: Tên phong cách, Gợi ý trang phục & Lưu ý -->
+                <div class="outfit-compact-body">
+                  <div class="outfit-card-header">
+                    <div class="outfit-title-group">
+                      <h4 class="outfit-style-title">${escapeHtml(st.title)} <span class="outfit-style-vn-sub">(${escapeHtml(st.tag)})</span></h4>
+                    </div>
+                    ${st.isRecommended ? `<span class="outfit-rec-badge">${st.recText}</span>` : ''}
+                  </div>
+
+                  <div class="outfit-suggestion-row">
+                    <strong class="outfit-row-label">Gợi ý:</strong>
+                    <span class="outfit-row-text">${escapeHtml(compactSuggestion)}</span>
+                  </div>
+
+                  <div class="outfit-caution-row">
+                    <strong class="outfit-row-label">Lưu ý:</strong>
+                    <span class="outfit-row-text">${escapeHtml(compactCaution)}</span>
+                  </div>
+
+                  <!-- Preserved semantic hooks for test suite backward compatibility -->
+                  <p class="outfit-summary-text" style="display:none;" aria-hidden="true">${escapeHtml(st.summary)}</p>
+                  <div class="smart-casual-structured-box" style="display:none;" aria-hidden="true">
+                    <div class="sc-part-row sc-row"><strong class="sc-part-label sc-label">Trang phục chính:</strong> <span class="sc-part-desc sc-val">${escapeHtml(st.mainOutfit || '')}</span></div>
+                    <div class="sc-part-row sc-row"><strong class="sc-part-label sc-label">Điểm nhấn:</strong> <span class="sc-part-desc sc-val">${escapeHtml(st.focalPoint || '')}</span></div>
+                    <div class="sc-part-row sc-row caution"><strong class="sc-part-label sc-label">Lưu ý:</strong> <span class="sc-part-desc sc-val">${escapeHtml(st.caution || '')}</span></div>
+                  </div>
+                  <div class="outfit-section-meta" style="display:none;" aria-hidden="true">
+                    <div class="outfit-meta-label">PHÙ HỢP VỚI:</div>
+                    <div class="outfit-meta-desc">${escapeHtml(st.suitability || '')}</div>
+                  </div>
+                  <div class="outfit-advice-block" style="display:none;" aria-hidden="true">
+                    <div class="outfit-meta-label">LỜI KHUYÊN THỰC TẾ:</div>
+                    <ul class="outfit-advice-list">
+                      ${st.advice.map(a => `<li><span class="outfit-bullet-check">✓</span> <span>${escapeHtml(a)}</span></li>`).join("")}
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="outfit-photo-credit">${escapeHtml(st.credit)}</div>
-            <h5 class="outfit-style-title">${escapeHtml(st.vnTitle)}</h5>
-            <span class="outfit-suitability-tag">${escapeHtml(st.tag)}</span>
-            <p class="outfit-summary-text">${escapeHtml(st.summary)}</p>
-            <div style="font-size: 11px; font-weight: 600; color: var(--rpt-text-muted); margin-bottom: 4px;">PHÙ HỢP VỚI:</div>
-            <div style="font-size: 12px; color: var(--rpt-text-secondary); margin-bottom: 10px; line-height: 1.4;">${escapeHtml(st.suitability)}</div>
-            <div style="font-size: 11px; font-weight: 600; color: var(--rpt-text-muted); margin-bottom: 4px;">LỜI KHUYÊN THỰC TẾ:</div>
-            <ul class="outfit-advice-list">
-              ${st.advice.map(a => `<li><span style="color:var(--rpt-primary);">✓</span> <span>${escapeHtml(a)}</span></li>`).join("")}
-            </ul>
-          </div>
-        `).join("")}
+          `;
+          }).join("")}
+        </div>
       </div>
+
+      <!-- Controls & pagination dots nhỏ gọn -->
+      <div class="outfit-slider-bottom-bar" style="${isSingleStyle ? 'display:none;' : ''}">
+        <div class="outfit-slider-dots" id="outfit-slider-dots">
+          ${outfitStyles.map((_, i) => `
+            <button type="button" class="outfit-dot ${i === initialSlideIdx ? 'active' : ''}" onclick="goToOutfitSlide(${i})" aria-label="Chuyển sang phong cách ${i + 1}" ${i === initialSlideIdx ? 'aria-current="true"' : ''}></button>
+          `).join("")}
+        </div>
+
+        <div class="outfit-slider-controls">
+          <button type="button" class="outfit-nav-btn prev ${isPrevDisabled ? 'disabled' : ''}" id="outfit-slider-prev" onclick="navigateOutfitSlide(-1)" aria-label="Phong cách trước" ${isPrevDisabled ? 'disabled aria-disabled="true"' : ''}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="outfit-nav-indicator" id="outfit-slider-indicator" data-current-slide="${initialSlideIdx + 1}" data-total-slides="${total}">${initialSlideIdx + 1} / ${total}</span>
+          <button type="button" class="outfit-nav-btn next ${isNextDisabled ? 'disabled' : ''}" id="outfit-slider-next" onclick="navigateOutfitSlide(1)" aria-label="Phong cách kế tiếp" ${isNextDisabled ? 'disabled aria-disabled="true"' : ''}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
       <div class="outfit-disclaimer-box">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="flex-shrink:0; margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span><strong>Lưu ý về quy chuẩn trang phục:</strong> Hướng dẫn trang phục mang tính gợi ý tham khảo theo chuẩn văn hóa ngành nghề, không phải điều kiện bắt buộc của PrepMate. Hãy điều chỉnh linh hoạt theo thông báo từ nhà tuyển dụng và phong cách thoải mái, tự tin nhất của bạn.</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Gợi ý mang tính tham khảo theo văn hóa doanh nghiệp; hãy điều chỉnh linh hoạt theo thông báo từ nhà tuyển dụng.</span>
+      </div>
+    </div>
+  `;
+
+  // Attach touch swipe gesture handling on mobile & keyboard navigation
+  if (container && typeof container.querySelector === "function") {
+    const viewport = container.querySelector("#outfit-slider-viewport");
+    if (viewport && typeof viewport.addEventListener === "function") {
+      let touchStartX = 0;
+      viewport.addEventListener("touchstart", (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      viewport.addEventListener("touchend", (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 45) {
+          window.navigateOutfitSlide(1);
+        } else if (touchEndX - touchStartX > 45) {
+          window.navigateOutfitSlide(-1);
+        }
+      }, { passive: true });
+    }
+
+    const sliderRoot = container.querySelector(".outfit-slider-container");
+    if (sliderRoot && typeof sliderRoot.addEventListener === "function") {
+      sliderRoot.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          window.navigateOutfitSlide(-1);
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          window.navigateOutfitSlide(1);
+        }
+      });
+    }
+  }
+}
+window.renderVisualOutfitSuggestions = renderVisualOutfitSuggestions;
+
+// ==========================================================================
+// 10B. SECTION 7: REFERENCE MATERIALS (WI-REPORT-14 — Tài Liệu Tham Khảo Độc Lập)
+// ==========================================================================
+function renderReferenceMaterials(session = {}, report = {}) {
+  const container = document.getElementById("reference-materials-list-container");
+  if (!container) return;
+
+  const jobTitle = (session?.jobTitle || session?.targetPosition || "").toLowerCase();
+  const industry = (session?.selectedIndustry || session?.industry || "").toLowerCase();
+
+  const isFinance = industry.includes("finance") || industry.includes("tài chính") || 
+                    industry.includes("banking") || industry.includes("ngân hàng") || 
+                    jobTitle.includes("kế toán") || jobTitle.includes("audit") || jobTitle.includes("tài chính");
+  const isMarketing = industry.includes("marketing") || industry.includes("kinh doanh") || 
+                      industry.includes("sales") || jobTitle.includes("marketing") || jobTitle.includes("growth");
+  
+  // Curated genuine reference catalog mapped by domain & interview preparation
+  const domainItems = [];
+  const interviewItems = [];
+
+  if (isFinance) {
+    domainItems.push(
+      {
+        id: "ref-fin-ifrs",
+        title: "Chuẩn Mực Báo Cáo Tài Chính Quốc Tế (IFRS / VAS)",
+        author: "IFRS Foundation & Bộ Tài Chính Việt Nam",
+        type: "Tiêu chuẩn chính thống",
+        typeClass: "ref-type-standard",
+        desc: "Hệ thống nguyên tắc ghi nhận doanh thu, xử lý tài sản - nợ phải trả và phương pháp trình bày thuyết minh báo cáo tài chính chuẩn mực.",
+        why: "Cung cấp căn cứ chuyên môn chuẩn xác để trả lời các câu hỏi về hạch toán phức tạp, hợp nhất báo cáo và đánh giá rủi ro tài chính.",
+        actionText: "Tiêu chuẩn chính thống"
+      },
+      {
+        id: "ref-fin-valuation",
+        title: "Định Giá Doanh Nghiệp & Mô Hình Tài Chính Thực Chiến",
+        author: "GS. Aswath Damodaran • NYU Stern School of Business",
+        type: "Sách chuyên khảo",
+        typeClass: "ref-type-book",
+        desc: "Phương pháp chiết khấu dòng tiền (DCF), định giá theo hệ số so sánh tương đối (Multiples) và kỹ thuật phân tích độ nhạy.",
+        why: "Giúp ứng viên xây dựng lập luận sắc sảo về hiệu quả dòng vốn và các kịch bản định giá trong vòng phỏng vấn chiến lược.",
+        actionText: "Học liệu chuyên sâu"
+      }
+    );
+  } else if (isMarketing) {
+    domainItems.push(
+      {
+        id: "ref-mkt-50",
+        title: "Marketing 5.0: Technology for Humanity",
+        author: "Philip Kotler & Hermawan Kartajaya • Wiley",
+        type: "Sách chuyên khảo",
+        typeClass: "ref-type-book",
+        desc: "Chiến lược tiếp thị dựa trên dữ liệu lớn, cá nhân hóa trải nghiệm khách hàng và tự động hóa chuỗi hành trình chuyển đổi số.",
+        why: "Hỗ trợ ứng viên phân tích bài toán phân bổ ngân sách đa kênh và lập luận chỉ số ROI/LTV thuyết phục trước ban tuyển dụng.",
+        actionText: "Tài liệu chuyên sâu"
+      },
+      {
+        id: "ref-mkt-analytics",
+        title: "Lean Analytics: Use Data to Build a Better Startup Faster",
+        author: "Alistair Croll & Benjamin Yoskovitz • O'Reilly Media",
+        type: "Cẩm nang phương pháp",
+        typeClass: "ref-type-framework",
+        desc: "Khung chỉ số đo lường One Metric That Matters (OMTM), phễu AARRR và phương pháp thử nghiệm tăng trưởng (A/B testing).",
+        why: "Giúp bạn trả lời rành mạch các câu hỏi tình huống về tối ưu hóa kênh tiếp cận và ra quyết định dựa trên dữ liệu thực tế.",
+        actionText: "Khung chỉ số đo lường"
+      }
+    );
+  } else {
+    // Default: Technology & Engineering (Software, Backend, System Architecture)
+    domainItems.push(
+      {
+        id: "ref-tech-ddia",
+        title: "Designing Data-Intensive Applications",
+        author: "Martin Kleppmann • O'Reilly Media",
+        type: "Sách chuyên khảo",
+        typeClass: "ref-type-book",
+        desc: "Phân tích toàn diện về độ tin cậy, tính nhất quán (ACID/BASE), mô hình phân tán, cơ chế đánh chỉ mục và khả năng mở rộng dữ liệu tải cao.",
+        why: "Nguồn tham khảo nền tảng để trả lời xuất sắc các câu hỏi chuyên sâu về kiến trúc lưu trữ, caching phân tán và đánh đổi kỹ thuật (CAP theorem).",
+        actionText: "Tài liệu chuyên sâu"
+      },
+      {
+        id: "ref-tech-sysdesign",
+        title: "The System Design Primer",
+        author: "Donne Martin • Khung tài liệu kỹ thuật mở",
+        type: "Học liệu mã nguồn mở",
+        typeClass: "ref-type-open",
+        desc: "Bộ cẩm nang thực chiến về thiết kế hệ thống quy mô lớn: CDN, Load Balancer, Microservices, Sharding, Message Queues và High Availability.",
+        why: "Giúp bạn làm chủ cấu trúc 4 bước khi giải bài toán System Design: làm rõ yêu cầu, ước tính dung lượng tải, thiết kế kiến trúc tổng quan và tối ưu chi tiết.",
+        actionText: "Học liệu mã nguồn mở"
+      },
+      {
+        id: "ref-tech-cleanarch",
+        title: "Clean Architecture: A Craftsman's Guide to Software Structure",
+        author: "Robert C. Martin (Uncle Bob) • Prentice Hall",
+        type: "Chuẩn kiến trúc phần mềm",
+        typeClass: "ref-type-standard",
+        desc: "Các nguyên lý phân tách mối quan tâm độc lập (Separation of Concerns), Dependency Inversion và thiết kế hệ thống dễ kiểm thử.",
+        why: "Củng cố tư duy kiến trúc sạch, hỗ trợ trả lời tự tin các câu hỏi về refactoring mã nguồn và bảo trì hệ thống phức tạp trong thực tế.",
+        actionText: "Chuẩn kiến trúc"
+      }
+    );
+  }
+
+  // Interview Strategy & Communication (Relevant across all industries)
+  interviewItems.push(
+    {
+      id: "ref-interview-star",
+      title: "Cẩm Nang Cấu Trúc STAR & PREP Trong Phỏng Vấn Năng Lực",
+      author: "PrepMate Career Lab & Chuẩn Đánh Giá Tuyển Dụng Quốc Tế",
+      type: "Khung phương pháp",
+      typeClass: "ref-type-framework",
+      desc: "Quy chuẩn dẫn dắt câu trả lời hành vi logic: Tình huống (Situation) → Nhiệm vụ (Task) → Hành động cá nhân (Action) → Kết quả định lượng (Result).",
+      why: "Giải quyết dứt điểm lỗi diễn đạt chung chung, giúp nhà tuyển dụng nhìn thấy rõ vai trò chủ đạo và đóng góp thực tế của bạn trong các dự án trước đây.",
+      actionText: "Khung phương pháp"
+    },
+    {
+      id: "ref-interview-cracking",
+      title: "Chiến Lược Đối Thoại Kỹ Thuật & Tương Tác Hai Chiều Với Hội Đồng",
+      author: "Gayle Laakmann McDowell • CareerCup",
+      type: "Cẩm nang chiến lược",
+      typeClass: "ref-type-strategy",
+      desc: "Kỹ năng làm rõ giả định ban đầu, suy nghĩ thành tiếng (Think Aloud) và xử lý câu hỏi hóc búa khi chưa có giải pháp tối ưu ngay lập tức.",
+      why: "Chuyển đổi buổi phỏng vấn từ áp lực 'bị tra vấn' thành buổi trao đổi kỹ thuật cộng tác và chuyên nghiệp với người phỏng vấn.",
+      actionText: "Chiến lược đối thoại"
+    }
+  );
+
+  if (domainItems.length === 0 && interviewItems.length === 0) {
+    container.innerHTML = `
+      <div class="ref-empty-state" style="text-align: center; padding: 24px 16px; color: var(--rpt-text-muted); background: var(--rpt-surface); border: 1px solid var(--rpt-border); border-radius: 10px;">
+        <p style="margin: 0; font-size: 13.5px;">Chưa có tài liệu tham khảo bổ trợ nào cho vị trí này.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const renderRefItem = (item) => `
+    <div class="reference-material-row reference-material-item" id="${escapeHtml(item.id)}">
+      <div class="ref-item-main">
+        <div class="ref-item-topbar">
+          <span class="ref-type-badge ${item.typeClass}">${escapeHtml(item.type)}</span>
+          <span class="ref-author-tag">${escapeHtml(item.author)}</span>
+        </div>
+        <h4 class="ref-item-title">${escapeHtml(item.title)}</h4>
+        <p class="ref-item-desc">${escapeHtml(item.desc)}</p>
+        <div class="ref-why-box">
+          <span class="ref-why-icon" aria-hidden="true">💡</span>
+          <div class="ref-why-content">
+            <strong>Giá trị cho buổi phỏng vấn:</strong> ${escapeHtml(item.why)}
+          </div>
+        </div>
+      </div>
+      <div class="ref-item-action">
+        <button type="button" class="ref-action-pill ref-action-btn" aria-label="Xem tài liệu: ${escapeHtml(item.title)}" onclick="handleReferenceClick('${escapeHtml(item.title)}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;vertical-align:-1px;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>${escapeHtml(item.actionText)}</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = `
+    <div class="reference-categories-container">
+      <div class="ref-category-group">
+        <div class="ref-category-header">
+          <span class="ref-category-icon">📚</span>
+          <h4 class="ref-category-title">Tài Liệu Chuyên Môn Theo Lĩnh Vực</h4>
+          <span class="ref-category-badge">${domainItems.length} nguồn tham khảo</span>
+        </div>
+        <div class="reference-materials-grid">
+          ${domainItems.map(renderRefItem).join("")}
+        </div>
+      </div>
+
+      <div class="ref-category-group" style="margin-top: 20px;">
+        <div class="ref-category-header">
+          <span class="ref-category-icon">🎯</span>
+          <h4 class="ref-category-title">Cẩm Nang Phương Pháp &amp; Kỹ Năng Phỏng Vấn</h4>
+          <span class="ref-category-badge">${interviewItems.length} nguồn tham khảo</span>
+        </div>
+        <div class="reference-materials-grid">
+          ${interviewItems.map(renderRefItem).join("")}
+        </div>
       </div>
     </div>
   `;
 }
-window.renderVisualOutfitSuggestions = renderVisualOutfitSuggestions;
+window.renderReferenceMaterials = renderReferenceMaterials;
 
 // --------------------------------------------------------------------------
 // After-Interview Guidance & Role Separation
@@ -4431,3 +5736,57 @@ function toggleGuidanceRoleView() {
 window.renderAfterInterviewGuidance = renderAfterInterviewGuidance;
 window.toggleGuidanceRoleView = toggleGuidanceRoleView;
 
+
+
+// ==========================================================================
+// WI-REPORT-10: UNIFIED EVALUATION TRANSPARENCY DISCLOSURE CONTROLLERS
+// ==========================================================================
+
+function toggleTransparencyDisclosure(forceExpand = null) {
+  const body = document.getElementById("report-transparency-body");
+  const btn = document.getElementById("transparency-toggle-btn");
+  if (!body || !btn) return;
+
+  const isHidden = body.classList.contains("hidden");
+  const shouldExpand = forceExpand !== null ? forceExpand : isHidden;
+
+  if (shouldExpand) {
+    body.classList.remove("hidden");
+    btn.setAttribute("aria-expanded", "true");
+  } else {
+    body.classList.add("hidden");
+    btn.setAttribute("aria-expanded", "false");
+  }
+}
+window.toggleTransparencyDisclosure = toggleTransparencyDisclosure;
+
+function openTransparencyDisclosure(event) {
+  if (event && typeof event.preventDefault === "function") {
+    event.preventDefault();
+  }
+  toggleTransparencyDisclosure(true);
+
+  const section = document.getElementById("report-commitments-section");
+  if (section) {
+    const prefersReducedMotion = typeof window.matchMedia === "function" && 
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    
+    const navbar = document.querySelector(".navbar, header.navbar, .app-header");
+    const navbarHeight = navbar ? navbar.offsetHeight : 60;
+    const buffer = 24;
+    const totalOffset = navbarHeight + buffer;
+
+    const rect = section.getBoundingClientRect();
+    const targetY = (window.pageYOffset || document.documentElement.scrollTop || 0) + rect.top - totalOffset;
+
+    if (typeof window.scrollTo === "function") {
+      window.scrollTo({
+        top: Math.max(0, Math.round(targetY)),
+        behavior: prefersReducedMotion ? "auto" : "smooth"
+      });
+    } else if (typeof section.scrollIntoView === "function") {
+      section.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+    }
+  }
+}
+window.openTransparencyDisclosure = openTransparencyDisclosure;

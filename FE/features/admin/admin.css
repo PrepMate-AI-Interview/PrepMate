@@ -731,3 +731,178 @@
                 justify-content: center;
             }
         }
+
+
+/* WI-DARKMODE-03 Admin Workspace Table Badges & AI Health Overrides */
+body.dark-mode .badge-role-admin,
+html[data-theme="dark"] .badge-role-admin {
+    background: rgba(16, 185, 129, 0.16) !important;
+    color: #34d399 !important;
+    border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+body.dark-mode .badge-role-manager,
+html[data-theme="dark"] .badge-role-manager {
+    background: rgba(37, 99, 235, 0.16) !important;
+    color: #93c5fd !important;
+    border-color: rgba(96, 165, 250, 0.35) !important;
+}
+
+body.dark-mode .badge-role-user,
+html[data-theme="dark"] .badge-role-user {
+    background: #252629 !important;
+    color: #BDC1C6 !important;
+    border-color: #3C4043 !important;
+}
+
+body.dark-mode .badge-plan-pro,
+html[data-theme="dark"] .badge-plan-pro {
+    background: rgba(245, 158, 11, 0.16) !important;
+    color: #fbbf24 !important;
+    border-color: rgba(251, 191, 36, 0.35) !important;
+}
+
+body.dark-mode .badge-plan-free,
+html[data-theme="dark"] .badge-plan-free {
+    background: #252629 !important;
+    color: #BDC1C6 !important;
+    border-color: #3C4043 !important;
+}
+
+body.dark-mode .badge-status-active,
+html[data-theme="dark"] .badge-status-active {
+    background: rgba(16, 185, 129, 0.16) !important;
+    color: #34d399 !important;
+    border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+body.dark-mode .badge-status-locked,
+html[data-theme="dark"] .badge-status-locked {
+    background: rgba(239, 68, 68, 0.16) !important;
+    color: #fca5a5 !important;
+    border-color: rgba(248, 113, 113, 0.35) !important;
+}
+
+.admin-health-note {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+}
+
+.admin-health-note-title {
+    color: #334155;
+}
+
+body.dark-mode .admin-health-note,
+html[data-theme="dark"] .admin-health-note {
+    background: #202124 !important;
+    border-color: #3C4043 !important;
+    color: #BDC1C6 !important;
+}
+
+body.dark-mode .admin-health-note-title,
+html[data-theme="dark"] .admin-health-note-title {
+    color: #E8EAED !important;
+}
+
+/* Base & Light Mode AI Health Badge */
+#ai-health-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+#ai-health-badge[data-state="HEALTHY"],
+#ai-health-badge.status-healthy {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid rgba(22, 163, 74, 0.2);
+}
+#ai-health-badge[data-state="UNHEALTHY"],
+#ai-health-badge.status-unhealthy {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+#ai-health-badge[data-state="NOT_CONFIGURED"],
+#ai-health-badge.status-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid rgba(217, 119, 6, 0.2);
+}
+#ai-health-badge[data-state="NOT_CHECKED"],
+#ai-health-badge.status-neutral {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid rgba(2, 132, 199, 0.2);
+}
+
+.status-badge .status-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: 1px;
+    flex-shrink: 0;
+}
+
+html[data-theme="dark"] #ai-health-badge,
+body.dark-mode #ai-health-badge {
+    border-color: #3C4043 !important;
+}
+
+html[data-theme="dark"] #ai-health-badge[data-state="HEALTHY"],
+body.dark-mode #ai-health-badge[data-state="HEALTHY"] {
+    background: rgba(16, 185, 129, 0.16) !important;
+    color: #34d399 !important;
+    border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+html[data-theme="dark"] #ai-health-badge[data-state="UNHEALTHY"],
+body.dark-mode #ai-health-badge[data-state="UNHEALTHY"] {
+    background: rgba(239, 68, 68, 0.16) !important;
+    color: #fca5a5 !important;
+    border-color: rgba(248, 113, 113, 0.35) !important;
+}
+
+html[data-theme="dark"] #ai-health-badge[data-state="NOT_CONFIGURED"],
+body.dark-mode #ai-health-badge[data-state="NOT_CONFIGURED"] {
+    background: rgba(245, 158, 11, 0.16) !important;
+    color: #fbbf24 !important;
+    border-color: rgba(251, 191, 36, 0.35) !important;
+}
+
+html[data-theme="dark"] #ai-health-badge[data-state="NOT_CHECKED"],
+body.dark-mode #ai-health-badge[data-state="NOT_CHECKED"] {
+    background: rgba(37, 99, 235, 0.16) !important;
+    color: #93c5fd !important;
+    border-color: rgba(96, 165, 250, 0.35) !important;
+}
+
+html[data-theme="dark"] #ai-health-guidance,
+body.dark-mode #ai-health-guidance {
+    background: #252629 !important;
+    border-color: #3C4043 !important;
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] #ai-health-guidance strong,
+body.dark-mode #ai-health-guidance strong {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] #ai-health-detail div[style*="background"],
+body.dark-mode #ai-health-detail div[style*="background"] {
+    background: #252629 !important;
+    border-color: #3C4043 !important;
+    color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] #ai-health-detail div[style*="background"] strong,
+body.dark-mode #ai-health-detail div[style*="background"] strong {
+    color: #E8EAED !important;
+}

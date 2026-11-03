@@ -599,25 +599,34 @@
     if (verdictEl) {
       if (!isEvaluated) {
         verdictEl.className = "finish-verdict-pill verdict-average";
-        verdictEl.innerText = "ℹ️ Chưa hoàn tất đánh giá";
+        const vText = "Chưa hoàn tất đánh giá";
+        verdictEl.innerText = vText;
+        const iconSvg = (typeof window !== 'undefined' && window.PrepMateIcons && typeof window.PrepMateIcons.svg === 'function')
+          ? window.PrepMateIcons.svg('info', { size: 14, class: 'pm-icon' })
+          : '<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+        verdictEl.innerHTML = `${iconSvg}${vText}`;
       } else {
         let vClass = "verdict-good";
-        let vText = "👍 Đạt chuẩn — Nền tảng vững vàng";
+        let vText = 'Đạt chuẩn — Nền tảng vững vàng'; let vIcon = 'thumbs-up';
         if (overallScore >= 80) {
           vClass = "verdict-excellent";
-          vText = "⭐ Xuất sắc — Sẵn sàng tuyển dụng";
+          vText = 'Xuất sắc — Sẵn sàng tuyển dụng'; vIcon = 'sparkles';
         } else if (overallScore >= 70) {
           vClass = "verdict-good";
-          vText = "👍 Đạt chuẩn — Tiềm năng phát triển cao";
+          vText = 'Đạt chuẩn — Tiềm năng phát triển cao'; vIcon = 'thumbs-up';
         } else if (overallScore >= 60) {
           vClass = "verdict-average";
-          vText = "💡 Tiềm năng — Cần rèn luyện cấu trúc STAR";
+          vText = 'Tiềm năng — Cần rèn luyện cấu trúc STAR'; vIcon = 'target';
         } else {
           vClass = "verdict-low";
-          vText = "⚠️ Cần chuẩn bị thêm kiến thức chuyên sâu";
+          vText = 'Cần chuẩn bị thêm kiến thức chuyên sâu'; vIcon = 'alert-triangle';
         }
         verdictEl.className = `finish-verdict-pill ${vClass}`;
         verdictEl.innerText = vText;
+        const iconSvg = (typeof window !== 'undefined' && window.PrepMateIcons && typeof window.PrepMateIcons.svg === 'function')
+          ? window.PrepMateIcons.svg(vIcon, { size: 14, class: 'pm-icon' })
+          : '';
+        verdictEl.innerHTML = `${iconSvg}${vText}`;
       }
     }
 

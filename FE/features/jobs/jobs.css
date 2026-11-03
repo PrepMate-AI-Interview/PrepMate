@@ -1694,6 +1694,15 @@ body.dark-mode {
   --prep-text-primary: #F1F3F4;
   --prep-text-secondary: #E2E8F0;
   --prep-text-muted: #9AA0A6;
+  --prep-emerald-soft: rgba(16, 185, 129, 0.16);
+  --prep-emerald-border: rgba(52, 211, 153, 0.35);
+  --prep-emerald-text: #34d399;
+  --prep-amber-soft: rgba(245, 158, 11, 0.16);
+  --prep-amber-border: rgba(251, 191, 36, 0.35);
+  --prep-amber-text: #fbbf24;
+  --prep-danger-soft: rgba(239, 68, 68, 0.16);
+  --prep-danger-border: rgba(248, 113, 113, 0.35);
+  --prep-danger-text: #fca5a5;
   background-color: #202124 !important;
   color: #E2E8F0 !important;
 }
@@ -1824,4 +1833,80 @@ body.dark-mode .btn-clear-all-filters:hover {
   background: rgba(220, 38, 38, 0.2) !important;
   color: #fca5a5 !important;
   border-color: #ef4444 !important;
+}
+
+
+/* WI-DARKMODE-03 Jobs Badges & Tags Overrides */
+html[data-theme="dark"] .source-badge.source-topcv,
+body.dark-mode .source-badge.source-topcv {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+html[data-theme="dark"] .source-badge.source-linkedin,
+body.dark-mode .source-badge.source-linkedin {
+  background: rgba(37, 99, 235, 0.16) !important;
+  color: #93c5fd !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+}
+
+html[data-theme="dark"] .source-badge.source-itviec,
+body.dark-mode .source-badge.source-itviec {
+  background: rgba(239, 68, 68, 0.16) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(248, 113, 113, 0.35) !important;
+}
+
+html[data-theme="dark"] .source-badge.source-jooble,
+body.dark-mode .source-badge.source-jooble {
+  background: rgba(14, 165, 233, 0.16) !important;
+  color: #7dd3fc !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+}
+
+html[data-theme="dark"] .source-badge.source-sample,
+body.dark-mode .source-badge.source-sample {
+  background: rgba(245, 158, 11, 0.16) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+}
+
+html[data-theme="dark"] .featured-badge,
+body.dark-mode .featured-badge {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+html[data-theme="dark"] .job-company-badge,
+html[data-theme="dark"] .company-badge,
+body.dark-mode .job-company-badge,
+body.dark-mode .company-badge {
+  background: #252629 !important;
+  color: #bdc1c6 !important;
+  border-color: #3c4043 !important;
+}
+
+html[data-theme="dark"] .salary-pill,
+body.dark-mode .salary-pill {
+  background: #202124 !important;
+  border-color: #3c4043 !important;
+  color: #bdc1c6 !important;
+}
+
+html[data-theme="dark"] .salary-pill:hover,
+html[data-theme="dark"] .salary-pill.active,
+body.dark-mode .salary-pill:hover,
+body.dark-mode .salary-pill.active {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+html[data-theme="dark"] .job-salary-highlight,
+body.dark-mode .job-salary-highlight {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
 }

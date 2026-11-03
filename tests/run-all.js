@@ -56,6 +56,11 @@ const suites = [
   { name: 'Report Page Remediation (WI-REPORT-01)', path: 'tests/regression/wi-report-01-remediation.test.js' },
   { name: 'Report Hierarchy & Progressive Disclosure (WI-REPORT-02)', path: 'tests/regression/wi-report-02-progressive-disclosure.test.js' },
   { name: 'Interview Intelligence & Preparation Ecosystem (WI-REPORT-03)', path: 'tests/regression/wi-report-03-ecosystem.test.js' },
+  { name: 'Report Info Architecture & Feedback Refinement (WI-REPORT-06)', path: 'tests/regression/wi-report-06.test.js' },
+  { name: 'Report Navigation & Content Flow Optimization (WI-REPORT-07)', path: 'tests/regression/wi-report-07-navigation.test.js' },
+  { name: 'Report Navigation & Question Feedback Optimization (WI-REPORT-08)', path: 'tests/regression/wi-report-08-feedback.test.js' },
+  { name: 'Report Visual Hierarchy & Interactive Assessment (WI-REPORT-09)', path: 'tests/regression/wi-report-09-assessment.test.js' },
+  { name: 'Unified Evaluation Transparency Disclosure (WI-REPORT-10)', path: 'tests/regression/wi-report-10-transparency.test.js' },
   { name: 'UI Language Normalization (WI-LANG-01)', path: 'tests/regression/wi-lang-01-normalization.test.js' },
   { name: 'UI Language Final Cleanup & Remediation (WI-LANG-02)', path: 'tests/regression/wi-lang-02-remediation.test.js' },
   { name: 'Camera Preview & Privacy (WI-VIDEO)', path: 'tests/regression/camera-preview-privacy.test.js' },
@@ -85,7 +90,21 @@ const suites = [
   { name: 'Progress & Analytics Experience', path: 'tests/consistency/progress-analytics-experience.test.js' },
   { name: 'Candidate Auxiliary (Profile, CV, Settings)', path: 'tests/consistency/candidate-auxiliary-experience.test.js' },
   { name: 'Admin Operations Experience', path: 'tests/consistency/admin-operations-experience.test.js' },
-  { name: 'Public, Pricing, Payment & Auth Experience', path: 'tests/consistency/public-pricing-auth-experience.test.js' }
+  { name: 'Public, Pricing, Payment & Auth Experience', path: 'tests/consistency/public-pricing-auth-experience.test.js' },
+  { name: 'Global Icon Alignment & History Standardization (WI-UX-05)', path: 'tests/regression/wi-ux-05.test.js' },
+  { name: 'Global DOM Cleanup & Icon Normalization (WI-UX-05R1)', path: 'tests/regression/wi-ux-05r1.test.js' },
+  { name: 'Sidebar Interaction Polish & Dashboard Optimization (WI-UX-06)', path: 'tests/regression/wi-ux-06.test.js' },
+  { name: 'Report Analysis & Recommendations Refinement (WI-REPORT-11)', path: 'tests/regression/wi-report-11.test.js' },
+  { name: 'Ecosystem Presentation & Recommendations Restructuring (WI-REPORT-12)', path: 'tests/regression/wi-report-12.test.js' },
+  { name: 'Ecosystem Section Live Audit & Report Visual Balancing (WI-REPORT-13)', path: 'tests/regression/wi-report-13.test.js' },
+  { name: 'Ecosystem Visual Hierarchy & Presentation Audit (WI-REPORT-13R1)', path: 'tests/regression/wi-report-13r1.test.js' },
+  { name: 'Report Visual Hierarchy, Clothing Slider & Contextual Preparation UI (WI-REPORT-13R2)', path: 'tests/regression/wi-report-13r2.test.js' },
+  { name: 'Clothing Style Horizontal Slide Carousel (WI-04R1)', path: 'tests/regression/wi-04r1-clothing-carousel.test.js' },
+  { name: 'Clothing Style Carousel Hierarchy & Inspection (WI-REPORT-13R3)', path: 'tests/regression/wi-report-13r3.test.js' },
+  { name: 'Compact Clothing Suggestion Carousel (WI-REPORT-13R3-R1)', path: 'tests/regression/wi-report-13r3-r1.test.js' },
+  { name: 'Recommendations IA & Resource Separation (WI-REPORT-14)', path: 'tests/regression/wi-report-14.test.js' },
+  { name: 'Priority Hierarchy & Progressive Disclosure (WI-REPORT-14R1)', path: 'tests/regression/wi-report-14r1.test.js' },
+  { name: 'Redesign Recommendations Section (WI-REPORT-15)', path: 'tests/regression/wi-report-15.test.js' }
 ];
 
 console.log('===============================================================');

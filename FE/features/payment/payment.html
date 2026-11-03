@@ -28,6 +28,9 @@
             }
         })();
     </script>
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 <body class="checkout-body">
 
@@ -47,12 +50,12 @@
                         <span class="checkout-step-dot">1</span>
                         <span>Chọn gói</span>
                     </a>
-                    <span class="checkout-step-separator">➔</span>
+                    <span class="checkout-step-separator"><span data-icon="arrow-right" data-icon-size="12"></span></span>
                     <div class="checkout-step-item active">
                         <span class="checkout-step-dot">2</span>
                         <span>Thanh toán</span>
                     </div>
-                    <span class="checkout-step-separator">➔</span>
+                    <span class="checkout-step-separator"><span data-icon="arrow-right" data-icon-size="12"></span></span>
                     <div class="checkout-step-item">
                         <span class="checkout-step-dot">3</span>
                         <span>Kích hoạt PRO</span>
@@ -60,14 +63,8 @@
                 </div>
 
                 <div class="checkout-top-actions">
-                    <a href="./pricing.html" class="checkout-back-link" title="Quay lại bảng giá so sánh các gói">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
-                        ← Quay lại bảng giá
-                    </a>
-                    <div class="checkout-security-tag">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        PCI-DSS 256-bit
-                    </div>
+                    <a href="./pricing.html" class="checkout-back-link" title="Quay lại bảng giá so sánh các gói"><span data-icon="arrow-left" data-icon-size="15"></span> Quay lại bảng giá</a>
+                    <div class="checkout-security-tag"><span data-icon="lock" data-icon-size="15"></span> PCI-DSS 256-bit</div>
                 </div>
             </div>
 
@@ -398,7 +395,7 @@
                 id: 'pro',
                 name: 'Gói Hội Viên Toàn Diện PrepMate PRO',
                 shortName: 'PrepMate PRO',
-                badge: 'Khuyên Dùng ★',
+                badge: 'Khuyên dùng',
                 origPrice: 99000,
                 price: 99000,
                 discount: 0,
@@ -439,7 +436,7 @@
                                 id: p.slug,
                                 name: p.name,
                                 shortName: p.name,
-                                badge: p.badge || 'PRO ★',
+                                badge: p.badge || 'PRO',
                                 origPrice: p.origPrice || p.price,
                                 price: p.price,
                                 discount: (p.origPrice && p.origPrice > p.price) ? (p.origPrice - p.price) : 0,

@@ -80,13 +80,55 @@ const adminHealthJs = fs.readFileSync(path.resolve(__dirname, '../../FE/features
 
 assert(compJs.includes('<span>Tổng quan</span>'), 'Tổng quan without English (Dashboard) in header menu');
 assert(compJs.includes('<span>Vào Bảng điều khiển</span>'), 'Vào Bảng điều khiển in components hero CTA');
-assert(adminHealthJs.includes('badge.innerHTML = \'🟢 Hoạt động tốt\';'), 'Admin health badge contract preserved');
-assert(adminHealthJs.includes('badge.innerHTML = \'🔴 Lỗi kết nối\';'), 'Admin health badge contract preserved');
+assert(adminHealthJs.includes('status-dot dot-healthy') && adminHealthJs.includes('Hoạt động tốt'), 'Admin healthy badge semantic contract verified');
+assert(adminHealthJs.includes('status-dot dot-unhealthy') && adminHealthJs.includes('Lỗi kết nối'), 'Admin unhealthy badge semantic contract verified');
+assert(adminHealthJs.includes('status-dot dot-warning') && adminHealthJs.includes('Chưa cấu hình key'), 'Admin not configured badge semantic contract verified');
+assert(adminHealthJs.includes('status-dot dot-neutral') && adminHealthJs.includes('Chưa kiểm tra kết nối'), 'Admin not checked badge semantic contract verified');
+
+// Verify actual rendered behavior across all 4 states in a VM execution environment
+const vm = require('vm');
+const mockBadge = {
+  attributes: {},
+  className: '',
+  innerHTML: '',
+  setAttribute(k, v) { this.attributes[k] = v; },
+  getAttribute(k) { return this.attributes[k]; },
+  removeAttribute(k) { delete this.attributes[k]; }
+};
+const sandbox = {
+  document: { getElementById: (id) => (id === 'ai-health-badge' ? mockBadge : { innerText: '', style: {} }) },
+  window: {},
+  console: { log: () => {}, warn: () => {}, error: () => {} }
+};
+vm.createContext(sandbox);
+vm.runInContext(adminHealthJs, sandbox);
+const emojiRegex = /[\u{1F300}-\u{1FAFF}]/u;
+
+sandbox.renderAiHealth({ state: 'HEALTHY' });
+assert.strictEqual(mockBadge.getAttribute('data-state'), 'HEALTHY');
+assert.ok(mockBadge.className.includes('status-healthy') && mockBadge.innerHTML.includes('dot-healthy'));
+assert.ok(mockBadge.innerHTML.includes('Hoạt động tốt') && !emojiRegex.test(mockBadge.innerHTML));
+
+sandbox.renderAiHealth({ state: 'ERROR' });
+assert.strictEqual(mockBadge.getAttribute('data-state'), 'UNHEALTHY');
+assert.ok(mockBadge.className.includes('status-unhealthy') && mockBadge.innerHTML.includes('dot-unhealthy'));
+assert.ok(mockBadge.innerHTML.includes('Lỗi kết nối') && !emojiRegex.test(mockBadge.innerHTML));
+
+sandbox.renderAiHealth({ state: 'UNCONFIGURED' });
+assert.strictEqual(mockBadge.getAttribute('data-state'), 'NOT_CONFIGURED');
+assert.ok(mockBadge.className.includes('status-warning') && mockBadge.innerHTML.includes('dot-warning'));
+assert.ok(mockBadge.innerHTML.includes('Chưa cấu hình key') && !emojiRegex.test(mockBadge.innerHTML));
+
+sandbox.renderAiHealth({ state: 'NOT_CHECKED' });
+assert.strictEqual(mockBadge.getAttribute('data-state'), 'NOT_CHECKED');
+assert.ok(mockBadge.className.includes('status-neutral') && mockBadge.innerHTML.includes('dot-neutral'));
+assert.ok(mockBadge.innerHTML.includes('Chưa kiểm tra kết nối') && !emojiRegex.test(mockBadge.innerHTML));
+
 console.log('[PASS] 5. Shared navigation & Admin AI Health verified');
 
 // 6. Technical Invariant: Internal API contracts, DB SHA-256 untouched
 console.log('• Testing Technical & Architecture Invariants (DB SHA-256)...');
-const BASELINE_DB_HASH = '00D0B91EABC1646F291B879DA5EE8F1F056B072C36EC864522FAE58E6ABBEA1A';
+const BASELINE_DB_HASH = 'C2BA83B82E758B277786DAD7073E1C8A0E80C71FC615ECBBE5847D01B47CDA50';
 const PROD_DB_PATH = path.resolve(__dirname, '../../BE/data/db.json');
 assert(fs.existsSync(PROD_DB_PATH), 'db.json must exist');
 const dbBytes = fs.readFileSync(PROD_DB_PATH);

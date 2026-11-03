@@ -445,13 +445,13 @@ html[data-theme="dark"] .plan-badge-tag,
 body.dark-mode #badge-current-free,
 body.dark-mode .plan-badge-tag {
   background: rgba(16, 185, 129, 0.15) !important;
-  color: #81c995 !important;
+  color: #34d399 !important;
   border: 1px solid rgba(16, 185, 129, 0.3) !important;
 }
 
 html[data-theme="dark"] .badge-popular,
 body.dark-mode .badge-popular {
   background: rgba(37, 99, 235, 0.18) !important;
-  color: #8ab4f8 !important;
+  color: #93c5fd !important;
   border: 1px solid rgba(37, 99, 235, 0.3) !important;
 }

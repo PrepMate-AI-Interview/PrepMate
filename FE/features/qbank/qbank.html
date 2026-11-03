@@ -32,6 +32,9 @@
             --qb-shadow-hover: var(--pm-shadow-md);
         }
     </style>
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 
 <body class="dashboard-body">
@@ -50,8 +53,8 @@
                     <span class="qbank-hero-pill-emerald">Tích hợp AI hỏi đào sâu & STAR</span>
                 </div>
                 <h1 style="font-size:24px;margin-bottom:8px;">Ngân hàng Câu hỏi & Kiến thức cốt lõi AI</h1>
-                <p style="font-size:14px;color:#475569;margin-bottom:0;max-width:650px;">
-                    Bộ câu hỏi mô phỏng phỏng vấn thực tế từ các doanh nghiệp hàng đầu đa lĩnh vực. Bấm <strong>"Chi tiết"</strong> để xem bối cảnh và câu hỏi phản biện của AI, hoặc <strong>"Luyện tập"</strong> trên từng câu hỏi để vào phòng mô phỏng 1-1.
+                <p style="font-size:14px;color:var(--pm-text-secondary, #475569);margin-bottom:0;max-width:650px;">
+                    Cẩm nang tra cứu và định hướng trả lời câu hỏi phỏng vấn chuẩn hóa theo phương pháp STAR từ các doanh nghiệp hàng đầu. Bấm <strong>"Xem gợi ý & STAR"</strong> trên từng câu hỏi để tham khảo mục tiêu đánh giá, khung cấu trúc trả lời, từ khóa trọng tâm và các lỗi phổ biến cần tránh.
                 </p>
             </div>
             <div class="hero-stats">
@@ -278,15 +281,11 @@
                     Hiển thị <strong>1 - 6</strong> trên tổng số <strong>24</strong> câu hỏi
                 </div>
                 <div class="qbank-pagination-controls">
-                    <button type="button" class="page-nav-btn" id="btn-page-prev" onclick="changePage(currentPage - 1)">
-                        ‹ Trước
-                    </button>
+                    <button type="button" class="page-nav-btn" id="btn-page-prev" onclick="changePage(currentPage - 1)" style="display:inline-flex;align-items:center;gap:4px;"><span data-icon="chevron-left" data-icon-size="14"></span> Trước</button>
                     <div class="page-numbers-group" id="page-numbers-container">
                         <!-- Dynamic page numbers -->
                     </div>
-                    <button type="button" class="page-nav-btn" id="btn-page-next" onclick="changePage(currentPage + 1)">
-                        Sau ›
-                    </button>
+                    <button type="button" class="page-nav-btn" id="btn-page-next" onclick="changePage(currentPage + 1)" style="display:inline-flex;align-items:center;gap:4px;">Sau <span data-icon="chevron-right" data-icon-size="14"></span></button>
                 </div>
             </div>
         </section>
@@ -320,9 +319,7 @@
                         </span>
                         <span class="modal-source-attribution" id="modal-attribution">Tài liệu tham khảo & khung năng lực</span>
                     </div>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="modal-source-link" id="modal-source-link" style="display:none;">
-                        Tài liệu tham khảo ↗
-                    </a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="modal-source-link" id="modal-source-link" style="display:none;align-items:center;gap:4px;"><span>Tài liệu tham khảo</span><svg class="pm-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></a>
                 </div>
 
                 <!-- 1. Bối cảnh phỏng vấn -->
@@ -380,6 +377,21 @@
                         <!-- Dynamic keyword tags -->
                     </div>
                 </div>
+
+                <!-- 5. Lỗi thường gặp cần tránh (Common Pitfalls) -->
+                <div class="modal-info-block modal-pitfalls-block" style="padding:12px 16px;">
+                    <div class="modal-block-label" style="color:var(--pm-red,#b91c1c);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        Lỗi phổ biến cần tránh (Common Pitfalls)
+                    </div>
+                    <p class="modal-block-text" id="modal-pitfalls" style="color:var(--pm-red,#991b1b);margin-bottom:0;font-size:13px;line-height:1.5;">Tránh trả lời chung chung lý thuyết sách vở; thiếu số liệu đo lường cụ thể về kết quả (Result); hoặc không làm rõ vai trò quyết định cá nhân trong tình huống.</p>
+                </div>
+
+                <!-- 6. Khuyến cáo phương pháp luận (Framework Disclaimer) -->
+                <div class="modal-disclaimer-box">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <span><strong>Lưu ý phương pháp luận:</strong> Khung trả lời chuẩn STAR và từ khóa trên đóng vai trò là cấu trúc định hướng tư duy, không phải văn bản học thuộc lòng. Ứng viên nên linh hoạt vận dụng dữ liệu thực tế và câu chuyện của chính mình khi tham gia phỏng vấn.</span>
+                </div>
             </div>
 
             <!-- Modal Footer -->
@@ -389,11 +401,11 @@
                     <span id="modal-time">Thời lượng ước tính: 5-8 phút</span>
                 </div>
                 <div class="modal-footer-actions">
+                    <button type="button" class="modal-copy-action" id="modal-copy-btn" onclick="copyCurrentQuestion()" title="Sao chép nội dung câu hỏi để lưu trữ hoặc tự ôn luyện">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <span id="modal-copy-text">Sao chép câu hỏi</span>
+                    </button>
                     <button type="button" class="modal-close-action" onclick="closeQBankModal()">Đóng</button>
-                    <a href="#" id="modal-practice-link" class="modal-start-action">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        Luyện chuyên đề này ngay →
-                    </a>
                 </div>
             </div>
         </div>
@@ -1046,10 +1058,6 @@
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                                     <span>Xem gợi ý & STAR</span>
                                 </button>
-                                <a href="${practiceUrl}" class="btn-practice-quick" title="Bắt đầu phòng luyện tập với câu hỏi này">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                                    <span>Luyện tập</span>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -1159,14 +1167,17 @@
                 tagsContainer.innerHTML = item.keywords.map(kw => `<span class="modal-tag">${kw}</span>`).join('');
             }
 
+            // Fill Pitfalls (WI-02B)
+            const pitfallsEl = document.getElementById('modal-pitfalls');
+            if (pitfallsEl) {
+                pitfallsEl.innerText = getQuestionPitfalls(item);
+            }
+
+            currentModalQuestion = item;
+
             // Fill Footer
             const timeEl = document.getElementById('modal-time');
             if (timeEl) timeEl.innerText = `Thời lượng ước tính: ${item.duration || '6-8 phút'}`;
-
-            const practiceLink = document.getElementById('modal-practice-link');
-            if (practiceLink) {
-                practiceLink.href = `../interview/interview-info.html?role=${encodeURIComponent(item.role)}&topic=${encodeURIComponent(item.topicParam || item.title)}&lang=${item.lang || 'vi'}`;
-            }
 
             // Open Overlay
             const overlay = document.getElementById('qbank-modal-overlay');
@@ -1174,6 +1185,41 @@
                 overlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
+        }
+
+        let currentModalQuestion = null;
+
+        function getQuestionPitfalls(item) {
+            if (item.pitfalls) return item.pitfalls;
+            if (item.type === 'behavioral') {
+                return 'Tránh nói chung chung bằng đại từ "chúng tôi" mà không làm rõ vai trò cá nhân ("tôi"), hoặc đổ lỗi cho đồng nghiệp/khách hàng khi mô tả xung đột hay thất bại.';
+            }
+            if (item.type === 'situational') {
+                return 'Tránh đưa ra phán đoán vội vàng khi chưa phân tích dữ liệu hoặc hỏi rõ yêu cầu bài toán; tránh chọn phương án mạo hiểm thiếu kế hoạch dự phòng rủi ro.';
+            }
+            return 'Tránh trả lời thuần túy lý thuyết sách vở; thiếu số liệu định lượng về kết quả (Result); hoặc không giải thích rõ tại sao lại chọn giải pháp đó thay vì các phương án khác.';
+        }
+
+        function copyCurrentQuestion() {
+            if (!currentModalQuestion) return;
+            const q = currentModalQuestion;
+            const text = `[PrepMate QBank] ${q.title}\n\n• Vị trí: ${q.role} (${q.industryLabel || q.industry})\n• Mục tiêu đánh giá: ${q.context || ''}\n• Gợi ý STAR:\n  - Situation: ${q.star?.s || ''}\n  - Task: ${q.star?.t || ''}\n  - Action: ${q.star?.a || ''}\n  - Result: ${q.star?.r || ''}\n• Từ khóa trọng tâm: ${(q.keywords || []).join(', ')}\n• Lỗi cần tránh: ${getQuestionPitfalls(q)}`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const copyBtn = document.getElementById('modal-copy-btn');
+                const copyText = document.getElementById('modal-copy-text');
+                if (copyBtn && copyText) {
+                    copyBtn.classList.add('copied');
+                    copyText.textContent = 'Đã sao chép!';
+                    setTimeout(() => {
+                        copyBtn.classList.remove('copied');
+                        copyText.textContent = 'Sao chép câu hỏi';
+                    }, 2000);
+                }
+            }).catch(() => {
+                const copyText = document.getElementById('modal-copy-text');
+                if (copyText) copyText.textContent = 'Đã sao chép!';
+            });
         }
 
         function closeQBankModal() {

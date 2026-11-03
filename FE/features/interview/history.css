@@ -185,62 +185,64 @@
   gap: 12px;
 }
 
-/* Individual History Card */
+/* Individual History Card (Standardized 1:1 with Dashboard) */
 .history-item {
+  background: var(--pm-surface, #ffffff);
+  border: 1px solid var(--pm-border, #e2e8f0);
+  border-radius: 14px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 18px 22px;
-  background: var(--hist-surface);
-  border: 1px solid var(--hist-border);
-  border-radius: var(--hist-radius);
-  box-shadow: var(--hist-shadow-sm);
-  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  gap: 16px;
+  box-shadow: var(--pm-shadow-sm);
+  transition: all 0.18s ease;
+  cursor: pointer;
 }
 
 .history-item:hover {
-  border-color: var(--hist-border-subtle);
-  box-shadow: var(--hist-shadow-md);
+  border-color: var(--pm-primary-border, #bfdbfe);
+  box-shadow: var(--pm-shadow-md);
+  transform: translateY(-1px);
 }
 
 /* Score Pill */
 .history-item-score {
-  width: 54px;
-  height: 54px;
+  width: 48px;
+  height: 48px;
   border-radius: 12px;
+  background: var(--pm-primary-soft, #eff6ff);
+  border: 2px solid var(--pm-primary-border, #bfdbfe);
+  color: var(--pm-primary, #1d4ed8);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: var(--pm-font-weight-bold, 652);
   flex-shrink: 0;
-  border-width: 2px;
-  border-style: solid;
 }
 
 .history-item-score.score-high {
-  background: var(--hist-success-soft);
-  border-color: var(--hist-success-border);
-  color: var(--hist-success);
+  background: var(--pm-emerald-soft, #ecfdf5);
+  border-color: var(--pm-emerald-border, #a7f3d0);
+  color: var(--pm-emerald, #059669);
 }
 
 .history-item-score.score-mid {
-  background: var(--hist-warning-soft);
-  border-color: var(--hist-warning-border);
-  color: var(--hist-warning);
+  background: var(--pm-amber-soft, #fffbeb);
+  border-color: var(--pm-amber-border, #fde68a);
+  color: var(--pm-amber, #d97706);
 }
 
 .history-item-score.score-low {
-  background: var(--hist-danger-soft);
-  border-color: var(--hist-danger-border);
-  color: var(--hist-danger);
+  background: var(--pm-red-soft, #fef2f2);
+  border-color: var(--pm-red-border, #fecaca);
+  color: var(--pm-red, #dc2626);
 }
 
 .history-item-score.score-null {
-  background: var(--hist-surface-subtle);
-  border-color: var(--hist-border);
-  color: var(--hist-text-muted);
+  background: var(--pm-surface-subtle, #f1f5f9);
+  border-color: var(--pm-border, #e2e8f0);
+  color: var(--pm-text-muted, #64748b);
 }
 
 /* History Card Content */
@@ -249,7 +251,7 @@
   min-width: 0;
 }
 
-.history-item-title {
+.history-item-title-row {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -257,128 +259,122 @@
   margin-bottom: 6px;
 }
 
+.history-item-job-title,
 .history-item-role {
-  font-weight: 700;
   font-size: 15px;
-  color: var(--hist-text-primary);
+  font-weight: 700;
+  color: var(--pm-text-primary, #0f172a);
+  letter-spacing: -0.2px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
+.history-item-job-title svg,
 .history-item-role svg {
-  color: var(--hist-text-muted);
+  color: var(--pm-text-muted, #64748b);
+  flex-shrink: 0;
 }
 
-.pm-company-pill {
+/* History Company Pill */
+.history-item .pm-company-pill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  padding: 3px 8px;
+  background: var(--pm-surface-subtle, #f1f5f9);
+  border: 1px solid var(--pm-border, #e2e8f0);
+  border-radius: var(--pm-radius-badge, 6px);
   font-size: 12px;
   font-weight: 600;
-  color: var(--hist-text-secondary);
-  background: var(--hist-surface-subtle);
-  border: 1px solid var(--hist-border);
-  padding: 2px 8px;
-  border-radius: 6px;
+  color: var(--pm-text-secondary, #334155);
 }
 
-.pm-company-pill svg {
-  color: var(--hist-text-muted);
+.history-item .pm-company-pill svg {
+  color: var(--pm-text-muted, #64748b);
+  flex-shrink: 0;
 }
 
-/* Metadata Row */
-.pm-meta-row {
+/* History Meta Row */
+.history-item .pm-meta-row {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 6px;
-}
-
-.pm-flag-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  margin-top: 4px;
   font-size: 12px;
-  color: var(--hist-text-secondary);
-  background: var(--hist-surface-subtle);
-  border: 1px solid var(--hist-border);
-  padding: 2px 8px;
-  border-radius: 6px;
 }
 
-.pm-time-badge {
+/* Metadata badges in history */
+.history-item .pm-flag-badge,
+.history-item .pm-time-badge,
+.history-item .pm-questions-badge,
+.history-item .pm-seniority-chip,
+.history-item .pm-interviewer-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--hist-text-muted);
-}
-
-.pm-tag-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  gap: 5px;
+  padding: 2.5px 8px;
+  border-radius: var(--pm-radius-badge, 6px);
   font-size: 12px;
   font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 6px;
+  line-height: 1.35;
+  background: var(--pm-surface-subtle, #f8fafc);
+  border: 1px solid var(--pm-border, #e2e8f0);
+  color: var(--pm-text-secondary, #475569);
 }
 
-.pm-tag-pill.blue {
-  background: var(--hist-primary-soft);
-  color: var(--hist-primary);
-  border: 1px solid var(--hist-primary-border);
+.history-item .pm-time-badge svg {
+  color: var(--pm-primary, #1d4ed8);
+  flex-shrink: 0;
 }
 
-.pm-diff-badge {
+.history-item .pm-interviewer-badge svg {
+  color: var(--pm-primary, #2563eb);
+  flex-shrink: 0;
+}
+
+.history-item .pm-questions-badge svg,
+.history-item .pm-seniority-chip svg {
+  flex-shrink: 0;
+}
+
+.history-item .pm-seniority-chip {
+  background: var(--pm-surface-subtle, #f1f5f9);
+  border-color: var(--pm-border-subtle, #cbd5e1);
+  color: var(--pm-text-primary, #1e293b);
+  font-weight: 600;
+}
+
+/* Difficulty badge */
+.history-item .pm-diff-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  padding: 2.5px 8px;
+  border-radius: var(--pm-radius-badge, 6px);
   font-size: 12px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 6px;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
-.pm-diff-badge.basic {
-  background: var(--hist-surface-subtle);
-  color: var(--hist-text-secondary);
-  border: 1px solid var(--hist-border);
+.history-item .pm-diff-badge.easy,
+.history-item .pm-diff-badge.basic {
+  background: var(--pm-emerald-soft, #ecfdf5);
+  border: 1px solid var(--pm-emerald-border, #a7f3d0);
+  color: var(--pm-emerald, #059669);
 }
 
-.pm-diff-badge.medium {
-  background: var(--hist-primary-soft);
-  color: var(--hist-primary);
-  border: 1px solid var(--hist-primary-border);
+.history-item .pm-diff-badge.medium {
+  background: var(--pm-amber-soft, #fffbeb);
+  border: 1px solid var(--pm-amber-border, #fde68a);
+  color: var(--pm-amber, #d97706);
 }
 
-.pm-diff-badge.hard {
-  background: var(--hist-warning-soft);
-  color: var(--hist-warning);
-  border: 1px solid var(--hist-warning-border);
-}
-
-.pm-diff-dots {
-  letter-spacing: -1px;
-}
-
-.pm-interviewer-badge {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--hist-text-secondary);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--hist-surface-subtle);
-  padding: 2px 8px;
-  border-radius: 12px;
-  border: 1px solid var(--hist-border);
-}
-
-.pm-interviewer-badge svg {
-  color: var(--hist-text-muted);
+.history-item .pm-diff-badge.hard {
+  background: var(--pm-red-soft, #fef2f2);
+  border: 1px solid var(--pm-red-border, #fecaca);
+  color: var(--pm-red, #dc2626);
 }
 
 .pm-status-pill {
@@ -396,113 +392,131 @@
   height: 6px;
   border-radius: 50%;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .pm-status-pill.done {
-  background: var(--hist-success-soft);
-  color: var(--hist-success);
-  border: 1px solid var(--hist-success-border);
+  background: var(--hist-success-soft, #ecfdf5);
+  color: var(--hist-success, #059669);
+  border: 1px solid var(--hist-success-border, #a7f3d0);
 }
 
 .pm-status-pill.done .pm-status-dot {
-  background: var(--hist-success);
+  background: var(--hist-success, #059669);
 }
 
 .pm-status-pill.in-progress {
-  background: var(--hist-primary-soft);
-  color: var(--hist-primary);
-  border: 1px solid var(--hist-primary-border);
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
 }
 
 .pm-status-pill.in-progress .pm-status-dot {
-  background: var(--hist-primary);
+  background: #2563eb;
 }
 
 .pm-status-pill.incomplete {
-  background: var(--hist-danger-soft);
-  color: var(--hist-danger);
-  border: 1px solid var(--hist-danger-border);
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
 }
 
 .pm-status-pill.incomplete .pm-status-dot {
-  background: var(--hist-danger);
+  background: #dc2626;
 }
 
 .history-item-date {
-  font-size: 11.5px;
-  color: var(--hist-text-muted);
+  font-size: 12px;
+  color: var(--pm-text-muted, #64748b);
+  margin-left: auto;
+  font-weight: 500;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-left: auto;
+}
+
+.history-item-date svg {
+  flex-shrink: 0;
 }
 
 /* Actions Column */
 .history-item-actions {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
   flex-shrink: 0;
-}
-
-.btn-action-report {
-  background: var(--hist-primary-soft);
-  color: var(--hist-primary);
-  border: 1px solid var(--hist-primary-border);
-  font-weight: 700;
-  border-radius: var(--pm-radius-btn-md, 8px);
-  padding: 8px 14px;
-  text-decoration: none;
-  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  transition: background 0.15s, border-color 0.15s;
 }
 
-.btn-action-report:hover {
-  background: #dbeafe;
-  border-color: #93c5fd;
-}
-
+/* Standardized Action Buttons in History */
+.history-item .btn-action-report,
+.history-item .btn-action-resume,
+.history-item .btn-action-restart,
+.history-item .btn-action-repractice,
+.btn-action-report,
+.btn-action-resume,
 .btn-action-repractice {
-  background: var(--hist-surface);
-  color: var(--hist-text-secondary);
-  border: 1px solid var(--hist-border-subtle);
-  font-weight: 700;
-  border-radius: var(--pm-radius-btn-md, 8px);
-  padding: 8px 12px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 13px;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.btn-action-repractice:hover {
-  background: var(--hist-surface-subtle);
-  border-color: #94a3b8;
-}
-
-.btn-action-resume {
-  background: var(--hist-primary);
-  color: #ffffff;
-  border: 1px solid var(--hist-primary);
-  font-weight: 700;
-  border-radius: var(--pm-radius-btn-md, 8px);
-  padding: 8px 14px;
-  text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--pm-radius-btn-md, 8px);
   font-size: 13px;
-  transition: background 0.15s;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--pm-shadow-xs, 0 1px 2px rgba(15, 23, 42, 0.03));
+  border: 1px solid transparent;
+  line-height: 1;
+  white-space: nowrap;
 }
 
+.history-item .btn-action-report,
+.btn-action-report {
+  background: var(--pm-primary-soft, #eff6ff);
+  color: var(--pm-primary, #1d4ed8);
+  border: 1px solid var(--pm-primary-border, #bfdbfe);
+}
+
+.history-item .btn-action-report:hover,
+.btn-action-report:hover {
+  background: var(--pm-primary, #1d4ed8);
+  color: #ffffff;
+  border-color: var(--pm-primary, #1d4ed8);
+  transform: translateY(-1px);
+  box-shadow: var(--pm-shadow-sm, 0 2px 6px rgba(15, 23, 42, 0.08));
+}
+
+.history-item .btn-action-resume,
+.btn-action-resume {
+  background: var(--pm-primary, #1d4ed8);
+  color: #ffffff;
+  border: 1px solid var(--pm-primary, #1d4ed8);
+}
+
+.history-item .btn-action-resume:hover,
 .btn-action-resume:hover {
-  background: var(--hist-primary-hover);
+  background: var(--pm-primary-hover, #1e40af);
+  border-color: var(--pm-primary-hover, #1e40af);
+  transform: translateY(-1px);
+  box-shadow: var(--pm-shadow-sm, 0 2px 6px rgba(15, 23, 42, 0.08));
+}
+
+.history-item .btn-action-restart,
+.history-item .btn-action-repractice,
+.btn-action-repractice {
+  background: var(--pm-surface-subtle, #f1f5f9);
+  color: var(--pm-text-secondary, #334155);
+  border: 1px solid var(--pm-border, #e2e8f0);
+}
+
+.history-item .btn-action-restart:hover,
+.history-item .btn-action-repractice:hover,
+.btn-action-repractice:hover {
+  background: var(--pm-surface-card, #ffffff);
+  color: var(--pm-text-primary, #0f172a);
+  border-color: var(--pm-border-subtle, #cbd5e1);
+  transform: translateY(-1px);
 }
 
 /* Empty & Loading States */
@@ -599,4 +613,230 @@
     margin-left: 0;
     width: 100%;
   }
+}
+
+/* ==========================================================================
+   WI-HISTORY-UX-01: DATE GROUPING & ADVANCED FILTERING STYLES
+   ========================================================================== */
+
+.filter-date-group,
+.filter-date-range-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-date-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--hist-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.filter-date-sep {
+  font-size: 12px;
+  color: var(--hist-text-muted);
+}
+
+.filter-date-input {
+  padding: 8px 10px;
+  border: 1px solid var(--hist-border-subtle);
+  border-radius: var(--pm-radius-btn-md, 8px);
+  font-size: 12.5px;
+  font-family: inherit;
+  color: var(--hist-text-secondary);
+  background: var(--hist-surface);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.filter-date-input:focus {
+  border-color: var(--hist-primary);
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+}
+
+.btn-reset-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--hist-border-subtle);
+  border-radius: var(--pm-radius-btn-md, 8px);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--hist-text-secondary);
+  background: var(--hist-surface);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-reset-filters:hover {
+  background: var(--hist-surface-subtle);
+  border-color: var(--hist-text-muted);
+  color: var(--hist-text-primary);
+}
+
+.btn-reset-filters:focus-visible {
+  outline: 2px solid var(--hist-primary);
+  outline-offset: 2px;
+}
+
+.history-date-error {
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--hist-danger);
+  background: var(--hist-danger-soft);
+  border: 1px solid var(--hist-danger-border);
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+.history-date-error.hidden {
+  display: none !important;
+}
+
+/* Date Grouping Hierarchy */
+.history-date-group {
+  margin-bottom: 22px;
+}
+
+.history-date-group:last-child {
+  margin-bottom: 0;
+}
+
+.history-date-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--hist-border);
+}
+
+.history-date-heading-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--hist-text-secondary);
+  font-weight: 700;
+  font-size: 13.5px;
+}
+
+.history-date-heading-content svg {
+  color: var(--hist-primary);
+}
+
+.history-date-title {
+  color: var(--hist-text-primary);
+}
+
+.history-date-count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--hist-text-muted);
+}
+
+.history-date-group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Dark theme overrides for date grouping & filters */
+html[data-theme="dark"] .filter-date-input,
+body.dark-mode .filter-date-input,
+html[data-theme="dark"] .btn-reset-filters,
+body.dark-mode .btn-reset-filters {
+  background: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+html[data-theme="dark"] .filter-date-label,
+body.dark-mode .filter-date-label {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .history-date-heading,
+body.dark-mode .history-date-heading {
+  border-bottom-color: #334155;
+}
+
+html[data-theme="dark"] .history-date-title,
+body.dark-mode .history-date-title {
+  color: #f1f5f9;
+}
+
+
+/* WI-DARKMODE-03 History Action Buttons Dark Overrides */
+html[data-theme="dark"] .btn-action-report,
+body.dark-mode .btn-action-report {
+  background: rgba(37, 99, 235, 0.16) !important;
+  color: #93c5fd !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+}
+
+html[data-theme="dark"] .btn-action-report:hover,
+body.dark-mode .btn-action-report:hover {
+  background: rgba(37, 99, 235, 0.28) !important;
+  border-color: #60a5fa !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .btn-action-repractice,
+body.dark-mode .btn-action-repractice {
+  background: #252629 !important;
+  color: #BDC1C6 !important;
+  border-color: #3C4043 !important;
+}
+
+html[data-theme="dark"] .btn-action-repractice:hover,
+body.dark-mode .btn-action-repractice:hover {
+  background: #3C4043 !important;
+  color: #E8EAED !important;
+  border-color: #5F6368 !important;
+}
+
+/* WI-UX-05R1: History Item Dark Mode Parity with Dashboard */
+body.dark-mode .history-item,
+html[data-theme="dark"] .history-item {
+  background: #292A2D !important;
+  border-color: #3C4043 !important;
+}
+
+body.dark-mode .history-item h4,
+html[data-theme="dark"] .history-item h4,
+body.dark-mode .history-item-job-title,
+html[data-theme="dark"] .history-item-job-title {
+  color: #F1F3F4 !important;
+}
+
+body.dark-mode .history-item .pm-company-pill,
+html[data-theme="dark"] .history-item .pm-company-pill {
+  background: #252629 !important;
+  border-color: #3C4043 !important;
+  color: #BDC1C6 !important;
+}
+
+body.dark-mode .history-item .pm-flag-badge,
+body.dark-mode .history-item .pm-time-badge,
+body.dark-mode .history-item .pm-questions-badge,
+body.dark-mode .history-item .pm-seniority-chip,
+body.dark-mode .history-item .pm-interviewer-badge,
+html[data-theme="dark"] .history-item .pm-flag-badge,
+html[data-theme="dark"] .history-item .pm-time-badge,
+html[data-theme="dark"] .history-item .pm-questions-badge,
+html[data-theme="dark"] .history-item .pm-seniority-chip,
+html[data-theme="dark"] .history-item .pm-interviewer-badge {
+  background: #252629 !important;
+  border-color: #3C4043 !important;
+  color: #BDC1C6 !important;
+}
+
+body.dark-mode .history-item-date,
+html[data-theme="dark"] .history-item-date {
+  color: #9AA0A6 !important;
 }

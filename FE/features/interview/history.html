@@ -27,6 +27,9 @@
             }
         })();
     </script>
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 
 <body class="dashboard-body">
@@ -97,6 +100,29 @@
                 <option value="Senior">Senior</option>
                 <option value="Lead">Lead</option>
             </select>
+
+            <!-- Date Filter Controls -->
+            <div class="filter-date-group">
+                <label for="hist-date-exact" class="filter-date-label">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span>Ngày:</span>
+                </label>
+                <input type="date" id="hist-date-exact" class="filter-date-input" title="Lọc theo một ngày cụ thể" aria-label="Lọc theo ngày cụ thể" onchange="onExactDateChange()">
+            </div>
+
+            <div class="filter-date-range-group">
+                <label for="hist-date-start" class="filter-date-label">Từ:</label>
+                <input type="date" id="hist-date-start" class="filter-date-input" title="Từ ngày" aria-label="Từ ngày" onchange="onDateRangeChange()">
+                <span class="filter-date-sep">đến</span>
+                <label for="hist-date-end" class="filter-date-label">Đến:</label>
+                <input type="date" id="hist-date-end" class="filter-date-input" title="Đến ngày" aria-label="Đến ngày" onchange="onDateRangeChange()">
+            </div>
+
+            <button type="button" id="btn-reset-filters" class="btn-reset-filters" onclick="resetHistoryFilters()" title="Đặt lại bộ lọc về mặc định" aria-label="Đặt lại bộ lọc">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                <span>Đặt lại</span>
+            </button>
+            <div id="hist-date-error" class="history-date-error hidden" role="alert"></div>
         </div>
 
         <!-- History Records Container -->
@@ -123,14 +149,80 @@
             loadAllHistory();
         });
 
+        const parseHistoryTimestamp = (s) => {
+            if (!s) return 0;
+            const raw = s.updatedAt || s.completedAt || s.createdAt || s.date || s.startTime || s.timestamp;
+            if (!raw) return 0;
+            const t = new Date(raw).getTime();
+            return isNaN(t) ? 0 : t;
+        };
+
         const sortHistorySessions = (list) => [...list].sort((a, b) => {
-            const tA = new Date(a.createdAt || a.date || a.startTime || 0).getTime() || 0;
-            const tB = new Date(b.createdAt || b.date || b.startTime || 0).getTime() || 0;
+            const tA = parseHistoryTimestamp(a);
+            const tB = parseHistoryTimestamp(b);
             if (tB !== tA) return tB - tA;
             const idA = String(a.id || a.backendSessionId || a.sessionId || '');
             const idB = String(b.id || b.backendSessionId || b.sessionId || '');
             return idB.localeCompare(idA);
         });
+
+        function getSessionDateKey(session) {
+            const raw = session.date || session.createdAt || session.startTime || session.updatedAt || session.timestamp;
+            if (!raw) return 'unknown';
+            const d = new Date(raw);
+            if (isNaN(d.getTime())) return 'unknown';
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getDateGroupTitle(dateKey) {
+            if (dateKey === 'unknown') return 'Thời gian khác';
+            const today = new Date();
+            const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayKey = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+
+            if (dateKey === todayKey) return 'Hôm nay';
+            if (dateKey === yesterdayKey) return 'Hôm qua';
+            const parts = dateKey.split('-');
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        function onExactDateChange() {
+            const exact = document.getElementById('hist-date-exact').value;
+            if (exact) {
+                document.getElementById('hist-date-start').value = '';
+                document.getElementById('hist-date-end').value = '';
+            }
+            filterHistoryList();
+        }
+
+        function onDateRangeChange() {
+            const start = document.getElementById('hist-date-start').value;
+            const end = document.getElementById('hist-date-end').value;
+            if (start || end) {
+                document.getElementById('hist-date-exact').value = '';
+            }
+            filterHistoryList();
+        }
+
+        function resetHistoryFilters() {
+            document.getElementById('hist-search-input').value = '';
+            document.getElementById('hist-status-filter').value = 'all';
+            document.getElementById('hist-level-filter').value = 'all';
+            document.getElementById('hist-date-exact').value = '';
+            document.getElementById('hist-date-start').value = '';
+            document.getElementById('hist-date-end').value = '';
+            const errEl = document.getElementById('hist-date-error');
+            if (errEl) {
+                errEl.textContent = '';
+                errEl.classList.add('hidden');
+            }
+            filterHistoryList();
+        }
 
         async function loadAllHistory() {
             const currentUser = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
@@ -231,6 +323,24 @@
             const q = (document.getElementById('hist-search-input').value || '').trim().toLowerCase();
             const statusFilter = document.getElementById('hist-status-filter').value;
             const levelFilter = document.getElementById('hist-level-filter').value;
+            const exactDate = document.getElementById('hist-date-exact')?.value || '';
+            const startDate = document.getElementById('hist-date-start')?.value || '';
+            const endDate = document.getElementById('hist-date-end')?.value || '';
+            const errEl = document.getElementById('hist-date-error');
+
+            if (startDate && endDate && startDate > endDate) {
+                if (errEl) {
+                    errEl.textContent = 'Ngày bắt đầu không được sau ngày kết thúc.';
+                    errEl.classList.remove('hidden');
+                }
+                renderFullHistoryList([]);
+                return;
+            } else {
+                if (errEl) {
+                    errEl.textContent = '';
+                    errEl.classList.add('hidden');
+                }
+            }
 
             const filtered = _allSessions.filter(session => {
                 const job = (session.jobTitle || '').toLowerCase();
@@ -248,7 +358,20 @@
                     matchesLevel = lvl.toLowerCase() === levelFilter.toLowerCase();
                 }
 
-                return matchesQuery && matchesStatus && matchesLevel;
+                let matchesDate = true;
+                const sDateKey = getSessionDateKey(session);
+                if (exactDate) {
+                    matchesDate = (sDateKey === exactDate);
+                } else if (startDate || endDate) {
+                    if (sDateKey === 'unknown') {
+                        matchesDate = false;
+                    } else {
+                        if (startDate && sDateKey < startDate) matchesDate = false;
+                        if (endDate && sDateKey > endDate) matchesDate = false;
+                    }
+                }
+
+                return matchesQuery && matchesStatus && matchesLevel && matchesDate;
             });
 
             renderFullHistoryList(filtered);
@@ -264,114 +387,202 @@
                         <div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
                         <h4>Không tìm thấy phiên phỏng vấn phù hợp</h4>
                         <p>Hãy thử điều chỉnh bộ lọc hoặc bắt đầu một buổi phỏng vấn mô phỏng mới.</p>
-                        <a href="interview-info.html" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;padding:9px 18px;border-radius:var(--pm-radius-btn-md, 8px);text-decoration:none;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Bắt đầu phỏng vấn ngay
-                        </a>
+                        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+                            <button onclick="resetHistoryFilters()" class="btn btn-outline" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:8px 16px;border-radius:var(--pm-radius-btn-md, 8px);cursor:pointer;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Đặt lại bộ lọc
+                            </button>
+                            <a href="interview-info.html" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;padding:9px 18px;border-radius:var(--pm-radius-btn-md, 8px);text-decoration:none;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Bắt đầu phỏng vấn ngay
+                            </a>
+                        </div>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = '';
-            const displayList = [...sessions];
 
-            displayList.forEach((session) => {
-                const originalIdx = _allSessions.indexOf(session);
-                const isCompleted = session.status === 'completed' || !!session.report || !!session.overallEvaluation || (typeof session.score === 'number' && session.score > 0);
-                const isInProgress = session.status === 'in_progress' || session.status === 'active';
+            // Group sessions by dateKey preserving newest first
+            const dateGroups = [];
+            const groupMap = new Map();
 
-                let displayScore = '—';
-                let scoreClass = 'score-null';
-
-                if (isCompleted) {
-                    let numericScore = 0;
-                    if (typeof session.score === 'number') numericScore = session.score;
-                    else if (typeof session.overallScore === 'number') numericScore = session.overallScore;
-                    else if (session.report?.overallEvaluation?.normalizedScore) numericScore = session.report.overallEvaluation.normalizedScore;
-                    else if (session.report?.overallEvaluation?.score) numericScore = session.report.overallEvaluation.score <= 10 ? session.report.overallEvaluation.score * 10 : session.report.overallEvaluation.score;
-
-                    const normalized = Math.round(numericScore <= 10 && numericScore > 0 ? numericScore * 10 : numericScore);
-                    displayScore = String(normalized);
-                    scoreClass = normalized >= 80 ? 'score-high' : normalized >= 60 ? 'score-mid' : 'score-low';
+            sessions.forEach(session => {
+                const dKey = getSessionDateKey(session);
+                if (!groupMap.has(dKey)) {
+                    const g = {
+                        key: dKey,
+                        title: getDateGroupTitle(dKey),
+                        sessions: []
+                    };
+                    groupMap.set(dKey, g);
+                    dateGroups.push(g);
                 }
+                groupMap.get(dKey).sessions.push(session);
+            });
 
-                const jobTitle = session.jobTitle || 'Buổi phỏng vấn';
-                const jobIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
-                const companyIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="16" y1="18" x2="16.01" y2="18"/></svg>';
+            dateGroups.forEach(group => {
+                const groupEl = document.createElement('div');
+                groupEl.className = 'history-date-group';
 
-                const sessionDate = session.date ? new Date(session.date).toLocaleDateString('vi-VN') : (session.createdAt ? new Date(session.createdAt).toLocaleDateString('vi-VN') : 'Gần đây');
-                const compName = session.company || session.companyName || session.targetCompany || 'Doanh nghiệp';
-                const lang = session.language === 'en' || session.language === 'English' ? 'English' : 'Tiếng Việt';
-                const flag = lang === 'English' ? '🇬🇧' : '🇻🇳';
-                const level = session.level || session.targetLevel || 'Middle';
-                const diffClass = level === 'Senior' || level === 'Lead' ? 'hard' : level === 'Junior' || level === 'Fresher' ? 'basic' : 'medium';
-                const diffDots = level === 'Senior' || level === 'Lead' ? '●●●' : level === 'Junior' || level === 'Fresher' ? '●○○' : '●●○';
-
-                const rawPersona = session.interviewerPersona || session.persona || (session.config && session.config.interviewerPersona) || 'professional';
-                const interviewerDisplayName = (typeof PrepMatePersonas !== 'undefined' && typeof PrepMatePersonas.getPersona === 'function')
-                    ? PrepMatePersonas.getPersona(rawPersona).name
-                    : (rawPersona === 'friendly' ? 'Lê Lan Anh' : rawPersona === 'balanced' ? 'Nguyễn Hoàng Nam' : 'Trần Minh Vũ');
-
-                let statusBadgeHtml = '';
-                let actionButtonsHtml = '';
-                const sessId = session.backendSessionId || session.id || session.sessionId;
-
-                if (isCompleted) {
-                    statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Đã hoàn thành</span>`;
-                    const reportUrl = sessId ? `../report/report.html?sessionId=${encodeURIComponent(sessId)}` : `../report/report.html?index=${originalIdx}`;
-                    actionButtonsHtml = `
-                        <a href="${reportUrl}" class="btn-action-report">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Xem báo cáo
-                        </a>
-                        <button onclick="repracticeFromHistory(${originalIdx})" class="btn-action-repractice">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> Luyện tập lại
-                        </button>
-                    `;
-                } else if (isInProgress) {
-                    statusBadgeHtml = `<span class="pm-status-pill in-progress"><span class="pm-status-dot"></span> Đang thực hiện</span>`;
-                    const resumeUrl = sessId ? `interview-practice.html?resume=${encodeURIComponent(sessId)}` : `interview-practice.html`;
-                    actionButtonsHtml = `
-                        <a href="${resumeUrl}" class="btn-action-resume">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Tiếp tục phỏng vấn
-                        </a>
-                    `;
-                } else {
-                    statusBadgeHtml = `<span class="pm-status-pill incomplete"><span class="pm-status-dot"></span> Chưa hoàn thành</span>`;
-                    actionButtonsHtml = `
-                        <button onclick="repracticeFromHistory(${originalIdx})" class="btn-action-repractice">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> Luyện tập lại
-                        </button>
-                    `;
-                }
-
-                const qaCount = (session.qaHub && Array.isArray(session.qaHub)) ? session.qaHub.length : (session.questionsAnswered != null ? session.questionsAnswered : (session.currentQuestionIndex || 0));
-
-                const card = document.createElement('div');
-                card.className = 'history-item';
-                card.innerHTML = `
-                    <div class="history-item-score ${scoreClass}">
-                        ${displayScore}
-                    </div>
-                    <div class="history-item-info">
-                        <div class="history-item-title">
-                            <span class="history-item-role">${jobIcon} ${jobTitle}</span>
-                            <span class="pm-company-pill">${companyIcon} ${compName}</span>
-                        </div>
-                        <div class="pm-meta-row">
-                            <span class="pm-flag-badge"><span class="flag-icon">${flag}</span> ${lang}</span>
-                            <span class="pm-time-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${session.duration || 15} phút</span>
-                            <span class="pm-tag-pill blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> ${qaCount} câu hỏi</span>
-                            <span class="pm-diff-badge ${diffClass}"><span class="pm-diff-dots">${diffDots}</span> ${level}</span>
-                            <span class="pm-interviewer-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${interviewerDisplayName}</span>
-                            ${statusBadgeHtml}
-                            <span class="history-item-date"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ${sessionDate}</span>
-                        </div>
-                    </div>
-                    <div class="history-item-actions">
-                        ${actionButtonsHtml}
+                const headingEl = document.createElement('div');
+                headingEl.className = 'history-date-heading';
+                headingEl.innerHTML = `
+                    <div class="history-date-heading-content">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span class="history-date-title">${group.title}</span>
+                        <span class="history-date-count">(${group.sessions.length})</span>
                     </div>
                 `;
-                container.appendChild(card);
+                groupEl.appendChild(headingEl);
+
+                const itemsEl = document.createElement('div');
+                itemsEl.className = 'history-date-group-items';
+
+                group.sessions.forEach(session => {
+                    const originalIdx = _allSessions.indexOf(session);
+                    const isCompleted = session.status === 'completed' || !!session.report || !!session.overallEvaluation || (typeof session.score === 'number' && session.score > 0);
+                    const isInProgress = session.status === 'in_progress' || session.status === 'active';
+
+                    let displayScore = '—';
+                    let scoreClass = 'score-null';
+
+                    if (isCompleted) {
+                        let numericScore = 0;
+                        if (typeof session.score === 'number') numericScore = session.score;
+                        else if (typeof session.overallScore === 'number') numericScore = session.overallScore;
+                        else if (session.report?.overallEvaluation?.normalizedScore) numericScore = session.report.overallEvaluation.normalizedScore;
+                        else if (session.report?.overallEvaluation?.score) numericScore = session.report.overallEvaluation.score <= 10 ? session.report.overallEvaluation.score * 10 : session.report.overallEvaluation.score;
+
+                        const normalized = Math.round(numericScore <= 10 && numericScore > 0 ? numericScore * 10 : numericScore);
+                        displayScore = String(normalized);
+                        scoreClass = normalized >= 80 ? 'score-high' : normalized >= 60 ? 'score-mid' : 'score-low';
+                    }
+
+                    const jobTitle = session.jobTitle || 'Buổi phỏng vấn';
+                    const jobIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
+                    const companyIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:3px;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22.01"/><line x1="15" y1="22" x2="15" y2="22.01"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="9" y2="18.01"/><line x1="15" y1="18" x2="15" y2="18.01"/></svg>';
+
+                    const sessionDate = session.date ? new Date(session.date).toLocaleDateString('vi-VN') : (session.createdAt ? new Date(session.createdAt).toLocaleDateString('vi-VN') : 'Gần đây');
+                    const compName = session.company || session.companyName || session.targetCompany || 'Doanh nghiệp';
+                    const lang = session.language === 'en' || session.language === 'English' ? 'English' : 'Tiếng Việt';
+
+                    // 1. Candidate Seniority / Experience Level
+                    const rawLevel = session.level || session.targetLevel || session.experienceLevel || 'Middle';
+                    const levelMap = {
+                        'intern': 'Thực tập sinh (Intern)',
+                        'fresher': 'Mới tốt nghiệp (Fresher)',
+                        'junior': 'Sơ cấp (Junior)',
+                        'mid': 'Trung cấp (Mid-level)',
+                        'mid-level': 'Trung cấp (Mid-level)',
+                        'middle': 'Trung cấp (Mid-level)',
+                        'senior': 'Cao cấp (Senior)',
+                        'lead': 'Trưởng nhóm (Lead)'
+                    };
+                    const displayLevel = levelMap[rawLevel.toLowerCase()] || rawLevel;
+
+                    // 2. Genuine Interview/Question Difficulty
+                    let difficultyBadgeHtml = '';
+                    const rawDiff = session.difficulty || session.adaptiveDifficulty || session.qualityState?.currentDifficulty;
+                    if (rawDiff) {
+                        const diffStr = String(rawDiff).toLowerCase();
+                        let diffLabel = 'Trung bình';
+                        let diffClass = 'medium';
+                        if (diffStr.includes('easy') || diffStr.includes('basic') || diffStr.includes('foundation')) {
+                            diffLabel = 'Dễ';
+                            diffClass = 'easy';
+                        } else if (diffStr.includes('hard') || diffStr.includes('advanced') || diffStr.includes('challenging')) {
+                            diffLabel = 'Khó';
+                            diffClass = 'hard';
+                        }
+                        difficultyBadgeHtml = `<span class="pm-diff-badge ${diffClass}" title="Độ khó buổi phỏng vấn: ${diffLabel}"><span class="pm-diff-label">Độ khó: ${diffLabel}</span></span>`;
+                    }
+
+                    // 3. Interviewer Persona
+                    const rawPersona = session.interviewerPersona || session.persona || 'professional';
+                    const interviewerPersonaObj = (typeof PrepMatePersonas !== 'undefined' && PrepMatePersonas.getPersona) ? PrepMatePersonas.getPersona(rawPersona) : { name: 'Người phỏng vấn AI' };
+                    const interviewerDisplayName = interviewerPersonaObj?.name || 'Người phỏng vấn AI';
+                    const interviewerBadgeHtml = `<span class="pm-interviewer-badge" title="Người phỏng vấn: ${escapeHtml(interviewerDisplayName)}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> <span>${escapeHtml(interviewerDisplayName)}</span></span>`;
+
+                    let statusBadgeHtml = '';
+                    let actionButtonsHtml = '';
+                    const sessId = session.backendSessionId || session.id || session.sessionId;
+
+                    if (isCompleted) {
+                        statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Đã hoàn thành</span>`;
+                        const reportUrl = sessId ? `../report/report.html?sessionId=${encodeURIComponent(sessId)}` : `../report/report.html?index=${originalIdx}`;
+                        actionButtonsHtml = `
+                            <a href="${reportUrl}" class="btn-action-report" title="Xem báo cáo chi tiết buổi phỏng vấn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                <span>Xem báo cáo</span>
+                            </a>
+                        `;
+                    } else if (isInProgress) {
+                        statusBadgeHtml = `<span class="pm-status-pill in-progress" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;"><span class="pm-status-dot" style="background:#2563eb;"></span> Đang thực hiện</span>`;
+                        const resumeUrl = sessId ? `interview-practice.html?resume=${encodeURIComponent(sessId)}` : `interview-practice.html`;
+                        actionButtonsHtml = `
+                            <a href="${resumeUrl}" class="btn-action-resume" title="Tiếp tục buổi phỏng vấn đang diễn ra">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                <span>Tiếp tục phỏng vấn</span>
+                            </a>
+                        `;
+                    } else {
+                        statusBadgeHtml = `<span class="pm-status-pill incomplete" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;"><span class="pm-status-dot" style="background:#dc2626;"></span> Chưa hoàn thành</span>`;
+                        actionButtonsHtml = `
+                            <button onclick="repracticeFromHistory(${originalIdx})" class="btn-action-restart btn-action-repractice" title="Luyện tập lại với cùng cấu hình này">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                                <span>Luyện tập lại</span>
+                            </button>
+                        `;
+                    }
+
+                    const qaCount = (session.qaHub && Array.isArray(session.qaHub)) ? session.qaHub.length : (session.questionsAnswered != null ? session.questionsAnswered : (session.currentQuestionIndex || 0));
+
+                    const card = document.createElement('div');
+                    card.className = 'history-item glass-card';
+                    card.innerHTML = `
+                        <div class="history-item-score ${scoreClass}" title="Điểm đánh giá tổng quan (0-100)">
+                            ${displayScore}
+                        </div>
+                        <div class="history-item-info">
+                            <div class="history-item-title-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+                                <span class="history-item-job-title">${jobIcon}${escapeHtml(jobTitle)}</span>
+                                <span class="pm-company-pill">
+                                    ${companyIcon}
+                                    <span>${escapeHtml(compName)}</span>
+                                </span>
+                            </div>
+                            <div class="pm-meta-row">
+                                <span class="pm-flag-badge">${escapeHtml(lang)}</span>
+                                <span class="pm-time-badge">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <span>${session.duration || 15} phút</span>
+                                </span>
+                                <span class="pm-questions-badge" title="Số lượng câu hỏi trong buổi phỏng vấn">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                    <span>${qaCount} câu hỏi</span>
+                                </span>
+                                <span class="pm-seniority-chip" title="Cấp bậc ứng tuyển: ${escapeHtml(displayLevel)}">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                                    <span>Cấp bậc: ${escapeHtml(displayLevel)}</span>
+                                </span>
+                                ${interviewerBadgeHtml}
+                                ${difficultyBadgeHtml}
+                                ${statusBadgeHtml}
+                                <span class="history-item-date">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:3px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    <span>${sessionDate}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="history-item-actions">
+                            ${actionButtonsHtml}
+                        </div>
+                    `;
+                    itemsEl.appendChild(card);
+                });
+
+                groupEl.appendChild(itemsEl);
+                container.appendChild(groupEl);
             });
         }
 

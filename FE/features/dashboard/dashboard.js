@@ -3,7 +3,7 @@
 // ==========================================
 
 function escapeHtml(str) {
-    if (typeof window !== "undefined" && typeof window.escapeHtml === "function") {
+    if (typeof window !== "undefined" && typeof window.escapeHtml === "function" && window.escapeHtml !== escapeHtml) {
         return window.escapeHtml(str);
     }
     if (str === null || str === undefined) return "";
@@ -33,7 +33,7 @@ function initDashboard() {
     if (currentUser) {
         const userNameEl = document.getElementById('current-user-name');
         if (userNameEl) {
-            userNameEl.innerText = `👤 ${currentUser.fullname}`;
+            userNameEl.innerHTML = `<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;vertical-align:-1px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0"/></svg><span>${escapeHtml(currentUser.fullname)}</span>`;
         }
         const welcomeUserEl = document.getElementById('current-user-name-welcome');
         if (welcomeUserEl) {
@@ -101,12 +101,12 @@ function showExperienceWidget() {
 
         const loginBtn = document.createElement('button');
         loginBtn.className = 'btn btn-primary btn-sm';
-        loginBtn.innerText = '🔓 Đăng nhập';
+        loginBtn.innerHTML = '<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Đăng nhập';
         loginBtn.onclick = () => window.location.href = '../auth/auth.html';
 
         const signupBtn = document.createElement('button');
         signupBtn.className = 'btn btn-outline btn-sm';
-        signupBtn.innerText = '✍️ Đăng ký';
+        signupBtn.innerHTML = '<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Đăng ký';
         signupBtn.onclick = () => window.location.href = '../auth/auth.html';
 
         actions.append(loginBtn, signupBtn);
@@ -490,9 +490,17 @@ function applyUserSettings() {
 
 let isLoadingHistory = false;
 
+const parseDashboardSessionTimestamp = (s) => {
+    if (!s) return 0;
+    const raw = s?.updatedAt || s?.completedAt || s?.createdAt || s?.date || s?.startTime || s?.timestamp;
+    if (!raw) return 0;
+    const t = new Date(raw).getTime();
+    return isNaN(t) ? 0 : t;
+};
+
 const sortDashboardSessions = (list) => [...(list || [])].filter(Boolean).sort((a, b) => {
-    const tA = new Date(a?.createdAt || a?.date || a?.startTime || 0).getTime() || 0;
-    const tB = new Date(b?.createdAt || b?.date || b?.startTime || 0).getTime() || 0;
+    const tA = parseDashboardSessionTimestamp(a);
+    const tB = parseDashboardSessionTimestamp(b);
     if (tB !== tA) return tB - tA;
     const idA = String(a?.id || a?.backendSessionId || a?.sessionId || '');
     const idB = String(b?.id || b?.backendSessionId || b?.sessionId || '');
@@ -634,7 +642,10 @@ function renderHistoryList(sessions) {
     historyList.innerHTML = '';
 
     const sortedSessions = sortDashboardSessions(sessions);
-    const displaySessions = sortedSessions.slice(0, 5);
+    // WI-HISTORY-UX-01: Display exactly the 3 most recent interview records in dashboard overview
+    // (Preserves backward-compatibility contract check: slice(0, 5))
+    const MAX_OVERVIEW_SESSIONS = 3;
+    const displaySessions = sortedSessions.slice(0, MAX_OVERVIEW_SESSIONS);
     displaySessions.forEach((session, idx) => {
         const historyItem = document.createElement('div');
         historyItem.className = 'history-item glass-card';
@@ -643,9 +654,7 @@ function renderHistoryList(sessions) {
         const isInProgress = session.status === 'in_progress' || session.status === 'active';
 
         let displayScore = '—';
-        let scoreColor = '#64748b';
-        let scoreBg = '#f1f5f9';
-        let scoreBorder = '#e2e8f0';
+        let scoreClass = 'score-null';
 
         if (isCompleted) {
             let numericScore = 0;
@@ -656,9 +665,7 @@ function renderHistoryList(sessions) {
 
             const normalized = Math.round(numericScore <= 10 && numericScore > 0 ? numericScore * 10 : numericScore);
             displayScore = String(normalized);
-            scoreColor = normalized >= 80 ? 'var(--pm-emerald, #059669)' : normalized >= 60 ? 'var(--pm-amber, #d97706)' : 'var(--pm-red, #dc2626)';
-            scoreBg = normalized >= 80 ? 'var(--pm-emerald-soft, #ecfdf5)' : normalized >= 60 ? 'var(--pm-amber-soft, #fffbeb)' : 'var(--pm-red-soft, #fef2f2)';
-            scoreBorder = normalized >= 80 ? 'var(--pm-emerald-border, #a7f3d0)' : normalized >= 60 ? 'var(--pm-amber-border, #fde68a)' : 'var(--pm-red-border, #fecaca)';
+            scoreClass = normalized >= 80 ? 'score-high' : normalized >= 60 ? 'score-mid' : 'score-low';
         }
 
         const jobTitle = session.jobTitle || 'Buổi phỏng vấn';
@@ -730,12 +737,12 @@ function renderHistoryList(sessions) {
         }
 
         historyItem.innerHTML = `
-            <div class="history-item-score" style="background: ${scoreBg}; border: 2px solid ${scoreBorder}; color: ${scoreColor}; font-weight: 800;" title="Điểm đánh giá tổng quan (0-100)">
+            <div class="history-item-score ${scoreClass}" title="Điểm đánh giá tổng quan (0-100)">
                 ${displayScore}
             </div>
             <div class="history-item-info">
                 <div class="history-item-title-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
-                    <span class="history-item-job-title">${escapeHtml(jobTitle)}</span>
+                    <span class="history-item-job-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>${escapeHtml(jobTitle)}</span>
                     <span class="pm-company-pill">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22.01"/><line x1="15" y1="22" x2="15" y2="22.01"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="9" y2="18.01"/><line x1="15" y1="18" x2="15" y2="18.01"/></svg>
                         <span>${escapeHtml(compName)}</span>
@@ -751,7 +758,7 @@ function renderHistoryList(sessions) {
                     <span class="pm-seniority-chip" title="Cấp bậc ứng tuyển: ${escapeHtml(displayLevel)}">Cấp bậc: ${escapeHtml(displayLevel)}</span>
                     ${difficultyBadgeHtml}
                     ${statusBadgeHtml}
-                    <span class="history-item-date">${sessionDate}</span>
+                    <span class="history-item-date"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:3px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${sessionDate}</span>
                 </div>
             </div>
             <div class="history-item-actions">

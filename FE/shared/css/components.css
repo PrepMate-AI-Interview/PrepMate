@@ -9,6 +9,91 @@
  */
 
 /* ========================================================
+   0. WI-UX-05A: GLOBAL ICON & TEXT ALIGNMENT STANDARD (SSOT)
+   ======================================================== */
+.pm-icon-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-2, 8px);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.pm-icon-label > .pm-icon,
+.pm-icon-label > svg,
+.pm-icon-label > morph-icon,
+.btn > svg,
+.btn > .pm-icon,
+.btn > morph-icon {
+  flex: 0 0 auto;
+  flex-shrink: 0;
+}
+
+.pm-icon-label > .pm-label {
+  min-width: 0;
+  display: inline-block;
+}
+
+/* Ensure headings, badges, and controls with icons align horizontally */
+.icon-text,
+.pm-icon-label,
+.section-title,
+.section-header,
+.card-header-title,
+.modal-header-title,
+.modal-title,
+.badge-icon-label,
+.filter-btn,
+.dropdown-item,
+.header-menu-link,
+.header-dropdown-item,
+.header-user-trigger,
+.tab-btn,
+.nav-tab,
+.breadcrumb-item,
+.mobile-drawer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 8px);
+  min-width: 0;
+}
+
+.icon-text > svg,
+.icon-text > .pm-icon,
+.icon-text > morph-icon,
+.pm-icon-label > svg,
+.pm-icon-label > .pm-icon,
+.section-title > svg,
+.section-header > svg,
+.card-header-title > svg,
+.modal-header-title > svg,
+.modal-title > svg,
+.filter-btn > svg,
+.dropdown-item > svg,
+.dropdown-item > .pm-icon,
+.header-menu-link > svg,
+.header-menu-link > .pm-icon,
+.header-dropdown-item > svg,
+.header-dropdown-item > .pm-icon,
+.header-user-trigger > svg,
+.tab-btn > svg,
+.nav-tab > svg,
+.breadcrumb-item > svg,
+.mobile-drawer-link > svg {
+  flex: 0 0 auto;
+  flex-shrink: 0;
+}
+
+.icon-text > span,
+.icon-text > .icon-text-label,
+.pm-icon-label > span,
+.pm-icon-label > .pm-label {
+  min-width: 0;
+  white-space: normal;
+}
+
+/* ========================================================
    1. BUTTON SYSTEM
    ======================================================== */
 .btn {
@@ -119,6 +204,7 @@
 .btn-primary:active {
   background: #000000;
   border-color: #000000;
+  color: var(--pm-on-primary-active, #ffffff);
 }
 
 .btn-secondary {
@@ -191,6 +277,19 @@
   color: var(--color-text, #0f172a);
 }
 
+
+.btn-success {
+  background: var(--pm-emerald, #059669);
+  color: var(--pm-on-success, #ffffff);
+  border-color: var(--pm-emerald, #059669);
+}
+
+.btn-success:hover {
+  background: var(--pm-emerald-hover, #047857);
+  border-color: var(--pm-emerald-hover, #047857);
+  color: var(--pm-on-success, #ffffff);
+}
+
 .btn-danger {
   background: var(--color-danger, #dc2626);
   color: var(--color-text-inverse, #ffffff);
@@ -200,6 +299,7 @@
 .btn-danger:hover {
   background: var(--color-danger-hover, #b91c1c);
   border-color: var(--color-danger-hover, #b91c1c);
+  color: var(--pm-on-danger, #ffffff);
 }
 
 .btn-link {
@@ -579,6 +679,38 @@ select.form-control, select.pm-select, .pm-select {
   height: 6.5px;
   border-radius: 50%;
   flex-shrink: 0;
+  display: inline-block;
+  vertical-align: 1px;
+}
+
+.status-dot.dot-healthy, .pm-status-dot.dot-healthy {
+  background: #16a34a;
+}
+.status-dot.dot-unhealthy, .pm-status-dot.dot-unhealthy {
+  background: #dc2626;
+}
+.status-dot.dot-warning, .pm-status-dot.dot-warning {
+  background: #d97706;
+}
+.status-dot.dot-neutral, .pm-status-dot.dot-neutral {
+  background: #0284c7;
+}
+
+[data-theme="dark"] .status-dot.dot-healthy,
+body.dark-mode .status-dot.dot-healthy {
+  background: #34d399;
+}
+[data-theme="dark"] .status-dot.dot-unhealthy,
+body.dark-mode .status-dot.dot-unhealthy {
+  background: #f87171;
+}
+[data-theme="dark"] .status-dot.dot-warning,
+body.dark-mode .status-dot.dot-warning {
+  background: #fbbf24;
+}
+[data-theme="dark"] .status-dot.dot-neutral,
+body.dark-mode .status-dot.dot-neutral {
+  background: #60a5fa;
 }
 
 .pm-status-pill.active, .status-pill.active {
@@ -1198,4 +1330,158 @@ select.form-control, select.pm-select, .pm-select {
 @keyframes pm-toast-in {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ========================================================
+   13. CENTRALIZED MORPHICONS & SVG ICONOGRAPHY SYSTEM (WI-ICON-01)
+   ======================================================== */
+.pm-icon,
+morph-icon,
+.pm-morph-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+morph-icon {
+  width: auto;
+  height: auto;
+}
+
+morph-icon svg,
+.pm-morph-icon svg {
+  display: block;
+}
+
+/* Canonical Size Presets */
+.pm-icon-xs { width: 12px; height: 12px; }
+.pm-icon-sm { width: 14px; height: 14px; }
+.pm-icon-md { width: 16px; height: 16px; }
+.pm-icon-lg { width: 20px; height: 20px; }
+.pm-icon-xl { width: 24px; height: 24px; }
+
+/* Interactive Hover / Active States */
+.pm-icon-interactive {
+  cursor: pointer;
+  transition: transform var(--transition-fast, 0.15s ease), opacity var(--transition-fast, 0.15s ease);
+}
+
+.pm-icon-interactive:hover {
+  opacity: 0.85;
+}
+
+.pm-icon-interactive:active {
+  transform: scale(0.92);
+}
+
+/* Spin animation for loading / syncing */
+.pm-icon-spin {
+  animation: pm-icon-spin 1s linear infinite;
+}
+
+@keyframes pm-icon-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-icon-spin {
+    animation: none;
+  }
+}
+
+
+/* Global Form Input Placeholder Contrast (WCAG 2.2 AA >= 4.5:1) */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: var(--pm-placeholder, #64748b) !important;
+  opacity: 1;
+}
+
+
+/* Tooltips & Floating Overlays (WCAG 2.2 AA) */
+.tooltip, [data-tooltip]::after, .pm-tooltip {
+  background: var(--pm-ink, #0f172a);
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1.4;
+  border-radius: var(--pm-radius-btn-sm, 6px);
+  padding: 6px 10px;
+  box-shadow: var(--pm-shadow-float);
+}
+
+
+/* ========================================================
+   WI-DESIGN-TOKEN-01: GLOBAL COLOR & CONTRAST HARDENING
+   Accessible interactive states & Dark Mode high-contrast guarantees
+   ======================================================== */
+.btn:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.pm-input:focus-visible,
+.pm-select:focus-visible,
+.pm-textarea:focus-visible,
+.form-control:focus-visible,
+.pm-chip:focus-visible,
+a.btn:focus-visible,
+a.lp-btn-primary:focus-visible,
+a.lp-cta-primary:focus-visible,
+a.btn-channel-action:focus-visible {
+  outline: 2px solid var(--pm-focus-ring, #2563eb) !important;
+  outline-offset: var(--pm-focus-ring-offset, 2px) !important;
+}
+
+body.dark-mode .btn-primary,
+html[data-theme="dark"] .btn-primary,
+body.dark-mode .btn-brand,
+html[data-theme="dark"] .btn-brand,
+body.dark-mode .btn-channel-action.active,
+html[data-theme="dark"] .btn-channel-action.active,
+body.dark-mode .lp-btn-primary,
+html[data-theme="dark"] .lp-btn-primary,
+body.dark-mode .lp-cta-primary,
+html[data-theme="dark"] .lp-cta-primary,
+body.dark-mode .hero-action-btn,
+html[data-theme="dark"] .hero-action-btn,
+body.dark-mode .btn-cta,
+html[data-theme="dark"] .btn-cta {
+  color: #ffffff !important;
+}
+
+body.dark-mode .btn-primary *,
+html[data-theme="dark"] .btn-primary *,
+body.dark-mode .btn-brand *,
+html[data-theme="dark"] .btn-brand *,
+body.dark-mode .btn-channel-action.active *,
+html[data-theme="dark"] .btn-channel-action.active *,
+body.dark-mode .lp-btn-primary *,
+html[data-theme="dark"] .lp-btn-primary *,
+body.dark-mode .lp-cta-primary *,
+html[data-theme="dark"] .lp-cta-primary *,
+body.dark-mode .hero-action-btn *,
+html[data-theme="dark"] .hero-action-btn *,
+body.dark-mode .btn-cta *,
+html[data-theme="dark"] .btn-cta * {
+  color: inherit !important;
+}
+
+body.dark-mode .btn-success,
+html[data-theme="dark"] .btn-success,
+body.dark-mode .btn-success *,
+html[data-theme="dark"] .btn-success * {
+  color: #ffffff !important;
+}
+
+body.dark-mode .btn-danger,
+html[data-theme="dark"] .btn-danger,
+body.dark-mode .btn-danger *,
+html[data-theme="dark"] .btn-danger * {
+  color: #ffffff !important;
 }

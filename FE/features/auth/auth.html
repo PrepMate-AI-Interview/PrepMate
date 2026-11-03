@@ -19,7 +19,10 @@
     <link rel="stylesheet" href="../../shared/css/components.css?v=26" />
     <link rel="stylesheet" href="../../shared/css/style.css?v=18" />
     <link rel="stylesheet" href="./auth.css?v=21" />
-  </head>
+      <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
+</head>
 
   <body class="auth-body">
     <!-- Top Navigation Bar -->
@@ -368,7 +371,9 @@
 
         const eyeIcon = btn.querySelector(".auth-eye-icon");
         const eyeOffIcon = btn.querySelector(".auth-eye-off-icon");
-        if (eyeIcon && eyeOffIcon) {
+        if (typeof window !== "undefined" && window.PrepMateIcons && eyeIcon) {
+          window.PrepMateIcons.morph(eyeIcon, isPassword ? "eye-off" : "eye", { spring: "snappy" });
+        } else if (eyeIcon && eyeOffIcon) {
           eyeIcon.style.display = isPassword ? "none" : "block";
           eyeOffIcon.style.display = isPassword ? "block" : "none";
         }

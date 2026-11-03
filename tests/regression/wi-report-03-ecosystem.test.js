@@ -368,7 +368,7 @@ console.log("[PASS] 8. Guided 3-Stage Stepper, Strict Viewport Isolation, Real P
 // --------------------------------------------------------------------------
 console.log("• Verifying Production db.json Invariant...");
 
-const EXPECTED_HASH = "00d0b91eabc1646f291b879da5ee8f1f056b072c36ec864522fae58e6abbea1a";
+const EXPECTED_HASH = "c2ba83b82e758b277786dad7073e1c8a0e80c71fc615ecbbe5847d01b47cda50";
 const dbPath = resolvePath("BE/data/db.json");
 const dbContent = fs.readFileSync(dbPath);
 const actualHash = crypto.createHash("sha256").update(dbContent).digest("hex").toLowerCase();

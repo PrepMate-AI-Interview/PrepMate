@@ -1304,3 +1304,42 @@ html[data-theme="dark"] .btn-primary-checkout:hover,
 body.dark-mode .btn-primary-checkout:hover {
     background: #1d4ed8 !important;
 }
+
+
+/* WI-DARKMODE-03 Payment Badges Dark Overrides */
+html[data-theme="dark"] .payment-note-badge,
+body.dark-mode .payment-note-badge {
+    background: rgba(16, 185, 129, 0.16) !important;
+    color: #34d399 !important;
+    border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+html[data-theme="dark"] .account-tier-tag,
+body.dark-mode .account-tier-tag,
+html[data-theme="dark"] .plan-period-badge,
+body.dark-mode .plan-period-badge {
+    background: rgba(37, 99, 235, 0.16) !important;
+    color: #93c5fd !important;
+    border-color: rgba(96, 165, 250, 0.35) !important;
+}
+
+html[data-theme="dark"] .btn-copy-tag,
+body.dark-mode .btn-copy-tag {
+    background: #252629 !important;
+    color: #93c5fd !important;
+    border-color: #3C4043 !important;
+}
+
+html[data-theme="dark"] .btn-copy-tag:hover,
+body.dark-mode .btn-copy-tag:hover {
+    background: #3C4043 !important;
+    color: #ffffff !important;
+    border-color: #5F6368 !important;
+}
+
+html[data-theme="dark"] .btn-copy-tag.copied,
+body.dark-mode .btn-copy-tag.copied {
+    background: rgba(16, 185, 129, 0.16) !important;
+    color: #34d399 !important;
+    border-color: rgba(52, 211, 153, 0.35) !important;
+}

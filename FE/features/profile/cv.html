@@ -26,6 +26,9 @@
             }
         })();
     </script>
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 <body class="dashboard-body">
 
@@ -97,7 +100,7 @@
 
                     <!-- Dropzone -->
                     <div class="cv-upload-drop" id="cv-upload-drop" onclick="document.getElementById('cv-file-picker').click()">
-                        <div style="margin-bottom:8px;color:#1d4ed8;"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                        <div class="cv-upload-icon-wrap" style="margin-bottom:8px;"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
                         <strong style="font-size:14.5px;color:var(--text-primary);display:block;margin-bottom:4px;">Kéo thả tệp CV mới vào đây</strong>
                         <p style="margin:0;font-size:12.5px;color:var(--text-secondary);">Hỗ trợ PDF, DOCX, DOC (Tối đa 10MB)</p>
                     </div>
@@ -110,7 +113,7 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                             <span style="font-size:13.5px;font-weight:700;color:var(--pm-text-primary);">Độ hoàn thiện & Sức mạnh CV</span>
                         </div>
-                        <span style="font-size:16px;font-weight:800;color:#059669;background:#ecfdf5;border:1px solid #a7f3d0;padding:2px 10px;border-radius:100px;">92 / 100</span>
+                        <span class="cv-score-pill" style="font-size:16px;font-weight:800;padding:2px 10px;border-radius:100px;">92 / 100</span>
                     </div>
                     <div class="meter-track" style="height:8px;background:var(--pm-surface-subtle, #f1f5f9);border-radius:100px;overflow:hidden;margin-bottom:12px;border:1px solid var(--pm-border);">
                         <div class="meter-fill" style="width:92%;height:100%;background:linear-gradient(90deg,#059669,#10b981);border-radius:100px;"></div>

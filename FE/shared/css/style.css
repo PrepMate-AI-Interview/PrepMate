@@ -92,8 +92,8 @@ app-header header {
 }
 
 .logo:hover {
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 12px rgba(6, 50, 125, 0.25));
+    transform: scale(1.02);
+    filter: drop-shadow(0 2px 8px rgba(29, 78, 216, 0.2));
 }
 
 .logo span {
@@ -1184,9 +1184,15 @@ body.light-mode .btn-outline {
 }
 
 /* ── WORKSPACE FOOTER (FOR INTERNAL DASHBOARD PAGES) ── */
+app-workspace-footer {
+    display: block;
+    width: 100%;
+    margin-top: auto;
+}
+
 .app-workspace-footer {
     padding: 20px 0 16px;
-    margin-top: 40px;
+    margin-top: auto;
     border-top: 1px solid var(--prep-border, #e2e8f0);
     display: flex;
     justify-content: space-between;
@@ -1230,20 +1236,22 @@ body.light-mode .btn-outline {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #ecfdf5;
-    color: #059669;
-    border: 1px solid #a7f3d0;
+    background: var(--pm-badge-success-bg, #ecfdf5);
+    color: var(--pm-badge-success-text, #059669);
+    border: 1px solid var(--pm-badge-success-border, #a7f3d0);
     padding: 2px 8px;
-    border-radius: 100px;
+    border-radius: var(--pm-radius-pill, 9999px);
     font-size: 11px;
-    font-weight: 600;
+    font-weight: var(--pm-font-weight-semibold, 600);
+    line-height: 1.3;
 }
 
 .workspace-footer-status-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #059669;
+    background: var(--pm-badge-success-text, #059669);
+    flex-shrink: 0;
 }
 
 .workspace-footer-right {
@@ -4297,13 +4305,13 @@ body.dark-mode .footer-bottom {
    ========================================================================== */
 html[data-theme="dark"] .workspace-footer-status,
 body.dark-mode .workspace-footer-status {
-    background: #252629 !important;
-    border: 1px solid #3C4043 !important;
-    color: #81c995 !important;
+    background: var(--pm-badge-success-bg, rgba(16, 185, 129, 0.16)) !important;
+    border: 1px solid var(--pm-badge-success-border, rgba(52, 211, 153, 0.35)) !important;
+    color: var(--pm-badge-success-text, #34d399) !important;
 }
 
 html[data-theme="dark"] .workspace-footer-status-dot,
 body.dark-mode .workspace-footer-status-dot {
-    background: #10b981 !important;
+    background: var(--pm-badge-success-text, #34d399) !important;
     box-shadow: 0 0 6px rgba(16, 185, 129, 0.6) !important;
 }

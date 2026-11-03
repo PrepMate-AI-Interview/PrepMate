@@ -23,6 +23,9 @@
         --prep-emerald: var(--pm-emerald); --prep-emerald-hover: var(--pm-emerald-hover); --prep-emerald-soft: var(--pm-emerald-soft); --prep-emerald-border: var(--pm-emerald-border); --prep-emerald-text: var(--pm-emerald-text);
     }
     </style>
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 <body class="dashboard-body">
 
@@ -98,22 +101,19 @@
                         </div>
                         <div id="active-filter-chips" class="active-chips-box" style="display:none;"></div>
                         <!-- Loại hình làm việc -->
-                        <div class="filter-section">
-                            <span class="filter-section-title">Loại hình</span>
+                        <div class="filter-section"><span class="filter-section-title">Loại hình</span>
                             <div class="filter-chips-grid">
                                 <span class="filter-chip active" onclick="toggleDraftFilter(this,'type','all')">Tất cả</span><span class="filter-chip" onclick="toggleDraftFilter(this,'type','Full-time')">Full-time</span><span class="filter-chip" onclick="toggleDraftFilter(this,'type','Part-time')">Part-time</span><span class="filter-chip" onclick="toggleDraftFilter(this,'type','Remote')">Remote</span>
                             </div>
                         </div>
                         <!-- Kinh nghiệm -->
-                        <div class="filter-section">
-                            <span class="filter-section-title">Kinh nghiệm</span>
+                        <div class="filter-section"><span class="filter-section-title">Kinh nghiệm</span>
                             <div class="filter-chips-grid">
                                 <span class="filter-chip active" onclick="toggleDraftFilter(this,'exp','any')">Tất cả</span><span class="filter-chip" onclick="toggleDraftFilter(this,'exp','fresher')">Fresher / Mới tốt nghiệp</span><span class="filter-chip" onclick="toggleDraftFilter(this,'exp','1-2')">1–2 năm</span><span class="filter-chip" onclick="toggleDraftFilter(this,'exp','3-5')">3–5 năm</span>
                             </div>
                         </div>
                         <!-- Nguồn tuyển dụng -->
-                        <div class="filter-section">
-                            <span class="filter-section-title">Nguồn tuyển dụng</span>
+                        <div class="filter-section"><span class="filter-section-title">Nguồn tuyển dụng</span>
                             <div class="filter-chips-grid">
                                 <span class="filter-chip active" onclick="toggleDraftFilter(this,'source','all')">Tất cả nguồn</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','jooble')">Jooble (Live)</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','topcv')">TopCV</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','linkedin')">LinkedIn</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','itviec')">ITviec</span>
                             </div>
@@ -135,19 +135,10 @@
                         </div>
                         <!-- Filter Actions Bar (Apply, Undo, Clear) -->
                         <div class="filter-actions-bar">
-                            <button type="button" class="btn-apply-filters" id="btn-apply-filters" onclick="applyFilters()">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                                <span>Áp dụng bộ lọc</span>
-                            </button>
+                            <button type="button" class="btn-apply-filters" id="btn-apply-filters" onclick="applyFilters()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Áp dụng bộ lọc</span></button>
                             <div class="filter-actions-row">
-                                <button type="button" class="btn-undo-filters" id="btn-undo-filters" onclick="undoFilters()" disabled title="Hoàn tác các thay đổi nháp chưa áp dụng">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
-                                    <span>Hoàn tác</span>
-                                </button>
-                                <button type="button" class="btn-clear-all-filters" onclick="resetFilters()" title="Xóa toàn bộ bộ lọc và đặt lại ban đầu">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                    <span>Xóa tất cả</span>
-                                </button>
+                                <button type="button" class="btn-undo-filters" id="btn-undo-filters" onclick="undoFilters()" disabled title="Hoàn tác các thay đổi nháp chưa áp dụng"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg><span>Hoàn tác</span></button>
+                                <button type="button" class="btn-clear-all-filters" onclick="resetFilters()" title="Xóa toàn bộ bộ lọc và đặt lại ban đầu"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Xóa tất cả</span></button>
                             </div>
                         </div>
                     </div>
@@ -175,13 +166,7 @@
 
                     <!-- External Search Deep-Link Hub -->
                     <div class="external-search-hub" id="external-search-hub">
-                        <div class="hub-header">
-                            <span class="hub-title">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                                <span>Tìm kiếm trực tiếp trên nền tảng tuyển dụng</span>
-                            </span>
-                            <span class="hub-subtitle">Mở trang tìm kiếm gốc theo từ khóa hiện tại (TopCV, VietnamWorks, ITviec, CareerViet, LinkedIn)</span>
-                        </div>
+                        <div class="hub-header"><span class="hub-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Tìm kiếm trực tiếp trên nền tảng tuyển dụng</span></span><span class="hub-subtitle">Mở trang tìm kiếm gốc theo từ khóa hiện tại (TopCV, VietnamWorks, ITviec, CareerViet, LinkedIn)</span></div>
                         <div class="hub-links-grid" id="hub-links-grid"></div>
                     </div>
 
@@ -193,10 +178,7 @@
 
                     <!-- Benchmark Jobs Section (dedicated fallback when live API returns 0 results) -->
                     <div id="benchmark-jobs-section" style="display:none;margin-top:24px;">
-                        <div class="benchmark-section-header">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            <span>Gợi ý vị trí chuẩn mực (Benchmark mẫu của PrepMate để luyện phỏng vấn)</span>
-                        </div>
+                        <div class="benchmark-section-header"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Gợi ý vị trí chuẩn mực (Benchmark mẫu của PrepMate để luyện phỏng vấn)</span></div>
                         <div id="benchmark-jobs-grid" class="jobs-grid"></div>
                     </div>
                 </div>
@@ -212,38 +194,23 @@
     <div class="modal-overlay" id="job-detail-modal-overlay" onclick="closeJobModal(event)" role="dialog" aria-modal="true" aria-labelledby="m-title">
         <div class="job-modal" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <div class="modal-header-left">
-                    <div class="modal-company-logo" id="m-logo">P</div>
-                    <div class="modal-header-meta"><h3 id="m-title">Tiêu đề vị trí tuyển dụng</h3><span id="m-company">Tên công ty</span></div>
-                </div>
+                <div class="modal-header-left"><div class="modal-company-logo" id="m-logo">P</div><div class="modal-header-meta"><h3 id="m-title">Tiêu đề vị trí tuyển dụng</h3><span id="m-company">Tên công ty</span></div></div>
                 <button class="modal-close-btn" onclick="closeJobModal()" aria-label="Đóng">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="modal-meta-grid">
-                    <div class="modal-meta-item"><span class="modal-meta-label">Mức lương</span><span class="modal-meta-val salary-highlight" id="m-salary">$2,000 - $3,500</span></div>
-                    <div class="modal-meta-item"><span class="modal-meta-label">Địa điểm / Hình thức</span><span class="modal-meta-val" id="m-location">TP. HCM (Full-time)</span></div>
-                    <div class="modal-meta-item"><span class="modal-meta-label">Nguồn tuyển dụng</span><span class="modal-meta-val" id="m-source">TopCV</span></div>
-                </div>
+                <div class="modal-meta-grid"><div class="modal-meta-item"><span class="modal-meta-label">Mức lương</span><span class="modal-meta-val salary-highlight" id="m-salary">$2,000 - $3,500</span></div><div class="modal-meta-item"><span class="modal-meta-label">Địa điểm / Hình thức</span><span class="modal-meta-val" id="m-location">TP. HCM (Full-time)</span></div><div class="modal-meta-item"><span class="modal-meta-label">Nguồn tuyển dụng</span><span class="modal-meta-val" id="m-source">TopCV</span></div></div>
                 <div class="modal-section"><h4>Mô tả công việc (Job Description)</h4><p id="m-desc">Chi tiết mô tả công việc...</p></div>
                 <div class="modal-section"><h4>Kỹ năng &amp; Công nghệ yêu cầu</h4><div id="m-tags" class="job-tags-row"></div></div>
-                <div class="ai-mock-box">
-                    <div class="ai-mock-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Đề xuất từ PrepMate AI</span></div>
-                    <p class="ai-mock-desc" id="m-ai-tip">Vị trí này đòi hỏi kiến thức chuyên sâu và khả năng xử lý tình huống thực tế. Bấm nút bên dưới để AI tự động nạp JD này vào phòng phỏng vấn giả lập.</p>
-                </div>
             </div>
             <div class="modal-actions">
-                <a class="btn-view-jd" id="m-btn-apply" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:none;align-items:center;justify-content:center;gap:6px;" title="Chuyển tiếp đến tin tuyển dụng gốc trên Jooble hoặc sàn tuyển dụng"><span>Mở tin tuyển dụng gốc ↗</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-                <button class="btn-practice-jd" id="m-btn-practice"><span>Phỏng vấn Giả lập theo JD này</span></button>
+                <a class="btn-view-jd" id="m-btn-apply" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:none;align-items:center;justify-content:center;gap:6px;" title="Chuyển tiếp đến tin tuyển dụng gốc hoặc trang ứng tuyển"><span>Mở tin tuyển dụng gốc</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 <button class="btn-close-modal" onclick="closeJobModal()">Đóng</button>
             </div>
         </div>
     </div>
 
     <!-- Core Scripts -->
-    <script src="../../shared/js/main.js?v=24"></script>
-    <script src="../../features/auth/auth.js?v=24"></script>
-    <script src="../../features/dashboard/dashboard.js?v=24"></script>
-    <script src="../../features/interview/interview.js?v=24"></script>
+    <script src="../../shared/js/main.js?v=24"></script><script src="../../features/auth/auth.js?v=24"></script><script src="../../features/dashboard/dashboard.js?v=24"></script><script src="../../features/interview/interview.js?v=24"></script>
     <script>
     // ══════════════ DỮ LIỆU THỊ TRƯỜNG VIỆC LÀM BENCHMARK MẪU ══════════════
     const JOB_DATABASE = [
@@ -291,13 +258,7 @@
         const kw = rawKw || defaultTerm, loc = (location || '').trim(), encKw = encodeURIComponent(kw), locLower = loc.toLowerCase();
         const cityParam = locLower === 'hanoi' ? '&city=1' : (locLower === 'hcm' ? '&city=2' : (locLower === 'danang' ? '&city=3' : ''));
         const linkedInLoc = encodeURIComponent(locLower === 'hanoi' ? 'Hanoi, Vietnam' : (locLower === 'hcm' ? 'Ho Chi Minh City, Vietnam' : (locLower === 'danang' ? 'Da Nang, Vietnam' : 'Vietnam')));
-        return [
-            { platformKey: 'topcv', platformName: 'TopCV', sourceName: 'TopCV', searchUrl: 'https://www.topcv.vn/tim-viec-lam?keyword=' + encKw + cityParam, badgeColor: '#00b14f', description: 'Việc làm TopCV VN' },
-            { platformKey: 'vietnamworks', platformName: 'VietnamWorks', sourceName: 'VietnamWorks', searchUrl: 'https://www.vietnamworks.com/viec-lam?q=' + encKw, badgeColor: '#005aff', description: 'Việc làm chuyên nghiệp' },
-            { platformKey: 'itviec', platformName: 'ITviec', sourceName: 'ITviec', searchUrl: 'https://itviec.com/it-jobs?query=' + encKw, badgeColor: '#ed1b2f', description: 'Việc làm IT & Tech' },
-            { platformKey: 'careerviet', platformName: 'CareerViet', sourceName: 'CareerViet', searchUrl: 'https://careerviet.vn/tim-viec-lam?keywords=' + encKw, badgeColor: '#e60023', description: 'Việc làm CareerViet' },
-            { platformKey: 'linkedin', platformName: 'LinkedIn', sourceName: 'LinkedIn', searchUrl: 'https://www.linkedin.com/jobs/search/?keywords=' + encKw + '&location=' + linkedInLoc, badgeColor: '#0a66c2', description: 'Cơ hội toàn cầu' }
-        ];
+        return [{ platformKey: 'topcv', platformName: 'TopCV', sourceName: 'TopCV', searchUrl: 'https://www.topcv.vn/tim-viec-lam?keyword=' + encKw + cityParam, badgeColor: '#00b14f', description: 'Việc làm TopCV VN' }, { platformKey: 'vietnamworks', platformName: 'VietnamWorks', sourceName: 'VietnamWorks', searchUrl: 'https://www.vietnamworks.com/viec-lam?q=' + encKw, badgeColor: '#005aff', description: 'Việc làm chuyên nghiệp' }, { platformKey: 'itviec', platformName: 'ITviec', sourceName: 'ITviec', searchUrl: 'https://itviec.com/it-jobs?query=' + encKw, badgeColor: '#ed1b2f', description: 'Việc làm IT & Tech' }, { platformKey: 'careerviet', platformName: 'CareerViet', sourceName: 'CareerViet', searchUrl: 'https://careerviet.vn/tim-viec-lam?keywords=' + encKw, badgeColor: '#e60023', description: 'Việc làm CareerViet' }, { platformKey: 'linkedin', platformName: 'LinkedIn', sourceName: 'LinkedIn', searchUrl: 'https://www.linkedin.com/jobs/search/?keywords=' + encKw + '&location=' + linkedInLoc, badgeColor: '#0a66c2', description: 'Cơ hội toàn cầu' }];
     }
     function renderExternalSearchLinks(links) {
         const container = document.getElementById('hub-links-grid');
@@ -305,7 +266,7 @@
         container.innerHTML = (links || []).map(link => {
             const name = link.platformName || link.sourceName || link.platformKey || 'Nền tảng', badgeColor = link.badgeColor || '#2563eb';
             const desc = link.description ? '<span class="hub-link-desc">' + escapeHtml(link.description) + '</span>' : '';
-            return '<a href="' + sanitizeUrl(link.searchUrl) + '" target="_blank" rel="noopener noreferrer" class="hub-link-item" title="Mở trang tìm kiếm trên ' + escapeHtml(name) + '"><div class="hub-link-main"><span class="hub-platform-name">' + escapeHtml(name) + '</span>' + desc + '</div><span class="hub-link-badge" style="background:' + badgeColor + '">Tìm kiếm ↗</span></a>';
+            return '<a href="' + sanitizeUrl(link.searchUrl) + '" target="_blank" rel="noopener noreferrer" class="hub-link-item" title="Mở trang tìm kiếm trên ' + escapeHtml(name) + '"><div class="hub-link-main"><span class="hub-platform-name">' + escapeHtml(name) + '</span>' + desc + '</div><span class="hub-link-badge" style="background:' + badgeColor + '">Tìm kiếm <svg class="pm-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></span></a>';
         }).join('');
     }
     function getSourceBadge(source, isSample) {
@@ -317,13 +278,45 @@
         if (s.includes('linkedin')) return '<span class="source-badge source-linkedin">LinkedIn</span>';
         return '<span class="source-badge source-jooble">' + escapeHtml(source || 'Jooble') + '</span>';
     }
+    function classifyJobUrl(url) {
+        if (!url || typeof url !== 'string') return 'none';
+        const clean = url.trim().toLowerCase();
+        if (!clean.startsWith('http://') && !clean.startsWith('https://')) return 'none';
+        if (clean.includes('/tim-viec-lam?keyword=') ||
+            clean.includes('/jobs/search/?keywords=') ||
+            clean.includes('it-jobs?query=') ||
+            clean.includes('/search?') ||
+            clean.includes('?query=') ||
+            clean.includes('?keyword=') ||
+            clean.includes('?keywords=')) {
+            return 'search';
+        }
+        return 'direct';
+    }
+    function resolveJobApplyDestination(job) {
+        const rawApply = job.applyUrl ? sanitizeUrl(job.applyUrl) : null;
+        const rawSource = job.sourceUrl ? sanitizeUrl(job.sourceUrl) : null;
+        const applyType = classifyJobUrl(rawApply);
+        const sourceType = classifyJobUrl(rawSource);
+        if (rawApply && applyType === 'direct') {
+            return { url: rawApply, type: 'direct', label: 'Ứng tuyển trực tiếp', title: 'Chuyển tiếp đến trang ứng tuyển trực tiếp của nhà tuyển dụng' };
+        }
+        if (rawSource && sourceType === 'direct') {
+            return { url: rawSource, type: 'source', label: 'Mở tin tuyển dụng gốc', title: 'Mở tin tuyển dụng chi tiết trên ' + (job.sourceName || 'sàn tuyển dụng') };
+        }
+        const searchUrl = (applyType === 'search' ? rawApply : null) || (sourceType === 'search' ? rawSource : null);
+        if (searchUrl) {
+            return { url: searchUrl, type: 'search', label: 'Tìm trên ' + (job.sourceName || 'sàn'), title: 'Tìm kiếm cơ hội việc làm tương tự trên ' + (job.sourceName || 'sàn') };
+        }
+        return { url: null, type: 'none', label: 'Mẫu tham khảo', title: 'Vị trí này là tiêu chuẩn benchmark mẫu PrepMate' };
+    }
     function renderJobCard(job) {
         const postedText = job.postedDays === 1 ? '1 ngày trước' : (job.postedDays + ' ngày trước');
         const expText = job.experience === 'fresher' ? 'Fresher' : (job.experience ? job.experience + ' năm' : 'Linh hoạt');
         const safeId = String(job.id).replace(/'/g, "\\'");
         const tags = Array.isArray(job.tags) ? job.tags : [];
-        const safeApplyUrl = sanitizeUrl(job.applyUrl);
-        const applyBtn = safeApplyUrl ? '<a href="' + safeApplyUrl + '" target="_blank" rel="noopener noreferrer" class="btn-view-jd" title="Mở tin tuyển dụng gốc trên Jooble / Đối tác"><span>Ứng tuyển ↗</span></a>' : '';
+        const dest = resolveJobApplyDestination(job);
+        const applyBtn = dest.url ? '<a href="' + dest.url + '" target="_blank" rel="noopener noreferrer" class="btn-view-jd" title="' + escapeHtml(dest.title) + '"><span>' + escapeHtml(dest.label) + '</span><svg class="pm-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-left:4px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></a>' : '';
         const savedList = JSON.parse(localStorage.getItem('saved_jobs') || '[]');
         const isSaved = savedList.includes(String(job.id));
         const isFeatured = !!(job.isSample && job.featured);
@@ -339,7 +332,7 @@
             '</div>' +
             '<div class="job-actions">' +
                 '<button class="btn-save-bookmark' + (isSaved ? ' saved' : '') + '" id="btn-save-' + safeId + '" onclick="saveJob(event, \'' + safeId + '\')" aria-label="' + (isSaved ? 'Bỏ lưu tin tuyển dụng' : 'Lưu tin tuyển dụng') + '" title="' + (isSaved ? 'Bỏ lưu tin tuyển dụng' : 'Lưu tin tuyển dụng') + '"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>' +
-                '<div class="card-actions-group">' + applyBtn + '<button class="btn-view-jd" onclick="openJobDetail(\'' + safeId + '\')" title="Xem chi tiết yêu cầu & mô tả công việc"><span>Chi tiết JD</span></button><button class="btn-practice-jd" onclick="practiceForJob(event, \'' + safeId + '\')" title="Luyện phỏng vấn mô phỏng theo JD này"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Luyện tập theo JD</span></button></div>' +
+                '<div class="card-actions-group">' + applyBtn + '<button class="btn-view-jd" onclick="openJobDetail(\'' + safeId + '\')" title="Xem chi tiết yêu cầu & mô tả công việc"><span>Chi tiết JD</span></button></div>' +
             '</div>' +
         '</div>';
     }
@@ -466,7 +459,7 @@
             currency: j.salaryCurrency || 'USD', tags: j.skills || j.tags || [],
             description: j.description || '', postedDays: j.postedDays || 1,
             source: j.sourceKey || j.source || 'jooble', sourceName: j.sourceName || 'Tuyển dụng',
-            applyUrl: j.applyUrl || j.sourceUrl, matchScore: j.matchScore || 85,
+            applyUrl: j.applyUrl || null, sourceUrl: j.sourceUrl || null, matchScore: j.matchScore || 85,
             isSample: !!j.isSample, featured: !!j.featured
         };
     }
@@ -732,16 +725,19 @@
         const tags = Array.isArray(job.tags) ? job.tags : [];
         const tagsContainer = document.getElementById('m-tags');
         if (tagsContainer) tagsContainer.innerHTML = tags.map(t => '<span class="job-tag">' + escapeHtml(t) + '</span>').join('');
-        const tip = document.getElementById('m-ai-tip');
-        if (tip) tip.innerHTML = 'Vị trí <strong>' + escapeHtml(job.title) + '</strong> tại <strong>' + escapeHtml(job.company) + '</strong> đòi hỏi kỹ năng cốt lõi: <em>' + escapeHtml(tags.slice(0, 3).join(', ')) + '</em>. Bấm "Phỏng vấn Giả lập" để AI thiết lập câu hỏi phỏng vấn theo đúng JD này.';
+        const dest = resolveJobApplyDestination(job);
         const btnApply = document.getElementById('m-btn-apply');
         if (btnApply) {
-            const safeApply = sanitizeUrl(job.applyUrl);
-            btnApply.href = safeApply || '#';
-            btnApply.style.display = safeApply ? 'inline-flex' : 'none';
+            if (dest.url) {
+                btnApply.href = dest.url;
+                const extIcon = (typeof window !== 'undefined' && window.PrepMateIcons && typeof window.PrepMateIcons.svg === 'function') ? window.PrepMateIcons.svg('external-link', { size: 12, class: 'pm-icon' }) : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+            btnApply.innerHTML = '<span>' + escapeHtml(dest.label) + '</span> ' + extIcon;
+                btnApply.title = dest.title;
+                btnApply.style.display = 'inline-flex';
+            } else {
+                btnApply.style.display = 'none';
+            }
         }
-        const btnPractice = document.getElementById('m-btn-practice');
-        if (btnPractice) btnPractice.onclick = (e) => practiceForJob(e, job.id);
         document.getElementById('job-detail-modal-overlay')?.classList.add('active');
     }
     function closeJobModal(e) {
@@ -749,14 +745,18 @@
             document.getElementById('job-detail-modal-overlay')?.classList.remove('active');
         }
     }
+    function prefillInterviewJd(job) {
+        if (!job) return;
+        localStorage.setItem('prefill_job_title', job.title || '');
+        localStorage.setItem('prefill_company_name', job.company || '');
+        const tags = Array.isArray(job.tags) ? job.tags : [];
+        localStorage.setItem('prefill_jd', 'Vị trí: ' + (job.title || '') + '\nCông ty: ' + (job.company || '') + '\nĐịa điểm: ' + (job.location || '') + '\nMức lương: ' + formatSalary(job.salaryMin, job.salaryMax, job.currency, job.salaryText) + '\nKỹ năng yêu cầu: ' + tags.join(', ') + '\nMô tả công việc:\n' + (job.description || ''));
+    }
     function practiceForJob(event, id) {
         if (event && event.stopPropagation) event.stopPropagation();
         const job = findJobById(id);
         if (!job) return;
-        localStorage.setItem('prefill_job_title', job.title);
-        localStorage.setItem('prefill_company_name', job.company);
-        const tags = Array.isArray(job.tags) ? job.tags : [];
-        localStorage.setItem('prefill_jd', 'Vị trí: ' + job.title + '\nCông ty: ' + job.company + '\nĐịa điểm: ' + job.location + '\nMức lương: ' + formatSalary(job.salaryMin, job.salaryMax, job.currency, job.salaryText) + '\nKỹ năng yêu cầu: ' + tags.join(', ') + '\nMô tả công việc:\n' + job.description);
+        prefillInterviewJd(job);
         window.location.href = '../../features/interview/interview-info.html';
     }
     function saveJob(event, id) {

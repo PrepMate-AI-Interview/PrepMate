@@ -305,7 +305,8 @@ namespace backend.Services.Jobs
                     PostedDays = 1,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "topcv",
-                    ApplyUrl = "https://www.topcv.vn/tim-viec-lam?keyword=Business+Analyst",
+                    SourceUrl = "https://www.topcv.vn/tim-viec-lam?keyword=Business+Analyst",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = true,
                     MatchScore = 96
@@ -328,7 +329,8 @@ namespace backend.Services.Jobs
                     PostedDays = 3,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "linkedin",
-                    ApplyUrl = "https://www.linkedin.com/jobs/search/?keywords=FP%26A",
+                    SourceUrl = "https://www.linkedin.com/jobs/search/?keywords=FP%26A",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = true,
                     MatchScore = 92
@@ -351,7 +353,8 @@ namespace backend.Services.Jobs
                     PostedDays = 4,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "topcv",
-                    ApplyUrl = "https://www.topcv.vn/tim-viec-lam?keyword=Account+Executive",
+                    SourceUrl = "https://www.topcv.vn/tim-viec-lam?keyword=Account+Executive",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = false,
                     MatchScore = 89
@@ -374,7 +377,8 @@ namespace backend.Services.Jobs
                     PostedDays = 2,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "linkedin",
-                    ApplyUrl = "https://www.linkedin.com/jobs/search/?keywords=HRBP",
+                    SourceUrl = "https://www.linkedin.com/jobs/search/?keywords=HRBP",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = false,
                     MatchScore = 90
@@ -397,7 +401,8 @@ namespace backend.Services.Jobs
                     PostedDays = 5,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "itviec",
-                    ApplyUrl = "https://careerviet.vn/tim-viec-lam?keywords=Supply+Chain",
+                    SourceUrl = "https://careerviet.vn/tim-viec-lam?keywords=Supply+Chain",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = false,
                     MatchScore = 85
@@ -420,7 +425,8 @@ namespace backend.Services.Jobs
                     PostedDays = 2,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "topcv",
-                    ApplyUrl = "https://www.topcv.vn/tim-viec-lam?keyword=Brand+Marketing",
+                    SourceUrl = "https://www.topcv.vn/tim-viec-lam?keyword=Brand+Marketing",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = true,
                     MatchScore = 94
@@ -443,7 +449,8 @@ namespace backend.Services.Jobs
                     PostedDays = 2,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "topcv",
-                    ApplyUrl = "https://www.topcv.vn/tim-viec-lam?keyword=Frontend",
+                    SourceUrl = "https://www.topcv.vn/tim-viec-lam?keyword=Frontend",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = true,
                     MatchScore = 95
@@ -466,7 +473,8 @@ namespace backend.Services.Jobs
                     PostedDays = 1,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "linkedin",
-                    ApplyUrl = "https://www.linkedin.com/jobs/search/?keywords=Full+Stack",
+                    SourceUrl = "https://www.linkedin.com/jobs/search/?keywords=Full+Stack",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = true,
                     MatchScore = 91
@@ -489,7 +497,8 @@ namespace backend.Services.Jobs
                     PostedDays = 5,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "topcv",
-                    ApplyUrl = "https://www.topcv.vn/tim-viec-lam?keyword=UI%2FUX",
+                    SourceUrl = "https://www.topcv.vn/tim-viec-lam?keyword=UI%2FUX",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = false,
                     MatchScore = 84
@@ -512,7 +521,8 @@ namespace backend.Services.Jobs
                     PostedDays = 3,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "linkedin",
-                    ApplyUrl = "https://www.linkedin.com/jobs/search/?keywords=Backend+Python",
+                    SourceUrl = "https://www.linkedin.com/jobs/search/?keywords=Backend+Python",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = false,
                     MatchScore = 88
@@ -535,7 +545,8 @@ namespace backend.Services.Jobs
                     PostedDays = 7,
                     SourceName = "Dữ liệu mẫu PrepMate",
                     SourceKey = "itviec",
-                    ApplyUrl = "https://itviec.com/it-jobs?query=Data+Engineer",
+                    SourceUrl = "https://itviec.com/it-jobs?query=Data+Engineer",
+                    ApplyUrl = null,
                     IsSample = true,
                     Featured = false,
                     MatchScore = 79
