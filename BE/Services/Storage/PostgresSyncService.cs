@@ -128,8 +128,10 @@ namespace backend.Services.Storage
                     target_role VARCHAR(100) DEFAULT '',
                     experience_level VARCHAR(50) DEFAULT '',
                     skills JSONB DEFAULT '[]'::jsonb,
-                    location VARCHAR(100) DEFAULT ''
+                    location VARCHAR(100) DEFAULT '',
+                    auth_meta JSONB DEFAULT '{}'::jsonb
                 );
+                ALTER TABLE users ADD COLUMN IF NOT EXISTS auth_meta JSONB DEFAULT '{}'::jsonb;
 
                 CREATE TABLE IF NOT EXISTS sessions (
                     id VARCHAR(50) PRIMARY KEY,
@@ -190,11 +192,22 @@ namespace backend.Services.Storage
             await cmd.ExecuteNonQueryAsync();
         }
 
+        private sealed class UserAuthMeta
+        {
+            public bool EmailVerified { get; set; } = true;
+            public DateTime? EmailVerifiedAt { get; set; }
+            public string? EmailVerificationTokenHash { get; set; }
+            public DateTime? EmailVerificationTokenExpiresAt { get; set; }
+            public string? PasswordResetTokenHash { get; set; }
+            public DateTime? PasswordResetTokenExpiresAt { get; set; }
+            public string? SecurityStamp { get; set; }
+        }
+
         private async Task PullFromPostgresAsync(NpgsqlConnection conn, FileDb fileDb)
         {
             // 1. Load Users from Postgres
             var pgUsers = new Dictionary<string, User>(StringComparer.OrdinalIgnoreCase);
-            await using (var cmd = new NpgsqlCommand("SELECT id, fullname, email, username, password_hash, password, role, subscription, subscription_date, subscription_expiry, created_at, updated_at, phone, bio, target_role, experience_level, skills, location FROM users;", conn))
+            await using (var cmd = new NpgsqlCommand("SELECT id, fullname, email, username, password_hash, password, role, subscription, subscription_date, subscription_expiry, created_at, updated_at, phone, bio, target_role, experience_level, skills, location, auth_meta FROM users;", conn))
             await using (var reader = await cmd.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
@@ -204,6 +217,17 @@ namespace backend.Services.Storage
                     List<string> skillsList;
                     try { skillsList = JsonSerializer.Deserialize<List<string>>(skillsJson) ?? new(); }
                     catch { skillsList = new(); }
+
+                    UserAuthMeta? authMeta = null;
+                    if (!reader.IsDBNull(18))
+                    {
+                        var authMetaJson = reader.GetString(18);
+                        if (!string.IsNullOrWhiteSpace(authMetaJson) && authMetaJson != "{}")
+                        {
+                            try { authMeta = JsonSerializer.Deserialize<UserAuthMeta>(authMetaJson); }
+                            catch { authMeta = null; }
+                        }
+                    }
 
                     var u = new User
                     {
@@ -224,7 +248,14 @@ namespace backend.Services.Storage
                         TargetRole = reader.IsDBNull(14) ? "" : reader.GetString(14),
                         ExperienceLevel = reader.IsDBNull(15) ? "" : reader.GetString(15),
                         Skills = skillsList,
-                        Location = reader.IsDBNull(17) ? "" : reader.GetString(17)
+                        Location = reader.IsDBNull(17) ? "" : reader.GetString(17),
+                        EmailVerified = authMeta?.EmailVerified ?? true,
+                        EmailVerifiedAt = authMeta?.EmailVerifiedAt,
+                        EmailVerificationTokenHash = authMeta?.EmailVerificationTokenHash,
+                        EmailVerificationTokenExpiresAt = authMeta?.EmailVerificationTokenExpiresAt,
+                        PasswordResetTokenHash = authMeta?.PasswordResetTokenHash,
+                        PasswordResetTokenExpiresAt = authMeta?.PasswordResetTokenExpiresAt,
+                        SecurityStamp = !string.IsNullOrWhiteSpace(authMeta?.SecurityStamp) ? authMeta!.SecurityStamp! : Guid.NewGuid().ToString("N")
                     };
 
                     pgUsers[id] = u;
@@ -250,6 +281,7 @@ namespace backend.Services.Storage
             }
 
             // 2. Load Sessions from Postgres
+            var pgSessions = new Dictionary<string, Session>(StringComparer.OrdinalIgnoreCase);
             await using (var cmd = new NpgsqlCommand("SELECT id, user_id, job_title, jd_text, cv_text, questions, answers, feedbacks, status, created_at, started_at, report, evaluation, evidence_ledger, ai_snapshot, language FROM sessions;", conn))
             await using (var reader = await cmd.ExecuteReaderAsync())
             {
@@ -295,7 +327,18 @@ namespace backend.Services.Storage
                     if (!string.IsNullOrEmpty(evLedgerJson)) { try { sess.EvidenceLedger = JsonSerializer.Deserialize<backend.Models.AI.EvidenceLedger>(evLedgerJson); } catch { } }
                     if (!string.IsNullOrEmpty(aiSnapJson)) { try { sess.AiSnapshot = JsonSerializer.Deserialize<backend.Models.AI.SessionAiSnapshot>(aiSnapJson); } catch { } }
 
+                    pgSessions[id] = sess;
                     fileDb.Sessions[id] = sess;
+                }
+            }
+
+            var sessionsToPush = fileDb.Sessions.Values.Where(s => !pgSessions.ContainsKey(s.Id) && fileDb.Users.ContainsKey(s.UserId)).ToList();
+            if (sessionsToPush.Count > 0)
+            {
+                Console.WriteLine($"[PostgresSync] Uploading {sessionsToPush.Count} local-only sessions to Neon...");
+                foreach (var s in sessionsToPush)
+                {
+                    await UpsertSessionInternalAsync(conn, s);
                 }
             }
 
@@ -345,15 +388,19 @@ namespace backend.Services.Storage
                     await UpsertUserInternalAsync(conn, user);
                 }
 
-                // 2. Sync all sessions
-                var sessionsSnapshot = fileDb.Sessions.Values.ToList();
+                // 2. Sync all sessions (only for registered users present in users table)
+                var sessionsSnapshot = fileDb.Sessions.Values
+                    .Where(s => !string.IsNullOrWhiteSpace(s.UserId) && fileDb.Users.ContainsKey(s.UserId))
+                    .ToList();
                 foreach (var session in sessionsSnapshot)
                 {
                     await UpsertSessionInternalAsync(conn, session);
                 }
 
-                // 3. Sync all transactions
-                var txSnapshot = fileDb.Transactions.ToList();
+                // 3. Sync all transactions (only for registered users present in users table)
+                var txSnapshot = fileDb.Transactions
+                    .Where(tx => !string.IsNullOrWhiteSpace(tx.User) && fileDb.Users.ContainsKey(tx.User))
+                    .ToList();
                 foreach (var tx in txSnapshot)
                 {
                     await UpsertTransactionInternalAsync(conn, tx);
@@ -375,11 +422,11 @@ namespace backend.Services.Storage
                 INSERT INTO users (
                     id, fullname, email, username, password_hash, password, role,
                     subscription, subscription_date, subscription_expiry, created_at, updated_at,
-                    phone, bio, target_role, experience_level, skills, location
+                    phone, bio, target_role, experience_level, skills, location, auth_meta
                 ) VALUES (
                     @id, @fullname, @email, @username, @password_hash, @password, @role,
                     @subscription, @subscription_date, @subscription_expiry, @created_at, @updated_at,
-                    @phone, @bio, @target_role, @experience_level, @skills::jsonb, @location
+                    @phone, @bio, @target_role, @experience_level, @skills::jsonb, @location, @auth_meta::jsonb
                 ) ON CONFLICT (id) DO UPDATE SET
                     fullname = EXCLUDED.fullname,
                     email = EXCLUDED.email,
@@ -396,8 +443,20 @@ namespace backend.Services.Storage
                     target_role = EXCLUDED.target_role,
                     experience_level = EXCLUDED.experience_level,
                     skills = EXCLUDED.skills,
-                    location = EXCLUDED.location;
+                    location = EXCLUDED.location,
+                    auth_meta = EXCLUDED.auth_meta;
             ";
+
+            var authMeta = new UserAuthMeta
+            {
+                EmailVerified = user.EmailVerified,
+                EmailVerifiedAt = user.EmailVerifiedAt,
+                EmailVerificationTokenHash = user.EmailVerificationTokenHash,
+                EmailVerificationTokenExpiresAt = user.EmailVerificationTokenExpiresAt,
+                PasswordResetTokenHash = user.PasswordResetTokenHash,
+                PasswordResetTokenExpiresAt = user.PasswordResetTokenExpiresAt,
+                SecurityStamp = user.SecurityStamp
+            };
 
             await using var cmd = new NpgsqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("id", user.Id);
@@ -418,6 +477,7 @@ namespace backend.Services.Storage
             cmd.Parameters.AddWithValue("experience_level", user.ExperienceLevel ?? "");
             cmd.Parameters.AddWithValue("skills", JsonSerializer.Serialize(user.Skills ?? new()));
             cmd.Parameters.AddWithValue("location", user.Location ?? "");
+            cmd.Parameters.AddWithValue("auth_meta", JsonSerializer.Serialize(authMeta));
 
             await cmd.ExecuteNonQueryAsync();
         }

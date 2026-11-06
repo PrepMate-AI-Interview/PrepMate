@@ -68,12 +68,36 @@
       window.gtag = window.gtag || gtag;
 
       gtag("js", new Date());
-      gtag("config", measurementId, {
+
+      // Capture UTM or Facebook/Zalo attribution parameters if present
+      const configParams = {
         send_page_view: true,
         page_title: document.title,
         page_location: window.location.href,
         page_path: window.location.pathname + window.location.search
-      });
+      };
+
+      try {
+        const searchParams = new URLSearchParams(window.location.search || "");
+        const utmSource = searchParams.get("utm_source") || (searchParams.has("fbclid") ? "facebook" : null);
+        const utmMedium = searchParams.get("utm_medium") || (searchParams.has("fbclid") ? "social" : null);
+        const utmCampaign = searchParams.get("utm_campaign");
+
+        if (utmSource) {
+          configParams.campaign_source = utmSource;
+          sessionStorage.setItem("prepmate_utm_source", utmSource);
+        }
+        if (utmMedium) {
+          configParams.campaign_medium = utmMedium;
+          sessionStorage.setItem("prepmate_utm_medium", utmMedium);
+        }
+        if (utmCampaign) {
+          configParams.campaign_name = utmCampaign;
+          sessionStorage.setItem("prepmate_utm_campaign", utmCampaign);
+        }
+      } catch (e) {}
+
+      gtag("config", measurementId, configParams);
 
       // 2. Chèn thẻ script gtag.js bất đồng bộ vào <head>
       const existingScript = document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${measurementId}"]`);
@@ -85,8 +109,81 @@
       }
 
       this.isInitialized = true;
+      this.bindEngagementTracking();
       console.log(`[PrepMate Analytics] Đã kích hoạt GA4 thành công với mã: ${measurementId}`);
       return true;
+    },
+
+    /**
+     * Tự động theo dõi tương tác thực tế của người dùng trên trang
+     * (đọc báo cáo, chuyển tab, cuộn trang, nghe lại bản ghi âm phỏng vấn)
+     */
+    bindEngagementTracking: function () {
+      const self = this;
+      let lastActivityTs = Date.now();
+      const scrollMilestones = { 25: false, 50: false, 75: false, 90: false };
+
+      const markActive = function () {
+        lastActivityTs = Date.now();
+      };
+
+      window.addEventListener("mousemove", markActive, { passive: true });
+      window.addEventListener("keydown", markActive, { passive: true });
+      window.addEventListener("touchstart", markActive, { passive: true });
+
+      window.addEventListener(
+        "scroll",
+        function () {
+          markActive();
+          const docEl = document.documentElement;
+          const scrollTop = window.scrollY || docEl.scrollTop || 0;
+          const scrollHeight = (docEl.scrollHeight || 0) - (docEl.clientHeight || 0);
+          if (scrollHeight <= 100) return;
+
+          const pct = Math.round((scrollTop / scrollHeight) * 100);
+          [25, 50, 75, 90].forEach(function (milestone) {
+            if (pct >= milestone && !scrollMilestones[milestone]) {
+              scrollMilestones[milestone] = true;
+              self.trackEvent("scroll_depth", {
+                percent_scrolled: milestone,
+                page_path: window.location.pathname
+              });
+            }
+          });
+        },
+        { passive: true }
+      );
+
+      document.addEventListener(
+        "click",
+        function (e) {
+          markActive();
+          const target = e.target && e.target.closest ? e.target.closest("button, a, [role='tab'], .chk-input") : null;
+          if (!target) return;
+
+          if (window.location.pathname.includes("report.html")) {
+            const label = (target.textContent || target.getAttribute("aria-label") || target.id || "interaction")
+              .trim()
+              .slice(0, 60);
+            self.trackEvent("report_interaction", {
+              element_label: label,
+              page_path: window.location.pathname
+            });
+          }
+        },
+        { passive: true }
+      );
+
+      // Ghi nhận thời gian đọc báo cáo / luyện tập khi tab đang hiển thị và người dùng đang tương tác
+      setInterval(function () {
+        if (document.visibilityState === "visible" && Date.now() - lastActivityTs < 60000) {
+          self.trackEvent("active_reading_ping", {
+            page_path: window.location.pathname,
+            page_title: document.title,
+            engagement_time_msec: 25000
+          });
+        }
+      }, 25000);
     },
 
     /**

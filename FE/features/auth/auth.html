@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="../../shared/css/layout.css?v=26" />
     <link rel="stylesheet" href="../../shared/css/components.css?v=26" />
     <link rel="stylesheet" href="../../shared/css/style.css?v=18" />
-    <link rel="stylesheet" href="./auth.css?v=21" />
+    <link rel="stylesheet" href="./auth.css?v=25" />
       <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
     <script src="../../shared/js/morphicons.js"></script>
     <script src="../../shared/js/icons.js"></script>
@@ -364,9 +364,9 @@
     </footer>
 
     <!-- Shared Application Scripts -->
-    <script src="../../shared/js/main.js?v=18"></script>
-    <script src="auth.js?v=19"></script>
-    <script src="../../shared/js/components.js?v=18"></script>
+    <script src="../../shared/js/main.js?v=25"></script>
+    <script src="auth.js?v=25"></script>
+    <script src="../../shared/js/components.js?v=25"></script>
 
     <!-- Page Specific Authentication UI Logic -->
     <script>
@@ -765,7 +765,13 @@
 
         const policy = typeof validatePasswordPolicy === 'function'
           ? validatePasswordPolicy(password)
-          : { isValid: false };
+          : {
+              minLength: password.length >= 8,
+              maxLength: password.length <= 128,
+              asciiOnly: /^[\x21-\x7E]+$/.test(password),
+              noWhitespace: !/\s/.test(password),
+              isValid: password.length >= 8 && password.length <= 128 && /^[\x21-\x7E]+$/.test(password) && !/\s/.test(password)
+            };
 
         if (!policy.isValid) {
           showError("signup", "Mật khẩu cần từ 8–128 ký tự, gồm chữ không dấu, số hoặc ký tự đặc biệt; không chứa khoảng trắng.");

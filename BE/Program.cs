@@ -518,7 +518,16 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Initialize FileDb at application startup
-app.Services.GetRequiredService<FileDb>();
+var fileDbInstance = app.Services.GetRequiredService<FileDb>();
+if (args.Contains("--sync-neon"))
+{
+    if (fileDbInstance.PostgresSync != null)
+    {
+        await fileDbInstance.PostgresSync.PushToPostgresAsync(fileDbInstance);
+    }
+    Console.WriteLine($"[PostgresSync] One-shot sync completed: {fileDbInstance.Users.Count} users, {fileDbInstance.Sessions.Count} sessions.");
+    return;
+}
 
 // Global Exception Sanitizer Middleware (prevents information disclosure)
 app.Use(async (context, next) =>
