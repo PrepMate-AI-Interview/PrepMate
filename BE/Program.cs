@@ -255,6 +255,7 @@ builder.Services.AddSingleton<FileDb>(sp =>
 });
 builder.Services.AddSingleton<backend.Services.Storage.ISessionLockManager, backend.Services.Storage.SessionLockManager>();
 builder.Services.AddSingleton<backend.Services.Storage.SessionLockManager>();
+builder.Services.AddHostedService<backend.Services.Analytics.AnalyticsKeepAliveService>();
 // Configure ASP.NET Core Data Protection with persistent key ring outside repository
 var dataProtectionBuilder = builder.Services.AddDataProtection()
     .SetApplicationName("PrepMate");
