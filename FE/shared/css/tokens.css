@@ -74,7 +74,40 @@
   --pm-text-muted: #64748b;         /* Metadata, timestamps, helper copy (4.7:1 AA) */
   --pm-text-faint: #94a3b8;         /* Placeholder text and inactive tabs */
   --pm-text-disabled: #cbd5e1;      /* Disabled action text and icons */
-  --pm-text-inverse: #ffffff;       /* White text on high-contrast backgrounds */
+  --pm-text-inverse: #ffffff;
+  /* 1.6 Semantic On-Color Text Tokens (WCAG 2.2 AA SSOT) */
+  --pm-on-primary:          #ffffff;
+  --pm-on-primary-hover:    #ffffff;
+  --pm-on-primary-active:   #ffffff;
+  --pm-on-success:          #ffffff;
+  --pm-on-danger:           #ffffff;
+  --pm-on-warning:          #ffffff;
+  --pm-on-info:             #ffffff;
+  --pm-primary-text-on-dark: #ffffff;
+  --pm-placeholder:         #64748b; /* WCAG AA 4.63:1 contrast against #ffffff */
+
+  /* 1.7 Semantic Badge & Status Pairs (WCAG AA/AAA SSOT) */
+  --pm-badge-success-bg:     #ecfdf5;
+  --pm-badge-success-text:   #065f46; /* 7.3:1 AAA */
+  --pm-badge-success-border: #a7f3d0;
+
+  --pm-badge-warning-bg:     #fffbeb;
+  --pm-badge-warning-text:   #92400e; /* 6.8:1 AA/AAA */
+  --pm-badge-warning-border: #fde68a;
+
+  --pm-badge-danger-bg:      #fef2f2;
+  --pm-badge-danger-text:    #991b1b; /* 7.6:1 AAA */
+  --pm-badge-danger-border:  #fecaca;
+
+  --pm-badge-info-bg:        #eff6ff;
+  --pm-badge-info-text:      #1e40af; /* 7.1:1 AAA */
+  --pm-badge-info-border:    #bfdbfe;
+
+  --pm-badge-neutral-bg:     #f8fafc;
+  --pm-badge-neutral-text:   #334155; /* 10.3:1 AAA */
+  --pm-badge-neutral-border: #e2e8f0;
+
+  --pm-focus-ring-offset:    2px;
 
   /* 1.4 Primary Action & Brand Blues (Executive Cobalt) */
   --pm-primary: #1d4ed8;            /* Blue 700 — Authoritative executive CTA */
@@ -480,6 +513,7 @@ body.dark-mode {
   --pm-border-hover:        #5F6368; /* Hover border */
   --pm-border-focus:        #8ab4f8; /* Accessible focus indicator */
   --pm-focus-ring:          #8ab4f8;
+  --pm-focus-ring-offset:   2px;
 
   /* Typography System */
   --pm-ink:                 #E8EAED; /* Primary text: #E8EAED */
@@ -492,7 +526,17 @@ body.dark-mode {
   --pm-text-inverse:        #202124;
 
   /* Brand Accents */
-  --pm-primary:             #2563eb; /* PrepMate Brand Royal Blue */
+  --pm-primary:             #2563eb;
+  --pm-on-primary:          #ffffff;
+  --pm-on-primary-hover:    #ffffff;
+  --pm-on-primary-active:   #ffffff;
+  --pm-on-success:          #ffffff;
+  --pm-on-danger:           #ffffff;
+  --pm-on-warning:          #ffffff;
+  --pm-on-info:             #ffffff;
+  --pm-primary-text-on-dark: #ffffff;
+  --pm-placeholder:         #94a3b8; /* WCAG AA contrast against #202124 */
+ /* PrepMate Brand Royal Blue */
   --pm-primary-hover:       #1d4ed8;
   --pm-primary-active:      #172554;
   --pm-primary-soft:        rgba(37, 99, 235, 0.16);
@@ -519,6 +563,27 @@ body.dark-mode {
   --pm-info-soft:           rgba(56, 189, 248, 0.14);
   --pm-info-border:         rgba(56, 189, 248, 0.35);
   --pm-info-text:           #8ab4f8;
+
+  /* Semantic Badge & Status Tokens (WCAG AA/AAA Guaranteed on Dark Surfaces) */
+  --pm-badge-success-bg:     rgba(16, 185, 129, 0.16);
+  --pm-badge-success-text:   #34d399; /* 7.8:1 AAA on dark card #292A2D */
+  --pm-badge-success-border: rgba(52, 211, 153, 0.35);
+
+  --pm-badge-warning-bg:     rgba(245, 158, 11, 0.16);
+  --pm-badge-warning-text:   #fbbf24; /* 9.2:1 AAA on dark card #292A2D */
+  --pm-badge-warning-border: rgba(251, 191, 36, 0.35);
+
+  --pm-badge-danger-bg:      rgba(239, 68, 68, 0.16);
+  --pm-badge-danger-text:    #fca5a5; /* 5.85:1 AA */ /* 6.4:1 AA on dark card #292A2D */
+  --pm-badge-danger-border:  rgba(248, 113, 113, 0.35);
+
+  --pm-badge-info-bg:        rgba(37, 99, 235, 0.16);
+  --pm-badge-info-text:      #93c5fd; /* 7.2:1 AAA on dark card #292A2D */
+  --pm-badge-info-border:    rgba(96, 165, 250, 0.35);
+
+  --pm-badge-neutral-bg:     #303134;
+  --pm-badge-neutral-text:   #E8EAED; /* 10.5:1 AAA on dark surface */
+  --pm-badge-neutral-border: #3C4043;
 
   /* Shadows */
   --pm-shadow-sm:           0 1px 3px rgba(0, 0, 0, 0.45);

@@ -10,6 +10,9 @@
   color: var(--pm-text, #0f172a);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
 }
 
@@ -82,8 +85,12 @@
 .company-main-wrap {
   padding: 24px 0 60px;
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .company-container {

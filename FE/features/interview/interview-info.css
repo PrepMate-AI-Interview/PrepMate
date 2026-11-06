@@ -2295,6 +2295,7 @@ body.dashboard-body {
 }
 
 .greeting-quote-preview {
+    display: none !important;
     font-size: 11.5px;
     font-style: italic;
     color: var(--pm-text-secondary, #334155);

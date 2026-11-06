@@ -23,6 +23,9 @@
         --prep-emerald: var(--pm-emerald); --prep-emerald-hover: var(--pm-emerald-hover); --prep-emerald-soft: var(--pm-emerald-soft); --prep-emerald-border: var(--pm-emerald-border); --prep-emerald-text: var(--pm-emerald-text);
     }
     </style>
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 <body class="dashboard-body">
 
@@ -33,18 +36,9 @@
     <main class="main-content main-content-new">
         <div class="jobs-container">
 
-            <!-- Breadcrumb Navigation -->
-            <div class="jobs-breadcrumb">
-                <a href="../../features/dashboard/dashboard.html">Tổng quan</a><span class="sep">/</span><span>Chuẩn bị</span><span class="sep">/</span><span class="current">Cơ hội việc làm</span>
-            </div>
-
             <!-- Page Header Section -->
             <div class="jobs-header-section">
-                <div class="jobs-header-badge">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                    <span>Thị trường Tuyển dụng & Xu hướng Kỹ năng</span><span class="badge-dot">•</span><span class="badge-live">Tổng hợp Jooble API & Liên kết trực tiếp TopCV, ITviec</span>
-                </div>
-                <h1 class="jobs-page-title">Khám phá Cơ hội Việc làm</h1>
+                <h1 class="jobs-page-title">Cơ hội việc làm</h1>
                 <p class="jobs-page-sub">Tìm kiếm và theo dõi các vị trí tuyển dụng thực tế từ các doanh nghiệp hàng đầu. Nắm bắt yêu cầu chuyên môn, kỹ năng trọng yếu và mức lương thị trường để định hướng lộ trình nghề nghiệp phù hợp.</p>
             </div>
 
@@ -90,64 +84,33 @@
                 <aside class="jobs-sidebar" id="jobs-sidebar-filters">
                     <div class="jobs-filters-card">
                         <div class="filters-header">
-                            <h3 class="filters-title">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-                                <span>Bộ lọc tuyển dụng</span>
-                            </h3>
-                            <button type="button" class="btn-reset-filters" onclick="resetFilters()" title="Xóa toàn bộ bộ lọc và đặt lại mặc định">Xóa bộ lọc</button>
+                            <div class="filters-title-group"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span class="filters-title-text">Bộ lọc tuyển dụng</span><span class="active-filters-badge" id="active-filters-count" style="display:none;">0</span></div>
+                            <button type="button" class="btn-reset-filters" onclick="resetFilters()" title="Xóa toàn bộ bộ lọc và đặt lại ban đầu">Xóa tất cả</button>
                         </div>
                         <div id="active-filter-chips" class="active-chips-box" style="display:none;"></div>
-                        <!-- Loại hình làm việc -->
-                        <div class="filter-section">
-                            <span class="filter-section-title">Loại hình</span>
-                            <div class="filter-chips-grid">
-                                <span class="filter-chip active" onclick="toggleDraftFilter(this,'type','all')">Tất cả</span><span class="filter-chip" onclick="toggleDraftFilter(this,'type','Full-time')">Full-time</span><span class="filter-chip" onclick="toggleDraftFilter(this,'type','Part-time')">Part-time</span><span class="filter-chip" onclick="toggleDraftFilter(this,'type','Remote')">Remote</span>
-                            </div>
-                        </div>
+                        <!-- Địa điểm -->
+                        <div class="filter-section"><span class="filter-section-title">Địa điểm</span><div class="filter-chips-grid"><span class="filter-chip active" onclick="toggleDraftLocation(this,'')">Tất cả</span><span class="filter-chip" onclick="toggleDraftLocation(this,'hanoi')">Hà Nội</span><span class="filter-chip" onclick="toggleDraftLocation(this,'hcm')">TP. HCM</span><span class="filter-chip" onclick="toggleDraftLocation(this,'danang')">Đà Nẵng</span><span class="filter-chip" onclick="toggleDraftLocation(this,'remote')">Remote</span></div></div>
+                        <!-- Loại hình -->
+                        <div class="filter-section"><span class="filter-section-title">Loại hình</span><div class="filter-chips-grid"><span class="filter-chip active" onclick="toggleDraftFilter(this,'type','all')">Tất cả</span><span class="filter-chip" onclick="toggleDraftFilter(this,'type','Full-time')">Full-time</span><span class="filter-chip" onclick="toggleDraftFilter(this,'type','Part-time')">Part-time</span><span class="filter-chip" onclick="toggleDraftFilter(this,'type','Remote')">Remote</span></div></div>
                         <!-- Kinh nghiệm -->
-                        <div class="filter-section">
-                            <span class="filter-section-title">Kinh nghiệm</span>
-                            <div class="filter-chips-grid">
-                                <span class="filter-chip active" onclick="toggleDraftFilter(this,'exp','any')">Tất cả</span><span class="filter-chip" onclick="toggleDraftFilter(this,'exp','fresher')">Fresher / Mới tốt nghiệp</span><span class="filter-chip" onclick="toggleDraftFilter(this,'exp','1-2')">1–2 năm</span><span class="filter-chip" onclick="toggleDraftFilter(this,'exp','3-5')">3–5 năm</span>
-                            </div>
-                        </div>
+                        <div class="filter-section"><span class="filter-section-title">Kinh nghiệm</span><div class="filter-chips-grid"><span class="filter-chip active" onclick="toggleDraftFilter(this,'exp','any')">Tất cả</span><span class="filter-chip" onclick="toggleDraftFilter(this,'exp','fresher')">Fresher</span><span class="filter-chip" onclick="toggleDraftFilter(this,'exp','1-2')">1–2 năm</span><span class="filter-chip" onclick="toggleDraftFilter(this,'exp','3-5')">3–5 năm</span></div></div>
                         <!-- Nguồn tuyển dụng -->
-                        <div class="filter-section">
-                            <span class="filter-section-title">Nguồn tuyển dụng</span>
-                            <div class="filter-chips-grid">
-                                <span class="filter-chip active" onclick="toggleDraftFilter(this,'source','all')">Tất cả nguồn</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','jooble')">Jooble (Live)</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','topcv')">TopCV</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','linkedin')">LinkedIn</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','itviec')">ITviec</span>
-                            </div>
-                        </div>
+                        <div class="filter-section"><span class="filter-section-title">Nguồn tuyển dụng</span><div class="filter-chips-grid"><span class="filter-chip active" onclick="toggleDraftFilter(this,'source','all')">Tất cả</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','jooble')">Jooble Live</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','topcv')">TopCV</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','linkedin')">LinkedIn</span><span class="filter-chip" onclick="toggleDraftFilter(this,'source','itviec')">ITviec</span></div></div>
                         <!-- Mức lương -->
                         <div class="filter-section">
                             <span class="filter-section-title">Mức lương (USD/tháng)</span>
-                            <div class="salary-inputs-row">
-                                <div class="salary-input-col"><label for="salary-min-input" class="salary-input-label">Từ</label><input type="number" id="salary-min-input" class="salary-number-input" min="0" step="100" placeholder="0" oninput="onDraftSalaryInputChange()" aria-label="Lương tối thiểu"></div>
-                                <span class="salary-sep">–</span>
-                                <div class="salary-input-col"><label for="salary-max-input" class="salary-input-label">Đến</label><input type="number" id="salary-max-input" class="salary-number-input" min="0" step="100" placeholder="Tối đa" oninput="onDraftSalaryInputChange()" aria-label="Lương tối đa"></div>
-                            </div>
+                            <div class="salary-inputs-row"><div class="salary-input-col"><label for="salary-min-input" class="salary-input-label">Từ</label><input type="number" id="salary-min-input" class="salary-number-input" min="0" step="100" placeholder="0" oninput="onDraftSalaryInputChange()" aria-label="Lương tối thiểu"></div><span class="salary-sep">–</span><div class="salary-input-col"><label for="salary-max-input" class="salary-input-label">Đến</label><input type="number" id="salary-max-input" class="salary-number-input" min="0" step="100" placeholder="Tối đa" oninput="onDraftSalaryInputChange()" aria-label="Lương tối đa"></div></div>
                             <input type="range" class="filter-range" id="salary-range" min="0" max="60" value="0" aria-label="Mức lương tối thiểu" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0" oninput="onDraftSalarySliderChange(this.value)">
                             <div class="salary-display" id="salary-display">Không giới hạn mức lương</div>
-                            <div class="salary-quick-pills">
-                                <button type="button" class="salary-pill active" onclick="setSalaryPreset(0)">Tất cả</button><button type="button" class="salary-pill" onclick="setSalaryPreset(20)">$1,000+</button><button type="button" class="salary-pill" onclick="setSalaryPreset(40)">$2,000+</button><button type="button" class="salary-pill" onclick="setSalaryPreset(60)">$3,000+</button>
-                            </div>
+                            <div class="salary-quick-pills"><button type="button" class="salary-pill active" onclick="setSalaryPreset(0)">Tất cả</button><button type="button" class="salary-pill" onclick="setSalaryPreset(20)">$1,000+</button><button type="button" class="salary-pill" onclick="setSalaryPreset(40)">$2,000+</button><button type="button" class="salary-pill" onclick="setSalaryPreset(60)">$3,000+</button></div>
                             <div id="salary-validation-error" class="salary-validation-error" style="display:none;" role="alert"></div>
                         </div>
                         <!-- Filter Actions Bar (Apply, Undo, Clear) -->
                         <div class="filter-actions-bar">
-                            <button type="button" class="btn-apply-filters" id="btn-apply-filters" onclick="applyFilters()">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                                <span>Áp dụng bộ lọc</span>
-                            </button>
+                            <button type="button" class="btn-apply-filters" id="btn-apply-filters" onclick="applyFilters()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Áp dụng bộ lọc</span></button>
                             <div class="filter-actions-row">
-                                <button type="button" class="btn-undo-filters" id="btn-undo-filters" onclick="undoFilters()" disabled title="Hoàn tác các thay đổi nháp chưa áp dụng">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
-                                    <span>Hoàn tác</span>
-                                </button>
-                                <button type="button" class="btn-clear-all-filters" onclick="resetFilters()" title="Xóa toàn bộ bộ lọc và đặt lại ban đầu">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                    <span>Xóa tất cả</span>
-                                </button>
+                                <button type="button" class="btn-undo-filters" id="btn-undo-filters" onclick="undoFilters()" disabled title="Hoàn tác các thay đổi nháp chưa áp dụng"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg><span>Hoàn tác</span></button>
+                                <button type="button" class="btn-clear-all-filters" onclick="resetFilters()" title="Xóa toàn bộ bộ lọc và đặt lại ban đầu"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Xóa tất cả</span></button>
                             </div>
                         </div>
                     </div>
@@ -175,13 +138,7 @@
 
                     <!-- External Search Deep-Link Hub -->
                     <div class="external-search-hub" id="external-search-hub">
-                        <div class="hub-header">
-                            <span class="hub-title">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                                <span>Tìm kiếm trực tiếp trên nền tảng tuyển dụng</span>
-                            </span>
-                            <span class="hub-subtitle">Mở trang tìm kiếm gốc theo từ khóa hiện tại (TopCV, VietnamWorks, ITviec, CareerViet, LinkedIn)</span>
-                        </div>
+                        <div class="hub-header"><span class="hub-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Tìm kiếm trực tiếp trên nền tảng tuyển dụng</span></span><span class="hub-subtitle">Mở trang tìm kiếm gốc theo từ khóa hiện tại (TopCV, VietnamWorks, ITviec, CareerViet, LinkedIn)</span></div>
                         <div class="hub-links-grid" id="hub-links-grid"></div>
                     </div>
 
@@ -193,10 +150,7 @@
 
                     <!-- Benchmark Jobs Section (dedicated fallback when live API returns 0 results) -->
                     <div id="benchmark-jobs-section" style="display:none;margin-top:24px;">
-                        <div class="benchmark-section-header">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            <span>Gợi ý vị trí chuẩn mực (Benchmark mẫu của PrepMate để luyện phỏng vấn)</span>
-                        </div>
+                        <div class="benchmark-section-header"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Gợi ý vị trí chuẩn mực (Benchmark mẫu của PrepMate để luyện phỏng vấn)</span></div>
                         <div id="benchmark-jobs-grid" class="jobs-grid"></div>
                     </div>
                 </div>
@@ -212,38 +166,23 @@
     <div class="modal-overlay" id="job-detail-modal-overlay" onclick="closeJobModal(event)" role="dialog" aria-modal="true" aria-labelledby="m-title">
         <div class="job-modal" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <div class="modal-header-left">
-                    <div class="modal-company-logo" id="m-logo">P</div>
-                    <div class="modal-header-meta"><h3 id="m-title">Tiêu đề vị trí tuyển dụng</h3><span id="m-company">Tên công ty</span></div>
-                </div>
+                <div class="modal-header-left"><div class="modal-company-logo" id="m-logo">P</div><div class="modal-header-meta"><h3 id="m-title">Tiêu đề vị trí tuyển dụng</h3><span id="m-company">Tên công ty</span></div></div>
                 <button class="modal-close-btn" onclick="closeJobModal()" aria-label="Đóng">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="modal-meta-grid">
-                    <div class="modal-meta-item"><span class="modal-meta-label">Mức lương</span><span class="modal-meta-val salary-highlight" id="m-salary">$2,000 - $3,500</span></div>
-                    <div class="modal-meta-item"><span class="modal-meta-label">Địa điểm / Hình thức</span><span class="modal-meta-val" id="m-location">TP. HCM (Full-time)</span></div>
-                    <div class="modal-meta-item"><span class="modal-meta-label">Nguồn tuyển dụng</span><span class="modal-meta-val" id="m-source">TopCV</span></div>
-                </div>
+                <div class="modal-meta-grid"><div class="modal-meta-item"><span class="modal-meta-label">Mức lương</span><span class="modal-meta-val salary-highlight" id="m-salary">$2,000 - $3,500</span></div><div class="modal-meta-item"><span class="modal-meta-label">Địa điểm / Hình thức</span><span class="modal-meta-val" id="m-location">TP. HCM (Full-time)</span></div><div class="modal-meta-item"><span class="modal-meta-label">Nguồn tuyển dụng</span><span class="modal-meta-val" id="m-source">TopCV</span></div></div>
                 <div class="modal-section"><h4>Mô tả công việc (Job Description)</h4><p id="m-desc">Chi tiết mô tả công việc...</p></div>
                 <div class="modal-section"><h4>Kỹ năng &amp; Công nghệ yêu cầu</h4><div id="m-tags" class="job-tags-row"></div></div>
-                <div class="ai-mock-box">
-                    <div class="ai-mock-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Đề xuất từ PrepMate AI</span></div>
-                    <p class="ai-mock-desc" id="m-ai-tip">Vị trí này đòi hỏi kiến thức chuyên sâu và khả năng xử lý tình huống thực tế. Bấm nút bên dưới để AI tự động nạp JD này vào phòng phỏng vấn giả lập.</p>
-                </div>
             </div>
             <div class="modal-actions">
-                <a class="btn-view-jd" id="m-btn-apply" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:none;align-items:center;justify-content:center;gap:6px;" title="Chuyển tiếp đến tin tuyển dụng gốc trên Jooble hoặc sàn tuyển dụng"><span>Mở tin tuyển dụng gốc ↗</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-                <button class="btn-practice-jd" id="m-btn-practice"><span>Phỏng vấn Giả lập theo JD này</span></button>
+                <a class="btn-view-jd" id="m-btn-apply" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:none;align-items:center;justify-content:center;gap:6px;" title="Chuyển tiếp đến tin tuyển dụng gốc hoặc trang ứng tuyển"><span>Mở tin tuyển dụng gốc</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 <button class="btn-close-modal" onclick="closeJobModal()">Đóng</button>
             </div>
         </div>
     </div>
 
     <!-- Core Scripts -->
-    <script src="../../shared/js/main.js?v=24"></script>
-    <script src="../../features/auth/auth.js?v=24"></script>
-    <script src="../../features/dashboard/dashboard.js?v=24"></script>
-    <script src="../../features/interview/interview.js?v=24"></script>
+    <script src="../../shared/js/main.js?v=24"></script><script src="../../features/auth/auth.js?v=24"></script><script src="../../features/dashboard/dashboard.js?v=24"></script><script src="../../features/interview/interview.js?v=24"></script>
     <script>
     // ══════════════ DỮ LIỆU THỊ TRƯỜNG VIỆC LÀM BENCHMARK MẪU ══════════════
     const JOB_DATABASE = [
@@ -279,7 +218,7 @@
     }
     function formatSalary(min, max, curr, text) {
         if (text) return escapeHtml(text);
-        if (!min && !max) return 'Thương lượng';
+        if (!min && !max) return 'Thỏa thuận';
         const c = curr || 'USD';
         if (min && max) return '$' + min.toLocaleString() + ' – $' + max.toLocaleString() + ' ' + c;
         if (min) return 'Từ $' + min.toLocaleString() + ' ' + c;
@@ -291,13 +230,7 @@
         const kw = rawKw || defaultTerm, loc = (location || '').trim(), encKw = encodeURIComponent(kw), locLower = loc.toLowerCase();
         const cityParam = locLower === 'hanoi' ? '&city=1' : (locLower === 'hcm' ? '&city=2' : (locLower === 'danang' ? '&city=3' : ''));
         const linkedInLoc = encodeURIComponent(locLower === 'hanoi' ? 'Hanoi, Vietnam' : (locLower === 'hcm' ? 'Ho Chi Minh City, Vietnam' : (locLower === 'danang' ? 'Da Nang, Vietnam' : 'Vietnam')));
-        return [
-            { platformKey: 'topcv', platformName: 'TopCV', sourceName: 'TopCV', searchUrl: 'https://www.topcv.vn/tim-viec-lam?keyword=' + encKw + cityParam, badgeColor: '#00b14f', description: 'Việc làm TopCV VN' },
-            { platformKey: 'vietnamworks', platformName: 'VietnamWorks', sourceName: 'VietnamWorks', searchUrl: 'https://www.vietnamworks.com/viec-lam?q=' + encKw, badgeColor: '#005aff', description: 'Việc làm chuyên nghiệp' },
-            { platformKey: 'itviec', platformName: 'ITviec', sourceName: 'ITviec', searchUrl: 'https://itviec.com/it-jobs?query=' + encKw, badgeColor: '#ed1b2f', description: 'Việc làm IT & Tech' },
-            { platformKey: 'careerviet', platformName: 'CareerViet', sourceName: 'CareerViet', searchUrl: 'https://careerviet.vn/tim-viec-lam?keywords=' + encKw, badgeColor: '#e60023', description: 'Việc làm CareerViet' },
-            { platformKey: 'linkedin', platformName: 'LinkedIn', sourceName: 'LinkedIn', searchUrl: 'https://www.linkedin.com/jobs/search/?keywords=' + encKw + '&location=' + linkedInLoc, badgeColor: '#0a66c2', description: 'Cơ hội toàn cầu' }
-        ];
+        return [{ platformKey: 'topcv', platformName: 'TopCV', sourceName: 'TopCV', searchUrl: 'https://www.topcv.vn/tim-viec-lam?keyword=' + encKw + cityParam, badgeColor: '#00b14f', description: 'Việc làm TopCV VN' }, { platformKey: 'vietnamworks', platformName: 'VietnamWorks', sourceName: 'VietnamWorks', searchUrl: 'https://www.vietnamworks.com/viec-lam?q=' + encKw, badgeColor: '#005aff', description: 'Việc làm chuyên nghiệp' }, { platformKey: 'itviec', platformName: 'ITviec', sourceName: 'ITviec', searchUrl: 'https://itviec.com/it-jobs?query=' + encKw, badgeColor: '#ed1b2f', description: 'Việc làm IT & Tech' }, { platformKey: 'careerviet', platformName: 'CareerViet', sourceName: 'CareerViet', searchUrl: 'https://careerviet.vn/tim-viec-lam?keywords=' + encKw, badgeColor: '#e60023', description: 'Việc làm CareerViet' }, { platformKey: 'linkedin', platformName: 'LinkedIn', sourceName: 'LinkedIn', searchUrl: 'https://www.linkedin.com/jobs/search/?keywords=' + encKw + '&location=' + linkedInLoc, badgeColor: '#0a66c2', description: 'Cơ hội toàn cầu' }];
     }
     function renderExternalSearchLinks(links) {
         const container = document.getElementById('hub-links-grid');
@@ -305,7 +238,7 @@
         container.innerHTML = (links || []).map(link => {
             const name = link.platformName || link.sourceName || link.platformKey || 'Nền tảng', badgeColor = link.badgeColor || '#2563eb';
             const desc = link.description ? '<span class="hub-link-desc">' + escapeHtml(link.description) + '</span>' : '';
-            return '<a href="' + sanitizeUrl(link.searchUrl) + '" target="_blank" rel="noopener noreferrer" class="hub-link-item" title="Mở trang tìm kiếm trên ' + escapeHtml(name) + '"><div class="hub-link-main"><span class="hub-platform-name">' + escapeHtml(name) + '</span>' + desc + '</div><span class="hub-link-badge" style="background:' + badgeColor + '">Tìm kiếm ↗</span></a>';
+            return '<a href="' + sanitizeUrl(link.searchUrl) + '" target="_blank" rel="noopener noreferrer" class="hub-link-item" title="Mở trang tìm kiếm trên ' + escapeHtml(name) + '"><div class="hub-link-main"><span class="hub-platform-name">' + escapeHtml(name) + '</span>' + desc + '</div><span class="hub-link-badge" style="background:' + badgeColor + '">Tìm kiếm <svg class="pm-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></span></a>';
         }).join('');
     }
     function getSourceBadge(source, isSample) {
@@ -317,29 +250,70 @@
         if (s.includes('linkedin')) return '<span class="source-badge source-linkedin">LinkedIn</span>';
         return '<span class="source-badge source-jooble">' + escapeHtml(source || 'Jooble') + '</span>';
     }
+    function classifyJobUrl(url) {
+        if (!url || typeof url !== 'string') return 'none';
+        const clean = url.trim().toLowerCase();
+        if (!clean.startsWith('http://') && !clean.startsWith('https://')) return 'none';
+        if (clean.includes('/tim-viec-lam?keyword=') ||
+            clean.includes('/jobs/search/?keywords=') ||
+            clean.includes('it-jobs?query=') ||
+            clean.includes('/search?') ||
+            clean.includes('?query=') ||
+            clean.includes('?keyword=') ||
+            clean.includes('?keywords=')) {
+            return 'search';
+        }
+        return 'direct';
+    }
+    function resolveJobApplyDestination(job) {
+        const rawApply = job.applyUrl ? sanitizeUrl(job.applyUrl) : null;
+        const rawSource = job.sourceUrl ? sanitizeUrl(job.sourceUrl) : null;
+        const applyType = classifyJobUrl(rawApply);
+        const sourceType = classifyJobUrl(rawSource);
+        if (rawApply && applyType === 'direct') {
+            return { url: rawApply, type: 'direct', label: 'Ứng tuyển trực tiếp', title: 'Chuyển tiếp đến trang ứng tuyển trực tiếp của nhà tuyển dụng' };
+        }
+        if (rawSource && sourceType === 'direct') {
+            return { url: rawSource, type: 'source', label: 'Mở tin tuyển dụng gốc', title: 'Mở tin tuyển dụng chi tiết trên ' + (job.sourceName || 'sàn tuyển dụng') };
+        }
+        const searchUrl = (applyType === 'search' ? rawApply : null) || (sourceType === 'search' ? rawSource : null);
+        if (searchUrl) {
+            return { url: searchUrl, type: 'search', label: 'Tìm trên ' + (job.sourceName || 'sàn'), title: 'Tìm kiếm cơ hội việc làm tương tự trên ' + (job.sourceName || 'sàn') };
+        }
+        return { url: null, type: 'none', label: 'Mẫu tham khảo', title: 'Vị trí này là tiêu chuẩn benchmark mẫu PrepMate' };
+    }
     function renderJobCard(job) {
-        const postedText = job.postedDays === 1 ? '1 ngày trước' : (job.postedDays + ' ngày trước');
+        const postedText = (typeof job.postedDays === 'number' && !isNaN(job.postedDays)) ? (job.postedDays === 0 ? 'hôm nay' : (job.postedDays === 1 ? '1 ngày trước' : job.postedDays + ' ngày trước')) : (job.postedDate ? new Date(job.postedDate).toLocaleDateString('vi-VN') : '');
+        const postedHtml = postedText ? '<div class="job-posted-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Đăng ' + escapeHtml(postedText) + '</span></div>' : '<div class="job-posted-time"></div>';
         const expText = job.experience === 'fresher' ? 'Fresher' : (job.experience ? job.experience + ' năm' : 'Linh hoạt');
         const safeId = String(job.id).replace(/'/g, "\\'");
         const tags = Array.isArray(job.tags) ? job.tags : [];
-        const safeApplyUrl = sanitizeUrl(job.applyUrl);
-        const applyBtn = safeApplyUrl ? '<a href="' + safeApplyUrl + '" target="_blank" rel="noopener noreferrer" class="btn-view-jd" title="Mở tin tuyển dụng gốc trên Jooble / Đối tác"><span>Ứng tuyển ↗</span></a>' : '';
+        const dest = resolveJobApplyDestination(job);
+        const applyBtn = dest.url ? '<a href="' + dest.url + '" target="_blank" rel="noopener noreferrer" class="btn-view-jd btn-apply-link" title="' + escapeHtml(dest.title) + '"><span>' + escapeHtml(dest.label) + '</span><svg class="pm-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-left:4px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></a>' : '';
         const savedList = JSON.parse(localStorage.getItem('saved_jobs') || '[]');
-        const isSaved = savedList.includes(String(job.id));
-        const isFeatured = !!(job.isSample && job.featured);
+        const isSaved = savedList.includes(String(job.id)), isFeatured = !!(job.isSample && job.featured);
+        const salVal = formatSalary(job.salaryMin, job.salaryMax, job.currency, job.salaryText);
+        const salHtml = '<div class="job-salary-highlight"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M15 9.5a3.5 3.5 0 0 0-7 0c0 2 2 3 4 3s4 1 4 3a3.5 3.5 0 0 1-7 0"/></svg><span class="salary-label">Mức lương:</span><span class="salary-val">' + salVal + '</span></div>';
         return '<div class="job-card' + (isFeatured ? ' featured' : '') + '">' +
-            '<div class="job-logo">' + escapeHtml(job.logo || 'P') + '</div>' +
-            '<div class="job-info">' +
-                '<div class="job-title-row"><h3 class="job-title" onclick="openJobDetail(\'' + safeId + '\')">' + escapeHtml(job.title) + '</h3>' + getSourceBadge(job.source, job.isSample) + (isFeatured ? '<span class="featured-badge">Nổi bật</span>' : '') + '</div>' +
-                '<div class="job-company-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22.01"/><line x1="15" y1="22" x2="15" y2="22.01"/></svg><span>' + escapeHtml(job.company) + '</span></div>' +
-                '<div class="job-salary-highlight"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M15 9.5a3.5 3.5 0 0 0-7 0c0 2 2 3 4 3s4 1 4 3a3.5 3.5 0 0 1-7 0"/></svg><span>' + formatSalary(job.salaryMin, job.salaryMax, job.currency, job.salaryText) + '</span></div>' +
-                '<div class="job-meta-row"><span class="meta-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>' + escapeHtml(job.location) + '</span></span><span class="meta-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>' + escapeHtml(job.type) + '</span></span><span class="meta-pill"><span>' + escapeHtml(expText) + '</span></span><span class="meta-pill match-score"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Phù hợp ' + (job.matchScore || 85) + '%</span></span><span style="font-size:12px;color:var(--prep-text-muted);margin-left:auto;">' + escapeHtml(postedText) + '</span></div>' +
-                '<p class="job-desc-snippet">' + escapeHtml(job.description) + '</p>' +
-                '<div class="job-tags-row">' + tags.slice(0, 5).map(t => '<span class="job-tag">' + escapeHtml(t) + '</span>').join('') + '</div>' +
+            '<div class="job-card-top">' +
+                '<div class="job-primary-info"><div class="job-logo">' + escapeHtml(job.logo || 'P') + '</div><div class="job-heading-wrap"><div class="job-header-row"><div class="job-title-row"><h3 class="job-title" onclick="openJobDetail(\'' + safeId + '\')">' + escapeHtml(job.title) + '</h3>' + getSourceBadge(job.source, job.isSample) + (isFeatured ? '<span class="featured-badge">Nổi bật</span>' : '') + '</div></div><div class="job-company-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22.01"/><line x1="15" y1="22" x2="15" y2="22.01"/></svg><span class="job-company-name">' + escapeHtml(job.company) + '</span></div></div></div>' +
+                salHtml +
             '</div>' +
-            '<div class="job-actions">' +
-                '<button class="btn-save-bookmark' + (isSaved ? ' saved' : '') + '" id="btn-save-' + safeId + '" onclick="saveJob(event, \'' + safeId + '\')" aria-label="' + (isSaved ? 'Bỏ lưu tin tuyển dụng' : 'Lưu tin tuyển dụng') + '" title="' + (isSaved ? 'Bỏ lưu tin tuyển dụng' : 'Lưu tin tuyển dụng') + '"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>' +
-                '<div class="card-actions-group">' + applyBtn + '<button class="btn-view-jd" onclick="openJobDetail(\'' + safeId + '\')" title="Xem chi tiết yêu cầu & mô tả công việc"><span>Chi tiết JD</span></button><button class="btn-practice-jd" onclick="practiceForJob(event, \'' + safeId + '\')" title="Luyện phỏng vấn mô phỏng theo JD này"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Luyện tập theo JD</span></button></div>' +
+            '<div class="job-meta-row">' +
+                '<span class="job-meta-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>' + escapeHtml(job.location) + '</span></span><span class="job-meta-sep">•</span>' +
+                '<span class="job-meta-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>' + escapeHtml(job.type) + '</span></span><span class="job-meta-sep">•</span>' +
+                '<span class="job-meta-item"><span>' + escapeHtml(expText) + '</span></span><span class="job-meta-sep">•</span>' +
+                '<span class="job-meta-item match-score"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Phù hợp ' + (job.matchScore || 85) + '%</span></span>' +
+            '</div>' +
+            '<p class="job-desc-snippet">' + escapeHtml(job.description) + '</p>' +
+            (tags.length ? '<div class="job-tags-row">' + tags.slice(0, 5).map(t => '<span class="job-tag">' + escapeHtml(t) + '</span>').join('') + '</div>' : '') +
+            '<div class="job-card-footer">' +
+                postedHtml +
+                '<div class="job-footer-actions card-actions-group">' +
+                    '<button type="button" class="btn-save-bookmark' + (isSaved ? ' saved' : '') + '" id="btn-save-' + safeId + '" onclick="saveJob(event, \'' + safeId + '\')" aria-label="' + (isSaved ? 'Bỏ lưu tin tuyển dụng' : 'Lưu tin tuyển dụng') + '" title="' + (isSaved ? 'Bỏ lưu tin tuyển dụng' : 'Lưu tin tuyển dụng') + '"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>' +
+                    '<button type="button" class="btn-view-jd" onclick="openJobDetail(\'' + safeId + '\')" title="Xem chi tiết yêu cầu & mô tả công việc"><span>Chi tiết JD</span></button>' +
+                    applyBtn +
+                '</div>' +
             '</div>' +
         '</div>';
     }
@@ -368,34 +342,21 @@
             if (appliedFilters.minSalary > 0 && appliedFilters.maxSalary > 0) salLabel += '$' + appliedFilters.minSalary.toLocaleString() + '–$' + appliedFilters.maxSalary.toLocaleString();
             else if (appliedFilters.minSalary > 0) salLabel += 'từ $' + appliedFilters.minSalary.toLocaleString();
             else salLabel += 'đến $' + appliedFilters.maxSalary.toLocaleString();
-            chips.push({ label: salLabel, onRemove: () => {
-                draftFilters.minSalary = 0; draftFilters.maxSalary = 0;
-                applyFilters();
-                syncAllFilterControlsTo(appliedFilters);
-            }});
+            chips.push({ label: salLabel, onRemove: () => { draftFilters.minSalary = 0; draftFilters.maxSalary = 0; applyFilters(); syncAllFilterControlsTo(appliedFilters); } });
         }
-        if (chips.length === 0) {
-            container.style.display = 'none';
-            container.innerHTML = '';
-            return;
-        }
+        const countBadge = document.getElementById('active-filters-count');
+        if (countBadge) { countBadge.textContent = chips.length; countBadge.style.display = chips.length > 0 ? 'inline-flex' : 'none'; }
+        if (chips.length === 0) { container.style.display = 'none'; container.innerHTML = ''; return; }
         container.style.display = 'flex';
         container.innerHTML = '<span style="font-size:12px;color:var(--prep-text-muted);width:100%;font-weight:600;margin-bottom:2px;">Bộ lọc đang áp dụng:</span>' +
             chips.map((c, i) => '<span class="active-filter-badge"><span>' + escapeHtml(c.label) + '</span><button type="button" onclick="activeFilterRemove(' + i + ')" aria-label="Xóa bộ lọc">&times;</button></span>').join('') +
             '<button type="button" onclick="resetFilters()" style="background:none;border:none;color:var(--prep-danger,#dc2626);font-size:11.5px;font-weight:600;cursor:pointer;padding:2px 6px;">Xóa tất cả</button>';
         window._activeChips = chips;
     }
-    function activeFilterRemove(idx) {
-        if (window._activeChips && window._activeChips[idx]) window._activeChips[idx].onRemove();
-    }
+    function activeFilterRemove(idx) { if (window._activeChips && window._activeChips[idx]) window._activeChips[idx].onRemove(); }
     function resetSingleFilter(key) {
-        draftFilters[key] = key === 'exp' ? 'any' : 'all';
-        appliedFilters[key] = draftFilters[key];
-        currentFilters = appliedFilters;
-        syncAllFilterControlsTo(appliedFilters);
-        updateUndoButtonState();
-        currentPage = 1;
-        fetchLiveJobs();
+        draftFilters[key] = key === 'exp' ? 'any' : 'all'; appliedFilters[key] = draftFilters[key]; currentFilters = appliedFilters;
+        syncAllFilterControlsTo(appliedFilters); updateUndoButtonState(); currentPage = 1; fetchLiveJobs();
     }
     function renderJobs() {
         const grid = document.getElementById('jobs-grid');
@@ -466,7 +427,7 @@
             currency: j.salaryCurrency || 'USD', tags: j.skills || j.tags || [],
             description: j.description || '', postedDays: j.postedDays || 1,
             source: j.sourceKey || j.source || 'jooble', sourceName: j.sourceName || 'Tuyển dụng',
-            applyUrl: j.applyUrl || j.sourceUrl, matchScore: j.matchScore || 85,
+            applyUrl: j.applyUrl || null, sourceUrl: j.sourceUrl || null, matchScore: j.matchScore || 85,
             isSample: !!j.isSample, featured: !!j.featured
         };
     }
@@ -562,6 +523,13 @@
     function updateUndoButtonState() {
         const btnUndo = document.getElementById('btn-undo-filters');
         if (btnUndo) btnUndo.disabled = !hasDraftChanges();
+    }
+    function toggleDraftLocation(el, locVal) {
+        el.closest('.filter-chips-grid').querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        const sel = document.getElementById('search-location');
+        if (sel) sel.value = locVal;
+        updateUndoButtonState();
     }
     function toggleDraftFilter(el, key, val) {
         el.closest('.filter-chips-grid').querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -690,6 +658,10 @@
         document.getElementById('search-keyword').value = '';
         document.getElementById('search-location').value = '';
         document.getElementById('search-category').value = '';
+        document.querySelectorAll('.filter-section').forEach(sec => {
+            const locAllChip = sec.querySelector(`[onclick*="toggleDraftLocation(this,'')"]`);
+            if (locAllChip) { sec.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active')); locAllChip.classList.add('active'); }
+        });
         renderActiveFilterChips();
         currentPage = 1;
         fetchLiveJobs();
@@ -732,16 +704,19 @@
         const tags = Array.isArray(job.tags) ? job.tags : [];
         const tagsContainer = document.getElementById('m-tags');
         if (tagsContainer) tagsContainer.innerHTML = tags.map(t => '<span class="job-tag">' + escapeHtml(t) + '</span>').join('');
-        const tip = document.getElementById('m-ai-tip');
-        if (tip) tip.innerHTML = 'Vị trí <strong>' + escapeHtml(job.title) + '</strong> tại <strong>' + escapeHtml(job.company) + '</strong> đòi hỏi kỹ năng cốt lõi: <em>' + escapeHtml(tags.slice(0, 3).join(', ')) + '</em>. Bấm "Phỏng vấn Giả lập" để AI thiết lập câu hỏi phỏng vấn theo đúng JD này.';
+        const dest = resolveJobApplyDestination(job);
         const btnApply = document.getElementById('m-btn-apply');
         if (btnApply) {
-            const safeApply = sanitizeUrl(job.applyUrl);
-            btnApply.href = safeApply || '#';
-            btnApply.style.display = safeApply ? 'inline-flex' : 'none';
+            if (dest.url) {
+                btnApply.href = dest.url;
+                const extIcon = (typeof window !== 'undefined' && window.PrepMateIcons && typeof window.PrepMateIcons.svg === 'function') ? window.PrepMateIcons.svg('external-link', { size: 12, class: 'pm-icon' }) : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+            btnApply.innerHTML = '<span>' + escapeHtml(dest.label) + '</span> ' + extIcon;
+                btnApply.title = dest.title;
+                btnApply.style.display = 'inline-flex';
+            } else {
+                btnApply.style.display = 'none';
+            }
         }
-        const btnPractice = document.getElementById('m-btn-practice');
-        if (btnPractice) btnPractice.onclick = (e) => practiceForJob(e, job.id);
         document.getElementById('job-detail-modal-overlay')?.classList.add('active');
     }
     function closeJobModal(e) {
@@ -749,14 +724,18 @@
             document.getElementById('job-detail-modal-overlay')?.classList.remove('active');
         }
     }
+    function prefillInterviewJd(job) {
+        if (!job) return;
+        localStorage.setItem('prefill_job_title', job.title || '');
+        localStorage.setItem('prefill_company_name', job.company || '');
+        const tags = Array.isArray(job.tags) ? job.tags : [];
+        localStorage.setItem('prefill_jd', 'Vị trí: ' + (job.title || '') + '\nCông ty: ' + (job.company || '') + '\nĐịa điểm: ' + (job.location || '') + '\nMức lương: ' + formatSalary(job.salaryMin, job.salaryMax, job.currency, job.salaryText) + '\nKỹ năng yêu cầu: ' + tags.join(', ') + '\nMô tả công việc:\n' + (job.description || ''));
+    }
     function practiceForJob(event, id) {
         if (event && event.stopPropagation) event.stopPropagation();
         const job = findJobById(id);
         if (!job) return;
-        localStorage.setItem('prefill_job_title', job.title);
-        localStorage.setItem('prefill_company_name', job.company);
-        const tags = Array.isArray(job.tags) ? job.tags : [];
-        localStorage.setItem('prefill_jd', 'Vị trí: ' + job.title + '\nCông ty: ' + job.company + '\nĐịa điểm: ' + job.location + '\nMức lương: ' + formatSalary(job.salaryMin, job.salaryMax, job.currency, job.salaryText) + '\nKỹ năng yêu cầu: ' + tags.join(', ') + '\nMô tả công việc:\n' + job.description);
+        prefillInterviewJd(job);
         window.location.href = '../../features/interview/interview-info.html';
     }
     function saveJob(event, id) {

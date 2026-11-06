@@ -192,7 +192,9 @@ body.dark-mode {
 .progress-stat .stat-num {
   font-size: 32px;
   font-weight: var(--pm-font-weight-bold, 652);
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   line-height: 1.1;
   margin-bottom: 6px;
 }
@@ -647,9 +649,29 @@ body.dark-mode {
 }
 
 .badge-icon {
-  font-size: 26px;
-  display: block;
-  margin-bottom: 4px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  min-height: 28px;
+}
+
+.badge-icon .badge-svg-icon {
+  width: 24px;
+  height: 24px;
+  stroke: var(--prog-text-secondary);
+  transition: all 0.2s ease;
+}
+
+.badge-item.earned .badge-icon .badge-svg-icon {
+  stroke: var(--pm-warning, #f59e0b);
+  filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.25));
+}
+
+.badge-item.locked .badge-icon .badge-svg-icon {
+  stroke: var(--prog-text-muted, #94a3b8);
+  opacity: 0.6;
 }
 
 .badge-name {
@@ -1218,4 +1240,196 @@ html[data-theme="dark"] .heatmap-day-cell.level-0,
 body.dark-mode .heatmap-day-cell.level-0 {
   background: #202124 !important;
   border-color: #3C4043 !important;
+}
+
+/* ── WI-02C PROGRESS REPORTS & DATA INTEGRITY STYLES ── */
+.trend-single-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-top: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.reports-section {
+  margin-top: 28px;
+}
+
+.reports-card {
+  background: var(--pm-surface, #ffffff);
+  border: 1px solid var(--pm-hairline, #e2e8f0);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.reports-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--pm-text-primary, #0f172a);
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+}
+
+.reports-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.progress-reports-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-report-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--pm-bg, #f8fafc);
+  border: 1px solid var(--pm-hairline, #e2e8f0);
+  border-radius: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.progress-report-row:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+}
+
+.report-row-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.report-score-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.report-score-pill.score-high {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.report-score-pill.score-mid {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+.report-score-pill.score-low {
+  background: #fff7ed;
+  color: #d97706;
+  border: 1px solid #fed7aa;
+}
+
+.report-job-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: var(--pm-text-primary, #0f172a);
+}
+
+.report-sub-details {
+  font-size: 12px;
+  color: #64748b;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-open-report {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: var(--pm-surface, #ffffff);
+  border: 1px solid var(--pm-hairline, #cbd5e1);
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--pm-text-primary, #1e293b);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-open-report:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+/* Dark theme overrides for reports */
+html[data-theme="dark"] .reports-card,
+body.dark-mode .reports-card {
+  background: #242528 !important;
+  border-color: #3C4043 !important;
+}
+
+html[data-theme="dark"] .progress-report-row,
+body.dark-mode .progress-report-row {
+  background: #202124 !important;
+  border-color: #3C4043 !important;
+}
+
+html[data-theme="dark"] .progress-report-row:hover,
+body.dark-mode .progress-report-row:hover {
+  background: #292a2d !important;
+  border-color: #5f6368 !important;
+}
+
+html[data-theme="dark"] .report-job-title,
+body.dark-mode .report-job-title {
+  color: #F1F3F4 !important;
+}
+
+html[data-theme="dark"] .reports-header h3,
+body.dark-mode .reports-header h3 {
+  color: #F1F3F4 !important;
+}
+
+html[data-theme="dark"] .btn-open-report,
+body.dark-mode .btn-open-report {
+  background: #292a2d !important;
+  border-color: #5f6368 !important;
+  color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .btn-open-report:hover,
+body.dark-mode .btn-open-report:hover {
+  background: #35383c !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .trend-single-hint,
+body.dark-mode .trend-single-hint {
+  background: #242528 !important;
+  border-color: #3C4043 !important;
+  color: #9AA0A6 !important;
 }

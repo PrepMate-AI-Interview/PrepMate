@@ -149,14 +149,14 @@ function renderSectionAOverview(session, report) {
   const cards = [
     {
       title: "Lĩnh vực & Quy mô Hoạt động",
-      icon: "🏢",
+      icon: '<svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 2h16v20H4zM9 22v-4h6v4M8 6h.01M16 6h.01M8 10h.01M16 10h.01M8 14h.01M16 14h.01"/></svg>',
       provenance: hasJD ? "jd" : "ai",
       provenanceLabel: hasJD ? "Theo JD" : "Nhận định AI",
       content: `${companyName} hoạt động trọng tâm trong lĩnh vực ${industry}. Mô hình phân phối sản phẩm/dịch vụ mở rộng với yêu cầu cao về tính sẵn sàng và tốc độ xử lý.`
     },
     {
       title: "Sản phẩm & Giải pháp Cốt lõi",
-      icon: "⚡",
+      icon: '<svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
       provenance: hasJD ? "jd" : "ai",
       provenanceLabel: hasJD ? "Theo JD" : "Nhận định AI",
       content: hasJD 
@@ -165,14 +165,14 @@ function renderSectionAOverview(session, report) {
     },
     {
       title: "Văn hóa Tổ chức & Môi trường Làm việc",
-      icon: "🤝",
+      icon: '<svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
       provenance: hasJD && jdText.toLowerCase().includes("văn hóa") ? "jd" : "ai",
       provenanceLabel: hasJD && jdText.toLowerCase().includes("văn hóa") ? "Theo JD" : "Nhận định AI",
       content: cultureDesc
     },
     {
       title: "Chuẩn Mực Kỹ Thuật & Quy Trình",
-      icon: "🛠️",
+      icon: '<svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>',
       provenance: hasJD ? "jd" : "ai",
       provenanceLabel: hasJD ? "Theo JD" : "Nhận định AI",
       content: "Áp dụng phương pháp Agile/Scrum, kiểm thử tự động, chuẩn hóa Code Review nghiêm ngặt và quy trình CI/CD đảm bảo chất lượng phát hành định kỳ."
@@ -203,10 +203,14 @@ function renderSectionBHiringNeeds(session, report) {
   const defaultProv = hasJD ? "jd" : "ai";
   const defaultProvLabel = hasJD ? "Theo JD" : "Nhận định AI";
 
+  const getCatIcon = (iconName) => (typeof window !== 'undefined' && window.PrepMateIcons && typeof window.PrepMateIcons.svg === 'function')
+    ? window.PrepMateIcons.svg(iconName, { size: 16, class: 'pm-icon' })
+    : `<svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>`;
+
   const categories = [
     {
       title: "1. Kỹ năng Cốt lõi & Bắt buộc (Required Skills)",
-      icon: "🎯",
+      icon: getCatIcon('target'),
       provenance: defaultProv,
       provenanceLabel: defaultProvLabel,
       items: [
@@ -217,7 +221,7 @@ function renderSectionBHiringNeeds(session, report) {
     },
     {
       title: "2. Yêu cầu Kỹ thuật & Chuyên sâu (Technical Requirements)",
-      icon: "💻",
+      icon: getCatIcon('server'),
       provenance: defaultProv,
       provenanceLabel: defaultProvLabel,
       items: [
@@ -228,7 +232,7 @@ function renderSectionBHiringNeeds(session, report) {
     },
     {
       title: "3. Kỹ năng Hành vi & Kỹ năng Mềm (Behavioral Skills)",
-      icon: "🤝",
+      icon: getCatIcon('users'),
       provenance: "ai",
       provenanceLabel: "Nhận định AI",
       items: [
@@ -239,7 +243,7 @@ function renderSectionBHiringNeeds(session, report) {
     },
     {
       title: "4. Kỹ năng Ưu tiên & Điểm cộng (Preferred Skills)",
-      icon: "⭐",
+      icon: getCatIcon('star'),
       provenance: defaultProv,
       provenanceLabel: defaultProvLabel,
       items: [
@@ -250,7 +254,7 @@ function renderSectionBHiringNeeds(session, report) {
     },
     {
       title: "5. Trách nhiệm & Phạm vi Công việc (Expected Responsibilities)",
-      icon: "📋",
+      icon: getCatIcon('file-text'),
       provenance: defaultProv,
       provenanceLabel: defaultProvLabel,
       items: [
@@ -261,7 +265,7 @@ function renderSectionBHiringNeeds(session, report) {
     },
     {
       title: "6. Thước đo Thành công & Kết quả Kỳ vọng (Outcomes & Deliverables)",
-      icon: "📈",
+      icon: getCatIcon('trending-up'),
       provenance: "ai",
       provenanceLabel: "Nhận định AI",
       items: [

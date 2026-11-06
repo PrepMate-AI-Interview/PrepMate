@@ -14,13 +14,21 @@ namespace backend.Models
         public InterviewCompletionStatus CompletionStatus { get; set; } = InterviewCompletionStatus.COMPLETED_NORMAL;
         public int TotalQuestionsAsked { get; set; }
         public int MaximumQuestions { get; set; }
-        public double OverallScore { get; set; } // 0.0 - 10.0 scale
-        // Phase 4 Step 3: Domain-Specific Isolated Scores
-        public double TechnicalScore { get; set; }
+        public double OverallScore { get; set; } // 0.0 - 10.0 scale (authoritative SSOT)
+        // Domain-Specific Isolated Scores (0.0 - 10.0 scale)
+        public double? TechnicalScore { get; set; }
+        public DimensionAssessmentStatus TechnicalStatus { get; set; } = DimensionAssessmentStatus.NOT_ASSESSED;
+        public bool IsTechnicalAssessed => TechnicalStatus == DimensionAssessmentStatus.ASSESSED && TechnicalScore.HasValue;
         public double BehavioralScore { get; set; }
+        public DimensionAssessmentStatus BehavioralStatus { get; set; } = DimensionAssessmentStatus.NOT_ASSESSED;
         public double SituationalScore { get; set; }
-        // Phase 4 Step 4: Candidate Question Score (Domain Isolated)
+        public DimensionAssessmentStatus SituationalStatus { get; set; } = DimensionAssessmentStatus.NOT_ASSESSED;
         public double CandidateQuestionScore { get; set; }
+        public DimensionAssessmentStatus CandidateQuestionStatus { get; set; } = DimensionAssessmentStatus.NOT_ASSESSED;
+        public double CommunicationScore { get; set; }
+        public double SoftScore { get; set; }
+        // Evidence Coverage: Percentage of mandatory scope assessed (0.0 - 100.0%) - separated from Performance Score
+        public double CoveragePercentage { get; set; } = 100.0;
         public EvaluationConfidence OverallConfidence { get; set; } = EvaluationConfidence.INSUFFICIENT_EVIDENCE;
         public string OverallLevelAssessment { get; set; } = "Unassessed"; // Senior, Middle, Junior, Below Target, Unassessed
         public List<CompetencyEvaluation> Competencies { get; set; } = new();

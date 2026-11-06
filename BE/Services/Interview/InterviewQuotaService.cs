@@ -38,10 +38,55 @@ namespace backend.Services.Interview
             return false;
         }
 
+        private readonly bool _isProduction;
         private readonly FileDb _fileDb;
         private readonly byte[] _currentHmacKey;
         private readonly List<byte[]> _verificationHmacKeys = new();
         private static readonly TimeZoneInfo VietnamTz = ResolveVietnamTimeZone();
+
+        public static Func<DateTime>? TestClockUtc { get; set; }
+
+        private DateTime GetUtcNow(HttpContext? httpContext = null)
+        {
+            if (TestClockUtc != null)
+            {
+                return TestClockUtc();
+            }
+
+            if (!_isProduction && httpContext != null &&
+                httpContext.Request.Headers.TryGetValue("X-Test-Clock-Utc", out var clockHdr) &&
+                DateTime.TryParse(clockHdr.FirstOrDefault(), null, DateTimeStyles.RoundtripKind, out var testDt))
+            {
+                return testDt.ToUniversalTime();
+            }
+
+            return DateTime.UtcNow;
+        }
+
+        public static (DateTime WeekStartUtc, DateTime WeekEndUtc, string ResetAt, string ResetAtUtc) GetVietnamIsoWeekWindow(DateTime nowUtc)
+        {
+            var vnNow = TimeZoneInfo.ConvertTimeFromUtc(nowUtc, VietnamTz);
+            int daysFromMonday = ((int)vnNow.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+            var vnWeekStart = new DateTime(vnNow.Year, vnNow.Month, vnNow.Day, 0, 0, 0, DateTimeKind.Unspecified).AddDays(-daysFromMonday);
+            var vnWeekEnd = vnWeekStart.AddDays(7);
+
+            var weekStartUtc = TimeZoneInfo.ConvertTimeToUtc(vnWeekStart, VietnamTz);
+            var weekEndUtc = TimeZoneInfo.ConvertTimeToUtc(vnWeekEnd, VietnamTz);
+
+            var resetAtFormatted = $"{vnWeekEnd:yyyy-MM-ddTHH:mm:ss}+07:00";
+            var resetAtUtcFormatted = weekEndUtc.ToString("o");
+
+            return (weekStartUtc, weekEndUtc, resetAtFormatted, resetAtUtcFormatted);
+        }
+
+        private static bool IsSessionInUtcRange(string? timestampIso, DateTime startUtcInclusive, DateTime endUtcExclusive)
+        {
+            if (string.IsNullOrWhiteSpace(timestampIso)) return false;
+            if (!DateTime.TryParse(timestampIso, null, DateTimeStyles.RoundtripKind, out var dt)) return false;
+            var dtUtc = dt.ToUniversalTime();
+            return dtUtc >= startUtcInclusive && dtUtc < endUtcExclusive;
+        }
+
 
         private class PendingReservation
         {
@@ -59,6 +104,7 @@ namespace backend.Services.Interview
             var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
                 ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
             var isProduction = string.Equals(envName, "Production", StringComparison.OrdinalIgnoreCase);
+            _isProduction = isProduction;
 
             var guestSecret = configuration["GuestToken:SigningKey"]
                 ?? Environment.GetEnvironmentVariable("GUEST_TOKEN__SIGNING_KEY")
@@ -331,37 +377,68 @@ namespace backend.Services.Interview
         {
             CleanExpiredReservations();
 
-            var callerId = principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var nowUtc = DateTime.UtcNow;
-            var vnNow = TimeZoneInfo.ConvertTimeFromUtc(nowUtc, VietnamTz);
-            var currentYear = vnNow.Year;
-            var currentMonth = vnNow.Month;
-
-            var nextMonthFirstDay = new DateTime(vnNow.Year, vnNow.Month, 1, 0, 0, 0, DateTimeKind.Unspecified).AddMonths(1);
-            var nextResetUtc = TimeZoneInfo.ConvertTimeToUtc(nextMonthFirstDay, VietnamTz);
-            var resetAtFormatted = $"{nextMonthFirstDay:yyyy-MM-ddTHH:mm:ss}+07:00";
-            var resetAtUtcFormatted = nextResetUtc.ToString("o");
-
-            // 1. Authenticated User
-            if (!string.IsNullOrEmpty(callerId))
+            return _fileDb.WithLock(() =>
             {
-                var user = _fileDb.Users.TryGetValue(callerId, out var u) ? u : null;
-                var isProActive = IsUserProActive(user, nowUtc);
+                var callerId = principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var nowUtc = GetUtcNow(httpContext);
+                var (weekStartUtc, weekEndUtc, resetAtFormatted, resetAtUtcFormatted) = GetVietnamIsoWeekWindow(nowUtc);
 
-                var isPrivileged = string.Equals(user?.Role, "admin", StringComparison.OrdinalIgnoreCase) ||
-                                   string.Equals(user?.Role, "manager", StringComparison.OrdinalIgnoreCase);
-
-                if (isProActive || isPrivileged)
+                // 1. Authenticated User
+                if (!string.IsNullOrEmpty(callerId))
                 {
+                    var user = _fileDb.Users.TryGetValue(callerId, out var u) ? u : null;
+                    var isProActive = IsUserProActive(user, nowUtc);
+
+                    var isPrivileged = string.Equals(user?.Role, "admin", StringComparison.OrdinalIgnoreCase) ||
+                                       string.Equals(user?.Role, "manager", StringComparison.OrdinalIgnoreCase);
+
+                    if (isProActive || isPrivileged)
+                    {
+                        return new QuotaStatusDto
+                        {
+                            Tier = "pro",
+                            Limit = null,
+                            Used = 0,
+                            Remaining = 999999,
+                            CanStart = true,
+                            IsProActive = true,
+                            IsFree = false,
+                            DemoUsed = false,
+                            ResetAt = resetAtFormatted,
+                            ResetAtUtc = resetAtUtcFormatted,
+                            UserId = callerId
+                        };
+                    }
+
+                    // Free Tier user (or expired Pro fallen back to Free)
+                    // Only count started sessions belonging to the current Vietnam ISO calendar week [weekStartUtc, weekEndUtc)
+                    // Pro sessions snapshot 'pro' are never retroactively deducted from Free quota.
+                    int startedFreeCount = _fileDb.Sessions.Values.Count(s =>
+                        string.Equals(s.UserId, callerId, StringComparison.OrdinalIgnoreCase) &&
+                        s.IsStarted &&
+                        !string.Equals(s.PlanSnapshot, "pro", StringComparison.OrdinalIgnoreCase) &&
+                        !string.Equals(s.PlanSnapshot, "guest", StringComparison.OrdinalIgnoreCase) &&
+                        IsSessionInUtcRange(s.StartedAt ?? s.CreatedAt, weekStartUtc, weekEndUtc)
+                    );
+
+                    int activeReservations = _pendingReservations.Values.Count(r =>
+                        string.Equals(r.UserIdOrGuestId, callerId, StringComparison.OrdinalIgnoreCase) &&
+                        r.Tier == "free" &&
+                        r.ExpiresAtUtc > nowUtc
+                    );
+
+                    int remaining = Math.Max(0, 3 - (startedFreeCount + activeReservations));
+                    bool canStart = (startedFreeCount + activeReservations) < 3;
+
                     return new QuotaStatusDto
                     {
-                        Tier = "pro",
-                        Limit = null,
-                        Used = 0,
-                        Remaining = 999999,
-                        CanStart = true,
-                        IsProActive = true,
-                        IsFree = false,
+                        Tier = "free",
+                        Limit = 3,
+                        Used = startedFreeCount,
+                        Remaining = remaining,
+                        CanStart = canStart,
+                        IsProActive = false,
+                        IsFree = true,
                         DemoUsed = false,
                         ResetAt = resetAtFormatted,
                         ResetAtUtc = resetAtUtcFormatted,
@@ -369,79 +446,47 @@ namespace backend.Services.Interview
                     };
                 }
 
-                // Free Tier user (or expired Pro fallen back to Free)
-                // Only count started sessions belonging to the current Vietnam calendar month
-                // Pro sessions snapshot 'pro' are never retroactively deducted from Free quota.
-                int startedFreeCount = _fileDb.Sessions.Values.Count(s =>
-                    string.Equals(s.UserId, callerId, StringComparison.OrdinalIgnoreCase) &&
-                    s.IsStarted &&
-                    !string.Equals(s.PlanSnapshot, "pro", StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(s.PlanSnapshot, "guest", StringComparison.OrdinalIgnoreCase) &&
-                    IsSessionInVietnamMonth(s.StartedAt ?? s.CreatedAt, currentYear, currentMonth)
+                // 2. Guest User
+                var (_, guestId) = ResolveOrCreateGuestIdentity(httpContext);
+
+                int startedDemoCount = _fileDb.Sessions.Values.Count(s =>
+                    (string.Equals(s.UserId, guestId, StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(s.OriginalGuestId, guestId, StringComparison.OrdinalIgnoreCase)) &&
+                    s.IsStarted
                 );
 
-                int activeReservations = _pendingReservations.Values.Count(r =>
-                    string.Equals(r.UserIdOrGuestId, callerId, StringComparison.OrdinalIgnoreCase) &&
-                    r.Tier == "free" &&
+                int activeGuestReservations = _pendingReservations.Values.Count(r =>
+                    string.Equals(r.UserIdOrGuestId, guestId, StringComparison.OrdinalIgnoreCase) &&
+                    r.Tier == "guest" &&
                     r.ExpiresAtUtc > nowUtc
                 );
 
-                int remaining = Math.Max(0, 3 - (startedFreeCount + activeReservations));
-                bool canStart = (startedFreeCount + activeReservations) < 3;
+                bool demoUsed = startedDemoCount >= 1;
+                bool canGuestStart = !demoUsed && (activeGuestReservations == 0);
 
                 return new QuotaStatusDto
                 {
-                    Tier = "free",
-                    Limit = 3,
-                    Used = startedFreeCount,
-                    Remaining = remaining,
-                    CanStart = canStart,
+                    Tier = "guest",
+                    Limit = 1,
+                    Used = demoUsed ? 1 : 0,
+                    Remaining = demoUsed ? 0 : 1,
+                    CanStart = canGuestStart,
                     IsProActive = false,
-                    IsFree = true,
-                    DemoUsed = false,
+                    IsFree = false,
+                    DemoUsed = demoUsed,
                     ResetAt = resetAtFormatted,
                     ResetAtUtc = resetAtUtcFormatted,
-                    UserId = callerId
+                    GuestId = guestId
                 };
-            }
-
-            // 2. Guest User
-            var (_, guestId) = ResolveOrCreateGuestIdentity(httpContext);
-
-            int startedDemoCount = _fileDb.Sessions.Values.Count(s =>
-                (string.Equals(s.UserId, guestId, StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(s.OriginalGuestId, guestId, StringComparison.OrdinalIgnoreCase)) &&
-                s.IsStarted
-            );
-
-            int activeGuestReservations = _pendingReservations.Values.Count(r =>
-                string.Equals(r.UserIdOrGuestId, guestId, StringComparison.OrdinalIgnoreCase) &&
-                r.Tier == "guest" &&
-                r.ExpiresAtUtc > nowUtc
-            );
-
-            bool demoUsed = startedDemoCount >= 1;
-            bool canGuestStart = !demoUsed && (activeGuestReservations == 0);
-
-            return new QuotaStatusDto
-            {
-                Tier = "guest",
-                Limit = 1,
-                Used = demoUsed ? 1 : 0,
-                Remaining = demoUsed ? 0 : 1,
-                CanStart = canGuestStart,
-                IsProActive = false,
-                IsFree = false,
-                DemoUsed = demoUsed,
-                GuestId = guestId
-            };
+            });
         }
 
         public QuotaReservationResult CheckAndReserveQuota(
             ClaimsPrincipal? principal, HttpContext httpContext, string sessionId)
         {
             CleanExpiredReservations();
-            var nowUtc = DateTime.UtcNow;
+            var nowUtc = GetUtcNow(httpContext);
+            var (weekStartUtc, weekEndUtc, _, _) = GetVietnamIsoWeekWindow(nowUtc);
 
             return _fileDb.WithLock(() =>
             {
@@ -468,13 +513,12 @@ namespace backend.Services.Interview
                     }
 
                     // Free Tier (or expired Pro)
-                    var vnNow = TimeZoneInfo.ConvertTimeFromUtc(nowUtc, VietnamTz);
                     int startedCount = _fileDb.Sessions.Values.Count(s =>
                         string.Equals(s.UserId, callerId, StringComparison.OrdinalIgnoreCase) &&
                         s.IsStarted &&
                         !string.Equals(s.PlanSnapshot, "pro", StringComparison.OrdinalIgnoreCase) &&
                         !string.Equals(s.PlanSnapshot, "guest", StringComparison.OrdinalIgnoreCase) &&
-                        IsSessionInVietnamMonth(s.StartedAt ?? s.CreatedAt, vnNow.Year, vnNow.Month)
+                        IsSessionInUtcRange(s.StartedAt ?? s.CreatedAt, weekStartUtc, weekEndUtc)
                     );
 
                     int activeReservations = _pendingReservations.Values.Count(r =>
@@ -491,7 +535,7 @@ namespace backend.Services.Interview
                             Success = false,
                             StatusCode = 429,
                             ErrorCode = "INTERVIEW_QUOTA_EXCEEDED",
-                            ErrorMessage = "Bạn đã sử dụng hết 3 lượt phỏng vấn miễn phí của tháng này. Vui lòng nâng cấp lên gói Pro để tiếp tục luyện tập không giới hạn.",
+                            ErrorMessage = "Bạn đã sử dụng hết 3 lượt phỏng vấn miễn phí của tuần này. Vui lòng nâng cấp lên gói Pro để tiếp tục luyện tập không giới hạn.",
                             Tier = "free",
                             ResolvedUserId = callerId
                         };
@@ -605,7 +649,8 @@ namespace backend.Services.Interview
                 };
             }
 
-            var nowUtc = DateTime.UtcNow;
+            var nowUtc = GetUtcNow(httpContext);
+            var (weekStartUtc, weekEndUtc, _, _) = GetVietnamIsoWeekWindow(nowUtc);
 
             return _fileDb.WithLock(() =>
             {
@@ -640,13 +685,12 @@ namespace backend.Services.Interview
                     else
                     {
                         // Free tier check
-                        var vnNow = TimeZoneInfo.ConvertTimeFromUtc(nowUtc, VietnamTz);
                         int startedCount = _fileDb.Sessions.Values.Count(s =>
                             string.Equals(s.UserId, callerId, StringComparison.OrdinalIgnoreCase) &&
                             s.IsStarted &&
                             !string.Equals(s.PlanSnapshot, "pro", StringComparison.OrdinalIgnoreCase) &&
                             !string.Equals(s.PlanSnapshot, "guest", StringComparison.OrdinalIgnoreCase) &&
-                            IsSessionInVietnamMonth(s.StartedAt ?? s.CreatedAt, vnNow.Year, vnNow.Month)
+                            IsSessionInUtcRange(s.StartedAt ?? s.CreatedAt, weekStartUtc, weekEndUtc)
                         );
 
                         if (startedCount >= 3)
@@ -656,7 +700,7 @@ namespace backend.Services.Interview
                                 Success = false,
                                 StatusCode = 429,
                                 ErrorCode = "INTERVIEW_QUOTA_EXCEEDED",
-                                ErrorMessage = "Bạn đã sử dụng hết 3 lượt phỏng vấn miễn phí của tháng này. Vui lòng nâng cấp lên gói Pro để tiếp tục luyện tập.",
+                                ErrorMessage = "Bạn đã sử dụng hết 3 lượt phỏng vấn miễn phí của tuần này. Vui lòng nâng cấp lên gói Pro để tiếp tục luyện tập.",
                                 Tier = "free",
                                 ResolvedUserId = callerId
                             };
@@ -766,6 +810,30 @@ namespace backend.Services.Interview
             // 3. Legacy session with literal "guest"
             if (session.UserId.Equals("guest", StringComparison.OrdinalIgnoreCase))
             {
+                if (isAdmin)
+                {
+                    return (true, 200, null);
+                }
+
+                if (allowMutate)
+                {
+                    return (false, 403, "Phiên phỏng vấn cũ không xác định được chủ sở hữu. Vui lòng bắt đầu phiên mới.");
+                }
+
+                // Stable per-session association check (WI-GUEST-REPORT-UNIVERSAL-VERIFY-02):
+                // A generic valid guest token is NOT sufficient proof of ownership for a legacy session.
+                // Reliable ownership can only be established if OriginalGuestId is recorded and matches the caller's verified guest identity.
+                if (!string.IsNullOrWhiteSpace(session.OriginalGuestId))
+                {
+                    var (_, currentGuestId) = ResolveOrCreateGuestIdentity(httpContext);
+                    if (string.Equals(session.OriginalGuestId, currentGuestId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return (true, 200, null);
+                    }
+                    return (false, 403, "Bạn không có quyền truy cập phiên phỏng vấn của khách khác.");
+                }
+
+                // If no reliable association exists to this guest, deny access to prevent generic token bypass
                 return (false, 403, "Phiên phỏng vấn cũ không xác định được chủ sở hữu. Vui lòng liên hệ quản trị viên.");
             }
 

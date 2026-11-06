@@ -159,5 +159,28 @@ namespace backend.Models
         public string Role { get; set; } = "user"; // "user" | "manager" | "admin"
         public string Subscription { get; set; } = "free"; // "free" | "pro"
         public string? SubscriptionExpiry { get; set; }
+        public bool? RequiresVerification { get; set; }
+        public string? Message { get; set; }
+    }
+
+    public class ForgotPasswordRequest
+    {
+        public string Email { get; set; } = string.Empty;
+    }
+
+    public class ResetPasswordRequest
+    {
+        public string Token { get; set; } = string.Empty;
+        public string NewPassword { get; set; } = string.Empty;
+    }
+
+    public class VerifyEmailRequest
+    {
+        public string Token { get; set; } = string.Empty;
+    }
+
+    public class ResendVerificationRequest
+    {
+        public string Email { get; set; } = string.Empty;
     }
 }

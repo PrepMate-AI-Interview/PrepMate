@@ -207,9 +207,9 @@ html[data-theme="dark"] .cv-upload-drop:hover {
 /* Modern Dark Support for Skill Tag Pills (STEP 1D-R15.1) */
 html[data-theme="dark"] .skill-tag-pill,
 body.dark-mode .skill-tag-pill {
-    background: #172554 !important;
-    border-color: #1e40af !important;
-    color: #8ab4f8 !important;
+    background: rgba(37, 99, 235, 0.16) !important;
+    border-color: rgba(96, 165, 250, 0.35) !important;
+    color: #93c5fd !important;
 }
 
 html[data-theme="dark"] .skill-tag-pill:hover,
@@ -220,8 +220,8 @@ body.dark-mode .skill-tag-pill:hover {
 
 html[data-theme="dark"] .skill-tag-pill.soft,
 body.dark-mode .skill-tag-pill.soft {
-    background: #2e1065 !important;
-    border-color: #6d28d9 !important;
+    background: rgba(139, 92, 246, 0.16) !important;
+    border-color: rgba(167, 139, 250, 0.35) !important;
     color: #c4b5fd !important;
 }
 
@@ -232,9 +232,9 @@ body.dark-mode .skill-tag-pill.soft:hover {
 
 html[data-theme="dark"] .skill-tag-pill.tool,
 body.dark-mode .skill-tag-pill.tool {
-    background: #137333 !important;
-    border-color: #81c995 !important;
-    color: #81c995 !important;
+    background: rgba(16, 185, 129, 0.16) !important;
+    border-color: rgba(52, 211, 153, 0.35) !important;
+    color: #34d399 !important;
 }
 
 html[data-theme="dark"] .skill-tag-pill.tool:hover,
@@ -257,4 +257,28 @@ html[data-theme="dark"] div[style*="background:linear-gradient(135deg, #eff6ff"]
 body.dark-mode div[style*="background:linear-gradient(135deg, #eff6ff"] h3,
 html[data-theme="dark"] div[style*="background:linear-gradient(135deg, #eff6ff"] h3 {
   color: #93c5fd !important;
+}
+
+
+/* WI-DARKMODE-03 CV Enhancements */
+.cv-upload-icon-wrap {
+    color: var(--cv-primary, #2563eb);
+}
+
+html[data-theme="dark"] .cv-upload-icon-wrap,
+body.dark-mode .cv-upload-icon-wrap {
+    color: #60a5fa !important;
+}
+
+.cv-score-pill {
+    color: #059669;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+}
+
+html[data-theme="dark"] .cv-score-pill,
+body.dark-mode .cv-score-pill {
+    color: #34d399 !important;
+    background: rgba(16, 185, 129, 0.16) !important;
+    border-color: rgba(52, 211, 153, 0.35) !important;
 }

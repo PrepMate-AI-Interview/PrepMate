@@ -90,7 +90,7 @@ function restoreInterviewSession(session) {
     const currentQBadge = document.getElementById("current-question-badge");
     if (currentQBadge) {
       currentQBadge.className = "ir-question-badge";
-      currentQBadge.textContent = currentQuestionIndex === 0 ? "Câu hỏi đầu tiên" : "Câu hỏi trọng tâm";
+      currentQBadge.textContent = currentQuestionIndex === 0 ? "Câu hỏi đầu tiên" : (currentQuestionIndex >= 4 ? "5/5 — Câu hỏi cuối cùng" : "Câu hỏi trọng tâm");
     }
 
     const counterEl = document.getElementById("question-counter");
@@ -98,7 +98,7 @@ function restoreInterviewSession(session) {
       counterEl.className = "ir-progress-pill pm-status-pill ready";
       counterEl.innerHTML = `
         <span class="pm-status-dot ready"></span>
-        <span>Câu hỏi <strong>${currentQuestionIndex + 1}</strong></span>
+        <span><strong>${currentQuestionIndex + 1}/5</strong></span>
       `;
     }
   } else if (phase === "CANDIDATE_QUESTIONS" || phase === "CLOSING" || phase === "COMPLETED") {

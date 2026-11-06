@@ -26,6 +26,7 @@ namespace backend.Services.Interview
         private readonly backend.Services.Storage.ISessionLockManager? _sessionLockManager;
         private readonly INoAiModeService? _noAiModeService;
         private readonly IAIRouter? _aiRouter;
+        private readonly InterviewReportService? _reportService;
 
         public InterviewFlowService(
             FileDb fileDb,
@@ -40,7 +41,8 @@ namespace backend.Services.Interview
             IClosingService? closingService = null,
             backend.Services.Storage.ISessionLockManager? sessionLockManager = null,
             INoAiModeService? noAiModeService = null,
-            IAIRouter? aiRouter = null)
+            IAIRouter? aiRouter = null,
+            InterviewReportService? reportService = null)
         {
             _fileDb = fileDb;
             _geminiService = geminiService;
@@ -55,6 +57,7 @@ namespace backend.Services.Interview
             _sessionLockManager = sessionLockManager;
             _noAiModeService = noAiModeService;
             _aiRouter = aiRouter;
+            _reportService = reportService;
         }
 
         public async Task<InterviewFlowResult> ProcessIntroductionAsync(
@@ -113,7 +116,8 @@ namespace backend.Services.Interview
                 }
 
                 var isCompleted = session.Status.Equals("completed", StringComparison.OrdinalIgnoreCase) ||
-                                  session.InterviewState?.InterviewPhase.Equals("COMPLETED", StringComparison.OrdinalIgnoreCase) == true;
+                                  session.InterviewState?.InterviewPhase.Equals("COMPLETED", StringComparison.OrdinalIgnoreCase) == true ||
+                                  session.InterviewState?.InterviewPhase.Equals("CLOSING", StringComparison.OrdinalIgnoreCase) == true;
                 if (isCompleted)
                 {
                     return InterviewFlowResult.BadRequest("Phiên phỏng vấn đã hoàn tất, không thể tiếp tục gửi câu trả lời.");
@@ -172,11 +176,11 @@ namespace backend.Services.Interview
                 session.Answers.Add(
                     new AnswerItem
                     {
-                        Question =
-                            "Giới thiệu bản thân",
-
-                        Answer =
-                            introduction
+                        QuestionId = "intro",
+                        Question = "Giới thiệu bản thân",
+                        Answer = introduction,
+                        Stage = InterviewStageNames.Introduction,
+                        QuestionType = "Introduction"
                     }
                 );
 
@@ -470,44 +474,63 @@ namespace backend.Services.Interview
             }
         }
 
-        private InterviewFlowResult? HandleGuestDemoCompletionIfEligible(Session session)
+                private async Task<InterviewFlowResult?> HandleInterviewCompletionIfLimitReachedAsync(Session session, IDisposable? sessionLock)
         {
             if (session == null || session.Answers == null || session.InterviewState == null)
             {
                 return null;
             }
 
-            bool isGuest = session.UserId.StartsWith("guest", StringComparison.OrdinalIgnoreCase) ||
-                           string.Equals(session.PlanSnapshot, "guest", StringComparison.OrdinalIgnoreCase);
+            int realAnswerCount = session.Answers.Count(a =>
+                !string.Equals(a.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(a.Stage, InterviewStageNames.Introduction, StringComparison.OrdinalIgnoreCase));
 
-            if (!isGuest)
-            {
-                return null;
-            }
+            int maxQuestions = Math.Min(session.InterviewState.MaximumQuestions, InterviewState.DemoInterviewQuestionLimit);
+            if (maxQuestions <= 0) maxQuestions = InterviewState.DemoInterviewQuestionLimit;
 
-            int realAnswerCount = session.Answers.Count(a => !string.Equals(a.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase));
-            if (realAnswerCount >= 5)
+            if (realAnswerCount >= maxQuestions)
             {
                 session.InterviewState.IsReadyToFinish = true;
-                _stageOrchestrator.ApplyTransition(session, InterviewStage.COMPLETED, "Đã hoàn thành 5 câu hỏi demo dành cho khách");
-                session.Status = "completed";
+                session.InterviewState.QuestionCount = realAnswerCount;
+                _stageOrchestrator.ApplyTransition(session, InterviewStage.CLOSING, $"Đã hoàn thành tối đa {maxQuestions} câu hỏi phỏng vấn. Tiến hành phát biểu kết thúc.");
+
+                // Generate AI natural closing statement
+                var closingResult = await _closingService.GenerateClosingStatementAsync(session);
+                var closingStmt = closingResult?.ClosingStatement;
+                if (string.IsNullOrWhiteSpace(closingStmt))
+                {
+                    closingStmt = "Cảm ơn bạn đã chia sẻ cụ thể về cách tiếp cận của mình trong phần trao đổi vừa rồi. Như vậy, chúng ta đã hoàn thành buổi phỏng vấn hôm nay. PrepMate đang phân tích các câu trả lời và sẽ chuẩn bị báo cáo đánh giá chi tiết cho bạn ngay sau đây.";
+                }
+
+                session.InterviewState.LastClosingStatement = closingStmt;
+                session.InterviewState.ClosingCompleted = true;
+                session.Questions ??= new List<string>();
+                session.Questions.Add(closingStmt);
+
                 _fileDb.Sessions[session.Id] = session;
                 _fileDb.Save();
+
+                // Safe lock release
+                sessionLock?.Dispose();
 
                 return InterviewFlowResult.Success(new
                 {
                     sessionId = session.Id,
-                    message = "Bạn đã hoàn thành 5 câu hỏi của phiên phỏng vấn demo dành cho khách. Báo cáo đánh giá năng lực chi tiết đã sẵn sàng.",
+                    closingStatement = closingStmt,
+                    message = closingStmt,
                     nextQuestion = (string?)null,
-                    isFinished = true,
+                    isClosing = true,
+                    isFinished = false,
+                    autoComplete = false,
                     demoLimitReached = true,
-                    stage = InterviewStageNames.Completed
+                    questionIndex = maxQuestions,
+                    maxQuestions = maxQuestions,
+                    stage = InterviewStageNames.Closing
                 });
             }
 
             return null;
         }
-
         public async Task<InterviewFlowResult> RespondAsync(
             AIRespondRequest request)
         {
@@ -622,20 +645,21 @@ namespace backend.Services.Interview
                         "Không xác định được câu hỏi hiện tại.");
                 }
 
-                bool isGuestCaller = session.UserId.StartsWith("guest", StringComparison.OrdinalIgnoreCase) ||
-                                     string.Equals(session.PlanSnapshot, "guest", StringComparison.OrdinalIgnoreCase);
-                if (isGuestCaller)
+                int existingReal = session.Answers.Count(a =>
+                    !string.Equals(a.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(a.Stage, InterviewStageNames.Introduction, StringComparison.OrdinalIgnoreCase));
+
+                int maxQuestionsAllowed = Math.Min(session.InterviewState.MaximumQuestions, InterviewState.DemoInterviewQuestionLimit);
+                if (maxQuestionsAllowed <= 0) maxQuestionsAllowed = InterviewState.DemoInterviewQuestionLimit;
+
+                if (existingReal >= maxQuestionsAllowed)
                 {
-                    int existingReal = session.Answers.Count(a => !string.Equals(a.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase));
-                    if (existingReal >= 5)
-                    {
-                        session.InterviewState.IsReadyToFinish = true;
-                        session.Status = "completed";
-                        _stageOrchestrator.ApplyTransition(session, InterviewStage.COMPLETED, "Đã hoàn thành 5 câu hỏi demo dành cho khách");
-                        _fileDb.Sessions[session.Id] = session;
-                        _fileDb.Save();
-                        return InterviewFlowResult.BadRequest("Phiên phỏng vấn demo dành cho khách đã hoàn tất 5 câu hỏi.");
-                    }
+                    session.InterviewState.IsReadyToFinish = true;
+                    session.Status = "completed";
+                    _stageOrchestrator.ApplyTransition(session, InterviewStage.COMPLETED, $"Buổi phỏng vấn đã hoàn tất tối đa {maxQuestionsAllowed} câu hỏi.");
+                    _fileDb.Sessions[session.Id] = session;
+                    _fileDb.Save();
+                    return InterviewFlowResult.BadRequest($"Buổi phỏng vấn đã hoàn tất tối đa {maxQuestionsAllowed} câu hỏi.");
                 }
 
                 var answer = request.Message.Trim();
@@ -656,6 +680,7 @@ namespace backend.Services.Interview
 
                     var answerItem = new AnswerItem
                     {
+                        QuestionId = $"q_{existingReal + 1}",
                         Question = currentQuestion,
                         Answer = answer,
                         Stage = InterviewStageNames.BehavioralStar,
@@ -671,7 +696,7 @@ namespace backend.Services.Interview
                     );
                     answerItem.BehavioralEvidence = behavioralEvidence;
 
-                    var guestDemoCheck1 = HandleGuestDemoCompletionIfEligible(session);
+                    var guestDemoCheck1 = await HandleInterviewCompletionIfLimitReachedAsync(session, sessionLock);
                     if (guestDemoCheck1 != null) return guestDemoCheck1;
 
                     var transition = _stageOrchestrator.EvaluateTransition(session);
@@ -752,6 +777,7 @@ namespace backend.Services.Interview
 
                     var answerItem = new AnswerItem
                     {
+                        QuestionId = $"q_{existingReal + 1}",
                         Question = currentQuestion,
                         Answer = answer,
                         Stage = InterviewStageNames.SituationalCase,
@@ -767,7 +793,7 @@ namespace backend.Services.Interview
                     );
                     answerItem.SituationalEvidence = situationalEvidence;
 
-                    var guestDemoCheck2 = HandleGuestDemoCompletionIfEligible(session);
+                    var guestDemoCheck2 = await HandleInterviewCompletionIfLimitReachedAsync(session, sessionLock);
                     if (guestDemoCheck2 != null) return guestDemoCheck2;
 
                     var transition = _stageOrchestrator.EvaluateTransition(session);
@@ -840,6 +866,7 @@ namespace backend.Services.Interview
 
                     var answerItem = new AnswerItem
                     {
+                        QuestionId = $"q_{existingReal + 1}",
                         Question = currentQuestion,
                         Answer = answer,
                         Stage = InterviewStageNames.CandidateQuestions,
@@ -853,7 +880,7 @@ namespace backend.Services.Interview
                     session.InterviewState.LastCandidateQuestion = answer;
                     session.InterviewState.LastInterviewerAnswer = answerResult.Answer;
 
-                    var guestDemoCheck3 = HandleGuestDemoCompletionIfEligible(session);
+                    var guestDemoCheck3 = await HandleInterviewCompletionIfLimitReachedAsync(session, sessionLock);
                     if (guestDemoCheck3 != null) return guestDemoCheck3;
 
                     var transition = _stageOrchestrator.EvaluateTransition(session);
@@ -962,6 +989,7 @@ namespace backend.Services.Interview
 
                 var techAnswerItem = new AnswerItem
                 {
+                    QuestionId = $"q_{existingReal + 1}",
                     Question = currentQuestion,
                     Answer = answer,
                     Stage = session.InterviewState.InterviewPhase,
@@ -1024,7 +1052,7 @@ namespace backend.Services.Interview
                         : null
                 );
 
-                var guestDemoCheck4 = HandleGuestDemoCompletionIfEligible(session);
+                var guestDemoCheck4 = await HandleInterviewCompletionIfLimitReachedAsync(session, sessionLock);
                 if (guestDemoCheck4 != null) return guestDemoCheck4;
 
                 // 3. Check stage transition and interview completion via Stage Orchestrator

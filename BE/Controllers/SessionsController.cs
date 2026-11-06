@@ -91,6 +91,125 @@ namespace backend.Controllers
             return GetUserSessions(callerId);
         }
 
+        // =========================================================
+        // GET api/sessions/guest & api/sessions/guest/history
+        // Dedicated Guest History retrieval (WI-GUEST-HISTORY-SEPARATION-01)
+        // =========================================================
+
+        [HttpGet("guest")]
+        [HttpGet("guest/history")]
+        public IActionResult GetGuestSessions()
+        {
+            // 1. Resolve caller's verified guest identity via cookie or X-Guest-Token
+            var (_, guestId) = _quotaService.ResolveOrCreateGuestIdentity(HttpContext);
+
+            if (string.IsNullOrWhiteSpace(guestId))
+            {
+                return Ok(Array.Empty<object>());
+            }
+
+            // 2. Query sessions explicitly belonging to this exact guest identity:
+            // - session.UserId == guestId
+            // - OR (session.UserId == "guest" AND session.OriginalGuestId == guestId)
+            // - Exclude all claimed sessions (session.ClaimedAt != null or session.UserId not starting with "guest")
+            // - Exclude all sessions owned by registered accounts or other guests
+            var guestSessions = _fileDb.Sessions.Values
+                .Where(s =>
+                    string.IsNullOrWhiteSpace(s.ClaimedAt) &&
+                    s.UserId.StartsWith("guest", StringComparison.OrdinalIgnoreCase) &&
+                    (
+                        string.Equals(s.UserId, guestId, StringComparison.OrdinalIgnoreCase) ||
+                        (string.Equals(s.UserId, "guest", StringComparison.OrdinalIgnoreCase) &&
+                         !string.IsNullOrWhiteSpace(s.OriginalGuestId) &&
+                         string.Equals(s.OriginalGuestId, guestId, StringComparison.OrdinalIgnoreCase))
+                    )
+                )
+                .OrderByDescending(s => s.CreatedAt)
+                .ThenByDescending(s => s.Id)
+                .Select(s =>
+                {
+                    // 1. Authoritative Guest Preview & Evaluation Status/Rating SSOT (FIX-01 & FIX-02)
+                    var guestPreview = backend.Services.Evaluation.GuestReportPreviewBuilder.BuildGuestPreview(s);
+                    var evalStatus = guestPreview.EvaluationStatus;
+                    bool isEvalAvailable = string.Equals(evalStatus, "AVAILABLE", StringComparison.OrdinalIgnoreCase);
+
+                    double? overallScore = isEvalAvailable ? guestPreview.OverallScore : null;
+                    string? evaluationRating = isEvalAvailable ? guestPreview.EvaluationRating : null;
+
+                    // 2. Authoritative Completion Timestamp (FIX-03)
+                    string? completedAt = null;
+                    if (s.InterviewState?.StageCompletedAt != null)
+                    {
+                        completedAt = s.InterviewState.StageCompletedAt.Value.ToString("o");
+                    }
+                    else
+                    {
+                        var completedHistory = s.InterviewState?.StageHistory?.LastOrDefault(h =>
+                            string.Equals(h.Stage, "COMPLETED", StringComparison.OrdinalIgnoreCase));
+                        if (completedHistory != null)
+                        {
+                            completedAt = completedHistory.CompletedAt?.ToString("o") ?? completedHistory.StartedAt.ToString("o");
+                        }
+                    }
+
+                    // 3. Question Count: Main questions only, excluding introduction (FIX-04)
+                    int questionsAnswered = (s.Answers ?? new List<AnswerItem>())
+                        .Count(a => !backend.Services.Evaluation.GuestReportPreviewBuilder.IsIntroductionTurn(a) && !string.IsNullOrWhiteSpace(a.Answer));
+
+                    // 4. Job Title without fabricated fallback (FIX-05)
+                    string? jobTitle = !string.IsNullOrWhiteSpace(s.JobTitle)
+                        ? s.JobTitle
+                        : (!string.IsNullOrWhiteSpace(s.InterviewContext?.TargetPosition) ? s.InterviewContext.TargetPosition : null);
+
+                    // 5. Company without fabricated fallback (FIX-05)
+                    string? company = !string.IsNullOrWhiteSpace(s.InterviewContext?.TargetCompany)
+                        ? s.InterviewContext.TargetCompany
+                        : null;
+
+                    // 6. Experience Level without fabricated fallback (FIX-05)
+                    string? experienceLevel = !string.IsNullOrWhiteSpace(s.InterviewContext?.ExperienceLevel)
+                        ? s.InterviewContext.ExperienceLevel
+                        : null;
+
+                    // 7. Duration: Only calculate from actual data, do not invent 15 mins (FIX-05)
+                    int? duration = null;
+                    if (s.Answers != null && s.Answers.Count > 0)
+                    {
+                        int totalSec = s.Answers.Sum(a => a.DurationSeconds);
+                        if (totalSec > 0)
+                        {
+                            duration = (int)Math.Ceiling(totalSec / 60.0);
+                        }
+                    }
+
+                    bool isCompleted = string.Equals(s.Status, "completed", StringComparison.OrdinalIgnoreCase) ||
+                                       string.Equals(s.InterviewState?.InterviewPhase, "COMPLETED", StringComparison.OrdinalIgnoreCase) ||
+                                       (s.Report != null);
+
+                    return new
+                    {
+                        id = s.Id,
+                        sessionId = s.Id,
+                        createdAt = s.CreatedAt,
+                        completedAt = completedAt,
+                        jobTitle = jobTitle,
+                        company = company,
+                        experienceLevel = experienceLevel,
+                        status = isCompleted ? "completed" : (!string.IsNullOrWhiteSpace(s.Status) ? s.Status.ToLower() : "in_progress"),
+                        questionsAnswered = questionsAnswered,
+                        overallScore = overallScore,
+                        evaluationRating = evaluationRating,
+                        evaluationStatus = evalStatus,
+                        isGuestPreview = true,
+                        duration = duration,
+                        language = s.Language
+                    };
+                })
+                .ToList();
+
+            return Ok(guestSessions);
+        }
+
         [HttpPost]
         [HttpPost("start")]
         public async Task<IActionResult> CreateSession(
@@ -220,7 +339,7 @@ namespace backend.Controllers
                             0,
 
                         MaximumQuestions =
-                            context.Strategy?.TotalQuestionBudget ?? (request.MaximumQuestions ?? 15),
+                            request.MaximumQuestions ?? context.Strategy?.TotalQuestionBudget ?? InterviewState.DemoInterviewQuestionLimit,
 
                         IsReadyToFinish =
                             false,
@@ -323,6 +442,9 @@ namespace backend.Controllers
 
                         UserId =
                             reservation.ResolvedUserId ?? "guest",
+
+                        OriginalGuestId =
+                            reservation.ResolvedUserId?.StartsWith("guest", StringComparison.OrdinalIgnoreCase) == true ? reservation.ResolvedUserId : null,
 
                         PlanSnapshot =
                             null,
@@ -515,16 +637,15 @@ namespace backend.Controllers
                 return Ok(session);
             }
 
-            // Guest Preview: strictly sanitize detailed evaluation and feedback data
+            // Guest Preview: strictly sanitize detailed evaluation and feedback data (WI-REPORT-PREVIEW-01)
+            var guestPreview = backend.Services.Evaluation.GuestReportPreviewBuilder.BuildGuestPreview(session);
+
             var previewSession = new
             {
                 id = session.Id,
-                userId = session.UserId,
+                userId = "guest",
                 jobTitle = session.JobTitle,
                 targetPosition = session.JobTitle,
-                jdText = session.JdText,
-                cvText = session.CvText,
-                questions = session.Questions,
                 experienceLevel = session.InterviewContext?.ExperienceLevel ?? "Middle",
                 targetLevel = session.InterviewContext?.ExperienceLevel ?? "Middle",
                 targetCompany = session.InterviewContext?.TargetCompany ?? string.Empty,
@@ -532,16 +653,38 @@ namespace backend.Controllers
                 isStarted = session.IsStarted,
                 startedAt = session.StartedAt,
                 createdAt = session.CreatedAt,
-                planSnapshot = session.PlanSnapshot,
                 language = session.Language,
-                interviewState = session.InterviewState,
-                interviewContext = session.InterviewContext,
+                questionsAnswered = session.Answers?.Count ?? 0,
                 isGuestPreview = true,
+                overallScore = guestPreview.OverallScore ?? session.Report?.OverallScore,
+                guestPreview = guestPreview,
                 report = session.Report != null ? new
                 {
                     overallScore = session.Report.OverallScore,
-                    isGuestPreview = true
-                } : null
+                    isGuestPreview = true,
+                    guestPreview = guestPreview,
+                    summary = guestPreview.Summary,
+                    interpretation = guestPreview.Interpretation,
+                    topStrengths = guestPreview.TopStrengths,
+                    improvementTeaser = guestPreview.ImprovementTeaser,
+                    improvementFocus = guestPreview.ImprovementFocus,
+                    analysisCapabilityTeaser = guestPreview.AnalysisCapabilityTeaser,
+                    evaluationRating = guestPreview.EvaluationRating,
+                    evaluationStatus = guestPreview.EvaluationStatus
+                } : new
+                {
+                    overallScore = guestPreview.OverallScore ?? 0.0,
+                    isGuestPreview = true,
+                    guestPreview = guestPreview,
+                    summary = guestPreview.Summary,
+                    interpretation = guestPreview.Interpretation,
+                    topStrengths = guestPreview.TopStrengths,
+                    improvementTeaser = guestPreview.ImprovementTeaser,
+                    improvementFocus = guestPreview.ImprovementFocus,
+                    analysisCapabilityTeaser = guestPreview.AnalysisCapabilityTeaser,
+                    evaluationRating = guestPreview.EvaluationRating,
+                    evaluationStatus = guestPreview.EvaluationStatus
+                }
             };
 
             return Ok(previewSession);

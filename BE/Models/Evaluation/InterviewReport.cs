@@ -26,6 +26,7 @@ namespace backend.Models
         public double NormalizedScore { get; set; } // 0 - 100 scale for UI / backward compatibility
         public string ScoreScale { get; set; } = "0-100";
         public string OriginalScale { get; set; } = "0-10";
+        public double CoveragePercentage { get; set; } = 100.0; // Percentage of planned competency scope assessed
         public EvaluationConfidence Confidence { get; set; } = EvaluationConfidence.INSUFFICIENT_EVIDENCE;
         public string DemonstratedLevel { get; set; } = "Unassessed";
         public string Summary { get; set; } = string.Empty;
@@ -89,7 +90,11 @@ namespace backend.Models
     public class TurnEvidenceTrace
     {
         public int TurnIndex { get; set; }
+        public int MainQuestionIndex { get; set; } = 0;
+        public bool IsIntroduction { get; set; } = false;
+        public string? QuestionId { get; set; }
         public string Question { get; set; } = string.Empty;
+        public string? Answer { get; set; }
         public string AnswerSnippet { get; set; } = string.Empty;
         public string TargetConcept { get; set; } = string.Empty;
         public int Depth { get; set; }

@@ -35,6 +35,19 @@ namespace backend.Models
 
         public string Role { get; set; } = "user"; // "user" | "manager" | "admin"
 
+        // Email Verification & Password Reset Security State (WI-AUTH-01)
+        public bool EmailVerified { get; set; } = true;
+        public DateTime? EmailVerifiedAt { get; set; }
+        public string? EmailVerificationTokenHash { get; set; }
+        public DateTime? EmailVerificationTokenExpiresAt { get; set; }
+        public DateTime? LastVerificationEmailSentAt { get; set; }
+
+        public string? PasswordResetTokenHash { get; set; }
+        public DateTime? PasswordResetTokenExpiresAt { get; set; }
+        public DateTime? LastPasswordResetRequestedAt { get; set; }
+        public DateTime? PasswordChangedAt { get; set; }
+        public string? SecurityStamp { get; set; }
+
         // H1: Server-persisted profile fields
         public string Phone { get; set; } = string.Empty;
         public string Bio { get; set; } = string.Empty;

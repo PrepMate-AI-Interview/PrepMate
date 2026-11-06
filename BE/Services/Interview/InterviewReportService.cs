@@ -62,6 +62,10 @@ namespace backend.Services.Interview
                     {
                         request.Responses = session.Answers;
                     }
+                    else if (request.Responses != null && request.Responses.Count > 0)
+                    {
+                        session.Answers = request.Responses;
+                    }
                     if (!string.IsNullOrWhiteSpace(session.JobTitle))
                     {
                         request.JobTitle = session.JobTitle;
@@ -116,16 +120,24 @@ namespace backend.Services.Interview
                 var transcriptList =
                     new List<string>();
 
+                int mainQCounter = 0;
                 for (
                     var i = 0;
                     i < request.Responses.Count;
                     i++)
                 {
+                    var r = request.Responses[i];
+                    bool isIntro = string.Equals(r.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase) ||
+                                   string.Equals(r.Stage, InterviewStageNames.Introduction, StringComparison.OrdinalIgnoreCase) ||
+                                   string.Equals(r.QuestionType, "Introduction", StringComparison.OrdinalIgnoreCase);
+
+                    string qId = r.QuestionId ?? (isIntro ? "intro" : $"q_{++mainQCounter}");
+                    string label = isIntro ? "Phần mở đầu (Giới thiệu bản thân)" : $"Câu hỏi chính {mainQCounter} [QuestionId: {qId}]";
+
                     transcriptList.Add(
-                        $"Câu {i + 1}: " +
-                        $"{request.Responses[i].Question}\n" +
-                        $"Trả lời: " +
-                        $"{request.Responses[i].Answer}"
+                        $"{label}:\n" +
+                        $"Câu hỏi: {r.Question}\n" +
+                        $"Trả lời: {r.Answer}"
                     );
                 }
 
@@ -174,21 +186,60 @@ namespace backend.Services.Interview
                     );
                 }
 
+                report.EvaluationMethod = "ai_grounded";
+                report.EvaluationConfidence = evaluation?.OverallConfidence.ToString() ?? "HIGH";
+
+                // Ensure QuestionId & AnalysisStatus on knowledgeAnalysis (WI-INTERVIEW-REPORT-FIX-01)
+                if (report.KnowledgeAnalysis != null && report.KnowledgeAnalysis.Count > 0)
+                {
+                    int autoIdx = 1;
+                    foreach (var ka in report.KnowledgeAnalysis)
+                    {
+                        if (string.IsNullOrWhiteSpace(ka.QuestionId))
+                        {
+                            ka.QuestionId = $"q_{autoIdx++}";
+                        }
+                        if (string.IsNullOrWhiteSpace(ka.AnalysisStatus))
+                        {
+                            ka.AnalysisStatus = "ASSESSED";
+                        }
+                        if (string.IsNullOrWhiteSpace(ka.Strengths) && !string.IsNullOrWhiteSpace(ka.Analysis))
+                        {
+                            ka.Strengths = ka.Analysis;
+                        }
+                    }
+                }
+
                 // AI Score Protection: Deterministic evaluation is single source of truth for scores!
                 if (evaluation != null)
                 {
                     report.OverallScore = Math.Round(evaluation.OverallScore * 10.0, 1);
-                    report.TechScore = Math.Round(evaluation.TechnicalScore * 10.0, 1);
+                    report.TechScore = evaluation.TechnicalScore.HasValue ? Math.Round(evaluation.TechnicalScore.Value * 10.0, 1) : null;
+                    report.TechnicalStatus = evaluation.TechnicalStatus.ToString();
                     report.StarScore = evaluation.BehavioralScore > 0
                         ? Math.Round(evaluation.BehavioralScore * 10.0, 1)
                         : (evaluation.Competencies.Any(c => c.AreaName == "Behavioral (STAR)") ? Math.Round(evaluation.BehavioralScore * 10.0, 1) : 0.0);
                     report.SituationalScore = Math.Round(evaluation.SituationalScore * 10.0, 1);
-                    report.CandidateQuestionScore = Math.Round(evaluation.CandidateQuestionScore * 10.0, 1);
+                    report.CandidateQuestionScore = evaluation.CandidateQuestionStatus == DimensionAssessmentStatus.ASSESSED
+                        ? Math.Round(evaluation.CandidateQuestionScore * 10.0, 1)
+                        : null;
+                    report.CandidateQuestionStatus = evaluation.CandidateQuestionStatus.ToString();
+                    report.CommScore = Math.Round(evaluation.CommunicationScore * 10.0, 1);
+                    report.SoftScore = Math.Round(evaluation.SoftScore * 10.0, 1);
                     report.IntelligenceSummary = evaluation.IntelligenceSummary ?? session?.EvidenceState?.Summary;
                     report.QualitySummary = evaluation.QualitySummary ?? (session?.QualityState != null ? new InterviewQualityService().CalculateQualitySummary(session) : null);
                 }
 
                 // Attach Phase 3 Step 2 EvidenceReport
+                if (evaluation != null && report.Criteria != null && (!evaluation.TechnicalScore.HasValue || evaluation.TechnicalStatus != DimensionAssessmentStatus.ASSESSED))
+                {
+                    report.Criteria.TechnicalKnowledge = evaluation.TechnicalStatus == DimensionAssessmentStatus.EVALUATION_FAILED ? "Chưa thể đánh giá (dữ liệu không hợp lệ)" : "Chưa đánh giá";
+                }
+                if (evaluation != null && report.Criteria != null && evaluation.CandidateQuestionStatus != DimensionAssessmentStatus.ASSESSED)
+                {
+                    report.Criteria.Attitude = "Chưa đánh giá";
+                }
+
                 report.EvidenceReport = evidenceReport;
                 if (report.QualitySummary == null && session?.QualityState != null)
                 {
@@ -291,28 +342,81 @@ namespace backend.Services.Interview
             var fallbackReport = new ReportModel
             {
                 OverallScore = Math.Round(evaluation.OverallScore * 10.0, 1),
-                TechScore = Math.Round(evaluation.TechnicalScore * 10.0, 1),
-                CommScore = Math.Round(evaluation.OverallScore * 10.0, 1),
-                SoftScore = Math.Round(evaluation.OverallScore * 10.0, 1),
+                TechScore = evaluation.TechnicalScore.HasValue ? Math.Round(evaluation.TechnicalScore.Value * 10.0, 1) : null,
+                TechnicalStatus = evaluation.TechnicalStatus.ToString(),
+                CommScore = Math.Round(evaluation.CommunicationScore * 10.0, 1),
+                SoftScore = Math.Round(evaluation.SoftScore * 10.0, 1),
                 StarScore = evaluation.BehavioralScore > 0
                     ? Math.Round(evaluation.BehavioralScore * 10.0, 1)
                     : (evaluation.Competencies.Any(c => c.AreaName == "Behavioral (STAR)") ? Math.Round(evaluation.BehavioralScore * 10.0, 1) : 0.0),
                 SituationalScore = Math.Round(evaluation.SituationalScore * 10.0, 1),
-                CandidateQuestionScore = Math.Round(evaluation.CandidateQuestionScore * 10.0, 1),
+                CandidateQuestionScore = evaluation.CandidateQuestionStatus == DimensionAssessmentStatus.ASSESSED
+                    ? Math.Round(evaluation.CandidateQuestionScore * 10.0, 1)
+                    : null,
+                CandidateQuestionStatus = evaluation.CandidateQuestionStatus.ToString(),
+                EvaluationMethod = "deterministic_evidence_fallback",
+                EvaluationConfidence = evaluation.OverallConfidence.ToString(),
                 IntelligenceSummary = evaluation.IntelligenceSummary ?? session.EvidenceState?.Summary,
                 QualitySummary = evaluation.QualitySummary ?? (session.QualityState != null ? new InterviewQualityService().CalculateQualitySummary(session) : null),
                 EvidenceReport = evidenceReport,
                 Strengths = strengthsList,
                 Improvements = weaknessesList.Count > 0 ? string.Join("\n", weaknessesList) : "Cần tích lũy thêm kinh nghiệm thực chiến.",
                 Suggestion = evidenceReport?.OverallEvaluation?.Summary ?? evaluation.Summary,
+                KnowledgeAnalysis = new List<KnowledgeAnalysisItem>(),
                 Criteria = new ReportCriteria
                 {
-                    TechnicalKnowledge = evaluation.TechnicalScore >= 0.8 ? "Xuất sắc" : (evaluation.TechnicalScore >= 0.6 ? "Tốt" : "Chưa tốt"),
-                    Communication = evaluation.OverallScore >= 0.8 ? "Xuất sắc" : (evaluation.OverallScore >= 0.6 ? "Tốt" : "Chưa tốt"),
-                    ProblemSolving = evaluation.SituationalScore >= 0.8 ? "Xuất sắc" : (evaluation.SituationalScore >= 0.6 ? "Tốt" : "Chưa tốt"),
-                    Attitude = evaluation.CandidateQuestionScore >= 0.8 ? "Xuất sắc" : (evaluation.CandidateQuestionScore >= 0.6 ? "Tốt" : "Chưa tốt")
+                    TechnicalKnowledge = evaluation.TechnicalScore >= 8.0 ? "Xuất sắc" : (evaluation.TechnicalScore >= 6.5 ? "Tốt" : "Chưa tốt"),
+                    Communication = evaluation.CommunicationScore >= 8.0 ? "Xuất sắc" : (evaluation.CommunicationScore >= 6.5 ? "Tốt" : "Chưa tốt"),
+                    ProblemSolving = evaluation.SituationalScore >= 8.0 ? "Xuất sắc" : (evaluation.SituationalScore >= 6.5 ? "Tốt" : "Chưa tốt"),
+                    Attitude = evaluation.CandidateQuestionScore >= 8.0 ? "Xuất sắc" : (evaluation.CandidateQuestionScore >= 6.5 ? "Tốt" : "Chưa tốt")
                 }
             };
+
+            if (!evaluation.TechnicalScore.HasValue || evaluation.TechnicalStatus != DimensionAssessmentStatus.ASSESSED)
+            {
+                fallbackReport.Criteria.TechnicalKnowledge = evaluation.TechnicalStatus == DimensionAssessmentStatus.EVALUATION_FAILED ? "Chưa thể đánh giá (dữ liệu không hợp lệ)" : "Chưa đánh giá";
+            }
+            if (evaluation.CandidateQuestionStatus != DimensionAssessmentStatus.ASSESSED)
+            {
+                fallbackReport.Criteria.Attitude = "Chưa đánh giá";
+            }
+
+            // Populate honest evidence-backed fallback knowledge analysis (WI-INTERVIEW-REPORT-FIX-01)
+            if (session.Answers != null && session.Answers.Count > 0)
+            {
+                int fbQCount = 0;
+                foreach (var a in session.Answers)
+                {
+                    bool isIntro = string.Equals(a.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase) ||
+                                   string.Equals(a.Stage, InterviewStageNames.Introduction, StringComparison.OrdinalIgnoreCase) ||
+                                   string.Equals(a.QuestionType, "Introduction", StringComparison.OrdinalIgnoreCase);
+                    if (isIntro) continue;
+
+                    fbQCount++;
+                    var qId = a.QuestionId ?? $"q_{fbQCount}";
+                    var rating = a.ShowsPracticalExperience || (a.VerifiedFacts != null && a.VerifiedFacts.Count > 0)
+                        ? "Tốt"
+                        : (a.IncorrectConcepts != null && a.IncorrectConcepts.Count > 0 ? "Chưa tốt" : "Đạt yêu cầu");
+
+                    var evidenceText = a.VerifiedFacts != null && a.VerifiedFacts.Count > 0
+                        ? string.Join(", ", a.VerifiedFacts)
+                        : (a.Answer?.Length > 60 ? a.Answer.Substring(0, 57) + "..." : (a.Answer ?? ""));
+
+                    fallbackReport.KnowledgeAnalysis.Add(new KnowledgeAnalysisItem
+                    {
+                        QuestionId = qId,
+                        Question = a.Question,
+                        Rating = rating,
+                        AnalysisStatus = "FALLBACK",
+                        Analysis = $"[Ghi nhận hệ thống] Câu trả lời đã được ghi nhận trong phiên{(a.VerifiedFacts?.Count > 0 ? ": " + string.Join("; ", a.VerifiedFacts) : "")}.",
+                        Strengths = a.VerifiedFacts?.Count > 0 ? string.Join("; ", a.VerifiedFacts) : "Đã phản hồi câu hỏi phỏng vấn.",
+                        Gaps = a.IncorrectConcepts?.Count > 0 ? string.Join("; ", a.IncorrectConcepts) : string.Empty,
+                        Recommendation = string.Empty,
+                        Supplement = string.Empty,
+                        Evidence = evidenceText
+                    });
+                }
+            }
 
             session.Report = fallbackReport;
             session.Status = "completed";

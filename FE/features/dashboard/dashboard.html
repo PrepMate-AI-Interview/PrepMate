@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="../../shared/css/components.css?v=25">
     <link rel="stylesheet" href="../../shared/css/style.css?v=25">
     <link rel="stylesheet" href="../../features/dashboard/new-dashboard.css?v=25">
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 
 <body class="dashboard-body">
@@ -33,26 +36,33 @@
             <a href="../../features/payment/pricing.html" class="banner-action">Nâng cấp PRO</a>
         </section>
 
-        <!-- Dashboard Hero -->
+        <!-- Dashboard Header Title & Welcome -->
+        <div class="dashboard-header-row">
+            <h1 class="dashboard-page-title">Tổng quan</h1>
+            <p class="dashboard-page-subtitle">Theo dõi tiến độ, rèn luyện tư duy STAR và chuẩn bị cho các buổi phỏng vấn tuyển dụng tiếp theo.</p>
+        </div>
+
+        <!-- Dashboard Hero Card -->
         <div class="dashboard-hero">
             <div class="hero-left">
+                <span class="dashboard-badge-pill">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Không gian luyện tập
+                </span>
                 <h1>Chào mừng trở lại, <span id="current-user-name-welcome">Người dùng</span> 👋</h1>
                 <p>Mô phỏng chân thực cảm giác đối mặt nhà tuyển dụng. Luyện tập phản xạ, rèn luyện tư duy STAR và làm chủ mọi câu hỏi đào sâu.</p>
                 <div class="hero-cta-group">
-                    <a href="../../features/interview/interview-info.html" class="btn-start-interview">
+                    <a href="../../features/interview/interview-info.html" class="btn-start-interview" title="Bắt đầu phỏng vấn mới">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        Bắt đầu phỏng vấn mới
+                        <span>Bắt đầu phỏng vấn mới</span>
                     </a>
                 </div>
             </div>
             <div class="hero-stats">
                 <div class="hero-stat-item">
-                    <span class="num" id="stat-sessions-total">0</span>
-                    <span class="lbl">Tổng phỏng vấn</span>
-                </div>
-                <div class="hero-stat-item">
                     <span class="num" id="stat-sessions">0</span>
                     <span class="lbl">Đã hoàn thành</span>
+                    <span id="stat-sessions-total" style="display:none;">0</span>
                 </div>
                 <div class="hero-stat-item">
                     <span class="num"><span id="stat-avg-score">—</span> <span class="num-unit">/ 100</span></span>
@@ -133,7 +143,7 @@
                     </div>
                     <div class="section-actions-group">
                         <span id="history-total-count" class="badge-realtime">Thời gian thực</span>
-                        <a href="../interview/history.html" class="history-view-all-link" title="Xem toàn bộ lịch sử phỏng vấn">Xem tất cả →</a>
+                        <a href="../interview/history.html" class="history-view-all-link" title="Xem toàn bộ lịch sử phỏng vấn"><span>Xem tất cả</span><svg class="pm-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-left:4px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
                     </div>
                 </div>
                 <div class="history-list" id="history-list">
@@ -220,9 +230,9 @@
         if (user && tierStatus.isFree && bannerText) {
             banner.style.display = 'flex';
             if (tierStatus.remaining <= 0) {
-                bannerText.innerHTML = 'Gói Free: Đã dùng hết <strong>3/3 lượt phỏng vấn</strong> tháng này.';
+                bannerText.innerHTML = 'Gói Free: Đã dùng hết <strong>3/3 lượt phỏng vấn</strong> tuần này.';
             } else {
-                bannerText.innerHTML = `Gói Free: Còn <strong>${tierStatus.remaining} lượt</strong> phỏng vấn miễn phí tháng này.`;
+                bannerText.innerHTML = `Gói Free: Còn <strong>${tierStatus.remaining} lượt</strong> phỏng vấn miễn phí tuần này.`;
             }
         } else if (banner) {
             banner.style.display = 'none';
@@ -236,9 +246,9 @@
                     if (user && quota.tier === 'free' && bt) {
                         b.style.display = 'flex';
                         if (quota.remaining <= 0) {
-                            bt.innerHTML = 'Gói Free: Đã dùng hết <strong>3/3 lượt phỏng vấn</strong> tháng này.';
+                            bt.innerHTML = 'Gói Free: Đã dùng hết <strong>3/3 lượt phỏng vấn</strong> tuần này.';
                         } else {
-                            bt.innerHTML = `Gói Free: Còn <strong>${quota.remaining} lượt</strong> phỏng vấn miễn phí tháng này.`;
+                            bt.innerHTML = `Gói Free: Còn <strong>${quota.remaining} lượt</strong> phỏng vấn miễn phí tuần này.`;
                         }
                     } else if (b && quota.tier !== 'free') {
                         b.style.display = 'none';
@@ -255,7 +265,7 @@
         if (iconEl && titleEl) {
             if (!tierStatus.isFree) {
                 const label = user && user.role === 'admin' ? 'Quản trị viên' : user && user.role === 'manager' ? 'Quản lý' : 'PRO';
-                iconEl.innerText = '✓';
+                iconEl.innerHTML = '<svg class="pm-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
                 titleEl.innerHTML = `Gói <span style="color:var(--pm-primary);font-weight:700;">${label}</span> — Không giới hạn`;
                 descEl.innerText = 'Bạn đang tận hưởng toàn bộ tính năng PrepMate.';
                 actionEl.innerHTML = `<span style="background:var(--pm-emerald-subtle);color:var(--pm-emerald);border:1px solid var(--pm-emerald-border);padding:6px 16px;border-radius:8px;font-size:13px;font-weight:600;">Đang hoạt động</span>`;

@@ -27,6 +27,9 @@
             }
         })();
     </script>
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 
 <body class="dashboard-body">
@@ -127,7 +130,8 @@
         </div>
 
         <!-- 2. CONNECTED ACCOUNT HUBS (Chuyên trang Quản lý & Cài đặt) -->
-        <div class="settings-section pm-card" id="account-hubs" style="margin-top: 24px;">
+        <!-- Redundant account hub removed from presentation (WI-03B) -->
+        <div class="settings-section pm-card" id="account-hubs" style="display: none !important;" aria-hidden="true">
             <div class="section-header">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-accent-blue);"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -143,7 +147,7 @@
                 <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;box-shadow:0 1px 3px rgba(15,23,42,0.02);">
                     <div>
                         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-accent-blue);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <span data-icon="file-text" data-icon-size="20" style="color:var(--pm-accent-blue);"></span>
                             <h4 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Hồ sơ năng lực & Quản lý CV</h4>
                         </div>
                         <p style="margin:0;font-size:12.5px;color:#64748b;line-height:1.5;">
@@ -151,7 +155,7 @@
                         </p>
                     </div>
                     <a href="cv.html" class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:700;text-decoration:none;">
-                        <span>Quản lý CV & Kỹ năng</span> →
+                        <span>Quản lý CV & Kỹ năng</span> <span data-icon="arrow-right" data-icon-size="14" style="margin-left:4px;"></span>
                     </a>
                 </div>
 
@@ -159,7 +163,7 @@
                 <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;box-shadow:0 1px 3px rgba(15,23,42,0.02);">
                     <div>
                         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-accent-blue);"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                            <span data-icon="settings" data-icon-size="20" style="color:var(--pm-accent-blue);"></span>
                             <h4 style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Cài đặt hệ thống & Trải nghiệm</h4>
                         </div>
                         <p style="margin:0;font-size:12.5px;color:#64748b;line-height:1.5;">
@@ -167,7 +171,7 @@
                         </p>
                     </div>
                     <a href="settings.html" class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:700;text-decoration:none;">
-                        <span>Cài đặt hệ thống</span> →
+                        <span>Cài đặt hệ thống</span> <span data-icon="arrow-right" data-icon-size="14" style="margin-left:4px;"></span>
                     </a>
                 </div>
 
@@ -183,7 +187,7 @@
                         </p>
                     </div>
                     <a href="../payment/pricing.html" class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:700;text-decoration:none;">
-                        <span>Bảng giá & Gói dịch vụ</span> →
+                        <span>Bảng giá & Gói dịch vụ</span><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-left:4px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </a>
                 </div>
             </div>

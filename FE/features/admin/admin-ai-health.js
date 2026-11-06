@@ -64,23 +64,26 @@ function renderAiHealth(health) {
         return;
     }
 
-    const state = (health.state || 'NOT_CHECKED').toUpperCase();
+    const rawState = (health.state || 'NOT_CHECKED').toUpperCase();
+    let state = rawState;
+    if (rawState === 'ERROR') state = 'UNHEALTHY';
+    else if (rawState === 'UNCONFIGURED') state = 'NOT_CONFIGURED';
+
+    badge.setAttribute('data-state', state);
+    if (typeof badge.removeAttribute === 'function') badge.removeAttribute('style');
+
     if (state === 'HEALTHY') {
-        badge.style.background = '#dcfce7';
-        badge.style.color = '#15803d';
-        badge.innerHTML = '🟢 Hoạt động tốt';
+        badge.className = 'status-badge status-healthy';
+        badge.innerHTML = '<span class="status-dot dot-healthy" aria-hidden="true"></span>Hoạt động tốt';
     } else if (state === 'UNHEALTHY') {
-        badge.style.background = '#fee2e2';
-        badge.style.color = '#b91c1c';
-        badge.innerHTML = '🔴 Lỗi kết nối';
+        badge.className = 'status-badge status-unhealthy';
+        badge.innerHTML = '<span class="status-dot dot-unhealthy" aria-hidden="true"></span>Lỗi kết nối';
     } else if (state === 'NOT_CONFIGURED') {
-        badge.style.background = '#fef3c7';
-        badge.style.color = '#92400e';
-        badge.innerHTML = '⚠️ Chưa cấu hình key';
+        badge.className = 'status-badge status-warning';
+        badge.innerHTML = '<span class="status-dot dot-warning" aria-hidden="true"></span>Chưa cấu hình key';
     } else { // NOT_CHECKED
-        badge.style.background = '#e0f2fe';
-        badge.style.color = '#0369a1';
-        badge.innerHTML = '🕒 Chưa kiểm tra kết nối';
+        badge.className = 'status-badge status-neutral';
+        badge.innerHTML = '<span class="status-dot dot-neutral" aria-hidden="true"></span>Chưa kiểm tra kết nối';
     }
 
     let srcText = '';
@@ -88,15 +91,15 @@ function renderAiHealth(health) {
 
     if (health.isEnvironmentManaged) {
         srcText = `<div style="margin-top:6px;padding:6px 10px;background:#f0fdf4;border-left:3px solid #16a34a;border-radius:4px;font-size:12px;color:#166534;">
-            <strong>🔐 Nguồn khóa:</strong> Máy chủ đang ưu tiên sử dụng biến môi trường <code>${escape(health.credentialSource)}</code>.
+            <strong><svg class="pm-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Nguồn khóa:</strong> Máy chủ đang ưu tiên sử dụng biến môi trường <code>${escape(health.credentialSource)}</code>.
         </div>`;
     } else if (health.credentialSource === 'admin:encrypted' || health.credentialStorageStatus === 'encrypted') {
         srcText = `<div style="margin-top:6px;padding:6px 10px;background:#f8fafc;border-left:3px solid #3b82f6;border-radius:4px;font-size:12px;color:#1e3a8a;">
-            <strong>🛡️ Nguồn khóa:</strong> Quản trị viên quản lý (Mã hóa an toàn bằng ASP.NET Core Data Protection).
+            <strong><svg class="pm-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"/></svg>Nguồn khóa:</strong> Quản trị viên quản lý (Mã hóa an toàn bằng ASP.NET Core Data Protection).
         </div>`;
     } else if (health.credentialSource === 'admin:legacy_plaintext' || health.credentialStorageStatus === 'legacy_plaintext') {
         srcText = `<div style="margin-top:6px;padding:6px 10px;background:#fffbeb;border-left:3px solid #d97706;border-radius:4px;font-size:12px;color:#92400e;">
-            <strong>⚠️ Nguồn khóa:</strong> Lưu trong FileDb ở dạng plaintext cũ. Nhập lại key và lưu để kích hoạt mã hóa bảo vệ.
+            <strong><svg class="pm-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>Nguồn khóa:</strong> Lưu trong FileDb ở dạng plaintext cũ. Nhập lại key và lưu để kích hoạt mã hóa bảo vệ.
         </div>`;
     } else {
         srcText = `<div style="margin-top:6px;font-size:12px;color:#94a3b8;">
@@ -123,7 +126,7 @@ function renderAiHealth(health) {
             guidanceEl.style.background = '#fffbeb';
             guidanceEl.style.color = '#92400e';
             guidanceEl.style.border = '1px solid #fde68a';
-            guidanceEl.innerHTML = `<strong>⚠️ Mô hình AI đang ngừng hoạt động (MODEL_INACTIVE):</strong><br>
+            guidanceEl.innerHTML = `<strong><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>Mô hình AI đang ngừng hoạt động (MODEL_INACTIVE):</strong><br>
                 Nhà cung cấp đã vô hiệu hóa mô hình <code>${escape(health.model || '')}</code>.<br>
                 <strong>Mô hình khuyến nghị thay thế:</strong>
                 <ul style="margin:4px 0 0 16px;padding:0;">
@@ -137,7 +140,7 @@ function renderAiHealth(health) {
             guidanceEl.style.background = '#fee2e2';
             guidanceEl.style.color = '#b91c1c';
             guidanceEl.style.border = '1px solid #fecaca';
-            guidanceEl.innerHTML = `<strong>🔑 Lỗi xác thực khóa API:</strong><br>
+            guidanceEl.innerHTML = `<strong><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Lỗi xác thực khóa API:</strong><br>
                 Nhà cung cấp từ chối khóa API. Hãy kiểm tra lại chuỗi API key, đảm bảo key còn hiệu lực và có quyền gọi mô hình.`;
         } else if (errorCategory === 'RateLimitOrQuota') {
             guidanceEl.style.display = 'block';
@@ -223,7 +226,7 @@ async function loadSystemConfig() {
                 if (config.isEnvironmentManaged) {
                     apiKeyInput.placeholder = '•••••••• (Quản lý bởi biến môi trường máy chủ)';
                     if (keyStatusEl) {
-                        keyStatusEl.innerHTML = `<span style="color:#059669;font-weight:600;">✓ Máy chủ đang sử dụng biến môi trường (${escape(config.credentialSource)}).</span> Nhập key ở đây sẽ lưu vào database an toàn (mã hóa Data Protection).`;
+                        keyStatusEl.innerHTML = `<span style="color:#059669;font-weight:600;"><svg class="pm-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" style="margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg>Máy chủ đang sử dụng biến môi trường (${escape(config.credentialSource)}).</span> Nhập key ở đây sẽ lưu vào database an toàn (mã hóa Data Protection).`;
                     }
                 } else if (config.apiKeyConfigured) {
                     const storageBadge = config.credentialStorageStatus === 'encrypted'
@@ -416,7 +419,10 @@ async function saveSystemConfig() {
         if (typeof showToast === 'function') showToast(`Lỗi: ${userMsg}`, 'danger');
         else alert(`Lỗi: ${userMsg}`);
     } finally {
-        if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = originalBtnHtml || '<span>💾</span> Lưu cài đặt hệ thống'; }
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalBtnHtml || ((typeof PrepMateIcons !== 'undefined' ? PrepMateIcons.svg('check', { size: 16 }) + ' ' : '') + 'Lưu cài đặt hệ thống');
+        }
     }
 }
 

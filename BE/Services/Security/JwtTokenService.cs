@@ -67,6 +67,7 @@ namespace backend.Services.Security
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim("subscription", user.Subscription),
+                new Claim("security_stamp", user.SecurityStamp ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

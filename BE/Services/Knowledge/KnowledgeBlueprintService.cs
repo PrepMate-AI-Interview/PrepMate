@@ -25,42 +25,66 @@ namespace backend.Services.Knowledge
             string? experienceLevel = "",
             CompanyContext? companyContext = null)
         {
-            if (string.IsNullOrWhiteSpace(jdText))
+            var safePosition = string.IsNullOrWhiteSpace(position) ? ProfessionalDomainClassifier.DefaultPositionTitle : position.Trim();
+            var safeLevel = !string.IsNullOrWhiteSpace(experienceLevel) ? experienceLevel.Trim() : ProfessionalDomainClassifier.DefaultTargetLevel;
+            var family = ProfessionalDomainClassifier.Classify(safePosition, companyContext?.Industry);
+
+            // Path A: Custom JD provided by candidate
+            if (!string.IsNullOrWhiteSpace(jdText))
             {
-                Console.WriteLine("[BLUEPRINT] JD is empty or null. Skipping blueprint generation.");
-                return null;
+                try
+                {
+                    var prompt = BlueprintPrompt.Build(safePosition, jdText.Trim(), safeLevel, companyContext);
+
+                    Console.WriteLine($"[BLUEPRINT] Generating Knowledge Blueprint from JD for position: '{safePosition}' ({safeLevel})...");
+                    var json = await _geminiService.CallGeminiApiAsync(
+                        prompt,
+                        isJsonMode: true
+                    );
+
+                    var blueprint = ParseBlueprintJson(json, safePosition, safeLevel);
+                    if (blueprint != null && blueprint.Areas.Count > 0)
+                    {
+                        Console.WriteLine($"[BLUEPRINT] Successfully generated Knowledge Blueprint from JD with {blueprint.Areas.Count} areas.");
+                        return blueprint;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[BLUEPRINT] Failed to generate knowledge blueprint from JD: {ex.Message}. Falling back to domain template.");
+                }
+
+                // Fallback to domain template if JD extraction returned null/failed
+                return DomainCompetencyTemplateProvider.GetTemplate(safePosition, safeLevel, family);
             }
 
-            var safePosition = string.IsNullOrWhiteSpace(position) ? "Professional" : position.Trim();
-            var safeLevel = experienceLevel?.Trim() ?? string.Empty;
-
+            // Path B: No JD provided (Quick Practice or standard interview) -> JD-Independent Blueprint
             try
             {
-                var prompt = BlueprintPrompt.Build(safePosition, jdText.Trim(), safeLevel, companyContext);
+                var rolePrompt = BlueprintPrompt.BuildFromRole(safePosition, safeLevel, family, companyContext);
+                Console.WriteLine($"[BLUEPRINT] Generating JD-independent Knowledge Blueprint for role: '{safePosition}' ({family}, {safeLevel})...");
 
-                Console.WriteLine($"[BLUEPRINT] Generating Knowledge Blueprint for position: '{safePosition}'...");
-                var json = await _geminiService.CallGeminiApiAsync(
-                    prompt,
+                var roleJson = await _geminiService.CallGeminiApiAsync(
+                    rolePrompt,
                     isJsonMode: true
                 );
 
-                Console.WriteLine("========== RAW BLUEPRINT JSON ==========");
-                Console.WriteLine(json);
-                Console.WriteLine("========================================");
-
-                var blueprint = ParseBlueprintJson(json, safePosition, safeLevel);
-                if (blueprint != null && blueprint.Areas.Count > 0)
+                var generatedBlueprint = ParseBlueprintJson(roleJson, safePosition, safeLevel);
+                if (generatedBlueprint != null && generatedBlueprint.Areas.Count >= 2 &&
+                    generatedBlueprint.Areas.Any(a => a.Concepts != null && a.Concepts.Count > 0))
                 {
-                    Console.WriteLine($"[BLUEPRINT] Successfully generated Knowledge Blueprint with {blueprint.Areas.Count} areas.");
-                    return blueprint;
+                    Console.WriteLine($"[BLUEPRINT] Successfully generated role-specific Knowledge Blueprint with {generatedBlueprint.Areas.Count} areas.");
+                    return generatedBlueprint;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[BLUEPRINT] Failed to generate knowledge blueprint from JD: {ex.Message}");
+                Console.WriteLine($"[BLUEPRINT] Role blueprint AI generation failed: {ex.Message}. Using validated domain template.");
             }
 
-            return null;
+            // Path C: Authoritative validated template fallback
+            Console.WriteLine($"[BLUEPRINT] Using pre-validated domain blueprint template for family '{family}' ({safePosition}).");
+            return DomainCompetencyTemplateProvider.GetTemplate(safePosition, safeLevel, family);
         }
 
         public KnowledgeBlueprint? ParseBlueprintJson(string json, string defaultPosition, string defaultLevel)

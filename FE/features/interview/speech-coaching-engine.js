@@ -751,25 +751,25 @@
       const topWord = sortedFillers[0]?.word || "từ đệm";
       priorityImprovements.push({
         area: "Giảm từ đệm khi tư duy",
-        why: `Bạn đã sử dụng ${totalFillers} từ đệm (đặc biệt là '${topWord}'). Điều này có thể làm giảm cảm giác quyết đoán của câu trả lời.`,
-        drill: `Tập dừng khoảng lặng 1-2 giây thay vì phát âm '${topWord}' khi bạn cần thời gian suy nghĩ câu trả lời tiếp theo.`,
-        selfCheck: "Trong buổi luyện tập tới, hãy chú ý nghe lại các lượt trả lời và đặt mục tiêu giảm số lượng từ đệm xuống dưới 2 lần."
+        why: `Sử dụng ${totalFillers} từ đệm (chủ yếu là '${topWord}') làm giảm độ dứt khoát của câu trả lời.`,
+        drill: `Dừng khoảng lặng 1-2 giây thay vì phát âm '${topWord}' khi bạn cần thời gian suy nghĩ.`,
+        selfCheck: "Mục tiêu giảm số lượng từ đệm xuống dưới 2 lần ở phiên phỏng vấn tiếp theo."
       });
     }
 
     if (totalIdeaOverlaps >= 1) {
       priorityImprovements.push({
-        area: "Tránh lặp lại cùng một luận điểm (Dấu hiệu lặp ý)",
-        why: `Phát hiện ${totalIdeaOverlaps} vị trí câu chia sẻ phần lớn từ khoá nội dung cốt lõi. Việc lặp lại cùng một luận điểm làm giảm độ súc tích.`,
-        drill: "Mỗi câu chỉ nên chuyển tải một thông điệp mới: Câu 1 nêu giải pháp, Câu 2 nêu số liệu hoặc kết quả thay vì diễn giải lại giải pháp.",
-        selfCheck: "Sau khi trả lời, rà soát lại xem có câu nào lặp lại nội dung đã nói ở câu trước đó hay không."
+        area: "Tránh lặp lại cùng một luận điểm",
+        why: `Phát hiện ${totalIdeaOverlaps} vị trí câu lặp lại nội dung đã trình bày, làm giảm độ súc tích.`,
+        drill: "Mỗi câu chỉ nêu một thông điệp mới: nêu giải pháp trước, sau đó bổ sung số liệu minh chứng.",
+        selfCheck: "Kiểm tra không diễn giải lại cùng một kết luận bằng các từ đồng nghĩa."
       });
     } else if (totalPhraseRepetitions >= 2) {
       priorityImprovements.push({
         area: "Đa dạng hoá cách diễn đạt cụm từ",
         why: `Có ${totalPhraseRepetitions} cụm từ được lặp lại nguyên văn nhiều lần trong cùng câu trả lời.`,
-        drill: "Sử dụng đại từ thay thế hoặc tóm lược ngắn thay vì lặp lại nguyên văn cả cụm tên gọi kỹ thuật.",
-        selfCheck: "Mục tiêu không lặp lại nguyên văn một cụm từ dài quá 2 lần trong cùng một câu trả lời."
+        drill: "Sử dụng đại từ thay thế hoặc tóm lược ngắn thay vì lặp lại cả cụm tên gọi kỹ thuật.",
+        selfCheck: "Tránh lặp lại nguyên văn một cụm từ dài quá 2 lần trong cùng một câu trả lời."
       });
     }
 
@@ -778,12 +778,12 @@
       priorityImprovements.push({
         area: isFast ? "Kiểm soát nhịp độ nói vừa phải" : "Tăng cường sự lưu loát khi trình bày",
         why: isFast
-          ? `Tốc độ nói trung bình đạt ${averageWpm} từ/phút (khá nhanh), dễ khiến phỏng vấn viên không kịp ghi chép các luận điểm quan trọng.`
-          : `Tốc độ nói trung bình là ${averageWpm} từ/phút, có nhiều khoảng ngập ngừng khiến buổi đối thoại chậm nhịp.`,
+          ? `Tốc độ nói ${averageWpm} từ/phút (nhanh) khiến người nghe khó ghi nhận ý chính.`
+          : `Tốc độ nói ${averageWpm} từ/phút khiến nhịp đối thoại bị chậm.`,
         drill: isFast
-          ? "Sau mỗi luận điểm kỹ thuật, hãy ngắt nhịp thở nhẹ một nhịp trước khi chuyển sang phần tiếp theo."
-          : "Trước khi bắt đầu nói, dành 5 giây xác định 2 ý chính sẽ nói để tránh ngập ngừng giữa chừng.",
-        selfCheck: "Mục tiêu duy trì dải tốc độ tối ưu từ 110 - 150 từ/phút trong toàn bộ buổi phỏng vấn."
+          ? "Ngắt nhịp thở ngắn sau mỗi luận điểm kỹ thuật trước khi chuyển ý."
+          : "Xác định nhanh 2 ý chính trước khi phát biểu để tránh ngập ngừng giữa chừng.",
+        selfCheck: "Mục tiêu duy trì nhịp độ tối ưu từ 110 - 150 từ/phút trong toàn buổi phỏng vấn."
       });
     }
 
@@ -792,16 +792,16 @@
 
     if (priorityImprovements.length < 3 && wordyAnswers.length >= 1) {
       priorityImprovements.push({
-        area: "Rút gọn và tập trung vào trọng tâm",
-        why: "Có câu trả lời khá dài dòng vượt quá 220 từ, dễ làm loãng thông điệp kỹ thuật cốt lõi.",
-        drill: "Áp dụng công thức 3 câu: Câu 1 nêu giải pháp trực tiếp, Câu 2 nêu số liệu/công nghệ áp dụng, Câu 3 nêu bài học hoặc kết quả.",
-        selfCheck: "Kiểm tra xem câu trả lời có thể trình bày hoàn tất trong vòng dưới 90 giây hay không."
+        area: "Tập trung vào trọng tâm câu trả lời",
+        why: "Có câu trả lời dài dòng vượt quá 220 từ làm loãng thông điệp chính.",
+        drill: "Áp dụng công thức 3 câu: Nêu giải pháp trực tiếp → Công nghệ/số liệu → Kết quả đạt được.",
+        selfCheck: "Hoàn tất phần trình bày giải pháp trong vòng dưới 90 giây."
       });
     } else if (priorityImprovements.length < 3 && shortAnswers.length >= 2) {
       priorityImprovements.push({
         area: "Bổ sung bối cảnh và dẫn chứng cụ thể",
-        why: "Một số câu trả lời quá ngắn dưới 18 từ, chưa làm nổi bật được năng lực và đóng góp cá nhân.",
-        drill: "Luôn kèm theo một bài toán thực tế bạn đã giải quyết khi trả lời các câu hỏi tình huống hoặc nguyên lý.",
+        why: "Một số câu trả lời dưới 18 từ chưa làm nổi bật được năng lực và đóng góp cá nhân.",
+        drill: "Luôn nêu một bài toán thực tế bạn đã giải quyết khi trả lời câu hỏi tình huống.",
         selfCheck: "Mỗi câu trả lời chuyên môn nên có ít nhất một dẫn chứng công nghệ cụ thể."
       });
     }
@@ -810,8 +810,8 @@
     if (priorityImprovements.length === 0) {
       priorityImprovements.push({
         area: "Duy trì phong độ và độ gãy gọn",
-        why: "Cách phát âm, tốc độ và từ vựng của bạn rất chuẩn mực và lưu loát.",
-        drill: "Tiếp tục thực hành các câu hỏi chuyên sâu với độ khó cao hơn để nâng cao phản xạ tự nhiên.",
+        why: "Cách phát âm, tốc độ và từ vựng chuẩn mực và lưu loát.",
+        drill: "Tiếp tục rèn luyện các câu hỏi đào sâu với độ phức tạp cao hơn.",
         selfCheck: "Giữ vững phong thái tự tin và nhịp điệu hiện tại."
       });
     }

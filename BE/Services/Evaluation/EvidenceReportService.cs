@@ -33,6 +33,7 @@ namespace backend.Services.Evaluation
                     NormalizedScore = Math.Round(evaluation.OverallScore * 10.0, 1),
                     ScoreScale = "0-100",
                     OriginalScale = "0-10",
+                    CoveragePercentage = evaluation.CoveragePercentage,
                     Confidence = evaluation.OverallConfidence,
                     DemonstratedLevel = evaluation.OverallLevelAssessment,
                     Summary = evaluation.Summary
@@ -261,14 +262,28 @@ namespace backend.Services.Evaluation
             var allEvidenceItems = evaluation.Competencies.SelectMany(c => c.EvidenceItems ?? new List<EvidenceItem>()).ToList();
 
             var traces = new List<TurnEvidenceTrace>();
+            int mainQIndex = 0;
             for (int i = 0; i < answers.Count; i++)
             {
                 var a = answers[i];
+                bool isIntro = string.Equals(a.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase) ||
+                               string.Equals(a.Stage, InterviewStageNames.Introduction, StringComparison.OrdinalIgnoreCase) ||
+                               string.Equals(a.QuestionType, "Introduction", StringComparison.OrdinalIgnoreCase);
+
+                if (!isIntro)
+                {
+                    mainQIndex++;
+                }
+
                 var snippet = (a.Answer?.Length ?? 0) > 120 ? a.Answer!.Substring(0, 117) + "..." : (a.Answer ?? "");
                 traces.Add(new TurnEvidenceTrace
                 {
                     TurnIndex = i + 1,
+                    MainQuestionIndex = isIntro ? 0 : mainQIndex,
+                    IsIntroduction = isIntro,
+                    QuestionId = a.QuestionId ?? (isIntro ? "intro" : $"q_{mainQIndex}"),
                     Question = a.Question ?? "",
+                    Answer = a.Answer ?? "",
                     AnswerSnippet = snippet,
                     TargetConcept = a.TargetConceptName ?? a.TargetConceptId ?? "",
                     Depth = a.Depth,

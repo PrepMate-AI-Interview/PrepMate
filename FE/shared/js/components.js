@@ -60,6 +60,12 @@ function applyGlobalTheme(mode) {
             lightIcon.style.display = isDark ? "none" : "inline-flex";
             darkIcon.style.display = isDark ? "inline-flex" : "none";
         }
+        if (typeof window !== "undefined" && window.PrepMateIcons) {
+            const morphEl = btn.querySelector(".theme-morph-icon");
+            if (morphEl) {
+                window.PrepMateIcons.morph(morphEl, isDark ? "moon" : "sun", { spring: "snappy" });
+            }
+        }
     });
 }
 
@@ -196,7 +202,7 @@ class AppHeader extends HTMLElement {
                                     <span>Bảng giá & Gói PRO</span>
                                 </a>
                                 <a href="${root}features/profile/settings.html" class="header-menu-link">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                                     <span>Cài đặt cá nhân</span>
                                 </a>
                                 <div class="header-menu-divider"></div>
@@ -208,13 +214,11 @@ class AppHeader extends HTMLElement {
                         </div>
                     </div>
                 </nav>
-            </div>
-            <!-- Nút mở menu di động (Mobile Menu Trigger) -->
-                    <button type="button" class="header-mobile-toggle" id="header-mobile-toggle" onclick="AppHeader.toggleMobileMenu(event)" aria-label="Mở menu điều hướng" aria-expanded="false" title="Menu điều hướng">
-                        <svg class="mobile-icon-bars" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                        <svg class="mobile-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    </button>
-                </nav>
+                <!-- Nút mở menu di động (Mobile Menu Trigger) -->
+                <button type="button" class="header-mobile-toggle" id="header-mobile-toggle" onclick="AppHeader.toggleMobileMenu(event)" aria-label="Mở menu điều hướng" aria-expanded="false" title="Menu điều hướng">
+                    <morph-icon id="header-mobile-morph" icon="M4 6h16M4 12h16M4 18h16" size="20" stroke-width="2.5" color="currentColor" class="mobile-icon-bars" aria-hidden="true"></morph-icon>
+                    <svg class="mobile-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
             <!-- Mobile Navigation Drawer -->
             <div class="header-mobile-drawer" id="header-mobile-drawer" style="display: none;" onclick="event.stopPropagation()">
@@ -313,11 +317,16 @@ class AppHeader extends HTMLElement {
         if (backdrop) backdrop.style.display = isOpen ? 'none' : 'block';
         if (toggle) {
             toggle.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
-            const bars = toggle.querySelector('.mobile-icon-bars');
-            const close = toggle.querySelector('.mobile-icon-close');
-            if (bars && close) {
-                bars.style.display = isOpen ? 'inline-flex' : 'none';
-                close.style.display = isOpen ? 'none' : 'inline-flex';
+            const morph = toggle.querySelector('#header-mobile-morph');
+            if (morph && typeof morph.morphTo === 'function' && window.PrepMateIcons) {
+                morph.morphTo(isOpen ? window.PrepMateIcons.getPath('menu') : window.PrepMateIcons.getPath('close'), 'snappy');
+            } else {
+                const bars = toggle.querySelector('.mobile-icon-bars');
+                const close = toggle.querySelector('.mobile-icon-close');
+                if (bars && close) {
+                    bars.style.display = isOpen ? 'inline-flex' : 'none';
+                    close.style.display = isOpen ? 'none' : 'inline-flex';
+                }
             }
         }
     }
@@ -330,11 +339,16 @@ class AppHeader extends HTMLElement {
         if (backdrop) backdrop.style.display = 'none';
         if (toggle) {
             toggle.setAttribute('aria-expanded', 'false');
-            const bars = toggle.querySelector('.mobile-icon-bars');
-            const close = toggle.querySelector('.mobile-icon-close');
-            if (bars && close) {
-                bars.style.display = 'inline-flex';
-                close.style.display = 'none';
+            const morph = toggle.querySelector('#header-mobile-morph');
+            if (morph && typeof morph.morphTo === 'function' && window.PrepMateIcons) {
+                morph.morphTo(window.PrepMateIcons.getPath('menu'), 'snappy');
+            } else {
+                const bars = toggle.querySelector('.mobile-icon-bars');
+                const close = toggle.querySelector('.mobile-icon-close');
+                if (bars && close) {
+                    bars.style.display = 'inline-flex';
+                    close.style.display = 'none';
+                }
             }
         }
     }
@@ -577,7 +591,7 @@ class AppWorkspaceFooter extends HTMLElement {
         this.innerHTML = `
         <footer class="app-workspace-footer">
             <div class="workspace-footer-left">
-                <a href="${root}index.html" class="workspace-footer-badge" title="PrepMate - Về trang chủ" style="text-decoration: none;">
+                <a href="${root}index.html" class="workspace-footer-badge" title="PrepMate - Về trang chủ">
                     <span class="logo-mini">P</span>
                     <span class="workspace-logo-text">Prep<span>Mate</span></span>
                 </a>
@@ -585,20 +599,15 @@ class AppWorkspaceFooter extends HTMLElement {
                     <span class="workspace-footer-status-dot"></span>
                     <span>AI Engine Sẵn sàng (99.9%)</span>
                 </span>
-                <span style="color:#94a3b8; font-size:12px;">v2.9</span>
+                <span class="workspace-footer-version">v2.9</span>
             </div>
             <div class="workspace-footer-right">
                 <ul class="workspace-footer-links">
-                    <li><a href="${root}features/about/about.html">Về chúng tôi</a></li>
+                    <li><a href="${root}features/legal/legal-center.html">Điều khoản & Pháp lý</a></li>
                     <li><a href="${root}features/help/help.html">Trung tâm hỗ trợ</a></li>
-                    <li><a href="${root}features/legal/legal-center.html">Trung tâm pháp lý</a></li>
-                    <li><a href="${root}features/payment/pricing.html">Bảng giá PRO</a></li>
-                    <li><a href="${root}features/interview/interview-info.html">Phỏng vấn AI</a></li>
-                    <li><a href="${root}features/qbank/qbank.html">Ngân hàng câu hỏi</a></li>
-                    <li><a href="${root}features/jobs/jobs.html">Cơ hội việc làm</a></li>
-                    <li><a href="${root}features/profile/cv.html">CV của tôi</a></li>
+                    <li><a href="${root}features/about/about.html">Về chúng tôi</a></li>
                 </ul>
-                <span style="color:#cbd5e1;">•</span>
+                <span class="workspace-footer-sep">•</span>
                 <span>© 2026 PrepMate AI Inc.</span>
             </div>
         </footer>
@@ -616,28 +625,23 @@ document.addEventListener('DOMContentLoaded', () => {
             footer.removeAttribute('style');
             footer.innerHTML = `
             <div class="workspace-footer-left">
-                <a href="${root}index.html" class="workspace-footer-badge" title="PrepMate - Về trang chủ" style="text-decoration: none;">
+                <a href="${root}index.html" class="workspace-footer-badge" title="PrepMate - Về trang chủ">
                     <span class="logo-mini">P</span>
                     <span class="workspace-logo-text">Prep<span>Mate</span></span>
                 </a>
                 <span class="workspace-footer-status">
                     <span class="workspace-footer-status-dot"></span>
-                    <span>AI Engine Hoạt động 100%</span>
+                    <span>AI Engine Sẵn sàng (99.9%)</span>
                 </span>
-                <span style="color:#94a3b8; font-size:12px;">v2.9</span>
+                <span class="workspace-footer-version">v2.9</span>
             </div>
             <div class="workspace-footer-right">
                 <ul class="workspace-footer-links">
-                    <li><a href="${root}features/about/about.html">Về chúng tôi</a></li>
+                    <li><a href="${root}features/legal/legal-center.html">Điều khoản & Pháp lý</a></li>
                     <li><a href="${root}features/help/help.html">Trung tâm hỗ trợ</a></li>
-                    <li><a href="${root}features/legal/legal-center.html">Trung tâm pháp lý</a></li>
-                    <li><a href="${root}features/payment/pricing.html">Bảng giá PRO</a></li>
-                    <li><a href="${root}features/interview/interview-info.html">Phỏng vấn AI</a></li>
-                    <li><a href="${root}features/qbank/qbank.html">Ngân hàng câu hỏi</a></li>
-                    <li><a href="${root}features/jobs/jobs.html">Cơ hội việc làm</a></li>
-                    <li><a href="${root}features/profile/cv.html">CV của tôi</a></li>
+                    <li><a href="${root}features/about/about.html">Về chúng tôi</a></li>
                 </ul>
-                <span style="color:#cbd5e1;">•</span>
+                <span class="workspace-footer-sep">•</span>
                 <span>© 2026 PrepMate AI Inc.</span>
             </div>
             `;

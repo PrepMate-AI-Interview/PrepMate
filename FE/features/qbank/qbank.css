@@ -60,8 +60,8 @@ body.dashboard-body {
 
 /* ── HERO BANNER ── */
 .dashboard-hero {
-  background: #ffffff !important;
-  border: 1px solid var(--mobbin-hairline, #e0e0e0) !important;
+  background: var(--pm-bg-card, #ffffff);
+  border: 1px solid var(--pm-border, #e0e0e0);
   border-radius: 24px;
   padding: 32px 36px 28px;
   margin-bottom: 28px;
@@ -672,6 +672,20 @@ body.dashboard-body {
   gap: 16px;
   font-size: 12.5px;
   color: var(--mobbin-text-muted, #707070);
+}
+
+.qbank-row-submeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.35;
+}
+
+.qbank-row-submeta span svg {
+  display: block;
+  flex-shrink: 0;
+  margin: 0;
+  vertical-align: unset;
 }
 
 .qbank-row-right {
@@ -1456,9 +1470,130 @@ body.dark-mode .pm-diff-badge.medium {
 
 html[data-theme="dark"] .pm-diff-badge.easy,
 body.dark-mode .pm-diff-badge.easy {
-  background: rgba(16, 185, 129, 0.15) !important;
-  color: #81c995 !important;
-  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(52, 211, 153, 0.35) !important;
+}
+
+html[data-theme="dark"] .qbank-hero-pill-blue,
+body.dark-mode .qbank-hero-pill-blue {
+  background: rgba(37, 99, 235, 0.16) !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(96, 165, 250, 0.35) !important;
+}
+
+html[data-theme="dark"] .qbank-hero-pill-emerald,
+body.dark-mode .qbank-hero-pill-emerald {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(52, 211, 153, 0.35) !important;
+}
+
+html[data-theme="dark"] .active-badge,
+body.dark-mode .active-badge {
+  background: #252629 !important;
+  border-color: #3C4043 !important;
+  color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .active-count,
+body.dark-mode .active-count {
+  background: #202124 !important;
+  color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .btn-clear-industry,
+body.dark-mode .btn-clear-industry {
+  background: #252629 !important;
+  border-color: #3C4043 !important;
+  color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .btn-clear-industry:hover,
+body.dark-mode .btn-clear-industry:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+html[data-theme="dark"] .btn-toggle-industry-panel,
+body.dark-mode .btn-toggle-industry-panel {
+  background: #252629 !important;
+  border-color: #3C4043 !important;
+  color: #93c5fd !important;
+}
+
+html[data-theme="dark"] .btn-toggle-industry-panel:hover,
+body.dark-mode .btn-toggle-industry-panel:hover {
+  background: #3C4043 !important;
+  border-color: #5F6368 !important;
+  color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .btn-toggle-industry-panel.active,
+body.dark-mode .btn-toggle-industry-panel.active {
+  background: #2563eb !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .badge-provenance-tag,
+body.dark-mode .badge-provenance-tag {
+  background: #252629 !important;
+  color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .badge-provenance-tag.official,
+body.dark-mode .badge-provenance-tag.official {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(52, 211, 153, 0.35) !important;
+}
+
+html[data-theme="dark"] .badge-provenance-tag.curated,
+body.dark-mode .badge-provenance-tag.curated {
+  background: rgba(139, 92, 246, 0.16) !important;
+  color: #c4b5fd !important;
+  border: 1px solid rgba(167, 139, 250, 0.35) !important;
+}
+
+html[data-theme="dark"] .active-filter-tag,
+body.dark-mode .active-filter-tag {
+  background: rgba(37, 99, 235, 0.16) !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+  color: #93c5fd !important;
+}
+
+html[data-theme="dark"] .active-filter-tag button,
+body.dark-mode .active-filter-tag button {
+  color: #93c5fd !important;
+}
+
+html[data-theme="dark"] .active-filter-tag button:hover,
+body.dark-mode .active-filter-tag button:hover {
+  color: #bfdbfe !important;
+}
+
+html[data-theme="dark"] .btn-clear-all-chips,
+body.dark-mode .btn-clear-all-chips {
+  color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .btn-clear-all-chips:hover,
+body.dark-mode .btn-clear-all-chips:hover {
+  color: #fca5a5 !important;
+}
+
+html[data-theme="dark"] .qbank-search-clear-btn,
+body.dark-mode .qbank-search-clear-btn {
+  background: #3C4043 !important;
+  color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .qbank-search-clear-btn:hover,
+body.dark-mode .qbank-search-clear-btn:hover {
+  background: #5F6368 !important;
+  color: #E8EAED !important;
 }
 
 
@@ -1720,4 +1855,78 @@ body.dark-mode .modal-close-action {
   background: #292A2D !important;
   border-color: #3C4043 !important;
   color: #BDC1C6 !important;
+}
+
+/* ── WI-02B QUESTION BANK REFERENCE & ANSWER GUIDANCE STYLES ── */
+.modal-pitfalls-block {
+  background: #fef2f2;
+  border-left: 3px solid #ef4444;
+  border-radius: 8px;
+}
+
+.modal-disclaimer-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  font-size: 12.5px;
+  color: #64748b;
+  line-height: 1.5;
+  margin-top: 14px;
+}
+
+.modal-copy-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--pm-surface, #ffffff);
+  color: var(--pm-text-primary, #1e293b);
+  border: 1px solid var(--pm-hairline, #cbd5e1);
+  border-radius: 9999px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-copy-action:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.modal-copy-action.copied {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #10b981;
+}
+
+/* Dark theme overrides for WI-02B components */
+html[data-theme="dark"] .modal-pitfalls-block,
+body.dark-mode .modal-pitfalls-block {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-left-color: #ef4444 !important;
+}
+
+html[data-theme="dark"] .modal-disclaimer-box,
+body.dark-mode .modal-disclaimer-box {
+  background: #242528 !important;
+  border-color: #3C4043 !important;
+  color: #9AA0A6 !important;
+}
+
+html[data-theme="dark"] .modal-copy-action,
+body.dark-mode .modal-copy-action {
+  background: #242528 !important;
+  color: #E8EAED !important;
+  border-color: #3C4043 !important;
+}
+
+html[data-theme="dark"] .modal-copy-action:hover,
+body.dark-mode .modal-copy-action:hover {
+  background: #2e3035 !important;
+  border-color: #5f6368 !important;
 }

@@ -231,7 +231,7 @@
       container.classList.add("no-recording");
       container.innerHTML = `
         <div class="pm-audio-empty-notice">
-          <span class="empty-icon">🔇</span>
+          <span class="empty-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg></span>
           <span class="empty-text">Không có bản ghi âm cho lượt trả lời này (người dùng nhập văn bản hoặc micro tắt).</span>
         </div>
       `;
@@ -249,7 +249,7 @@
       container.classList.add("no-speech", "is-silence");
       container.innerHTML = `
         <div class="pm-audio-empty-notice silence-notice">
-          <span class="empty-icon">🔇</span>
+          <span class="empty-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg></span>
           <span class="empty-text">Không ghi nhận được giọng nói trong lượt này (bản ghi âm hoàn toàn im lặng).</span>
         </div>
       `;
@@ -284,7 +284,7 @@
 
     const isFiltered = hasFilteredMs && recordingRecord.durationMs && (recordingRecord.durationMs - recordingRecord.speechActiveMs >= 600);
     const filterTagHtml = isFiltered
-      ? '<span class="speech-filter-badge" title="Tự động lọc khoảng lặng dài, chỉ phát giọng nói">🎙️ Đã lọc khoảng lặng</span>'
+      ? '<span class="speech-filter-badge" title="Tự động lọc khoảng lặng dài, chỉ phát giọng nói"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:3px;"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>Đã lọc khoảng lặng</span>'
       : "";
 
     container.innerHTML = `
@@ -358,7 +358,7 @@
     audio.onerror = () => {
       if (playBtn) {
         playBtn.classList.remove("is-playing");
-        if (playIcon) playIcon.innerHTML = "⚠️";
+        if (playIcon) playIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>';
         if (playLabel) playLabel.textContent = "Lỗi phát";
       }
       if (_activeAudioInstance === audio) {
@@ -420,7 +420,7 @@
           container.className = "pm-audio-player-widget no-speech is-silence" + (options.compact ? " compact" : "");
           container.innerHTML = `
             <div class="pm-audio-empty-notice silence-notice">
-              <span class="empty-icon">🔇</span>
+              <span class="empty-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg></span>
               <span class="empty-text">Không ghi nhận được giọng nói trong lượt này (bản ghi âm hoàn toàn im lặng).</span>
             </div>
           `;

@@ -8,28 +8,28 @@
   --auth-bg-grad: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
   --auth-card-bg: var(--pm-surface, #ffffff);
   --auth-border: var(--pm-border, #e2e8f0);
-  --auth-border-subtle: var(--pm-border-subtle, #f1f5f9);
+  --auth-border-subtle: var(--pm-hairline-soft, #f1f5f9);
   --auth-text-main: var(--pm-text-primary, #0f172a);
   --auth-text-muted: var(--pm-text-muted, #64748b);
   --auth-text-label: var(--pm-text-secondary, #334155);
   --auth-tabs-bg: var(--pm-surface-subtle, #f1f5f9);
   --auth-tab-active-bg: var(--pm-surface, #ffffff);
-  --auth-tab-active-color: var(--mobbin-ink, #0f172a);
+  --auth-tab-active-color: var(--pm-ink, #0f172a);
   --auth-input-bg: var(--pm-surface, #ffffff);
-  --auth-input-border: #cbd5e1;
+  --auth-input-border: var(--pm-hairline-strong, #cbd5e1);
   --auth-input-text: var(--pm-text-primary, #0f172a);
-  --auth-input-placeholder: #94a3b8;
-  --auth-input-focus-border: var(--pm-primary, #2563eb);
+  --auth-input-placeholder: var(--pm-placeholder, #64748b);
+  --auth-input-focus-border: var(--pm-border-focus, #2563eb);
   --auth-input-focus-ring: rgba(37, 99, 235, 0.16);
   --auth-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 20px 32px -4px rgba(15, 23, 42, 0.07);
-  --auth-back-border: var(--pm-border-subtle, #f1f5f9);
-  --auth-link-color: var(--pm-primary, #2563eb);
-  --auth-err-bg: #fef2f2;
-  --auth-err-border: #fecaca;
-  --auth-err-text: #b91c1c;
-  --auth-suc-bg: #ecfdf5;
-  --auth-suc-border: #a7f3d0;
-  --auth-suc-text: #047857;
+  --auth-back-border: var(--pm-hairline, #e2e8f0);
+  --auth-link-color: var(--pm-accent-blue, #2563eb);
+  --auth-err-bg: var(--pm-danger-soft, #fef2f2);
+  --auth-err-border: var(--pm-danger-border, #fecaca);
+  --auth-err-text: var(--pm-danger-text, #991b1b);
+  --auth-suc-bg: var(--pm-success-soft, #ecfdf5);
+  --auth-suc-border: var(--pm-success-border, #a7f3d0);
+  --auth-suc-text: var(--pm-success-text, #065f46);
 }
 
 body.auth-body.dark-mode,
@@ -367,6 +367,15 @@ body.light-mode .form-input {
   color: var(--auth-input-placeholder);
 }
 
+.form-input:hover:not(:focus) {
+  border-color: #94a3b8 !important;
+}
+
+body.dark-mode .form-input:hover:not(:focus),
+html[data-theme="dark"] .form-input:hover:not(:focus) {
+  border-color: #4b5563 !important;
+}
+
 .form-input:focus {
   border-color: var(--auth-input-focus-border) !important;
   box-shadow: 0 0 0 3px var(--auth-input-focus-ring) !important;
@@ -397,7 +406,21 @@ html[data-theme="dark"] .form-input:focus {
 }
 
 .input-password-wrap .form-input {
-  padding-right: 42px;
+  padding-right: 46px !important;
+}
+
+/* Ensure padding-right is strictly reserved across all themes and states */
+body.light-mode .input-password-wrap .form-input,
+body.dark-mode .input-password-wrap .form-input,
+html[data-theme="dark"] .input-password-wrap .form-input,
+.input-password-wrap input.form-input {
+  padding-right: 46px !important;
+}
+
+/* Suppress native Edge / IE reveal and clear buttons to prevent dual-icon conflict */
+.input-password-wrap input::-ms-reveal,
+.input-password-wrap input::-ms-clear {
+  display: none !important;
 }
 
 .btn-toggle-password {
@@ -416,7 +439,23 @@ html[data-theme="dark"] .form-input:focus {
   color: var(--auth-text-muted);
   cursor: pointer;
   padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 2;
+  user-select: none;
+  line-height: 1;
   transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-toggle-password svg,
+.btn-toggle-password .auth-eye-icon,
+.btn-toggle-password .auth-eye-off-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex-shrink: 0;
+  pointer-events: none;
 }
 
 .btn-toggle-password:hover {
@@ -467,46 +506,50 @@ html[data-theme="dark"] .btn-toggle-password:hover {
   width: 16px;
   height: 16px;
   margin: 0;
-  accent-color: #2563eb;
+  accent-color: var(--pm-accent-blue, #2563eb);
   cursor: pointer;
   border-radius: 4px;
   flex-shrink: 0;
 }
 
-.auth-forgot-link {
+.auth-forgot-link,
+.auth-inline-link,
+.auth-link a {
   color: var(--auth-link-color);
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
-  white-space: nowrap;
   transition: color 0.15s ease, text-decoration 0.15s ease;
 }
 
-.auth-forgot-link:hover {
+.auth-link a {
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.auth-forgot-link:hover,
+.auth-inline-link:hover,
+.auth-link a:hover {
   text-decoration: underline;
-  color: var(--auth-text-main);
+  color: var(--pm-primary-hover, #1e40af);
+}
+
+.auth-forgot-link:focus-visible,
+.auth-inline-link:focus-visible,
+.auth-link a:focus-visible {
+  outline: 2px solid var(--auth-input-focus-border);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 body.dark-mode .auth-forgot-link:hover,
-html[data-theme="dark"] .auth-forgot-link:hover {
-  color: #ffffff;
-}
-
-.auth-terms-group {
-  margin-top: 14px;
-  margin-bottom: 22px;
-}
-
-.auth-inline-link {
-  color: var(--auth-link-color);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.15s ease;
-}
-
-.auth-inline-link:hover {
-  text-decoration: underline;
-  color: var(--auth-text-main);
+html[data-theme="dark"] .auth-forgot-link:hover,
+body.dark-mode .auth-inline-link:hover,
+html[data-theme="dark"] .auth-inline-link:hover,
+body.dark-mode .auth-link a:hover,
+html[data-theme="dark"] .auth-link a:hover {
+  color: #7dd3fc !important;
 }
 
 body.dark-mode .auth-checkbox-label,
@@ -594,11 +637,14 @@ body.light-mode .auth-button:active {
   transform: translateY(0);
 }
 
-.auth-button:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+.auth-button:disabled,
+body.light-mode .auth-button:disabled {
+  background: var(--pm-surface-active, #e2e8f0) !important;
+  color: var(--pm-text-muted, #64748b) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
 }
 
 .auth-button:focus-visible {
@@ -650,6 +696,8 @@ html[data-theme="dark"] .auth-button:disabled {
   color: #64748b !important;
   box-shadow: none !important;
   cursor: not-allowed !important;
+  transform: none !important;
+  opacity: 1 !important;
 }
 
 /* ==========================================================================
@@ -858,4 +906,247 @@ html[data-theme="dark"] .auth-footer-link:hover {
     align-items: flex-start;
     gap: 8px;
   }
+}
+
+/* ==========================================================================
+   PASSWORD STRENGTH INDICATOR & SEAMLESS CHECKLIST (WI-AUTH-01R8)
+   ========================================================================== */
+.pw-sample-hint {
+  font-size: 11.5px;
+  color: var(--auth-text-muted);
+  margin-top: 5px;
+  margin-bottom: 2px;
+  font-style: italic;
+  line-height: 1.35;
+}
+
+body.dark-mode .pw-sample-hint,
+html[data-theme="dark"] .pw-sample-hint {
+  color: #94a3b8 !important;
+}
+
+.pw-strength-container {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pw-strength-track {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  height: 4px;
+}
+
+.pw-strength-segment {
+  flex: 1;
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--auth-border, #cbd5e1);
+  transition: background-color 0.2s ease;
+}
+
+body.dark-mode .pw-strength-segment,
+html[data-theme="dark"] .pw-strength-segment {
+  background: #2e3238 !important;
+}
+
+.pw-strength-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.pw-strength-caption {
+  color: var(--auth-text-muted);
+  font-weight: 500;
+}
+
+.pw-strength-label {
+  font-weight: 600;
+  transition: color 0.2s ease;
+  color: var(--auth-text-muted);
+}
+
+/* Strength states */
+.pw-strength-container.strength-weak #pw-strength-segment-1 {
+  background: #ef4444 !important;
+}
+.pw-strength-container.strength-weak .pw-strength-label {
+  color: #ef4444 !important;
+}
+body.dark-mode .pw-strength-container.strength-weak .pw-strength-label {
+  color: #f87171 !important;
+}
+
+.pw-strength-container.strength-medium #pw-strength-segment-1,
+.pw-strength-container.strength-medium #pw-strength-segment-2 {
+  background: #f59e0b !important;
+}
+.pw-strength-container.strength-medium .pw-strength-label {
+  color: #f59e0b !important;
+}
+body.dark-mode .pw-strength-container.strength-medium .pw-strength-label {
+  color: #fbbf24 !important;
+}
+
+.pw-strength-container.strength-strong #pw-strength-segment-1,
+.pw-strength-container.strength-strong #pw-strength-segment-2,
+.pw-strength-container.strength-strong #pw-strength-segment-3 {
+  background: #10b981 !important;
+}
+.pw-strength-container.strength-strong .pw-strength-label {
+  color: #10b981 !important;
+}
+body.dark-mode .pw-strength-container.strength-strong .pw-strength-label {
+  color: #34d399 !important;
+}
+
+/* Checklist items */
+.password-requirements-inline,
+.password-requirements-box {
+  margin-top: 6px;
+  margin-bottom: 2px;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pw-req-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--auth-text-muted);
+  transition: color 0.15s ease;
+}
+
+.pw-req-item .pw-req-icon {
+  width: 13px;
+  height: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.pw-req-item .pw-req-text {
+  flex: 1;
+  color: var(--auth-text-muted);
+}
+
+.pw-req-item.neutral .pw-req-icon {
+  color: var(--auth-text-muted);
+  opacity: 0.65;
+}
+
+.pw-req-item.met .pw-req-icon {
+  color: #10b981 !important;
+}
+.pw-req-item.met .pw-req-text {
+  color: var(--auth-text-label);
+}
+body.dark-mode .pw-req-item.met .pw-req-icon,
+html[data-theme="dark"] .pw-req-item.met .pw-req-icon {
+  color: #34d399 !important;
+}
+body.dark-mode .pw-req-item.met .pw-req-text,
+html[data-theme="dark"] .pw-req-item.met .pw-req-text {
+  color: #e2e8f0;
+}
+
+.pw-req-item.unmet .pw-req-icon {
+  color: #ef4444 !important;
+}
+.pw-req-item.unmet .pw-req-text {
+  color: var(--auth-err-text);
+}
+body.dark-mode .pw-req-item.unmet .pw-req-icon,
+html[data-theme="dark"] .pw-req-item.unmet .pw-req-icon {
+  color: #f87171 !important;
+}
+body.dark-mode .pw-req-item.unmet .pw-req-text,
+html[data-theme="dark"] .pw-req-item.unmet .pw-req-text {
+  color: #fca5a5;
+}
+
+/* Confirmation status */
+.pw-confirm-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  font-size: 12px;
+  line-height: 1.35;
+  transition: color 0.15s ease;
+}
+
+.pw-confirm-status .pw-req-icon {
+  width: 13px;
+  height: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pw-confirm-status.neutral .pw-req-icon {
+  color: var(--auth-text-muted);
+  opacity: 0.65;
+}
+
+.pw-confirm-status.met .pw-req-icon {
+  color: #10b981 !important;
+}
+.pw-confirm-status.met .pw-req-text {
+  color: var(--auth-text-label);
+}
+body.dark-mode .pw-confirm-status.met .pw-req-icon,
+html[data-theme="dark"] .pw-confirm-status.met .pw-req-icon {
+  color: #34d399 !important;
+}
+body.dark-mode .pw-confirm-status.met .pw-req-text,
+html[data-theme="dark"] .pw-confirm-status.met .pw-req-text {
+  color: #e2e8f0;
+}
+
+.pw-confirm-status.unmet .pw-req-icon {
+  color: #ef4444 !important;
+}
+.pw-confirm-status.unmet .pw-req-text {
+  color: var(--auth-err-text);
+}
+body.dark-mode .pw-confirm-status.unmet .pw-req-icon,
+html[data-theme="dark"] .pw-confirm-status.unmet .pw-req-icon {
+  color: #f87171 !important;
+}
+body.dark-mode .pw-confirm-status.unmet .pw-req-text,
+html[data-theme="dark"] .pw-confirm-status.unmet .pw-req-text {
+  color: #fca5a5;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

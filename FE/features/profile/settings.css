@@ -329,7 +329,7 @@ body.dark-mode .btn-save-pref:hover {
 html[data-theme="dark"] #role-sync-badge,
 body.dark-mode #role-sync-badge {
   background: rgba(16, 185, 129, 0.15) !important;
-  color: #81c995 !important;
+  color: #34d399 !important;
   border: 1px solid rgba(16, 185, 129, 0.3) !important;
 }
 
@@ -351,7 +351,7 @@ body.dark-mode span[style*="background"] {
 html[data-theme="dark"] #role-sync-badge,
 body.dark-mode #role-sync-badge {
   background: rgba(16, 185, 129, 0.15) !important;
-  color: #81c995 !important;
+  color: #34d399 !important;
   border-color: rgba(16, 185, 129, 0.3) !important;
 }
 
@@ -534,4 +534,33 @@ body.dark-mode #role-sync-badge {
     0% { transform: scale(1); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.35); }
     50% { transform: scale(1.01); box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.15); }
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+
+
+/* WI-DARKMODE-03 Settings Toggles & Pref Info Overrides */
+html[data-theme="dark"] .slider-round,
+body.dark-mode .slider-round {
+    background-color: #3C4043 !important;
+    border: 1px solid #5F6368 !important;
+}
+
+html[data-theme="dark"] .slider-round:before,
+body.dark-mode .slider-round:before {
+    background-color: #E8EAED !important;
+}
+
+html[data-theme="dark"] input:checked + .slider-round,
+body.dark-mode input:checked + .slider-round {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+}
+
+html[data-theme="dark"] .pref-row-info h4,
+body.dark-mode .pref-row-info h4 {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .pref-row-info p,
+body.dark-mode .pref-row-info p {
+    color: #BDC1C6 !important;
 }

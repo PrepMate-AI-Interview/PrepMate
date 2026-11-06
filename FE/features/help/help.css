@@ -355,7 +355,7 @@ body.dark-mode .channel-card p {
 html[data-theme="dark"] .channel-status-pill.unconfigured,
 body.dark-mode .channel-status-pill.unconfigured {
     background: rgba(245, 158, 11, 0.15) !important;
-    color: #fdd663 !important;
+    color: #fbbf24 !important;
     border-color: rgba(251, 191, 36, 0.35) !important;
 }
 
@@ -368,7 +368,7 @@ body.dark-mode .channel-status-pill.unconfigured {
 html[data-theme="dark"] .channel-status-pill.active,
 body.dark-mode .channel-status-pill.active {
     background: rgba(16, 185, 129, 0.15) !important;
-    color: #81c995 !important;
+    color: #34d399 !important;
     border-color: rgba(52, 211, 153, 0.35) !important;
 }
 
@@ -465,6 +465,11 @@ body.dark-mode .btn-channel-action.active {
     background: #2563eb !important;
     border-color: #2563eb !important;
     color: #ffffff !important;
+}
+
+html[data-theme="dark"] .btn-channel-action.active *,
+body.dark-mode .btn-channel-action.active * {
+    color: inherit !important;
 }
 
 html[data-theme="dark"] .btn-channel-action.active:hover,
@@ -969,4 +974,11 @@ body.dark-mode .btn-legal-jump:focus-visible {
     .aux-status-badge {
         align-self: flex-start;
     }
+}
+
+
+html[data-theme="dark"] .indicator-badge,
+body.dark-mode .indicator-badge {
+    background: #2563eb !important;
+    color: #ffffff !important;
 }

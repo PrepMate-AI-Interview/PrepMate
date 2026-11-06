@@ -43,7 +43,11 @@ namespace backend.Services.Interview
                     {
                         var isCompleted = session.Status.Equals("completed", StringComparison.OrdinalIgnoreCase) ||
                                           session.InterviewState?.InterviewPhase.Equals("COMPLETED", StringComparison.OrdinalIgnoreCase) == true;
-                        if (isCompleted)
+                        int answeredCount = session.Answers?.Count(a =>
+                            !string.Equals(a.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase) &&
+                            !string.Equals(a.Stage, InterviewStageNames.Introduction, StringComparison.OrdinalIgnoreCase)) ?? 0;
+                        int askedCount = session.Questions?.Count ?? 0;
+                        if (isCompleted || answeredCount >= InterviewState.DemoInterviewQuestionLimit || askedCount >= InterviewState.DemoInterviewQuestionLimit)
                         {
                             return LegacyQuestionResult.BadRequest("Phiên phỏng vấn đã hoàn tất, không thể tiếp tục tạo câu hỏi.");
                         }

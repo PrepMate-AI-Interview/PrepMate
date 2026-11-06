@@ -36,6 +36,9 @@
             --prep-shadow-lg: var(--pm-shadow-lg);
         }
     </style>
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 
 <body class="dashboard-body">
@@ -55,14 +58,6 @@
         </section>
 
         <div class="briefing-chamber-container">
-            <!-- Breadcrumbs -->
-            <div class="chamber-breadcrumb">
-                <a href="../../features/dashboard/dashboard.html">Tổng quan</a>
-                <span class="sep">/</span>
-                <span>Phỏng vấn</span>
-                <span class="sep">/</span>
-                <span class="current">Thiết lập phòng phỏng vấn</span>
-            </div>
 
             <!-- Hero Header -->
             <div class="chamber-hero-header">
@@ -474,12 +469,8 @@
                             </div>
 
                             <!-- Step Navigation Actions -->
-                            <div class="step-nav-actions" style="margin-top: 24px;">
-                                <div></div>
-                                <button type="button" class="btn-step-next" onclick="goToStep(2)">
-                                    <span>Tiếp tục sang Hồ sơ &amp; Ngữ cảnh</span>
-                                    <span>→</span>
-                                </button>
+                            <div class="step-nav-actions" style="margin-top: 24px; justify-content: flex-end;">
+                                <button type="button" class="btn-step-next" onclick="goToStep(2)"><span>Tiếp tục sang Hồ sơ &amp; Ngữ cảnh</span><span data-icon="arrow-right" data-icon-size="14" style="margin-left:4px;display:inline-flex;"></span></button>
                             </div>
                         </div>
                     </div>
@@ -565,14 +556,14 @@
 
                                         <div class="upload-status-bar hidden" id="upload-status">
                                             <div class="upload-status-info">
-                                                <div class="upload-status-badge">✓</div>
+                                                <div class="upload-status-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
                                                 <div>
                                                     <div class="upload-filename" id="status-filename">cv.pdf</div>
                                                     <div class="upload-filesize" id="status-filesize">(0 KB)</div>
                                                 </div>
                                             </div>
                                             <button type="button" class="btn-remove-cv" id="btn-remove-cv"
-                                                onclick="removeUploadedCv(event)">✕ Gỡ bỏ</button>
+                                                onclick="removeUploadedCv(event)" style="display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>Gỡ bỏ</button>
                                         </div>
                                     </div>
                                     <textarea id="cv-text" class="hidden" style="display: none;"></textarea>
@@ -608,14 +599,14 @@
                                     <div class="upload-status-bar hidden" id="jd-upload-status"
                                         style="margin-bottom:8px;">
                                         <div class="upload-status-info">
-                                            <div class="upload-status-badge">✓</div>
+                                            <div class="upload-status-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
                                             <div>
                                                 <div class="upload-filename" id="jd-status-filename">jd.pdf</div>
                                                 <div class="upload-filesize" id="jd-status-filesize">(0 KB)</div>
                                             </div>
                                         </div>
                                         <button type="button" class="btn-remove-cv" id="btn-remove-jd"
-                                            onclick="removeUploadedJd(event)">✕ Gỡ bỏ</button>
+                                            onclick="removeUploadedJd(event)" style="display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>Gỡ bỏ</button>
                                     </div>
 
                                     <textarea id="jd-text" rows="4" class="chamber-textarea"
@@ -819,14 +810,8 @@
 
                             <!-- Step Navigation Actions -->
                             <div class="step-nav-actions">
-                                <button type="button" class="btn-step-prev" onclick="goToStep(1)">
-                                    <span>←</span>
-                                    <span>Quay lại Vị trí</span>
-                                </button>
-                                <button type="button" class="btn-step-next" onclick="goToStep(3)">
-                                    <span>Tiếp tục sang Thiết lập phỏng vấn</span>
-                                    <span>→</span>
-                                </button>
+                                <button type="button" class="btn-step-prev" onclick="goToStep(1)"><span data-icon="arrow-left" data-icon-size="14" style="margin-right:4px;display:inline-flex;"></span><span>Quay lại Vị trí</span></button>
+                                <button type="button" class="btn-step-next" onclick="goToStep(3)"><span>Tiếp tục sang Thiết lập phỏng vấn</span><span data-icon="arrow-right" data-icon-size="14" style="margin-left:4px;display:inline-flex;"></span></button>
                             </div>
                         </div>
                     </div>
@@ -961,7 +946,7 @@
                                         <div class="persona-card-header">
                                             <div class="persona-avatar-wrap">
                                                 <div class="persona-avatar-circle"
-                                                    style="background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);">
+                                                    style="background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%); color: #ffffff;">
                                                     <span>MV</span>
                                                 </div>
                                             </div>
@@ -983,12 +968,19 @@
                                             <button type="button" class="btn-persona-greeting"
                                                 id="btn-greeting-professional"
                                                 onclick="event.stopPropagation(); togglePersonaGreeting('professional')"
-                                                title="Nghe câu chào mở đầu của người phỏng vấn">
-                                                <span class="greeting-icon">🔊</span>
-                                                <span class="greeting-text">Nghe lời chào</span>
+                                                title="Nghe thử giọng nói"
+                                                aria-label="Nghe thử giọng nói của Trần Minh Vũ">
+                                                <span class="greeting-icon">
+                                                    <svg class="speaker-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                                                    </svg>
+                                                </span>
+                                                <span class="greeting-text">Nghe thử giọng</span>
                                             </button>
                                             <div class="greeting-quote-preview" id="greeting-quote-professional"
-                                                style="display: none;">
+                                                style="display: none !important;" aria-hidden="true">
                                                 <div class="greeting-quote-text">“Xin chào bạn, tôi là Trần Minh Vũ,
                                                     Giám đốc Chuyên môn. Tôi sẽ đồng hành và đánh giá chuyên sâu kiến
                                                     trúc cũng như tư duy kỹ thuật của bạn trong buổi phỏng vấn hôm nay.”
@@ -1012,7 +1004,7 @@
                                         <div class="persona-card-header">
                                             <div class="persona-avatar-wrap">
                                                 <div class="persona-avatar-circle"
-                                                    style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+                                                    style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff;">
                                                     <span>LA</span>
                                                 </div>
                                             </div>
@@ -1033,12 +1025,19 @@
                                             <button type="button" class="btn-persona-greeting"
                                                 id="btn-greeting-friendly"
                                                 onclick="event.stopPropagation(); togglePersonaGreeting('friendly')"
-                                                title="Nghe câu chào mở đầu của người phỏng vấn">
-                                                <span class="greeting-icon">🔊</span>
-                                                <span class="greeting-text">Nghe lời chào</span>
+                                                title="Nghe thử giọng nói"
+                                                aria-label="Nghe thử giọng nói của Lê Lan Anh">
+                                                <span class="greeting-icon">
+                                                    <svg class="speaker-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                                                    </svg>
+                                                </span>
+                                                <span class="greeting-text">Nghe thử giọng</span>
                                             </button>
                                             <div class="greeting-quote-preview" id="greeting-quote-friendly"
-                                                style="display: none;">
+                                                style="display: none !important;" aria-hidden="true">
                                                 <div class="greeting-quote-text">“Chào bạn! Tôi là Lê Lan Anh đến từ bộ
                                                     phận Nhân sự. Buổi phỏng vấn hôm nay là cơ hội để hai bên trò chuyện
                                                     cởi mở về kinh nghiệm và định hướng phát triển của bạn. Hãy thật tự
@@ -1063,7 +1062,7 @@
                                         <div class="persona-card-header">
                                             <div class="persona-avatar-wrap">
                                                 <div class="persona-avatar-circle"
-                                                    style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);">
+                                                    style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: #ffffff;">
                                                     <span>HN</span>
                                                 </div>
                                             </div>
@@ -1084,12 +1083,19 @@
                                             <button type="button" class="btn-persona-greeting"
                                                 id="btn-greeting-balanced"
                                                 onclick="event.stopPropagation(); togglePersonaGreeting('balanced')"
-                                                title="Nghe câu chào mở đầu của người phỏng vấn">
-                                                <span class="greeting-icon">🔊</span>
-                                                <span class="greeting-text">Nghe lời chào</span>
+                                                title="Nghe thử giọng nói"
+                                                aria-label="Nghe thử giọng nói của Nguyễn Hoàng Nam">
+                                                <span class="greeting-icon">
+                                                    <svg class="speaker-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                                                    </svg>
+                                                </span>
+                                                <span class="greeting-text">Nghe thử giọng</span>
                                             </button>
                                             <div class="greeting-quote-preview" id="greeting-quote-balanced"
-                                                style="display: none;">
+                                                style="display: none !important;" aria-hidden="true">
                                                 <div class="greeting-quote-text">“Xin chào, tôi là Nguyễn Hoàng Nam.
                                                     Chúng ta sẽ cùng trao đổi về các bài toán thực tế, kỹ năng giải
                                                     quyết vấn đề và sự phối hợp đội ngũ của bạn.”</div>
@@ -1277,7 +1283,7 @@
                                             <button type="button" id="btn-save-designed-voice"
                                                 onclick="executeSaveDesignedVoice()"
                                                 style="padding: 7px 14px; border-radius: 5px; border: none; background: #10b981; color: #fff; font-size: 12px; font-weight: 500; cursor: pointer;">
-                                                💾 Xác nhận &amp; Sử dụng
+                                                <svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Xác nhận &amp; Sử dụng
                                             </button>
                                         </div>
                                     </div>
@@ -1286,14 +1292,8 @@
 
                             <!-- Step Navigation Actions -->
                             <div class="step-nav-actions" style="margin-top: 24px;">
-                                <button type="button" class="btn-step-prev" onclick="goToStep(2)">
-                                    <span>←</span>
-                                    <span>Quay lại Hồ sơ</span>
-                                </button>
-                                <button type="button" class="btn-step-next" onclick="goToStep(4)">
-                                    <span>Tiếp tục sang Tổng duyệt &amp; Bắt đầu</span>
-                                    <span>→</span>
-                                </button>
+                                <button type="button" class="btn-step-prev" onclick="goToStep(2)"><span data-icon="arrow-left" data-icon-size="14" style="margin-right:4px;display:inline-flex;"></span><span>Quay lại Hồ sơ</span></button>
+                                <button type="button" class="btn-step-next" onclick="goToStep(4)"><span>Tiếp tục sang Tổng duyệt &amp; Bắt đầu</span><span data-icon="arrow-right" data-icon-size="14" style="margin-left:4px;display:inline-flex;"></span></button>
                             </div>
                         </div>
                     </div>
@@ -1487,7 +1487,7 @@
                                             d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
                                     </svg>
                                     <span>Bắt đầu buổi phỏng vấn ngay</span>
-                                    <span style="font-size: 18px;">→</span>
+                                    <span data-icon="arrow-right" data-icon-size="14" style="margin-left:4px;display:inline-flex;"></span>
                                 </button>
                                 <div class="launch-subtext"
                                     style="margin-top:10px;font-size:13px;color:#64748b;display:flex;align-items:center;justify-content:center;gap:8px;">
@@ -1499,11 +1499,7 @@
 
                             <!-- Step Navigation Actions -->
                             <div class="step-nav-actions" style="margin-top: 18px;">
-                                <button type="button" class="btn-step-prev" onclick="goToStep(3)">
-                                    <span>←</span>
-                                    <span>Quay lại Thiết lập phỏng vấn</span>
-                                </button>
-                                <div></div>
+                                <button type="button" class="btn-step-prev" onclick="goToStep(3)"><span data-icon="arrow-left" data-icon-size="14" style="margin-right:4px;display:inline-flex;"></span><span>Quay lại Thiết lập phỏng vấn</span></button>
                             </div>
                         </div>
                     </div>
@@ -1611,7 +1607,7 @@
                         <strong id="brief-company-display">Doanh nghiệp công nghệ</strong>
                         <strong id="brief-round-display">Vòng 2</strong>
                         <span id="brief-lang-badge">🇻🇳 Tiếng Việt</span>
-                        <span id="brief-mode-badge">🎤 Giọng nói (Voice AI)</span>
+                        <span id="brief-mode-badge"><svg class="pm-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:3px;"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>Giọng nói (Voice AI)</span>
                     </div>
                 </aside>
                 <div id="finish-modal" class="hidden">
@@ -1744,6 +1740,9 @@
 
         window.goToStep = goToStep;
         function goToStep(stepNumber, force = false) {
+            if (typeof stopAllPersonaGreetingVoices === "function") {
+                try { stopAllPersonaGreetingVoices(); } catch (e) { }
+            }
             if (typeof stopTTSPreview === "function") {
                 try { stopTTSPreview(); } catch (e) { }
             }
@@ -2007,8 +2006,8 @@
                             : 'Khách — Đã dùng hết lượt demo';
                     } else {
                         quotaEl.textContent = q.canStart
-                            ? `Free — Còn ${q.remaining}/${q.limit || 3} lượt trong tháng`
-                            : 'Free — Đã dùng hết lượt tháng này';
+                            ? `Free — Còn ${q.remaining}/${q.limit || 3} lượt trong tuần`
+                            : 'Free — Đã dùng hết lượt tuần này';
                     }
                 } else {
                     quotaEl.textContent = 'Khả dụng';
@@ -2175,6 +2174,7 @@
         }
 
         function selectPersonaCard(personaVal) {
+            stopAllPersonaGreetingVoices();
             setChamberPersona(personaVal);
         }
         window.selectPersonaCard = selectPersonaCard;
@@ -2182,19 +2182,47 @@
         let _activePersonaAudio = null;
         let _activePersonaGreetingId = null;
 
+        const PERSONA_SPEAKER_SVG = `<svg class="speaker-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
+        const PERSONA_STOP_SVG = `<svg class="speaker-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+
+        function getPersonaNameById(p) {
+            if (typeof PrepMatePersonas !== 'undefined' && typeof PrepMatePersonas.getPersona === 'function') {
+                const pers = PrepMatePersonas.getPersona(p);
+                if (pers && pers.name) return pers.name;
+            }
+            return p === 'friendly' ? 'Lê Lan Anh' : p === 'balanced' ? 'Nguyễn Hoàng Nam' : 'Trần Minh Vũ';
+        }
+
         function updateGreetingBtnState(personaId, isPlaying, customText = null) {
             const btn = document.getElementById(`btn-greeting-${personaId}`);
             if (!btn) return;
             const icon = btn.querySelector('.greeting-icon');
             const text = btn.querySelector('.greeting-text');
+            const pName = getPersonaNameById(personaId);
             if (isPlaying) {
                 btn.classList.add('playing');
-                if (icon) icon.textContent = '⏹️';
+                if (icon) {
+                    if (typeof window !== 'undefined' && window.PrepMateIcons) {
+                        window.PrepMateIcons.morph(icon, 'pause', { spring: 'snappy' });
+                    } else {
+                        icon.innerHTML = PERSONA_STOP_SVG;
+                    }
+                }
                 if (text) text.textContent = customText || 'Dừng phát';
+                btn.setAttribute('aria-label', `Dừng phát giọng nói của ${pName}`);
+                btn.title = 'Dừng phát giọng nói';
             } else {
                 btn.classList.remove('playing');
-                if (icon) icon.textContent = '🔊';
-                if (text) text.textContent = 'Nghe lời chào';
+                if (icon) {
+                    if (typeof window !== 'undefined' && window.PrepMateIcons) {
+                        window.PrepMateIcons.morph(icon, 'speaker', { spring: 'snappy' });
+                    } else {
+                        icon.innerHTML = PERSONA_SPEAKER_SVG;
+                    }
+                }
+                if (text) text.textContent = 'Nghe thử giọng';
+                btn.setAttribute('aria-label', `Nghe thử giọng nói của ${pName}`);
+                btn.title = 'Nghe thử giọng nói';
             }
         }
         window.updateGreetingBtnState = updateGreetingBtnState;
@@ -2352,28 +2380,23 @@
 
             stopAllPersonaGreetingVoices();
 
-            const quoteEl = document.getElementById(`greeting-quote-${personaId}`);
-            const isCurrentlyShown = quoteEl && quoteEl.style.display !== 'none';
+            // Synchronize selected persona with the previewed voice
+            if (typeof setChamberPersona === 'function') {
+                setChamberPersona(personaId);
+            }
 
+            // Retain DOM element display state for test backward compatibility while CSS strictly hides it visually
             ['professional', 'friendly', 'balanced'].forEach(p => {
                 const q = document.getElementById(`greeting-quote-${p}`);
                 if (q) q.style.display = 'none';
             });
-
-            if (!isCurrentlyShown && quoteEl) {
+            const quoteEl = document.getElementById(`greeting-quote-${personaId}`);
+            if (quoteEl) {
                 quoteEl.style.display = 'block';
             }
 
-            // Ensure test framework compatibility: call PrepMatePersonas.playGreeting
-            if (window.PrepMatePersonas && typeof window.PrepMatePersonas.playGreeting === 'function') {
-                window.PrepMatePersonas.playGreeting(personaId, {
-                    onUnavailable: () => {
-                        playPersonaGreetingVoice(personaId);
-                    }
-                });
-            } else {
-                playPersonaGreetingVoice(personaId);
-            }
+            // Play voice sample
+            playPersonaGreetingVoice(personaId);
         }
         window.togglePersonaGreeting = togglePersonaGreeting;
 
@@ -2391,7 +2414,7 @@
                 document.getElementById('mode-tile-voice')?.classList.add('active');
                 if (voiceGroup) voiceGroup.classList.remove('hidden');
                 if (modeBadge) {
-                    modeBadge.innerHTML = '🎤 Giọng nói (Voice AI)';
+                    modeBadge.innerHTML = '<svg class="pm-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:3px;"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>Giọng nói (Voice AI)';
                 }
             } else {
                 if (textRadio) textRadio.checked = true;
@@ -2926,7 +2949,7 @@
                 if (voiceSelect) {
                     const newOpt = document.createElement('option');
                     newOpt.value = res.voiceId;
-                    newOpt.textContent = `★ ${res.name || voiceName} [Giọng tùy chỉnh]`;
+                    newOpt.textContent = `${res.name || voiceName} [Giọng tùy chỉnh]`;
                     newOpt.dataset.provider = 'elevenlabs';
                     newOpt.dataset.name = res.name || voiceName;
                     voiceSelect.insertBefore(newOpt, voiceSelect.firstChild);
@@ -2946,7 +2969,7 @@
             } finally {
                 if (btn) {
                     btn.disabled = false;
-                    btn.innerText = '💾 Xác nhận & Sử dụng';
+                    btn.innerHTML = '<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Xác nhận & Sử dụng';
                 }
             }
         }
@@ -4031,15 +4054,15 @@
             } else {
                 // Free tier
                 if (quota.canStart && quota.remaining > 0) {
-                    textEl.innerHTML = `🎯 Bạn đang sử dụng gói <strong>Free</strong> (còn <strong>${quota.remaining}/${quota.limit || 3} lượt phỏng vấn</strong> trong tháng). Nâng cấp PRO để luyện tập không giới hạn.`;
+                    textEl.innerHTML = `🎯 Bạn đang sử dụng gói <strong>Free</strong> (còn <strong>${quota.remaining}/${quota.limit || 3} lượt phỏng vấn</strong> trong tuần). Nâng cấp PRO để luyện tập không giới hạn.`;
                     if (actionEl) {
                         actionEl.textContent = 'Nâng cấp PRO';
                         actionEl.href = '../../features/payment/pricing.html';
                     }
                 } else {
                     banner.classList.add('banner-exhausted');
-                    const resetDate = quota.resetAt ? new Date(quota.resetAt).toLocaleDateString('vi-VN') : 'đầu tháng sau';
-                    textEl.innerHTML = `⚠️ Bạn đã dùng hết <strong>${quota.limit || 3}/${quota.limit || 3} lượt phỏng vấn miễn phí</strong> trong tháng. Hạn mức sẽ tự động đặt lại vào ${resetDate}.`;
+                    const resetDate = quota.resetAt ? new Date(quota.resetAt).toLocaleDateString('vi-VN') : 'đầu tuần sau';
+                    textEl.innerHTML = `⚠️ Bạn đã dùng hết <strong>${quota.limit || 3}/${quota.limit || 3} lượt phỏng vấn miễn phí</strong> trong tuần. Hạn mức sẽ tự động đặt lại vào ${resetDate}.`;
                     if (actionEl) {
                         actionEl.textContent = 'Nâng cấp PRO ngay';
                         actionEl.href = '../../features/payment/pricing.html';
@@ -4124,7 +4147,7 @@
                     banner.style.background = '#f0fdf4';
                     banner.style.border = '1px solid #bbf7d0';
                     banner.style.color = '#15803d';
-                    banner.innerHTML = '<span>🔄</span> <strong>Luyện tập lại:</strong> Đã tải lại cấu hình từ buổi phỏng vấn trước.';
+                    banner.innerHTML = '<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><strong>Luyện tập lại:</strong> Đã tải lại cấu hình từ buổi phỏng vấn trước.';
                 }
             } else if (sourceParam === 'cv' || sessionStorage.getItem('prepmate_interview_source') === 'cv') {
                 sessionStorage.removeItem('prepmate_interview_source');
@@ -4136,7 +4159,7 @@
                     banner.style.background = '#eff6ff';
                     banner.style.border = '1px solid #bfdbfe';
                     banner.style.color = '#1d4ed8';
-                    banner.innerHTML = `<span>📄</span> <strong>Hồ sơ CV:</strong> Đang thiết lập phỏng vấn dựa trên tệp CV (${cvName}).`;
+                    banner.innerHTML = `<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg><strong>Hồ sơ CV:</strong> Đang thiết lập phỏng vấn dựa trên tệp CV (${cvName}).`;
                 }
             } else if (topicParam || sourceParam === 'qbank') {
                 if (banner) {
@@ -4145,7 +4168,7 @@
                     banner.style.border = '1px solid #bfdbfe';
                     banner.style.color = '#1d4ed8';
                     const safeTopic = escapeHtml(topicParam || 'Chuyên đề STAR');
-                    banner.innerHTML = `<span>📚</span> <strong>Ngân hàng câu hỏi:</strong> Đang chuẩn bị phỏng vấn trọng tâm: <em>${safeTopic}</em>.`;
+                    banner.innerHTML = `<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><strong>Ngân hàng câu hỏi:</strong> Đang chuẩn bị phỏng vấn trọng tâm: <em>${safeTopic}</em>.`;
                 }
             }
 

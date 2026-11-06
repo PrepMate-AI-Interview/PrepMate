@@ -17,7 +17,7 @@ namespace backend.Services.Interview
             _geminiService = geminiService;
         }
 
-        public async Task<ClosingResult> GenerateClosingStatementAsync(Session session)
+                public async Task<ClosingResult> GenerateClosingStatementAsync(Session session)
         {
             var candidateName = session.InterviewContext?.FullName ?? "bạn";
             var company = session.InterviewContext?.TargetCompany ?? "chúng tôi";
@@ -41,29 +41,47 @@ namespace backend.Services.Interview
 
                     if (!string.IsNullOrWhiteSpace(stmt))
                     {
-                        return new ClosingResult
+                        var sanitized = SanitizeClosingStatement(stmt);
+                        if (!string.IsNullOrWhiteSpace(sanitized))
                         {
-                            ClosingStatement = stmt,
-                            IsCompleted = false,
-                            Evidence = new ClosingEvidence
+                            return new ClosingResult
                             {
-                                Completed = true,
-                                NextStepKnown = nextStepKnown,
-                                Professionalism = "High",
-                                Engagement = "High",
-                                ClosingQuality = "High",
-                                EvidenceStrength = "Strong"
-                            }
-                        };
+                                ClosingStatement = sanitized,
+                                IsCompleted = false,
+                                Evidence = new ClosingEvidence
+                                {
+                                    Completed = true,
+                                    NextStepKnown = nextStepKnown,
+                                    Professionalism = "High",
+                                    Engagement = "High",
+                                    ClosingQuality = "High",
+                                    EvidenceStrength = "Strong"
+                                }
+                            };
+                        }
                     }
                 }
                 catch (Exception)
                 {
-                    // Fall back to deterministic closing statement
+                    // Fall back to deterministic context-grounded closing statement
                 }
             }
 
-            var defaultStatement = $"Cảm ơn {candidateName} đã dành thời gian tham gia buổi phỏng vấn hôm nay cùng {company}. Tôi đánh giá cao sự chuẩn bị chu đáo và những chia sẻ thực chiến của bạn. Chúng tôi sẽ tổng hợp kết quả đánh giá năng lực chi tiết và gửi thông tin phản hồi qua quy trình tuyển dụng chuẩn. Chúc bạn một ngày làm việc hiệu quả!";
+            var lastAnswerObj = session.Answers != null
+                ? System.Linq.Enumerable.LastOrDefault(session.Answers, a =>
+                    !string.Equals(a.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(a.Stage, InterviewStageNames.Introduction, StringComparison.OrdinalIgnoreCase))
+                : null;
+
+            string defaultStatement;
+            if (lastAnswerObj != null && !string.IsNullOrWhiteSpace(lastAnswerObj.Answer) && lastAnswerObj.Answer.Trim().Length >= 10)
+            {
+                defaultStatement = $"Cảm ơn bạn đã chia sẻ cụ thể về cách tiếp cận của mình trong phần trao đổi vừa rồi. Như vậy, chúng ta đã hoàn thành buổi phỏng vấn hôm nay. PrepMate đang phân tích các câu trả lời và sẽ chuẩn bị báo cáo đánh giá chi tiết cho bạn ngay sau đây.";
+            }
+            else
+            {
+                defaultStatement = $"Cảm ơn bạn đã dành thời gian tham gia buổi trao đổi hôm nay. Như vậy, chúng ta đã hoàn thành toàn bộ phần phỏng vấn. PrepMate đang phân tích kết quả và chuẩn bị báo cáo đánh giá cho bạn ngay sau đây.";
+            }
 
             return new ClosingResult
             {
@@ -80,6 +98,40 @@ namespace backend.Services.Interview
                 }
             };
         }
+
+                private static string SanitizeClosingStatement(string stmt)
+        {
+            if (string.IsNullOrWhiteSpace(stmt)) return string.Empty;
+            var trimmed = stmt.Trim();
+            trimmed = trimmed.Trim('"', '\'', '`', ' ');
+
+            var rawSentences = trimmed.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+            var cleanParts = new List<string>();
+            foreach (var p in rawSentences)
+            {
+                var pTrim = p.Trim();
+                if (string.IsNullOrWhiteSpace(pTrim)) continue;
+                if (pTrim.StartsWith("Bạn có", StringComparison.OrdinalIgnoreCase) ||
+                    pTrim.StartsWith("Anh/chị có", StringComparison.OrdinalIgnoreCase) ||
+                    pTrim.Contains("câu hỏi nào", StringComparison.OrdinalIgnoreCase) ||
+                    pTrim.EndsWith('?'))
+                {
+                    continue;
+                }
+                cleanParts.Add(pTrim);
+            }
+
+            if (cleanParts.Count == 0) return string.Empty;
+
+            // Keep at most 3 concise sentences as specified by WI-INTERVIEW-DEMO-02
+            if (cleanParts.Count > 3)
+            {
+                cleanParts = System.Linq.Enumerable.ToList(System.Linq.Enumerable.Take(cleanParts, 3));
+            }
+
+            return string.Join(". ", cleanParts) + ".";
+        }
+
 
         public async Task<ClosingEvidence> AnalyzeClosingResponseAsync(Session session, string candidateFinalStatement)
         {

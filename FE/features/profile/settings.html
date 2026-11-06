@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="../../shared/css/style.css?v=26">
     <link rel="stylesheet" href="../../features/dashboard/new-dashboard.css?v=26">
     <link rel="stylesheet" href="./settings.css?v=26">
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 <body class="dashboard-body">
 
@@ -52,38 +55,7 @@
         </div>
 
         <div class="settings-grid">
-            <!-- 0. Tài khoản & Định danh (Account Summary) -->
-            <div class="pref-card" id="account-summary-card">
-                <div class="pref-card-header">
-                    <div class="pref-icon-box">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    </div>
-                    <div>
-                        <h3 style="margin:0;font-size:16px;">Tài khoản & Định danh</h3>
-                        <span style="font-size:12px;color:var(--text-secondary);">Thông tin đăng nhập và quyền hạn của bạn trên hệ thống PrepMate</span>
-                    </div>
-                </div>
-
-                <div class="account-summary-box">
-                    <div class="account-summary-meta">
-                        <div class="account-avatar-circle" id="settings-user-avatar">U</div>
-                        <div class="account-meta-text">
-                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                                <strong id="settings-user-name" style="font-size:15px;color:var(--settings-text-primary);">Đang tải người dùng...</strong>
-                                <span id="settings-user-role-badge" class="badge-role-tag">Ứng viên</span>
-                                <span id="settings-user-tier-badge" class="badge-tier-tag">Miễn phí</span>
-                            </div>
-                            <span id="settings-user-email" style="font-size:13px;color:var(--settings-text-muted);">email@prepmate.ai</span>
-                        </div>
-                    </div>
-                    <div class="account-summary-actions">
-                        <a href="profile.html" class="btn-profile-bridge" title="Chuyển đến trang Hồ sơ tài khoản để cập nhật thông tin cá nhân">
-                            <span>Chỉnh sửa hồ sơ cá nhân</span>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <!-- 0. Redundant account summary removed for WI-03C; sidebar provides primary profile link -->
 
             <!-- 1. Giao diện (Theme) - ICON ONLY CHO SÁNG/TỐI/TỰ ĐỘNG -->
             <div class="pref-card">
@@ -249,10 +221,10 @@
                         <h4>Mật khẩu & Đăng nhập</h4>
                         <p>Mật khẩu được lưu trữ an toàn bằng chuẩn mã hóa một chiều PBKDF2</p>
                     </div>
-                    <a href="profile.html#account" class="btn-security-action">
-                        <span>Đổi mật khẩu tài khoản</span>
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                    </a>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span class="status-indicator-dot"></span>
+                        <span style="font-size:12.5px;font-weight:600;color:#059669;">Đã bảo vệ</span>
+                    </div>
                 </div>
 
                 <div class="pref-row">

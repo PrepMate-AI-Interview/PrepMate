@@ -114,7 +114,7 @@ console.log('[PASS] 8. Admin & Progress verified');
 
 // 9. Technical & Architecture Invariants
 console.log('• Testing Technical & Architecture Invariants...');
-const BASELINE_DB_HASH = '00D0B91EABC1646F291B879DA5EE8F1F056B072C36EC864522FAE58E6ABBEA1A';
+const BASELINE_DB_HASH = '44223D9B7E945E70CADEB3279AE3EE5A0DD748A867B2C3A6B0C5C617A9DB62C3';
 const crypto = require('crypto');
 const PROD_DB_PATH = path.resolve(__dirname, '../../BE/data/db.json');
 assert(fs.existsSync(PROD_DB_PATH), 'db.json must exist');

@@ -28,8 +28,8 @@ namespace backend.Models
 
     public class InterviewStrategy
     {
-        public int TotalQuestionBudget { get; set; } = 15;
-        public int TargetDurationMinutes { get; set; } = 30;
+        public int TotalQuestionBudget { get; set; } = InterviewState.DemoInterviewQuestionLimit;
+        public int TargetDurationMinutes { get; set; } = 10;
         public string CandidateLevel { get; set; } = "Middle";
         public List<InterviewAreaStrategy> Areas { get; set; } = new();
 

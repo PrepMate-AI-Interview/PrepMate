@@ -962,7 +962,7 @@ function applyInterviewerAvatar() {
                 </div>
             </div>
             <div class="camera-off-indicator interviewer-off-indicator">
-                <span class="cam-off-icon">🤖</span>
+                <span class="cam-off-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
                 <span id="interviewer-state-badge">Người phỏng vấn AI</span>
             </div>
         `;
@@ -1110,22 +1110,22 @@ function showUpgradeModal(reason) {
     "position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:9999;display:flex;align-items:center;justify-content:center;";
   overlay.innerHTML = `
         <div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border:1px solid rgba(139,92,246,0.5);border-radius:20px;padding:40px;max-width:480px;width:90%;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,0.5);">
-            <div style="font-size:56px;margin-bottom:16px;">🔒</div>
+            <div style="margin-bottom:16px;display:flex;justify-content:center;"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="1.8" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
             <h2 style="color:#fff;font-size:22px;margin-bottom:10px;font-family:'Outfit',sans-serif;">Đã đến giới hạn gói Free</h2>
             <p style="color:rgba(255,255,255,0.7);font-size:15px;margin-bottom:24px;line-height:1.6;">${reason}</p>
             <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:20px;margin-bottom:28px;text-align:left;">
-                <p style="color:#a5b4fc;font-weight:700;margin-bottom:12px;">✨ Gói PRO mở khoá:</p>
-                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;">✅ Không giới hạn lượt phỏng vấn</p>
-                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;">✅ Phân tích CV nâng cao bằng AI</p>
-                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;">✅ Gợi ý công việc phù hợp</p>
-                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;">✅ Lộ trình sự nghiệp cá nhân hoá</p>
-                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;">✅ Báo cáo chi tiết STAR đầy đủ</p>
+                <p style="color:#a5b4fc;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l1.912 5.885L20 10.797l-4.5 4.385L16.564 21 12 17.585 7.436 21l1.064-5.818L4 10.797l6.088-1.912L12 3z"/></svg>Gói PRO mở khoá:</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Không giới hạn lượt phỏng vấn</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Phân tích CV nâng cao bằng AI</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Gợi ý công việc phù hợp</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Lộ trình sự nghiệp cá nhân hoá</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Báo cáo chi tiết STAR đầy đủ</p>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;">
-                <button onclick="window.location.href='../payment/pricing.html'" style="background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;border:none;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">🚀 Xem Bảng giá & Nâng cấp</button>
+                <button onclick="window.location.href='../payment/pricing.html'" style="background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;border:none;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;"><span>Xem Bảng giá & Nâng cấp</span></button>
                 <button onclick="document.getElementById('upgrade-modal-overlay').remove()" style="background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);padding:14px 20px;border-radius:10px;font-size:15px;cursor:pointer;font-family:'Outfit',sans-serif;">Để sau</button>
             </div>
-            <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:16px;">💳 Thanh toán an toàn qua Momo hoặc chuyển khoản ngân hàng</p>
+            <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:16px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Thanh toán an toàn qua Momo hoặc chuyển khoản ngân hàng</p>
         </div>
     `;
   document.body.appendChild(overlay);
@@ -2280,10 +2280,9 @@ function initRoleBasedSidebar() {
                     <span class="logo-badge">${roleBadgeLabel}</span>
                 </div>
             </a>
-            <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="Thu gọn thanh điều hướng" aria-label="Thu gọn sidebar">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="11 17 6 12 11 7"/>
-                    <polyline points="18 17 13 12 18 7"/>
+            <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="Thu gọn thanh điều hướng" aria-label="Thu gọn sidebar" aria-expanded="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"/>
                 </svg>
             </button>
         </div>
@@ -2305,7 +2304,7 @@ function initRoleBasedSidebar() {
     messageCircle: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
     briefcase: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
     card: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`,
-    settings: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    settings: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
     audit: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>`,
     login: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>`,
     play: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
@@ -2382,8 +2381,8 @@ function initRoleBasedSidebar() {
       ? "header-menu-badge badge-pro"
       : "header-menu-badge badge-free";
     const avatarBg = isPro
-      ? "background: linear-gradient(135deg, #f59e0b, #d97706);"
-      : "background: linear-gradient(135deg, #1d4ed8, #2563eb);";
+      ? "background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff;"
+      : "background: linear-gradient(135deg, #1d4ed8, #2563eb); color: #ffffff;";
 
     bodyHtml = `
             <div class="sidebar-nav-body">
@@ -2492,7 +2491,7 @@ function initRoleBasedSidebar() {
                         <strong id="sidebar-user-name">${displayName}</strong>
                         <span id="sidebar-user-email">${displayEmail}</span>
                     </div>
-                    <span class="icon-setting"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+                    <span class="icon-setting"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
                 </div>
             </div>
         `;
@@ -2561,7 +2560,7 @@ function initRoleBasedSidebar() {
                     <div class="user-dropdown-menu" id="user-dropdown" style="display: none;" onclick="event.stopPropagation()">
                         <div class="dropdown-header">
                             <div class="header-menu-top" style="padding: 4px 2px 6px;">
-                                <div class="header-menu-avatar" style="width: 36px; height: 36px; font-size: 14px; background: linear-gradient(135deg, #4338ca, #6366f1);">${initial}</div>
+                                <div class="header-menu-avatar" style="width: 36px; height: 36px; font-size: 14px; background: linear-gradient(135deg, #4338ca, #6366f1); color: #ffffff;">${initial}</div>
                                 <div class="header-menu-meta">
                                     <strong id="dropdown-user-name">${displayName}</strong>
                                     <span id="dropdown-user-email">${displayEmail}</span>
@@ -2580,12 +2579,12 @@ function initRoleBasedSidebar() {
                             <span>Đăng xuất</span>
                         </a>
                     </div>
-                    <div class="avatar" id="sidebar-avatar" style="background: linear-gradient(135deg, #4338ca, #6366f1);">${initial}</div>
+                    <div class="avatar" id="sidebar-avatar" style="background: linear-gradient(135deg, #4338ca, #6366f1); color: #ffffff;">${initial}</div>
                     <div class="info">
                         <strong id="sidebar-user-name">${displayName}</strong>
                         <span id="sidebar-user-email">Quản lý</span>
                     </div>
-                    <span class="icon-setting"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+                    <span class="icon-setting"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
                 </div>
             </div>
         `;
@@ -2657,7 +2656,7 @@ function initRoleBasedSidebar() {
                     <div class="user-dropdown-menu" id="user-dropdown" style="display: none;" onclick="event.stopPropagation()">
                         <div class="dropdown-header">
                             <div class="header-menu-top" style="padding: 4px 2px 6px;">
-                                <div class="header-menu-avatar" style="width: 36px; height: 36px; font-size: 14px; background: linear-gradient(135deg, #059669, #10b981);">${initial}</div>
+                                <div class="header-menu-avatar" style="width: 36px; height: 36px; font-size: 14px; background: linear-gradient(135deg, #059669, #10b981); color: #ffffff;">${initial}</div>
                                 <div class="header-menu-meta">
                                     <strong id="dropdown-user-name">${displayName}</strong>
                                     <span id="dropdown-user-email">${displayEmail}</span>
@@ -2677,12 +2676,12 @@ function initRoleBasedSidebar() {
                             <span>Đăng xuất</span>
                         </a>
                     </div>
-                    <div class="avatar" id="sidebar-avatar" style="background: linear-gradient(135deg, #059669, #10b981);">${initial}</div>
+                    <div class="avatar" id="sidebar-avatar" style="background: linear-gradient(135deg, #059669, #10b981); color: #ffffff;">${initial}</div>
                     <div class="info">
                         <strong id="sidebar-user-name">${displayName}</strong>
                         <span id="sidebar-user-email">Quản trị viên</span>
                     </div>
-                    <span class="icon-setting"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+                    <span class="icon-setting"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
                 </div>
             </div>
         `;
@@ -2707,7 +2706,7 @@ function initRoleBasedSidebar() {
     topbar.className = "workspace-mobile-topbar";
     topbar.innerHTML = `
       <button type="button" class="workspace-mobile-toggle" onclick="toggleMobileSidebar(event)" aria-label="Mở thanh điều hướng" aria-expanded="false" title="Menu điều hướng">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <morph-icon id="workspace-mobile-morph" icon="M4 6h16M4 12h16M4 18h16" size="20" stroke-width="2.5" color="currentColor" aria-hidden="true"></morph-icon>
       </button>
       <a href="${root}index.html" class="workspace-mobile-brand" title="PrepMate - Về trang chủ">Prep<span>Mate</span></a>
       <div class="workspace-mobile-actions">
@@ -2803,10 +2802,22 @@ function toggleMobileSidebar(event) {
     sidebar.classList.remove("mobile-drawer-open");
     if (backdrop) backdrop.style.display = "none";
     if (btn) btn.setAttribute("aria-expanded", "false");
+    if (btn && window.PrepMateIcons) {
+      const morph = btn.querySelector('#workspace-mobile-morph');
+      if (morph && typeof morph.morphTo === 'function') {
+        morph.morphTo(window.PrepMateIcons.getPath('menu'), 'snappy');
+      }
+    }
   } else {
     sidebar.classList.add("mobile-drawer-open");
     if (backdrop) backdrop.style.display = "block";
     if (btn) btn.setAttribute("aria-expanded", "true");
+    if (btn && window.PrepMateIcons) {
+      const morph = btn.querySelector('#workspace-mobile-morph');
+      if (morph && typeof morph.morphTo === 'function') {
+        morph.morphTo(window.PrepMateIcons.getPath('close'), 'snappy');
+      }
+    }
   }
 }
 window.toggleMobileSidebar = toggleMobileSidebar;
@@ -2817,7 +2828,15 @@ function closeMobileSidebar() {
   const btn = document.querySelector(".workspace-mobile-toggle");
   if (sidebar) sidebar.classList.remove("mobile-drawer-open");
   if (backdrop) backdrop.style.display = "none";
-  if (btn) btn.setAttribute("aria-expanded", "false");
+  if (btn) {
+    btn.setAttribute("aria-expanded", "false");
+    if (window.PrepMateIcons) {
+      const morph = btn.querySelector('#workspace-mobile-morph');
+      if (morph && typeof morph.morphTo === 'function') {
+        morph.morphTo(window.PrepMateIcons.getPath('menu'), 'snappy');
+      }
+    }
+  }
 }
 window.closeMobileSidebar = closeMobileSidebar;
 
@@ -3028,6 +3047,56 @@ async function syncUserInterviewSessions() {
       }
     } catch (err) {
       console.warn("[SESSION SYNC] Backend sync error, falling back to cached sessions:", err);
+    }
+  } else {
+    // 1b. Fetch authoritative guest sessions from backend if guest (WI-GUEST-HISTORY-SEPARATION-01)
+    try {
+      const apiBase =
+        typeof window !== "undefined" && typeof window.PREPMATE_API_BASE_URL === "string"
+          ? window.PREPMATE_API_BASE_URL
+          : typeof API_BASE_URL === "string"
+          ? API_BASE_URL
+          : "";
+
+      const headers = { Accept: "application/json" };
+      let guestToken = null;
+      try {
+        guestToken = localStorage.getItem("pm_guest_token") || sessionStorage.getItem("pm_guest_token");
+      } catch (e) {}
+      if (guestToken) {
+        headers["X-Guest-Token"] = guestToken;
+      }
+
+      const res = await fetch(`${apiBase}/api/sessions/guest`, {
+        headers,
+        credentials: "include",
+        cache: "no-store"
+      });
+      if (res.ok) {
+        const guestSessions = await res.json();
+        if (Array.isArray(guestSessions)) {
+          guestSessions.forEach((gs) => {
+            const sid = getSessId(gs);
+            if (sid) {
+              const gDate = gs.createdAt || gs.date || new Date().toISOString();
+              mergedMap.set(sid, {
+                ...gs,
+                id: sid,
+                backendSessionId: sid,
+                sessionId: sid,
+                jobTitle: gs.jobTitle || null,
+                company: gs.company || null,
+                date: gDate,
+                createdAt: gDate,
+                status: (gs.status || "in_progress").toLowerCase(),
+                isGuestPreview: true
+              });
+            }
+          });
+        }
+      }
+    } catch (err) {
+      console.warn("[SESSION SYNC] Guest backend sync error:", err);
     }
   }
 

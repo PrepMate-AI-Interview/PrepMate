@@ -28,7 +28,12 @@
                 window.location.replace('../auth/auth.html?redirect=' + ret);
             }
         })();
+
+
     </script>
+    <!-- Morphicons & Centralized PrepMate Iconography (WI-ICON-01) -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
 </head>
 <body class="dashboard-body">
 
@@ -39,11 +44,11 @@
 
     <main class="main-content main-content-new">
         <div class="progress-hero">
-            <h1><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px;color:var(--pm-primary,#2563eb);"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Theo dõi Tiến trình & Điểm số</h1>
+            <h1><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px;color:var(--pm-primary,#2563eb);"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Theo dõi Tiến trình & Điểm số</h1>
             <p>Phân tích chi tiết quá trình phát triển năng lực phỏng vấn và phản xạ STAR của bạn.</p>
         </div>
 
-        <!-- Empty State Notice (Shown when user has 0 interview sessions) -->
+        <!-- Empty State Notice (Shown when user has 0 interview sessions - WI-02C) -->
         <div id="progress-empty-alert" class="progress-empty-alert" role="status" aria-live="polite" style="display:none;">
             <div class="empty-alert-main">
                 <div class="empty-alert-icon">
@@ -55,13 +60,9 @@
                 </div>
                 <div class="empty-alert-text">
                     <h3>Chưa có dữ liệu đánh giá phỏng vấn</h3>
-                    <p>Bạn chưa hoàn thành buổi phỏng vấn nào. Vui lòng thực hiện buổi phỏng vấn đầu tiên để hệ thống PrepMate AI tiến hành phân tích điểm số, đo lường năng lực chuẩn STAR và theo dõi tiến trình thực tế của bạn.</p>
+                    <p>Hệ thống theo dõi tiến trình hiển thị dữ liệu sau khi bạn hoàn thành ít nhất một buổi phỏng vấn mô phỏng. Mọi chỉ số về năng lực STAR, xu hướng điểm số và lộ trình cải thiện sẽ được tự động tổng hợp từ kết quả thực tế.</p>
                 </div>
             </div>
-            <a href="../../features/interview/interview-info.html" class="empty-alert-btn">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                Thực hiện phỏng vấn đầu tiên
-            </a>
         </div>
 
         <!-- Key Stats (Color-Harmonized, Authentic User Data) -->
@@ -87,7 +88,7 @@
                 <span class="stat-delta neutral" id="stat-improve-delta">Chưa có lượt</span>
             </div>
             <div class="progress-stat stat-streak">
-                <span class="stat-num" id="stat-streak">0🔥</span>
+                <span class="stat-num" id="stat-streak">0 <svg class="pm-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:#f59e0b;margin-left:4px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
                 <span class="stat-lbl">Chuỗi ngày luyện tập</span>
                 <span class="stat-delta streak-pill" id="stat-streak-label">0 ngày liên tiếp</span>
             </div>
@@ -98,7 +99,7 @@
             <!-- Score Trend -->
             <div class="chart-card">
                 <h3>
-                    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Xu hướng điểm số qua các buổi luyện</span>
+                    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Xu hướng điểm số qua các buổi luyện</span>
                 </h3>
                 <div class="chart-canvas-wrap">
                     <canvas id="trend-chart"></canvas>
@@ -113,12 +114,16 @@
                         <h4>Chưa có dữ liệu xu hướng</h4>
                         <p>Biểu đồ theo dõi sẽ được vẽ tự động sau khi bạn hoàn thành buổi phỏng vấn đầu tiên.</p>
                     </div>
+                    <div id="trend-single-session-hint" class="trend-single-hint" style="display:none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        <span>Đang ghi nhận 1 buổi phỏng vấn. Đường xu hướng so sánh sẽ tự động kích hoạt khi có từ 2 buổi luyện trở lên.</span>
+                    </div>
                 </div>
             </div>
             <!-- Radar -->
             <div class="chart-card">
                 <h3>
-                    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Phân tích năng lực chuẩn STAR</span>
+                    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Phân tích năng lực chuẩn STAR</span>
                 </h3>
                 <div class="chart-canvas-wrap">
                     <canvas id="radar-chart"></canvas>
@@ -144,7 +149,7 @@
             <div class="heatmap-card">
                 <div class="heatmap-header">
                     <div class="heatmap-title-wrap">
-                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Hoạt động luyện tập theo tháng</h3>
+                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Hoạt động luyện tập theo tháng</h3>
                         <span id="heatmap-month-summary" class="heatmap-summary-badge">0 buổi trong tháng</span>
                     </div>
                     <div class="heatmap-controls">
@@ -192,9 +197,9 @@
         <!-- Streak + Badges -->
         <div class="streak-badges-row">
             <div class="streak-card">
-                <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;color:#f59e0b;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>Streak Luyện tập</h3>
+                <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px;color:#f59e0b;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>Streak Luyện tập</h3>
                 <div class="streak-display">
-                    <span class="streak-fire">🔥</span>
+                    <span class="streak-fire"><svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:#f59e0b;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
                     <div>
                         <div class="streak-count" id="streak-count">0</div>
                         <div class="streak-label">Ngày luyện tập liên tiếp</div>
@@ -206,7 +211,7 @@
                 <p style="font-size:13px;color:#64748b;margin-top:8px;" id="streak-next">Luyện tập hôm nay để bắt đầu streak!</p>
             </div>
             <div class="streak-card">
-                <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;color:#f59e0b;"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>Thành tích đạt được</h3>
+                <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px;color:#f59e0b;"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>Thành tích đạt được</h3>
                 <div class="badges-grid" id="badges-grid"></div>
             </div>
         </div>
@@ -216,14 +221,29 @@
             <div class="improvements-card">
                 <div class="improvements-header">
                     <div class="improvements-header-left">
-                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;color:#7c3aed;"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>Kế hoạch Cải thiện Năng lực từ AI</h3>
+                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px;color:#7c3aed;"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>Kế hoạch Cải thiện Năng lực từ AI</h3>
                         <p class="improvements-subtitle">Chẩn đoán chuyên sâu từ các buổi phỏng vấn thực tế và đề xuất hành động cụ thể để nâng cao điểm số.</p>
                     </div>
                     <div class="improvements-badge">
-                        <span class="ai-sparkle">✨</span> Phân tích theo năng lực thực tế
+                        <span class="ai-sparkle"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:#8b5cf6;"><path d="M12 3l1.912 5.885L20 10.797l-4.5 4.385L16.564 21 12 17.585 7.436 21l1.064-5.818L4 10.797l6.088-1.912L12 3z"/></svg></span> Phân tích theo năng lực thực tế
                     </div>
                 </div>
                 <div id="improvements-list" class="improvements-grid"></div>
+            </div>
+        </div>
+
+        <!-- Past Interview Reports Section (WI-02C) -->
+        <div class="reports-section">
+            <div class="reports-card">
+                <div class="reports-header">
+                    <div class="reports-header-left">
+                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px;color:var(--pm-primary,#2563eb);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>Báo cáo Đánh giá Chi tiết từ Buổi Phỏng vấn</h3>
+                        <p class="reports-subtitle">Truy cập toàn bộ nhận xét, phân tích STAR và bảng bằng chứng của các lượt phỏng vấn đã hoàn thành.</p>
+                    </div>
+                </div>
+                <div id="reports-list-container">
+                    <!-- Rendered dynamically -->
+                </div>
             </div>
         </div>
 
@@ -295,16 +315,16 @@
     }
 
     const BADGES_DEFINITION = [
-        { id:'first',  icon:'🎯', name:'Bước đầu',    desc:'Hoàn thành buổi đầu',   condition: s => s.length >= 1 },
-        { id:'five',   icon:'⭐', name:'Cần mẫn',     desc:'5 buổi luyện',           condition: s => s.length >= 5 },
-        { id:'ten',    icon:'💎', name:'Chuyên tâm',  desc:'10 buổi luyện',          condition: s => s.length >= 10 },
-        { id:'score80',icon:'🎖️', name:'Xuất sắc',   desc:'Đạt 80+ điểm',           condition: s => s.some(x => (x.overallScore||0) >= 80) },
-        { id:'score90',icon:'🏆', name:'Đỉnh cao',   desc:'Đạt 90+ điểm',           condition: s => s.some(x => (x.overallScore||0) >= 90) },
-        { id:'streak3',icon:'🔥', name:'On Fire',    desc:'3 ngày liên tiếp',        condition: (s,streak) => streak >= 3 },
-        { id:'streak7',icon:'⚡', name:'Unstoppable',desc:'7 ngày liên tiếp',        condition: (s,streak) => streak >= 7 },
-        { id:'jobs3',  icon:'💼', name:'Đa dạng',    desc:'Luyện 3 vị trí khác nhau',condition: s => new Set(s.map(x=>x.jobTitle)).size >= 3 },
-        { id:'night',  icon:'🌙', name:'Cú đêm',     desc:'Luyện sau 10 giờ tối',   condition: s => s.some(x => { const d = new Date(x.date||0); const h = d.getHours(); return !isNaN(d.getTime()) && (h >= 22 || h <= 4); }) },
-        { id:'perfect',icon:'💯', name:'Hoàn hảo',   desc:'100 điểm',               condition: s => s.some(x => (x.overallScore||0) >= 100) }
+        { id:'first',  icon:'target',       name:'Bước đầu',    desc:'Hoàn thành buổi đầu',   condition: s => s.length >= 1 },
+        { id:'five',   icon:'star',         name:'Cần mẫn',     desc:'5 buổi luyện',           condition: s => s.length >= 5 },
+        { id:'ten',    icon:'award',        name:'Chuyên tâm',  desc:'10 buổi luyện',          condition: s => s.length >= 10 },
+        { id:'score80',icon:'award',        name:'Xuất sắc',   desc:'Đạt 80+ điểm',           condition: s => s.some(x => (x.overallScore||0) >= 80) },
+        { id:'score90',icon:'award',        name:'Đỉnh cao',   desc:'Đạt 90+ điểm',           condition: s => s.some(x => (x.overallScore||0) >= 90) },
+        { id:'streak3',icon:'zap',          name:'On Fire',    desc:'3 ngày liên tiếp',        condition: (s,streak) => streak >= 3 },
+        { id:'streak7',icon:'zap',          name:'Unstoppable',desc:'7 ngày liên tiếp',        condition: (s,streak) => streak >= 7 },
+        { id:'jobs3',  icon:'briefcase',    name:'Đa dạng',    desc:'Luyện 3 vị trí khác nhau',condition: s => new Set(s.map(x=>x.jobTitle)).size >= 3 },
+        { id:'night',  icon:'moon',         name:'Cú đêm',     desc:'Luyện sau 10 giờ tối',   condition: s => s.some(x => { const d = new Date(x.date||0); const h = d.getHours(); return !isNaN(d.getTime()) && (h >= 22 || h <= 4); }) },
+        { id:'perfect',icon:'check-circle', name:'Hoàn hảo',   desc:'100 điểm',               condition: s => s.some(x => (x.overallScore||0) >= 100) }
     ];
 
     function normalizeSession(s) {
@@ -616,8 +636,11 @@
         if (!grid) return;
         grid.innerHTML = BADGES_DEFINITION.map(b => {
             const earned = b.condition(sessions, streak);
+            const iconSvg = (typeof window !== 'undefined' && window.PrepMateIcons && typeof window.PrepMateIcons.svg === 'function')
+                ? window.PrepMateIcons.svg(b.icon, { size: 24, class: 'pm-icon badge-svg-icon' })
+                : `<svg class="pm-icon badge-svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>`;
             return `<div class="badge-item${earned?' earned':' locked'}" title="${b.desc}">
-                <span class="badge-icon">${b.icon}</span>
+                <span class="badge-icon">${iconSvg}</span>
                 <span class="badge-name">${b.name}</span>
             </div>`;
         }).join('');
@@ -635,6 +658,11 @@
         }
         if (canvas) canvas.style.display = 'block';
         if (emptyState) emptyState.style.display = 'none';
+
+        const singleHint = document.getElementById('trend-single-session-hint');
+        if (singleHint) {
+            singleHint.style.display = (sessions.length === 1) ? 'flex' : 'none';
+        }
 
         if (trendChartInstance) trendChartInstance.destroy();
         const ctx = canvas.getContext('2d');
@@ -893,6 +921,9 @@
         const latest = sessions[sessions.length - 1];
         const cards = [];
 
+        const latestSessionId = latest ? (latest.id || latest.sessionId || '') : '';
+        const latestReportUrl = latestSessionId ? `../report/report.html?id=${encodeURIComponent(latestSessionId)}` : '';
+
         // 1. Phân tích cụ thể câu hỏi cần bổ sung từ buổi gần nhất (nếu có trong knowledgeAnalysis)
         const weakQ = latest.knowledgeAnalysis && latest.knowledgeAnalysis.find(q =>
             q.rating === 'Chưa tốt' || q.rating === 'Cần bổ sung' || q.rating === 'Trung bình'
@@ -908,10 +939,10 @@
                 diagnosis: weakQ.analysis ? escapeHtml(weakQ.analysis) : 'Câu trả lời chưa nêu bật được giải pháp chuyên môn cụ thể và thiếu minh chứng thực tiễn.',
                 steps: [
                     weakQ.supplement ? `Kiến thức cần bổ sung: ${escapeHtml(weakQ.supplement)}` : 'Hệ thống hóa lại khái niệm và quy trình xử lý chuẩn.',
-                    'Luyện tập trả lời lại câu hỏi này bằng cách nêu kèm tình huống thực tế bạn từng giải quyết.'
+                    'Đối chiếu lại phản hồi chi tiết từ chuyên gia AI trong báo cáo đánh giá buổi phỏng vấn này.'
                 ],
-                btnText: 'Luyện lại câu hỏi này →',
-                link: '../../features/interview/interview-info.html'
+                btnText: latestReportUrl ? 'Xem báo cáo chi tiết buổi này →' : 'Xem chẩn đoán chi tiết',
+                link: latestReportUrl
             });
         }
 
@@ -926,11 +957,11 @@
                 title: `Tối ưu trọng tâm: ${escapeHtml(latest.jobTitle || 'Phỏng vấn')}`,
                 diagnosis: escapeHtml(feedbackText),
                 steps: [
-                    'Rà soát lại toàn bộ phản hồi chấm điểm của hệ thống trước khi bắt đầu lượt mới.',
-                    'Tập trung khắc phục các điểm bị trừ điểm đã được AI nêu rõ ở buổi phỏng vấn vừa qua.'
+                    'Rà soát lại toàn bộ phản hồi chấm điểm và bảng bằng chứng năng lực trong báo cáo.',
+                    'Tập trung khắc phục các tiêu chí chưa đạt điểm tối đa trước buổi phỏng vấn tiếp theo.'
                 ],
-                btnText: 'Luyện tập lại lượt này →',
-                link: '../../features/interview/interview-info.html'
+                btnText: latestReportUrl ? 'Xem báo cáo chi tiết buổi này →' : 'Xem phản hồi chi tiết',
+                link: latestReportUrl
             });
         }
 
@@ -952,8 +983,8 @@
                     'Action (60s): Các bước cụ thể BẠN đã thực hiện (dùng "Tôi đã...", tránh nói chung chung "Team đã...").',
                     'Result (20s): Nêu số liệu thực chứng (tiết kiệm X% thời gian, nâng cao Y% hiệu năng).'
                 ],
-                btnText: 'Xem ngân hàng câu hỏi STAR →',
-                link: '../../features/qbank/qbank.html?category=behavioral'
+                btnText: latestReportUrl ? 'Xem đánh giá STAR trong báo cáo →' : 'Xem khuyến nghị STAR',
+                link: latestReportUrl
             });
         }
 
@@ -968,12 +999,12 @@
                 title: 'Đào sâu nguyên lý & Case Study thực tế',
                 diagnosis: `Kỹ năng chuyên môn hiện đạt ${avgTech}/100. Khi phỏng vấn chuyên môn, hãy làm rõ bối cảnh, phương pháp thực hiện và lý do lựa chọn giải pháp thay vì chỉ đưa ra câu trả lời lý thuyết.`,
                 steps: [
-                    `Ôn tập bộ câu hỏi chuyên môn cốt lõi cho vị trí ${escapeHtml(latest.jobTitle || 'ứng tuyển')} trong Ngân hàng câu hỏi.`,
+                    `Rà soát lại toàn diện các câu hỏi chuyên môn của vị trí ${escapeHtml(latest.jobTitle || 'ứng tuyển')} trong báo cáo.`,
                     'Thực hành giải thích các kiến thức nền tảng: Quy trình chuyên môn, xử lý tình huống, tối ưu hiệu quả và phương pháp luận.',
                     'Chuẩn bị sẵn 2–3 bài toán khó trong dự án cũ để dẫn chứng khi được hỏi đào sâu.'
                 ],
-                btnText: 'Tra cứu câu hỏi chuyên môn →',
-                link: '../../features/qbank/qbank.html?category=technical'
+                btnText: latestReportUrl ? 'Xem đánh giá chuyên môn trong báo cáo →' : 'Xem chẩn đoán chuyên môn',
+                link: latestReportUrl
             });
         }
 
@@ -1061,10 +1092,15 @@
             `).join('');
         }
         if (actionBtn) {
-            actionBtn.href = item.link || '../../features/interview/interview-info.html';
+            if (item.link) {
+                actionBtn.href = item.link;
+                actionBtn.style.display = 'inline-flex';
+            } else {
+                actionBtn.style.display = 'none';
+            }
         }
         if (actionText) {
-            actionText.textContent = item.btnText || 'Bắt đầu thực hiện ngay';
+            actionText.textContent = item.btnText || 'Xem chi tiết';
         }
 
         if (overlay) {
@@ -1116,7 +1152,7 @@
             emptyAlert.style.display = sessions.length ? 'none' : 'flex';
         }
 
-        // Stats Handling
+        // Stats Handling (WI-02C: Honest data handling for 0, 1, and 2+ sessions)
         if (!sessions.length) {
             document.getElementById('stat-total').textContent = '0';
             document.getElementById('stat-total-delta').textContent = '0 buổi';
@@ -1130,16 +1166,16 @@
             statAvgDelta.textContent = 'Chưa có lượt';
             statAvgDelta.className = 'stat-delta neutral';
 
-            document.getElementById('stat-improve').textContent = '0%';
+            document.getElementById('stat-improve').textContent = '—';
             const statImpDelta = document.getElementById('stat-improve-delta');
             statImpDelta.textContent = 'Chưa có lượt';
             statImpDelta.className = 'stat-delta neutral';
 
-            document.getElementById('stat-streak').textContent = '0🔥';
+            document.getElementById('stat-streak').innerHTML = '0 <svg class="pm-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:#f59e0b;margin-left:4px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>';
             document.getElementById('stat-streak-label').textContent = '0 ngày liên tiếp';
             document.getElementById('streak-count').textContent = '0';
             document.getElementById('streak-bar').style.width = '0%';
-            document.getElementById('streak-next').textContent = 'Thực hiện phỏng vấn đầu tiên để bắt đầu chuỗi streak!';
+            document.getElementById('streak-next').textContent = 'Chuỗi streak sẽ kích hoạt sau buổi phỏng vấn đầu tiên.';
         } else {
             const scores = sessions.map(s => s.overallScore || 0);
             const total = sessions.length;
@@ -1147,40 +1183,104 @@
             const avgS  = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
             const first = scores[0] || 0;
             const last  = scores[scores.length-1] || 0;
-            const imp   = (first > 0 && scores.length > 1) ? Math.round(((last-first)/first)*100) : 0;
 
             document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-total-delta').textContent = `${total} buổi`;
+            document.getElementById('stat-total-delta').textContent = `${total} buổi đã lưu`;
             document.getElementById('stat-best').textContent  = best;
             const statBestDelta = document.getElementById('stat-best-delta');
-            statBestDelta.textContent = best >= 80 ? 'Xuất sắc' : 'Đạt';
-            statBestDelta.className = 'stat-delta ' + (best >= 80 ? 'up' : 'neutral');
+            statBestDelta.textContent = best >= 80 ? 'Xuất sắc' : (best >= 65 ? 'Đạt' : 'Cần cải thiện');
+            statBestDelta.className = 'stat-delta ' + (best >= 80 ? 'up' : (best >= 65 ? 'neutral' : 'down'));
 
             document.getElementById('stat-avg').textContent   = avgS;
-            const avgDelta = scores.length >= 2 ? scores[scores.length-1] - scores[scores.length-2] : 0;
             const avgDeltaEl = document.getElementById('stat-avg-delta');
-            avgDeltaEl.textContent = avgDelta === 0 ? '—' : (avgDelta>0 ? `▲ +${avgDelta}` : `▼ ${avgDelta}`);
-            avgDeltaEl.className = 'stat-delta ' + (avgDelta>0?'up':avgDelta<0?'down':'neutral');
+            if (scores.length >= 2) {
+                const diff = scores[scores.length-1] - scores[scores.length-2];
+                avgDeltaEl.textContent = diff === 0 ? 'Ổn định' : (diff > 0 ? `▲ +${diff} (so với buổi trước)` : `▼ ${diff} (so với buổi trước)`);
+                avgDeltaEl.className = 'stat-delta ' + (diff > 0 ? 'up' : (diff < 0 ? 'down' : 'neutral'));
+            } else {
+                avgDeltaEl.textContent = 'Lượt đầu tiên (chưa có so sánh)';
+                avgDeltaEl.className = 'stat-delta neutral';
+            }
 
-            document.getElementById('stat-improve').textContent = (imp>0?'+':'') + imp + '%';
             const statImpDelta = document.getElementById('stat-improve-delta');
-            statImpDelta.textContent = scores.length <= 1 ? 'Lượt đầu tiên' : (imp > 0 ? 'Đang tăng trưởng' : (imp < 0 ? 'Cần cải thiện' : 'Ổn định'));
-            statImpDelta.className = 'stat-delta ' + (imp>0?'up':imp<0?'down':'neutral');
+            if (scores.length >= 2 && first > 0) {
+                const imp = Math.round(((last - first) / first) * 100);
+                document.getElementById('stat-improve').textContent = (imp > 0 ? '+' : '') + imp + '%';
+                statImpDelta.textContent = imp > 0 ? 'Tăng trưởng (so với buổi đầu)' : (imp < 0 ? 'Cần cải thiện (so với buổi đầu)' : 'Ổn định');
+                statImpDelta.className = 'stat-delta ' + (imp > 0 ? 'up' : (imp < 0 ? 'down' : 'neutral'));
+            } else {
+                document.getElementById('stat-improve').textContent = '—';
+                statImpDelta.textContent = 'Cần từ 2 buổi để so sánh xu hướng';
+                statImpDelta.className = 'stat-delta neutral';
+            }
 
-            document.getElementById('stat-streak').textContent = streak + '🔥';
+            document.getElementById('stat-streak').innerHTML = streak + ' <svg class="pm-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:#f59e0b;margin-left:4px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>';
             document.getElementById('streak-count').textContent = streak;
             document.getElementById('stat-streak-label').textContent = `${streak} ngày liên tiếp`;
             document.getElementById('streak-bar').style.width = Math.min(100, (streak/30)*100) + '%';
-            document.getElementById('streak-next').textContent = streak > 0 ?
-                `🔥 Streak ${streak} ngày! Tiếp tục luyện tập để giữ streak!` :
-                'Luyện tập hôm nay để bắt đầu streak!';
+            const streakZap = (typeof window !== 'undefined' && window.PrepMateIcons && typeof window.PrepMateIcons.svg === 'function')
+                ? window.PrepMateIcons.svg('zap', { size: 14, class: 'pm-icon', color: '#f59e0b' })
+                : '<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>';
+            document.getElementById('streak-next').innerHTML = streak > 0 ?
+                `${streakZap} Streak ${streak} ngày liên tiếp được duy trì từ hoạt động thực tế.` :
+                'Hoạt động luyện tập mỗi ngày sẽ tự động cộng dồn streak.';
         }
+
+    function renderReportsList(sessions) {
+        const container = document.getElementById('reports-list-container');
+        if (!container) return;
+
+        if (!sessions || !sessions.length) {
+            container.innerHTML = `
+                <div class="empty-reports-notice" style="text-align:center;padding:28px 16px;color:#64748b;font-size:13px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" style="margin-bottom:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    <div>Chưa có báo cáo phỏng vấn nào được lưu. Báo cáo chi tiết sẽ xuất hiện tại đây sau khi hoàn thành buổi luyện đầu tiên.</div>
+                </div>
+            `;
+            return;
+        }
+
+        const sorted = [...sessions].sort((a,b) => new Date(b.date||0).getTime() - new Date(a.date||0).getTime());
+        container.innerHTML = `
+            <div class="progress-reports-grid">
+                ${sorted.map((s, idx) => {
+                    const sessId = s.id || s.sessionId || '';
+                    const reportUrl = sessId ? `../report/report.html?id=${encodeURIComponent(sessId)}` : `../report/report.html?index=${idx}`;
+                    const dateStr = s.date ? new Date(s.date).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) : 'Buổi hoàn thành';
+                    const score = s.overallScore || 0;
+                    const scoreClass = score >= 80 ? 'score-high' : (score >= 65 ? 'score-mid' : 'score-low');
+                    return `
+                        <div class="progress-report-row">
+                            <div class="report-row-main">
+                                <span class="report-score-pill ${scoreClass}">${score}</span>
+                                <div class="report-meta-info">
+                                    <h4 class="report-job-title">${escapeHtml(s.jobTitle || 'Buổi phỏng vấn mô phỏng')}</h4>
+                                    <div class="report-sub-details">
+                                        <span style="display:inline-flex;align-items:center;gap:4px;"><svg class="pm-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${dateStr}</span>
+                                        <span>Chuyên môn: ${s.techScore || 0}/100</span>
+                                        <span>STAR: ${s.starScore || 0}/100</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="report-row-action">
+                                <a href="${reportUrl}" class="btn-open-report">
+                                    <span>Xem báo cáo chi tiết</span>
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
 
         initMonthlyHeatmap(sessions);
         renderBadges(sessions, streak);
         renderTrendChart(sessions);
         renderRadarChart(sessions);
         renderImprovements(sessions);
+        renderReportsList(sessions);
     });
     </script>
     <script src="../../shared/js/components.js"></script>
