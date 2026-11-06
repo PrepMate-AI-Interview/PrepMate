@@ -3048,6 +3048,56 @@ async function syncUserInterviewSessions() {
     } catch (err) {
       console.warn("[SESSION SYNC] Backend sync error, falling back to cached sessions:", err);
     }
+  } else {
+    // 1b. Fetch authoritative guest sessions from backend if guest (WI-GUEST-HISTORY-SEPARATION-01)
+    try {
+      const apiBase =
+        typeof window !== "undefined" && typeof window.PREPMATE_API_BASE_URL === "string"
+          ? window.PREPMATE_API_BASE_URL
+          : typeof API_BASE_URL === "string"
+          ? API_BASE_URL
+          : "";
+
+      const headers = { Accept: "application/json" };
+      let guestToken = null;
+      try {
+        guestToken = localStorage.getItem("pm_guest_token") || sessionStorage.getItem("pm_guest_token");
+      } catch (e) {}
+      if (guestToken) {
+        headers["X-Guest-Token"] = guestToken;
+      }
+
+      const res = await fetch(`${apiBase}/api/sessions/guest`, {
+        headers,
+        credentials: "include",
+        cache: "no-store"
+      });
+      if (res.ok) {
+        const guestSessions = await res.json();
+        if (Array.isArray(guestSessions)) {
+          guestSessions.forEach((gs) => {
+            const sid = getSessId(gs);
+            if (sid) {
+              const gDate = gs.createdAt || gs.date || new Date().toISOString();
+              mergedMap.set(sid, {
+                ...gs,
+                id: sid,
+                backendSessionId: sid,
+                sessionId: sid,
+                jobTitle: gs.jobTitle || null,
+                company: gs.company || null,
+                date: gDate,
+                createdAt: gDate,
+                status: (gs.status || "in_progress").toLowerCase(),
+                isGuestPreview: true
+              });
+            }
+          });
+        }
+      }
+    } catch (err) {
+      console.warn("[SESSION SYNC] Guest backend sync error:", err);
+    }
   }
 
   // 2. Merge local sessions (preserve in-progress or local-only sessions, update if backend has completed report)

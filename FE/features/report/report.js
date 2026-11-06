@@ -63,6 +63,175 @@ if (typeof window !== "undefined") {
 let _currentReportData = null;
 let _currentSessionId = null;
 let _currentSessionRaw = null;
+let _activeReportRequestId = 0;
+
+function getAuthUserSafe() {
+  if (typeof getCurrentUser === "function") {
+    try {
+      const u = getCurrentUser();
+      if (u) return u;
+    } catch (e) {}
+  }
+  if (typeof localStorage !== "undefined") {
+    try {
+      const raw = localStorage.getItem("prepmate_current_user") || localStorage.getItem("prepmate_auth_user");
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+  }
+  return null;
+}
+
+function clearPreviousReportState() {
+  _currentReportData = null;
+  _currentSessionId = null;
+  _currentSessionRaw = null;
+
+  // Clear Header Meta
+  const navJob = document.getElementById("nav-job-title");
+  if (navJob) navJob.textContent = "";
+  const navComp = document.getElementById("nav-comp-name");
+  if (navComp) navComp.textContent = "";
+  const metaPill = document.getElementById("header-meta-pill");
+  if (metaPill) metaPill.classList.add("hidden");
+
+  // Clear Hero Overview
+  const sumEl = document.getElementById("hero-summary-text");
+  if (sumEl) sumEl.innerHTML = "";
+  const scoreValEl = document.getElementById("hero-score-value");
+  if (scoreValEl) scoreValEl.textContent = "—";
+  const scoreTierEl = document.getElementById("hero-score-tier");
+  if (scoreTierEl) scoreTierEl.textContent = "";
+  const strengthsEl = document.getElementById("hero-highlights-strengths");
+  if (strengthsEl) strengthsEl.innerHTML = "";
+  const prioritiesEl = document.getElementById("hero-highlights-priorities");
+  if (prioritiesEl) prioritiesEl.innerHTML = "";
+
+  // Clear Question-Level Feedback
+  const qfbList = document.getElementById("question-feedback-list");
+  if (qfbList) qfbList.innerHTML = "";
+
+  // Clear Dimensions
+  const dimGrid = document.querySelector("#section-dimensions .dimensions-grid") || document.getElementById("dimensions-grid");
+  if (dimGrid) dimGrid.innerHTML = "";
+  const dimTeaser = document.getElementById("dimensions-guest-locked-teaser");
+  if (dimTeaser) dimTeaser.innerHTML = "";
+
+  // Clear Diagnostics
+  const diagTeaser = document.getElementById("diagnostics-guest-locked-teaser");
+  if (diagTeaser) diagTeaser.innerHTML = "";
+
+  // Clear Roadmap
+  const roadmapGrid = document.getElementById("roadmap-items-grid");
+  if (roadmapGrid) roadmapGrid.innerHTML = "";
+  const roadmapTeaser = document.getElementById("roadmap-guest-locked-teaser");
+  if (roadmapTeaser) roadmapTeaser.innerHTML = "";
+
+  // Clear Speech & Provenance
+  const speechTeaser = document.getElementById("speech-guest-locked-teaser");
+  if (speechTeaser) speechTeaser.innerHTML = "";
+  const provContainer = document.getElementById("provenance-transcript-container");
+  if (provContainer) provContainer.innerHTML = "";
+
+  // Reset Stage tab locked styling
+  if (typeof document.querySelectorAll === "function") {
+    document.querySelectorAll(".stage-tab-btn.stage-tab-locked").forEach(btn => {
+      btn.classList.remove("stage-tab-locked");
+      const badge = btn.querySelector ? btn.querySelector(".stage-lock-badge") : null;
+      if (badge && badge.remove) badge.remove();
+    });
+  }
+
+  // Reset teaser visibility
+  if (typeof resetGuestLockedState === "function") {
+    resetGuestLockedState();
+  }
+}
+
+function sanitizeSessionForGuest(sess) {
+  if (!sess) return null;
+  const copy = { ...sess };
+  copy.isGuestPreview = true;
+  copy.userId = "guest";
+
+  // Retain only safe high-level metadata
+  delete copy.answers;
+  delete copy.Answers;
+  delete copy.questions;
+  delete copy.Questions;
+  delete copy.cvText;
+  delete copy.jdText;
+  delete copy.evidenceReport;
+  delete copy.EvidenceReport;
+  delete copy.rawReport;
+  delete copy.evaluation;
+  delete copy.Evaluation;
+  delete copy.knowledgeAnalysis;
+  delete copy.radarDimensions;
+  delete copy.scores;
+  delete copy.techScore;
+  delete copy.commScore;
+  delete copy.softScore;
+  delete copy.starScore;
+  delete copy.situationalScore;
+  delete copy.performanceAssessment;
+  delete copy.diagnosticAnalysis;
+  delete copy.improvementRoadmap;
+  delete copy.preparationPlan;
+  delete copy.speechCoaching;
+  delete copy.provenance;
+  delete copy.rubricAssessments;
+  delete copy.answerSnippet;
+
+  // Ensure guestPreview object is valid
+  if (!copy.guestPreview && copy.report && copy.report.guestPreview) {
+    copy.guestPreview = copy.report.guestPreview;
+  }
+  if (!copy.guestPreview) {
+    const rawScore = typeof copy.overallScore === "number" ? copy.overallScore : (copy.score || 0);
+    const rating = rawScore >= 85 ? "Xuất sắc" : (rawScore >= 70 ? "Tốt" : (rawScore >= 55 ? "Đạt yêu cầu" : "Cần cải thiện"));
+    copy.guestPreview = {
+      overallScore: rawScore,
+      evaluationRating: rating,
+      evaluationStatus: "AVAILABLE",
+      summary: `Ứng viên đã hoàn tất các lượt phỏng vấn cho vị trí ${copy.jobTitle || "Chuyên viên"} với kết quả ${rawScore}/100.`,
+      interpretation: "Ứng viên đáp ứng các tiêu chuẩn cơ bản của vai trò.",
+      topStrengths: [
+        { competency: "Chuyên môn cốt lõi", observation: "Nắm vững nguyên lý và kiến thức chuyên môn trọng yếu của vai trò." },
+        { competency: "Thái độ chuyên nghiệp", observation: "Tác phong trao đổi tự tin, mạch lạc trong suốt quá trình phỏng vấn." }
+      ],
+      improvementTeaser: "Nâng cao độ sâu dẫn chứng thực tế và cấu trúc hóa lập luận giải quyết vấn đề.",
+      improvementFocus: [
+        { problem: "Củng cố chiều sâu dẫn chứng", why: "Giúp phần trình bày thuyết phục hơn khi đối mặt các tình huống chuyên sâu.", action: "Bổ sung số liệu thực tế đo lường kết quả vào câu trả lời." }
+      ],
+      analysisCapabilityTeaser: {
+        title: "Năng lực Phân tích Đa chiều của PrepMate",
+        description: "PrepMate đánh giá toàn diện nội dung chuyên môn, cấu trúc lập luận STAR, nhịp độ giọng nói và tác phong phỏng vấn.",
+        capabilities: [
+          "Phân tích chuyên sâu 5 câu hỏi phỏng vấn & ma trận rubric",
+          "Đo lường nhịp độ phát âm, độ trôi chảy & ngữ điệu giọng nói",
+          "Nhận xét tác phong chuyên nghiệp & mức độ tương tác qua camera"
+        ]
+      }
+    };
+  }
+
+  // Ensure report is also sanitized
+  copy.report = {
+    overallScore: copy.guestPreview.overallScore,
+    isGuestPreview: true,
+    guestPreview: copy.guestPreview,
+    summary: copy.guestPreview.summary,
+    interpretation: copy.guestPreview.interpretation,
+    topStrengths: copy.guestPreview.topStrengths,
+    improvementTeaser: copy.guestPreview.improvementTeaser,
+    improvementFocus: copy.guestPreview.improvementFocus,
+    analysisCapabilityTeaser: copy.guestPreview.analysisCapabilityTeaser,
+    evaluationRating: copy.guestPreview.evaluationRating,
+    evaluationStatus: copy.guestPreview.evaluationStatus
+  };
+
+  return copy;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   initReportPage();
@@ -114,31 +283,50 @@ if (typeof window !== "undefined") {
 // 1. INITIALIZATION & DATA RETRIEVAL
 // ==========================================================================
 async function initReportPage() {
+  const thisRequestId = ++_activeReportRequestId;
   showLoadingState();
+  clearPreviousReportState();
 
   try {
     const params = new URLSearchParams(window.location.search);
     const sessionIdParam = params.get("sessionId") || params.get("id") || params.get("session");
     const sessionIndexParam = params.get("index");
 
+    const authUser = getAuthUserSafe();
+    const hasAuthToken = Boolean(authUser && (authUser.token || authUser.jwt || authUser.accessToken));
+
     let session = null;
 
-    // A. Priority 1: Fetch by sessionId if backend available or find in localStorage
+    // A. Priority 1: Fetch by sessionId if backend available
     if (sessionIdParam) {
       _currentSessionId = sessionIdParam;
       const backendRes = await fetchSessionFromBackend(sessionIdParam);
-      if (backendRes && backendRes.status === 403) {
-        showErrorState("Bạn không có quyền truy cập báo cáo phiên phỏng vấn này (403 Forbidden).");
+      if (_activeReportRequestId !== thisRequestId) return; // Stale async response discarded
+
+      if (backendRes && backendRes.status === 401) {
+        showErrorState("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để xem toàn bộ báo cáo phân tích. (401 Unauthorized)");
         return;
       }
-      if (backendRes && backendRes.status === 401) {
-        showErrorState("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để xem toàn bộ báo cáo phân tích.");
+      if (backendRes && backendRes.status === 403) {
+        showErrorState("Bạn không có quyền truy cập báo cáo phiên phỏng vấn này (403 Forbidden).");
         return;
       }
       if (backendRes && backendRes.ok && backendRes.data) {
         session = backendRes.data;
       }
-      if (!session) {
+      // Fallback: If backend could not find or error, check local storage with strict authorization gate
+      if (!session && !hasAuthToken) {
+        const local = findSessionInLocalStorage(sessionIdParam);
+        if (local) {
+          const isLocalGuest = local.isGuestPreview || (local.userId && (local.userId === "guest" || local.userId.startsWith("guest_")));
+          if (isLocalGuest) {
+            session = sanitizeSessionForGuest(local);
+          } else {
+            showErrorState("Vui lòng đăng nhập để xem báo cáo phiên phỏng vấn này.");
+            return;
+          }
+        }
+      } else if (!session && hasAuthToken) {
         session = findSessionInLocalStorage(sessionIdParam);
       }
     }
@@ -148,8 +336,20 @@ async function initReportPage() {
       const allSessions = getAllSavedSessions();
       const idx = parseInt(sessionIndexParam, 10);
       if (!isNaN(idx) && allSessions[idx]) {
-        session = allSessions[idx];
-        _currentSessionId = session.backendSessionId || session.id || `session-${idx}`;
+        const candidate = allSessions[idx];
+        if (!hasAuthToken) {
+          const isCandidateGuest = candidate.isGuestPreview || (candidate.userId && (candidate.userId === "guest" || candidate.userId.startsWith("guest_")));
+          if (isCandidateGuest) {
+            session = sanitizeSessionForGuest(candidate);
+            _currentSessionId = session.backendSessionId || session.id || `session-${idx}`;
+          } else {
+            showErrorState("Vui lòng đăng nhập để xem báo cáo phiên phỏng vấn này.");
+            return;
+          }
+        } else {
+          session = candidate;
+          _currentSessionId = session.backendSessionId || session.id || `session-${idx}`;
+        }
       }
     }
 
@@ -157,10 +357,24 @@ async function initReportPage() {
     if (!session) {
       const allSessions = getAllSavedSessions();
       if (allSessions && allSessions.length > 0) {
-        session = allSessions[allSessions.length - 1]; // most recent
-        _currentSessionId = session.backendSessionId || session.id || "latest-session";
+        const candidate = allSessions[allSessions.length - 1]; // most recent
+        if (!hasAuthToken) {
+          const isCandidateGuest = candidate.isGuestPreview || (candidate.userId && (candidate.userId === "guest" || candidate.userId.startsWith("guest_")));
+          if (isCandidateGuest) {
+            session = sanitizeSessionForGuest(candidate);
+            _currentSessionId = session.backendSessionId || session.id || "latest-session";
+          } else {
+            showErrorState("Vui lòng đăng nhập để xem báo cáo phiên phỏng vấn này.");
+            return;
+          }
+        } else {
+          session = candidate;
+          _currentSessionId = session.backendSessionId || session.id || "latest-session";
+        }
       }
     }
+
+    if (_activeReportRequestId !== thisRequestId) return;
 
     if (!session) {
       showEmptyState("Không tìm thấy dữ liệu phiên phỏng vấn nào để hiển thị báo cáo.");
@@ -168,26 +382,12 @@ async function initReportPage() {
     }
 
     // Auth state detection & Automatic Guest Session Claiming
-    const authUser = (function () {
-      if (typeof getCurrentUser === "function") {
-        const u = getCurrentUser();
-        if (u) return u;
-      }
-      if (typeof localStorage !== "undefined") {
-        try {
-          const raw = localStorage.getItem("prepmate_current_user") || localStorage.getItem("prepmate_auth_user");
-          if (raw) return JSON.parse(raw);
-        } catch (e) {}
-      }
-      return null;
-    })();
-
-    if (authUser && (authUser.token || authUser.jwt) && session && sessionIdParam && !window._sessionClaimAttempted) {
+    if (hasAuthToken && session && sessionIdParam && !window._sessionClaimAttempted) {
       const isGuestSession = session.isGuestPreview || (session.userId && (session.userId === "guest" || session.userId.startsWith("guest_")));
       if (isGuestSession) {
         window._sessionClaimAttempted = true;
         try {
-          const token = authUser.token || authUser.jwt;
+          const token = authUser.token || authUser.jwt || authUser.accessToken;
           const claimRes = await fetch(`${API_BASE_URL}/api/sessions/${encodeURIComponent(sessionIdParam)}/claim`, {
             method: "POST",
             headers: {
@@ -198,6 +398,7 @@ async function initReportPage() {
           });
           if (claimRes.ok) {
             const refreshed = await fetchSessionFromBackend(sessionIdParam);
+            if (_activeReportRequestId !== thisRequestId) return;
             if (refreshed && refreshed.ok && refreshed.data) {
               session = refreshed.data;
             }
@@ -208,11 +409,22 @@ async function initReportPage() {
       }
     }
 
-    const isGuestPreview = Boolean(
-      session.isGuestPreview ||
-      (!authUser && (session.userId === "guest" || (session.userId && session.userId.startsWith("guest_"))))
-    );
+    // MANDATORY AUTHORIZATION PRINCIPLE (SSOT):
+    // 1. If not authenticated, the visitor is strictly a Guest.
+    // 2. An unauthenticated visitor must NEVER view an account-owned session.
+    const isAccountOwned = session.userId && !session.userId.startsWith("guest");
+    if (!hasAuthToken && isAccountOwned) {
+      showErrorState("Vui lòng đăng nhập để xem báo cáo phiên phỏng vấn này.");
+      return;
+    }
+
+    // 3. For any guest-accessible session, enforce Guest Preview mode and strict allowlist sanitization
+    const isGuestPreview = !hasAuthToken || Boolean(session.isGuestPreview);
     session.isGuestPreview = isGuestPreview;
+
+    if (isGuestPreview) {
+      session = sanitizeSessionForGuest(session);
+    }
 
     // Extract report object
     _currentReportData = extractReportPayload(session);
@@ -226,6 +438,7 @@ async function initReportPage() {
     renderFullReport(_currentReportData, session);
     showContentState();
   } catch (error) {
+    if (_activeReportRequestId !== thisRequestId) return;
     console.error("[REPORT UI] Failed to load report:", error);
     showErrorState(error.message || "Không thể tải báo cáo đánh giá.");
   }
@@ -256,8 +469,11 @@ async function fetchSessionFromBackend(sessionId) {
       }
     }
 
+    headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+    headers["Pragma"] = "no-cache";
     const res = await fetch(`${API_BASE_URL}/api/sessions/${encodeURIComponent(sessionId)}`, {
       headers: headers,
+      cache: "no-store",
       credentials: "include"
     });
     if (res.ok) {

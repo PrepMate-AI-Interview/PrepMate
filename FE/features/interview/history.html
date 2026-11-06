@@ -21,9 +21,9 @@
             var user = null;
             try { if (raw) user = JSON.parse(raw); } catch (e) {}
             if (!user || !user.token) {
-                document.documentElement.style.display = 'none';
+                // Allow guests to view history
                 var ret = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
-                window.location.replace('../auth/auth.html?redirect=' + ret);
+                window._isGuestUser = true;
             }
         })();
     </script>
@@ -54,6 +54,29 @@
             <a href="interview-info.html" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;font-weight:700;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Bắt đầu buổi mới
             </a>
+        </div>
+
+        <!-- Guest Notice Banner (Visible only in Guest Mode) -->
+        <div id="hist-guest-banner" class="guest-history-banner glass-card" style="display:none;margin-bottom:24px;padding:16px 20px;border-radius:var(--pm-radius-card, 12px);background:var(--hist-surface);border:1px solid var(--hist-border);box-shadow:var(--hist-shadow-sm);">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:14px;max-width:680px;">
+                    <div style="width:40px;height:40px;border-radius:50%;background:rgba(37,99,235,0.1);display:flex;align-items:center;justify-content:center;color:var(--hist-primary);flex-shrink:0;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-weight:700;font-size:14.5px;color:var(--hist-text-primary);margin-bottom:2px;">
+                            Lịch sử phỏng vấn khách (Dùng thử)
+                        </div>
+                        <div style="font-size:13px;color:var(--hist-text-muted);line-height:1.4;">
+                            Các phiên phỏng vấn này được lưu trên trình duyệt hiện tại. Đăng nhập hoặc tạo tài khoản để đồng bộ vĩnh viễn và mở khóa toàn bộ báo cáo phân tích chuyên sâu.
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <a href="../auth/auth.html?mode=register" class="btn btn-primary" style="font-size:13px;font-weight:700;padding:8px 16px;border-radius:var(--pm-radius-btn-md, 8px);text-decoration:none;">Đăng ký lưu lịch sử</a>
+                    <a href="../auth/auth.html?mode=login" class="btn btn-outline" style="font-size:13px;font-weight:600;padding:8px 14px;border-radius:var(--pm-radius-btn-md, 8px);text-decoration:none;">Đăng nhập</a>
+                </div>
+            </div>
         </div>
 
         <!-- Metrics Overview -->
@@ -224,7 +247,113 @@
             filterHistoryList();
         }
 
+        let _activeHistoryRequestId = 0;
+
         async function loadAllHistory() {
+            const thisRequestId = ++_activeHistoryRequestId;
+
+            // Clear previous history state to guarantee no data leakage across identity switches
+            _allSessions = [];
+            const container = document.getElementById('history-full-list');
+            if (container) {
+                container.innerHTML = `
+                    <div class="empty-state-new">
+                        <div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                        <h4>Đang tải lịch sử phỏng vấn...</h4>
+                        <p>Vui lòng đợi giây lát.</p>
+                    </div>
+                `;
+            }
+            updateMetrics([]);
+
+            const currentUser = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const isAuthenticated = !!(currentUser && currentUser.token && currentUser.id);
+
+            const guestBanner = document.getElementById('hist-guest-banner');
+            if (guestBanner) {
+                guestBanner.style.display = isAuthenticated ? 'none' : 'block';
+            }
+
+            const apiBase = (typeof window !== 'undefined' && typeof window.PREPMATE_API_BASE_URL === 'string')
+                ? window.PREPMATE_API_BASE_URL
+                : (typeof API_BASE_URL === 'string' ? API_BASE_URL : '');
+
+            let sessionsList = [];
+
+            if (isAuthenticated) {
+                // ==========================================
+                // 1. AUTHENTICATED MODE: Load Account History
+                // ==========================================
+                try {
+                    const headers = {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${currentUser.token}`,
+                        'Cache-Control': 'no-cache, no-store, must-revalidate'
+                    };
+                    const res = await fetch(`${apiBase}/api/sessions/user/${encodeURIComponent(currentUser.id)}`, {
+                        headers,
+                        cache: 'no-store'
+                    });
+                    if (res.ok) {
+                        const backendSessions = await res.json();
+                        if (Array.isArray(backendSessions)) {
+                            sessionsList = backendSessions;
+                            if (typeof saveUserSessions === 'function') {
+                                saveUserSessions(backendSessions);
+                            }
+                        }
+                    } else if (res.status === 401) {
+                        console.warn('[HISTORY UI] Authentication expired for account history.');
+                    }
+                } catch (err) {
+                    console.warn('[HISTORY UI] Failed to load account history from backend:', err);
+                    if (typeof getUserSessions === 'function') {
+                        sessionsList = getUserSessions() || [];
+                    }
+                }
+            } else {
+                // ==========================================
+                // 2. GUEST MODE: Load Dedicated Guest History
+                // ==========================================
+                try {
+                    const headers = {
+                        'Accept': 'application/json',
+                        'Cache-Control': 'no-cache, no-store, must-revalidate'
+                    };
+                    let guestToken = null;
+                    try {
+                        guestToken = localStorage.getItem('pm_guest_token') || sessionStorage.getItem('pm_guest_token');
+                    } catch (e) {}
+                    if (guestToken) {
+                        headers['X-Guest-Token'] = guestToken;
+                    }
+
+                    const res = await fetch(`${apiBase}/api/sessions/guest`, {
+                        headers,
+                        credentials: 'include',
+                        cache: 'no-store'
+                    });
+                    if (res.ok) {
+                        const guestSessions = await res.json();
+                        if (Array.isArray(guestSessions)) {
+                            sessionsList = guestSessions;
+                        }
+                    }
+                } catch (err) {
+                    console.warn('[HISTORY UI] Failed to load guest history from backend:', err);
+                }
+            }
+
+            // Drop stale async response if another request has started
+            if (_activeHistoryRequestId !== thisRequestId) return;
+
+            _allSessions = sortHistorySessions(sessionsList);
+            updateMetrics(_allSessions);
+            renderFullHistoryList(_allSessions);
+            return;
+        }
+
+        async function _legacyLoadAllHistory() {
             const currentUser = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
             let localList = [];
             if (currentUser && typeof getUserSessions === 'function') {
@@ -314,7 +443,7 @@
             }).filter(x => x > 0);
 
             const avg = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : '—';
-            const totalMins = sessions.reduce((acc, s) => acc + (s.duration || 15), 0);
+            const totalMins = sessions.reduce((acc, s) => acc + (s.duration || 0), 0);
 
             document.getElementById('hist-total-count').innerText = total;
             document.getElementById('hist-avg-score').innerText = avg;
@@ -383,6 +512,35 @@
         function renderFullHistoryList(sessions) {
             const container = document.getElementById('history-full-list');
             if (!container) return;
+
+            const currentUser = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const isAuth = !!(currentUser && currentUser.token && currentUser.id);
+
+            const hasFilters = document.getElementById('hist-search-input')?.value ||
+                (document.getElementById('hist-status-filter')?.value && document.getElementById('hist-status-filter')?.value !== 'all') ||
+                (document.getElementById('hist-level-filter')?.value && document.getElementById('hist-level-filter')?.value !== 'all') ||
+                document.getElementById('hist-date-exact')?.value ||
+                document.getElementById('hist-date-start')?.value ||
+                document.getElementById('hist-date-end')?.value;
+
+            if (sessions.length === 0 && !hasFilters && !isAuth) {
+                container.innerHTML = `
+                    <div class="empty-state-new">
+                        <div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                        <h4>Chưa có phiên phỏng vấn dùng thử nào</h4>
+                        <p>Bạn chưa thực hiện phiên phỏng vấn nào dưới danh tính khách trên trình duyệt này. Bắt đầu ngay một buổi phỏng vấn mô phỏng miễn phí để trải nghiệm đánh giá năng lực AI.</p>
+                        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+                            <a href="interview-info.html" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;padding:9px 18px;border-radius:var(--pm-radius-btn-md, 8px);text-decoration:none;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Bắt đầu phỏng vấn ngay
+                            </a>
+                            <a href="../auth/auth.html" class="btn btn-outline" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:8px 16px;border-radius:var(--pm-radius-btn-md, 8px);text-decoration:none;">
+                                Đăng nhập tài khoản
+                            </a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
 
             if (sessions.length === 0) {
                 container.innerHTML = `
@@ -466,16 +624,16 @@
                         scoreClass = normalized >= 80 ? 'score-high' : normalized >= 60 ? 'score-mid' : 'score-low';
                     }
 
-                    const jobTitle = session.jobTitle || 'Buổi phỏng vấn';
+                    const jobTitle = session.jobTitle || 'Chưa xác định';
                     const jobIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
                     const companyIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22.01"/><line x1="15" y1="22" x2="15" y2="22.01"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="9" y2="18.01"/><line x1="15" y1="18" x2="15" y2="18.01"/></svg>';
 
                     const sessionDate = session.date ? new Date(session.date).toLocaleDateString('vi-VN') : (session.createdAt ? new Date(session.createdAt).toLocaleDateString('vi-VN') : 'Gần đây');
-                    const compName = session.company || session.companyName || session.targetCompany || 'Doanh nghiệp';
+                    const compName = session.company || session.companyName || session.targetCompany || 'Chưa xác định';
                     const lang = session.language === 'en' || session.language === 'English' ? 'English' : 'Tiếng Việt';
 
                     // 1. Candidate Seniority / Experience Level
-                    const rawLevel = session.level || session.targetLevel || session.experienceLevel || 'Middle';
+                    const rawLevel = session.level || session.targetLevel || session.experienceLevel;
                     const levelMap = {
                         'intern': 'Thực tập sinh (Intern)',
                         'fresher': 'Mới tốt nghiệp (Fresher)',
@@ -486,7 +644,7 @@
                         'senior': 'Cao cấp (Senior)',
                         'lead': 'Trưởng nhóm (Lead)'
                     };
-                    const displayLevel = levelMap[rawLevel.toLowerCase()] || rawLevel;
+                    const displayLevel = rawLevel ? (levelMap[rawLevel.toLowerCase()] || rawLevel) : 'Chưa xác định';
 
                     // 2. Genuine Interview/Question Difficulty
                     let difficultyBadgeHtml = '';
@@ -516,7 +674,7 @@
                     const sessId = session.backendSessionId || session.id || session.sessionId;
 
                     if (isCompleted) {
-                        statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Đã hoàn thành</span>`;
+                        statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Đã hoàn thành</span>` + (session.isGuestPreview ? ` <span class="pm-status-pill guest" style="background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;"><span class="pm-status-dot" style="background:#64748b;"></span> Dùng thử</span>` : '');
                         const reportUrl = sessId ? `../report/report.html?sessionId=${encodeURIComponent(sessId)}` : `../report/report.html?index=${originalIdx}`;
                         actionButtonsHtml = `
                             <a href="${reportUrl}" class="btn-action-report" title="Xem báo cáo chi tiết buổi phỏng vấn">
@@ -563,7 +721,7 @@
                                 <span class="pm-flag-badge">${escapeHtml(lang)}</span>
                                 <span class="pm-time-badge">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                    <span>${session.duration || 15} phút</span>
+                                    <span>${session.duration ? session.duration + ' phút' : 'Chưa xác định'}</span>
                                 </span>
                                 <span class="pm-questions-badge" title="Số lượng câu hỏi trong buổi phỏng vấn">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>

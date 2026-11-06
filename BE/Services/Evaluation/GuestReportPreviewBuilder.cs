@@ -72,7 +72,7 @@ namespace backend.Services.Evaluation
     public class GuestPreviewDto
     {
         public double? OverallScore { get; set; }
-        public string EvaluationRating { get; set; } = string.Empty;
+        public string? EvaluationRating { get; set; } = null;
         public string EvaluationStatus { get; set; } = "AVAILABLE"; // AVAILABLE, PENDING, EVALUATION_FAILED, INSUFFICIENT_EVIDENCE
         public string Summary { get; set; } = string.Empty;
         public string Interpretation { get; set; } = string.Empty;
@@ -93,6 +93,27 @@ namespace backend.Services.Evaluation
 
     public static class GuestReportPreviewBuilder
     {
+        public static string ResolveEvaluationRating(double score)
+        {
+            if (score >= 85.0) return "Xuất sắc";
+            if (score >= 70.0) return "Tốt";
+            if (score >= 55.0) return "Đạt yêu cầu";
+            return "Cần cải thiện";
+        }
+
+        public static bool IsIntroductionTurn(AnswerItem? a)
+        {
+            if (a == null) return false;
+            if (string.Equals(a.QuestionId, "intro", StringComparison.OrdinalIgnoreCase)) return true;
+            if (string.Equals(a.QuestionType, "Introduction", StringComparison.OrdinalIgnoreCase)) return true;
+            if (string.Equals(a.Stage, "INTRODUCTION", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(a.Stage, InterviewStageNames.Introduction, StringComparison.OrdinalIgnoreCase)) return true;
+            if (!string.IsNullOrWhiteSpace(a.Question) &&
+                (a.Question.Trim().StartsWith("Giới thiệu", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(a.Question.Trim(), "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase))) return true;
+            return false;
+        }
+
         public static GuestPreviewDto BuildGuestPreview(Session session)
         {
             var dto = new GuestPreviewDto();
@@ -100,6 +121,8 @@ namespace backend.Services.Evaluation
             if (session == null)
             {
                 dto.EvaluationStatus = "EVALUATION_FAILED";
+                dto.OverallScore = null;
+                dto.EvaluationRating = null;
                 dto.Summary = "Không tìm thấy dữ liệu phiên phỏng vấn.";
                 dto.Interpretation = "Hệ thống không thể truy xuất dữ liệu phỏng vấn.";
                 return dto;
@@ -110,31 +133,29 @@ namespace backend.Services.Evaluation
             var answers = session.Answers ?? new List<AnswerItem>();
 
             // 1. Determine truthful evaluation status
-            if (session.TechnicalEvaluationFailed)
+            if (session.TechnicalEvaluationFailed || answers.Any(a => a.EvaluationFailed))
             {
                 dto.EvaluationStatus = "EVALUATION_FAILED";
+                dto.OverallScore = null;
+                dto.EvaluationRating = null;
                 dto.Summary = session.TechnicalEvaluationFailureReason ?? "Đánh giá năng lực không hoàn tất do lỗi xử lý hệ thống.";
                 dto.Interpretation = "Đánh giá chưa thành công; vui lòng thử lại phiên phỏng vấn.";
                 return dto;
             }
 
-            if (session.Status == "in_progress" && report == null && eval == null)
-            {
-                dto.EvaluationStatus = "PENDING";
-                dto.Summary = "Phiên phỏng vấn đang trong quá trình thực hiện hoặc chờ xử lý đánh giá.";
-                dto.Interpretation = "Hệ thống đang hoàn thiện phân tích dữ liệu câu trả lời.";
-                return dto;
-            }
+            var mainAnswers = answers
+                .Where(a => !IsIntroductionTurn(a) && !string.IsNullOrWhiteSpace(a.Answer))
+                .ToList();
 
-            if (answers.Count == 0 && (report == null || report.OverallScore <= 0))
+            if (mainAnswers.Count == 0 && (report == null || report.OverallScore <= 0) && (eval == null || eval.OverallScore <= 0) && (!session.OverallScore.HasValue || session.OverallScore.Value <= 0))
             {
                 dto.EvaluationStatus = "INSUFFICIENT_EVIDENCE";
+                dto.OverallScore = null;
+                dto.EvaluationRating = null;
                 dto.Summary = "Chưa có đủ câu hỏi và câu trả lời để đưa ra kết luận đánh giá hợp lệ.";
                 dto.Interpretation = "Cần thêm dữ liệu câu trả lời để hoàn thiện đánh giá.";
                 return dto;
             }
-
-            dto.EvaluationStatus = "AVAILABLE";
 
             // 2. Authoritative OverallScore & Classification Rating (0-100 SSOT)
             double rawScore = 0.0;
@@ -151,16 +172,20 @@ namespace backend.Services.Evaluation
                 rawScore = session.OverallScore.Value;
             }
 
-            dto.OverallScore = Math.Round(rawScore, 1);
+            if (rawScore <= 0)
+            {
+                // Incomplete or pending evaluation
+                dto.EvaluationStatus = "PENDING";
+                dto.OverallScore = null;
+                dto.EvaluationRating = null;
+                dto.Summary = "Phiên phỏng vấn đang trong quá trình thực hiện hoặc chờ xử lý đánh giá.";
+                dto.Interpretation = "Hệ thống đang hoàn thiện phân tích dữ liệu câu trả lời.";
+                return dto;
+            }
 
-            if (dto.OverallScore >= 85.0)
-                dto.EvaluationRating = "Xuất sắc";
-            else if (dto.OverallScore >= 70.0)
-                dto.EvaluationRating = "Tốt";
-            else if (dto.OverallScore >= 55.0)
-                dto.EvaluationRating = "Đạt yêu cầu";
-            else
-                dto.EvaluationRating = "Cần cải thiện";
+            dto.EvaluationStatus = "AVAILABLE";
+            dto.OverallScore = Math.Round(rawScore, 1);
+            dto.EvaluationRating = ResolveEvaluationRating(dto.OverallScore.Value);
 
             // 3. Interview Summary: Maximum 1-2 concise sentences (high-level result, no evaluation reasoning leaked)
             // WI-GUEST-PREVIEW-REMEDIATION-01: Non-formulaic, specific to role, seniority, and evaluated rating/score

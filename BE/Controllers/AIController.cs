@@ -294,12 +294,15 @@ namespace backend.Controllers
                 _fileDb.Sessions.TryGetValue(request.SessionId, out var s);
                 bool isAuthOwner = !string.IsNullOrEmpty(callerId) && s != null && (callerId.Equals(s.UserId, StringComparison.OrdinalIgnoreCase) || isAdmin);
 
-                if (!isAuthOwner && s != null && s.Report != null)
+                if (!isAuthOwner)
                 {
-                    var guestPreview = backend.Services.Evaluation.GuestReportPreviewBuilder.BuildGuestPreview(s);
+                    var guestPreview = s != null
+                        ? backend.Services.Evaluation.GuestReportPreviewBuilder.BuildGuestPreview(s)
+                        : new backend.Services.Evaluation.GuestPreviewDto { EvaluationStatus = "EVALUATION_FAILED" };
+
                     var previewReport = new
                     {
-                        overallScore = s.Report.OverallScore,
+                        overallScore = guestPreview.OverallScore ?? (s?.Report?.OverallScore),
                         isGuestPreview = true,
                         guestPreview = guestPreview,
                         summary = guestPreview.Summary,

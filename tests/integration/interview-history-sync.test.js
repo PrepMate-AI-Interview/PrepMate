@@ -12,8 +12,10 @@ const http = require("http");
 const { spawn } = require("child_process");
 
 const WORKSPACE_ROOT = path.resolve(__dirname, "../..");
-const PROD_DB_PATH = path.join(WORKSPACE_ROOT, "BE", "data", "db.json");
-const BASELINE_DB_HASH = "C8D6CA48DFAC2DD4C9FC3F5793E36222506220F07DC4DE9E17102B92295662A7";
+// DB Path
+const { resolveDbPath, getBaselineDbHash } = require('../helpers/test-env');
+const PROD_DB_PATH = resolveDbPath(true);
+const BASELINE_DB_HASH = getBaselineDbHash();
 
 console.log("===============================================================");
 console.log("   INTERVIEW-HISTORY-01: DATA CONSISTENCY & SYNC TEST SUITE   ");

@@ -810,6 +810,30 @@ namespace backend.Services.Interview
             // 3. Legacy session with literal "guest"
             if (session.UserId.Equals("guest", StringComparison.OrdinalIgnoreCase))
             {
+                if (isAdmin)
+                {
+                    return (true, 200, null);
+                }
+
+                if (allowMutate)
+                {
+                    return (false, 403, "Phiên phỏng vấn cũ không xác định được chủ sở hữu. Vui lòng bắt đầu phiên mới.");
+                }
+
+                // Stable per-session association check (WI-GUEST-REPORT-UNIVERSAL-VERIFY-02):
+                // A generic valid guest token is NOT sufficient proof of ownership for a legacy session.
+                // Reliable ownership can only be established if OriginalGuestId is recorded and matches the caller's verified guest identity.
+                if (!string.IsNullOrWhiteSpace(session.OriginalGuestId))
+                {
+                    var (_, currentGuestId) = ResolveOrCreateGuestIdentity(httpContext);
+                    if (string.Equals(session.OriginalGuestId, currentGuestId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return (true, 200, null);
+                    }
+                    return (false, 403, "Bạn không có quyền truy cập phiên phỏng vấn của khách khác.");
+                }
+
+                // If no reliable association exists to this guest, deny access to prevent generic token bypass
                 return (false, 403, "Phiên phỏng vấn cũ không xác định được chủ sở hữu. Vui lòng liên hệ quản trị viên.");
             }
 
