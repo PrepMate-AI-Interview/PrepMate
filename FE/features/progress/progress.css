@@ -192,7 +192,9 @@ body.dark-mode {
 .progress-stat .stat-num {
   font-size: 32px;
   font-weight: var(--pm-font-weight-bold, 652);
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   line-height: 1.1;
   margin-bottom: 6px;
 }

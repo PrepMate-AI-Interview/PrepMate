@@ -129,7 +129,7 @@
   // END INTERVIEW & DEBRIEF REPORT GENERATION
   // ==========================================
 
-  async function endInterview(confirmBefore = true) {
+  async function endInterview(confirmBefore = true, isAutoComplete = false) {
     const currentPhase = getInterviewPhaseDefensive();
     if (isEndingInterview || currentPhase === "COMPLETED") return;
 
@@ -209,14 +209,15 @@
 
     const finishMessage = document.getElementById("finish-message");
     if (finishMessage) {
-      finishMessage.innerText = "AI đang phân tích và tổng hợp báo cáo đánh giá chuyên sâu...";
+      finishMessage.innerText = isAutoComplete ? "PrepMate đang phân tích câu trả lời và chuẩn bị báo cáo đánh giá của bạn." : "AI đang phân tích và tổng hợp báo cáo đánh giá chuyên sâu...";
     }
 
     const finishSummary = document.getElementById("finish-summary");
     if (finishSummary) {
       finishSummary.innerHTML = `
         <div style="text-align:center;padding:24px;color:#94a3b8;">
-          <span class="loading-dots">Đang tính toán điểm năng lực STAR và tổng hợp nhận xét...</span>
+          <h4 style="font-size:16px;font-weight:600;color:var(--ir-text,#e2e8f0);margin-bottom:8px;">Đang tổng hợp kết quả phỏng vấn</h4>
+          <span class="loading-dots">PrepMate đang phân tích câu trả lời và chuẩn bị báo cáo đánh giá của bạn.</span>
         </div>
       `;
     }
@@ -244,7 +245,7 @@
       );
 
       const report = data.report || data;
-      applyReportToSessionAndShow(report, validResponses);
+      applyReportToSessionAndShow(report, validResponses, isAutoComplete);
     } catch (error) {
       console.error("[INTERVIEW] Backend report failed:", error);
       // RESTORE INTERVIEW LIFECYCLE CONSISTENCY (WI-02B3)
@@ -387,7 +388,7 @@
     showFinishModal();
   }
 
-  function applyReportToSessionAndShow(report, validResponses) {
+  function applyReportToSessionAndShow(report, validResponses, isAutoComplete = false) {
     const overallScoreVal = Number(report.overallScore ?? report.score ?? 0);
     const techScoreVal = Number(report.techScore ?? report.scores?.tech ?? 0);
     const commScoreVal = Number(report.commScore ?? report.scores?.comm ?? 0);
@@ -603,7 +604,7 @@
         verdictEl.innerText = vText;
         const iconSvg = (typeof window !== 'undefined' && window.PrepMateIcons && typeof window.PrepMateIcons.svg === 'function')
           ? window.PrepMateIcons.svg('info', { size: 14, class: 'pm-icon' })
-          : '<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+          : '<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
         verdictEl.innerHTML = `${iconSvg}${vText}`;
       } else {
         let vClass = "verdict-good";

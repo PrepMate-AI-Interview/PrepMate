@@ -674,6 +674,20 @@ body.dashboard-body {
   color: var(--mobbin-text-muted, #707070);
 }
 
+.qbank-row-submeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.35;
+}
+
+.qbank-row-submeta span svg {
+  display: block;
+  flex-shrink: 0;
+  margin: 0;
+  vertical-align: unset;
+}
+
 .qbank-row-right {
   display: flex;
   align-items: center;

@@ -98,23 +98,20 @@ namespace backend.Services
                 }
             }
 
-            // Phase 2: Generate Knowledge Blueprint from JD (if JD is provided)
+            // Phase 2: Generate Knowledge Blueprint from JD or Sector/Role Context (JD-independent)
             KnowledgeBlueprint? blueprint = null;
-            if (!string.IsNullOrWhiteSpace(jdText))
+            try
             {
-                try
-                {
-                    blueprint = await _knowledgeBlueprintService.GenerateAsync(
-                        request.JobTitle,
-                        jdText,
-                        request.ExperienceLevel,
-                        companyContext
-                    );
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[INTERVIEW] Blueprint generation error: {ex.Message}");
-                }
+                blueprint = await _knowledgeBlueprintService.GenerateAsync(
+                    request.JobTitle,
+                    jdText,
+                    request.ExperienceLevel,
+                    companyContext
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[INTERVIEW] Blueprint generation error: {ex.Message}");
             }
 
             // Phase 2 Step 6: Enrich Blueprint with CompanyContext & Level Contextual Signals
@@ -146,8 +143,8 @@ namespace backend.Services
                         companyContext,
                         request.JobTitle,
                         request.ExperienceLevel,
-                        request.MaximumQuestions ?? 15,
-                        request.TargetDurationMinutes ?? 30
+                        request.MaximumQuestions ?? InterviewState.DemoInterviewQuestionLimit,
+                        request.TargetDurationMinutes ?? 10
                     );
                 }
                 catch (Exception ex)

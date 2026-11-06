@@ -1,6 +1,6 @@
 // ==========================================
 // PREPMATE — STAGE AGENDA & CONTEXTUAL PRESENTATION
-// ARCHITECTURE: INTERVIEW STAGE & HUD PRESENTATION
+// ARCHITECTURE: INTERVIEW STAGE & HUD PRESENTATION (WI-INTERVIEW-DEMO-02)
 // ==========================================
 
 const STAGE_AGENDA = {
@@ -30,9 +30,9 @@ const STAGE_AGENDA = {
     guidance: "Cơ hội để bạn tìm hiểu sâu hơn về công ty và vị trí. Bạn có thể đặt câu hỏi về: Định hướng chuyên môn • Quy trình & Đội ngũ • Lộ trình phát triển • Văn hóa làm việc."
   },
   "CLOSING": {
-    badge: "Tổng kết Buổi phỏng vấn",
-    counter: "Tổng kết buổi phỏng vấn",
-    guidance: "Tổng kết buổi phỏng vấn. Bạn có thể chia sẻ lời cảm ơn hoặc nhận xét ngắn gọn trước khi nhận báo cáo đánh giá."
+    badge: "AI Closing — Lời kết",
+    counter: "AI Closing — không còn câu hỏi",
+    guidance: "AI đang tổng kết buổi phỏng vấn. Hệ thống chuẩn bị chuyển sang báo cáo đánh giá."
   },
   "COMPLETED": {
     badge: "Hoàn tất Phỏng vấn",
@@ -41,6 +41,8 @@ const STAGE_AGENDA = {
   }
 };
 
+const MAX_INTERVIEW_QUESTIONS = 5;
+
 function updateStagePresentation(stageKey, isFollowUp = false, questionNum = 1, isTransition = false) {
   const normKey = (stageKey || "TECHNICAL_ASSESSMENT").toUpperCase();
   const cfg = STAGE_AGENDA[normKey] || STAGE_AGENDA["TECHNICAL_ASSESSMENT"];
@@ -48,21 +50,37 @@ function updateStagePresentation(stageKey, isFollowUp = false, questionNum = 1, 
   const badgeEl = document.getElementById("current-question-badge");
   if (badgeEl) {
     badgeEl.className = isFollowUp ? "ir-question-badge follow-up" : "ir-question-badge";
-    badgeEl.textContent = isFollowUp ? "Đào sâu • Phản biện" : cfg.badge;
+    if (normKey === "CLOSING") {
+      badgeEl.textContent = "AI Closing — Lời kết";
+    } else if (normKey === "COMPLETED") {
+      badgeEl.textContent = "Đã hoàn thành";
+    } else if (isFollowUp) {
+      badgeEl.textContent = "Đào sâu • Phản biện";
+    } else if (questionNum >= MAX_INTERVIEW_QUESTIONS && normKey !== "INTRODUCTION") {
+      badgeEl.textContent = "5/5 — Câu hỏi cuối cùng";
+    } else {
+      badgeEl.textContent = cfg.badge;
+    }
   }
 
   const counterEl = document.getElementById("question-counter");
   if (counterEl) {
     counterEl.className = "ir-progress-pill pm-status-pill active";
-    let counterLabel = `<span>${cfg.counter} • <strong>Câu ${questionNum}</strong></span>`;
-    if (isTransition || normKey === "CANDIDATE_QUESTIONS") {
-      counterLabel = `<span>${cfg.counter} • <strong>Trao đổi hai chiều</strong></span>`;
-    } else if (normKey === "INTRODUCTION") {
+    let counterLabel = "";
+    if (normKey === "INTRODUCTION") {
       counterLabel = `<span>${cfg.counter} • <strong>Khởi động</strong></span>`;
-    } else if (normKey === "CLOSING") {
-      counterLabel = `<span>${cfg.counter} • <strong>Hoàn tất</strong></span>`;
     } else if (normKey === "COMPLETED") {
       counterLabel = `<span>${cfg.counter}</span>`;
+    } else if (normKey === "CLOSING") {
+      counterLabel = `<span><strong>AI Closing — không còn câu hỏi</strong></span>`;
+    } else if (questionNum >= MAX_INTERVIEW_QUESTIONS) {
+      counterLabel = `<span><strong>5/5 — Câu hỏi cuối cùng</strong></span>`;
+    } else if (questionNum > 0) {
+      counterLabel = `<span><strong>${questionNum}/${MAX_INTERVIEW_QUESTIONS}</strong></span>`;
+    } else if (isTransition || normKey === "CANDIDATE_QUESTIONS") {
+      counterLabel = `<span>${cfg.counter} • <strong>Trao đổi hai chiều</strong></span>`;
+    } else {
+      counterLabel = `<span>${cfg.counter} • <strong>Câu ${questionNum}</strong></span>`;
     }
     counterEl.innerHTML = `
       <span class="pm-status-dot active"></span>
@@ -87,4 +105,5 @@ function updateStagePresentation(stageKey, isFollowUp = false, questionNum = 1, 
 if (typeof window !== "undefined") {
   window.STAGE_AGENDA = STAGE_AGENDA;
   window.updateStagePresentation = updateStagePresentation;
+  window.MAX_INTERVIEW_QUESTIONS = MAX_INTERVIEW_QUESTIONS;
 }

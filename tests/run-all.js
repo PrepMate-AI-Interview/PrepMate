@@ -1,5 +1,5 @@
 /**
- * PREPMATE — MASTER REGRESSION TEST RUNNER
+ * PREPMATE â€” MASTER REGRESSION TEST RUNNER
  * Executes all 13 core regression, presentation, accessibility, responsive,
  * and design consistency test suites against the production codebase.
  *
@@ -104,11 +104,34 @@ const suites = [
   { name: 'Compact Clothing Suggestion Carousel (WI-REPORT-13R3-R1)', path: 'tests/regression/wi-report-13r3-r1.test.js' },
   { name: 'Recommendations IA & Resource Separation (WI-REPORT-14)', path: 'tests/regression/wi-report-14.test.js' },
   { name: 'Priority Hierarchy & Progressive Disclosure (WI-REPORT-14R1)', path: 'tests/regression/wi-report-14r1.test.js' },
-  { name: 'Redesign Recommendations Section (WI-REPORT-15)', path: 'tests/regression/wi-report-15.test.js' }
+  { name: 'Redesign Recommendations Section (WI-REPORT-15)', path: 'tests/regression/wi-report-15.test.js' },
+  { name: 'Recommendation Hierarchy & Visual Layer (WI-REPORT-UX-16)', path: 'tests/regression/wi-report-ux-16.test.js' },
+  { name: 'Report UI Consistency & Hierarchy (WI-REPORT-UX-17)', path: 'tests/regression/wi-report-ux-17.test.js' },
+  { name: 'Icon Alignment & History UI Standardization (WI-UX-18)', path: 'tests/regression/wi-ux-18-icon-alignment.test.js' },
+  { name: 'Full-Frontend UI Consistency & Design System (WI-UX-19)', path: 'tests/regression/wi-ux-19-design-system.test.js' },
+  { name: 'Global Sidebar Standardization & Core Pages (WI-UX-19R1)', path: 'tests/regression/wi-ux-19r1-sidebar-core-pages.test.js' },
+  { name: 'Jobs Page Gutters & Global Layout Alignment (WI-JOBS-UX-02)', path: 'tests/regression/wi-jobs-ux-02-gutters.test.js' },
+  { name: 'Job Card Footer Redesign & Action Hierarchy (WI-JOBS-UX-03)', path: 'tests/regression/wi-jobs-ux-03-footer.test.js' },
+  { name: 'Global Navigation Cleanup & Full-Page Audit (WI-UX-20)', path: 'tests/regression/wi-ux-20-navigation-cleanup.test.js' },
+  { name: 'Guest Report Access Control & Empty State (WI-REPORT-ACCESS-01)', path: 'tests/regression/wi-report-access-control-empty-state.test.js' },
+  { name: 'Guest Report Preview Architecture (WI-REPORT-PREVIEW-01)', path: 'tests/regression/wi-report-preview-01.test.js' },
+  { name: 'Guest Report Preview Reduction & Protection (WI-REPORT-PREVIEW-02)', path: 'tests/regression/wi-report-preview-02.test.js' },
+  { name: 'Email Verification & Password Reset (WI-AUTH-01)', path: 'tests/regression/auth-email-verification-reset.test.js' },
+  { name: 'Real-Time Password Validation UI (WI-AUTH-01R6)', path: 'tests/regression/auth-realtime-password-validation.test.js' },
+  { name: 'Password Visibility Toggle Layout (WI-AUTH-01R9)', path: 'tests/regression/auth-password-toggle-layout.test.js' },
+  { name: 'Login & Register Color Consistency (WI-AUTH-02)', path: 'tests/regression/auth-login-register-color-consistency.test.js' },
+  { name: 'Dark Mode Registration & Validation (WI-AUTH-03)', path: 'tests/regression/auth-dark-mode-registration.test.js' },
+  { name: 'Comprehensive Authentication UX Audit & Fix (WI-AUTH-04)', path: 'tests/regression/auth-comprehensive-ux.test.js' },
+  { name: 'Weekly Interview Quota Enforcement & Rollover (WI-QUOTA-01)', path: 'tests/regression/weekly-interview-quota.test.js' },
+  { name: 'Scoring Engine Calibration & Dynamic Evaluation (WI-SCORE-01)', path: 'tests/regression/scoring-engine-calibration.test.js' },
+  { name: 'Scoring Engine Final Live AI & Discrimination (WI-SCORE-01R2)', path: 'tests/regression/scoring-r2-live-verification.test.js' },
+  { name: 'Zero-Score vs Not-Assessed Edge Cases (WI-SCORE-01R3A)', path: 'tests/regression/scoring-r3a-edge-cases.test.js' },
+  { name: 'Five-Question Interview & Natural AI Closing (WI-INTERVIEW-DEMO-02)', path: 'tests/regression/interview-demo-5-questions-closing.test.js' },
+  { name: 'Interview History Integrity & Grounded AI Feedback (WI-INTERVIEW-REPORT-FIX-01)', path: 'tests/regression/wi-interview-report-fix-01.test.js' }
 ];
 
 console.log('===============================================================');
-console.log('   PREPMATE — AUTOMATED REGRESSION RUNNER                      ');
+console.log('   PREPMATE â€” AUTOMATED REGRESSION RUNNER                      ');
 console.log('===============================================================\n');
 
 let totalPassedSuites = 0;
@@ -120,7 +143,7 @@ const startTime = Date.now();
 
 for (const suite of suites) {
   const fullPath = path.join(rootDir, suite.path);
-  process.stdout.write(`• Running ${suite.name.padEnd(38)} ... `);
+  process.stdout.write(`â€¢ Running ${suite.name.padEnd(38)} ... `);
   try {
     const out = execSync(`node "${fullPath}"`, { cwd: rootDir, encoding: 'utf8' });
     const assertions = (out.match(/\[PASS\]/g) || []).length;

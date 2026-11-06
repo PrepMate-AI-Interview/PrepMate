@@ -16,6 +16,9 @@ namespace backend.Models
         public List<string> IncorrectConcepts { get; set; } = new();
         public List<string> VerifiedFacts { get; set; } = new();
         public List<string> UnverifiedClaims { get; set; } = new();
+        public bool EvaluationFailed { get; set; } = false;
+        public string? EvaluationFailureReason { get; set; }
+        public double? Score { get; set; }
         public bool HasInconsistency { get; set; }
         public string InconsistencyDetail { get; set; } = string.Empty;
 
@@ -71,6 +74,8 @@ namespace backend.Models
 
     public class KnowledgeAnalysisItem
     {
+        public string? QuestionId { get; set; }
+
         public string Question { get; set; } =
             string.Empty;
 
@@ -82,6 +87,13 @@ namespace backend.Models
 
         public string Supplement { get; set; } =
             string.Empty;
+
+        // Grounded AI Analysis Fields (WI-INTERVIEW-REPORT-FIX-01)
+        public string AnalysisStatus { get; set; } = "ASSESSED";
+        public string Strengths { get; set; } = string.Empty;
+        public string Gaps { get; set; } = string.Empty;
+        public string Recommendation { get; set; } = string.Empty;
+        public string Evidence { get; set; } = string.Empty;
     }
 
 
@@ -89,7 +101,9 @@ namespace backend.Models
     {
         public double OverallScore { get; set; }
 
-        public double TechScore { get; set; }
+        public double? TechScore { get; set; }
+
+        public string TechnicalStatus { get; set; } = "ASSESSED";
 
         public double CommScore { get; set; }
 
@@ -97,7 +111,11 @@ namespace backend.Models
 
         public double StarScore { get; set; }
         public double SituationalScore { get; set; }
-        public double CandidateQuestionScore { get; set; }
+        public double? CandidateQuestionScore { get; set; }
+        public string CandidateQuestionStatus { get; set; } = "NOT_ASSESSED";
+
+        public string EvaluationMethod { get; set; } = "ai_grounded";
+        public string EvaluationConfidence { get; set; } = "HIGH";
 
 
         public ReportCriteria Criteria { get; set; } =
@@ -153,6 +171,14 @@ namespace backend.Models
 
 
         public List<string>? Questions { get; set; }
+
+        public double? TechnicalScore { get; set; }
+        public bool TechnicalEvaluationFailed { get; set; } = false;
+        public string? TechnicalEvaluationFailureReason { get; set; }
+        public DimensionAssessmentStatus? TechnicalStatus { get; set; }
+
+        public double? OverallScore => Report?.OverallScore ?? (Evaluation != null ? System.Math.Round(Evaluation.OverallScore * 10.0, 1) : null);
+        public double? Score => OverallScore;
 
         public List<AnswerItem> Answers { get; set; } =
             new();

@@ -12,8 +12,8 @@ namespace backend.Services.Interview
             CompanyContext? companyContext,
             string position,
             string? experienceLevel = "Middle",
-            int maximumQuestions = 15,
-            int targetDurationMinutes = 30)
+            int maximumQuestions = InterviewState.DemoInterviewQuestionLimit,
+            int targetDurationMinutes = 10)
         {
             if (blueprint == null || blueprint.Areas == null || blueprint.Areas.Count == 0)
             {

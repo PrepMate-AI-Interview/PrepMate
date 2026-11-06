@@ -30,7 +30,7 @@ namespace backend.Controllers
                 IsActive = true,
                 Features = new List<string>
                 {
-                    "3 lượt phỏng vấn AI mô phỏng mỗi tháng",
+                    "3 lượt phỏng vấn AI mô phỏng mỗi tuần",
                     "Trải nghiệm phòng phỏng vấn 1-1 (Giọng nói & Tương tác)",
                     "Báo cáo đánh giá STAR & chấm điểm năng lực sau buổi thi",
                     "Kiểm tra thiết bị preflight: camera, mic & không gian phòng",

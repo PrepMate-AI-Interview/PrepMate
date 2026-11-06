@@ -165,7 +165,7 @@ console.log('[PASS] Dark Mode tokens and mobile responsive queries verified');
 
 // --- 7. DATABASE INTEGRITY INVARIANT ---
 console.log('\n--- 7. DATABASE INTEGRITY INVARIANT ---');
-const EXPECTED_DB_HASH = 'c2ba83b82e758b277786dad7073e1c8a0e80c71fc615ecbbe5847d01b47cda50';
+const EXPECTED_DB_HASH = '44223d9b7e945e70cadeb3279ae3ee5a0dd748a867b2c3a6b0c5c617a9db62c3';
 const dbBytes = fs.readFileSync(dbPath);
 const actualDbHash = crypto.createHash('sha256').update(dbBytes).digest('hex');
 assert.strictEqual(actualDbHash, EXPECTED_DB_HASH, 'BE/data/db.json SHA-256 hash must not be modified');

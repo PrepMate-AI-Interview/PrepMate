@@ -687,6 +687,21 @@ namespace backend.Services
                 analysis.Concepts
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToList();
+
+            // Calibrate turn quality counters consistently
+            bool isTurnStrong = (analysis.ShowsPracticalExperience && analysis.Depth >= 2 && analysis.CorrectConcepts.Count > 0 && analysis.IncorrectConcepts.Count == 0 && !analysis.HasInconsistency) ||
+                                (analysis.VerifiedFacts.Count >= 1 && analysis.IncorrectConcepts.Count == 0);
+            bool isTurnWeak = analysis.DoesNotKnow ||
+                              (analysis.IncorrectConcepts.Count > 0 && analysis.CorrectConcepts.Count == 0) ||
+                              (analysis.HasInconsistency && analysis.Depth <= 1);
+            if (isTurnStrong)
+            {
+                state.StrongAnswerCount++;
+            }
+            else if (isTurnWeak)
+            {
+                state.WeakAnswerCount++;
+            }
         }
 
         private void AddUnique(

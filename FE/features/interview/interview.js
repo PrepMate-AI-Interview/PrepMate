@@ -1163,16 +1163,81 @@ async function sendMessage() {
       phase: "ADAPTIVE_INTERVIEW",
     });
 
+    // Check if interview reached closing statement turn (WI-INTERVIEW-DEMO-02)
+    if (data.isClosing === true) {
+      debugInterview("INTERVIEW", "Interview closing statement received:", data.closingStatement || data.message);
+      isProcessingAnswer = false;
+
+      const closingText = data.closingStatement || data.message || "Cảm ơn bạn đã tham gia buổi phỏng vấn. PrepMate đang tổng hợp kết quả đánh giá cho bạn.";
+
+      // 1. Lock candidate inputs immediately
+      if (inputEl) {
+        inputEl.value = "";
+        inputEl.disabled = true;
+      }
+      const sendBtn = document.getElementById("btn-send") || document.getElementById("send-btn");
+      if (sendBtn) sendBtn.disabled = true;
+      const micBtn = document.getElementById("btn-console-mic") || document.getElementById("btn-mic") || document.getElementById("mic-btn");
+      if (micBtn) micBtn.disabled = true;
+
+      // 2. Update UI stage & agenda presentation to CLOSING
+      if (typeof updateStagePresentation === "function") {
+        updateStagePresentation("CLOSING", false, 5, true);
+      }
+
+      // 3. Display closing statement in prompter and append to chat
+      const promptEl = document.getElementById("current-question-text");
+      if (promptEl) {
+        promptEl.textContent = closingText;
+      }
+      appendAIMessage(closingText, null, false);
+
+      // 4. Update UI state to speaking or displaying closing
+      setInterviewUIState("speaking", "Người phỏng vấn đang tổng kết buổi phỏng vấn...");
+
+      // 5. Speech / Voice handling: Speak full closing statement without truncation
+      let transitionTriggered = false;
+      const proceedToEvaluation = () => {
+        if (transitionTriggered) return;
+        transitionTriggered = true;
+
+        setInterviewUIState("completed", "Đang tổng hợp kết quả phỏng vấn...");
+        const transitionNotice = "PrepMate đang phân tích câu trả lời và chuẩn bị báo cáo đánh giá của bạn.";
+        announceToScreenReader("Đang tổng hợp kết quả phỏng vấn. " + transitionNotice);
+
+        setTimeout(() => {
+          if (typeof window !== "undefined" && typeof window.endInterview === "function") {
+            window.endInterview(false, true);
+          } else if (typeof endInterview === "function") {
+            endInterview(false, true);
+          }
+        }, 800);
+      };
+
+      // In Voice Mode (TTS enabled): speak full closing statement and only transition on completion
+      // In Text Mode (TTS disabled): allow natural reading pause (~3.5 seconds) before transitioning
+      const isVoiceActive = typeof isTTSEnabled === "function" ? isTTSEnabled() : (typeof ttsEnabled !== "undefined" ? ttsEnabled : false);
+
+      if (isVoiceActive && typeof speakAI === "function") {
+        speakAI(closingText, () => {
+          setTimeout(proceedToEvaluation, 1000);
+        }, "closing_turn");
+      } else {
+        setTimeout(proceedToEvaluation, 3500);
+      }
+      return;
+    }
+
     // Check if interview completed
     if (data.isFinished === true) {
       debugInterview("INTERVIEW", "Interview finished by backend directive.");
-      setInterviewUIState("completed", "Buổi phỏng vấn đã kết thúc.");
+      setInterviewUIState("completed", data.message || "Bạn đã hoàn thành buổi phỏng vấn! PrepMate đang phân tích câu trả lời và tổng hợp kết quả của bạn.");
       isProcessingAnswer = false;
       setTimeout(() => {
         if (typeof window !== "undefined" && typeof window.endInterview === "function") {
-          window.endInterview(false);
+          window.endInterview(false, true);
         } else if (typeof endInterview === "function") {
-          endInterview(false);
+          endInterview(false, true);
         }
       }, 500);
       return;

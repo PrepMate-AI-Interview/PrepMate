@@ -131,7 +131,10 @@ namespace backend.Models
 
         public int QuestionCount { get; set; } = 0;
 
-        public int MaximumQuestions { get; set; } = 15;
+        public const int DemoInterviewQuestionLimit = 5;
+        public const int MaxInterviewQuestions = 5;
+
+        public int MaximumQuestions { get; set; } = DemoInterviewQuestionLimit;
 
         public bool IsReadyToFinish { get; set; } =
             false;
@@ -167,6 +170,11 @@ namespace backend.Models
         public int StrongAnswerCount { get; set; } = 0;
 
         public int WeakAnswerCount { get; set; } = 0;
+
+        public double? TechnicalScore { get; set; }
+        public bool TechnicalEvaluationFailed { get; set; } = false;
+        public string? TechnicalEvaluationFailureReason { get; set; }
+        public DimensionAssessmentStatus? TechnicalStatus { get; set; }
 
         public int PracticalExperienceCount { get; set; } = 0;
 

@@ -94,6 +94,77 @@
 }
 
 /* ========================================================
+   0.1 WI-UX-18: STANDARDIZED ICON-TEXT METADATA & LIST ITEM ALIGNMENT (SSOT)
+   Eliminates negative vertical-align hacks by enforcing inline-flex centering
+   ======================================================== */
+.pm-icon-text,
+.pm-meta-item,
+.history-item-job-title,
+.history-item-date,
+.pm-company-pill,
+.pm-time-badge,
+.pm-flag-badge,
+.pm-questions-badge,
+.pm-seniority-chip,
+.pm-interviewer-badge,
+.pm-diff-badge,
+.pm-status-pill,
+.history-date-heading-content,
+.filter-date-label,
+.btn-reset-filters,
+.qbank-row-submeta > span,
+.turn-role-label,
+.hero-pill-item,
+.speech-card-title,
+.modal-block-label,
+.speech-filter-badge,
+.badge-company,
+.nav-comp-badge,
+.modal-feature-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.35;
+  vertical-align: middle;
+}
+
+.pm-meta-group,
+.pm-meta-row,
+.history-item-title-row {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap;
+}
+
+.pm-icon-text > svg,
+.pm-meta-item > svg,
+.history-item-job-title > svg,
+.history-item-date > svg,
+.pm-company-pill > svg,
+.pm-time-badge > svg,
+.pm-flag-badge > svg,
+.pm-questions-badge > svg,
+.pm-seniority-chip > svg,
+.pm-interviewer-badge > svg,
+.history-date-heading-content > svg,
+.filter-date-label > svg,
+.btn-reset-filters > svg,
+.qbank-row-submeta > span > svg,
+.turn-role-label > svg,
+.hero-pill-item > svg,
+.speech-card-title > svg,
+.modal-block-label > svg,
+.speech-filter-badge > svg,
+.badge-company > svg,
+.nav-comp-badge > svg,
+.modal-feature-item > svg {
+  display: block !important;
+  flex-shrink: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  vertical-align: unset !important;
+}
+
+/* ========================================================
    1. BUTTON SYSTEM
    ======================================================== */
 .btn {

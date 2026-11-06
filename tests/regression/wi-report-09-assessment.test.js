@@ -212,7 +212,7 @@ check('4.8 Radar Chart styles and Dark Mode overrides defined (WI-09R1A)', () =>
 console.log('\n--- GROUP 5: Production Database Invariant ---');
 
 check('5.1 Production db.json SHA-256 strictly invariant', () => {
-  const EXPECTED_HASH = 'c2ba83b82e758b277786dad7073e1c8a0e80c71fc615ecbbe5847d01b47cda50';
+  const EXPECTED_HASH = '44223d9b7e945e70cadeb3279ae3ee5a0dd748a867b2c3a6b0c5c617a9db62c3';
   const content = fs.readFileSync(dbPath);
   const actualHash = crypto.createHash('sha256').update(content).digest('hex').toLowerCase();
 

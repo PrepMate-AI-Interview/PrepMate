@@ -58,14 +58,6 @@
         </section>
 
         <div class="briefing-chamber-container">
-            <!-- Breadcrumbs -->
-            <div class="chamber-breadcrumb">
-                <a href="../../features/dashboard/dashboard.html">Tổng quan</a>
-                <span class="sep">/</span>
-                <span>Phỏng vấn</span>
-                <span class="sep">/</span>
-                <span class="current">Thiết lập phòng phỏng vấn</span>
-            </div>
 
             <!-- Hero Header -->
             <div class="chamber-hero-header">
@@ -1615,7 +1607,7 @@
                         <strong id="brief-company-display">Doanh nghiệp công nghệ</strong>
                         <strong id="brief-round-display">Vòng 2</strong>
                         <span id="brief-lang-badge">🇻🇳 Tiếng Việt</span>
-                        <span id="brief-mode-badge"><svg class="pm-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:3px;vertical-align:-1px;"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>Giọng nói (Voice AI)</span>
+                        <span id="brief-mode-badge"><svg class="pm-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:3px;"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>Giọng nói (Voice AI)</span>
                     </div>
                 </aside>
                 <div id="finish-modal" class="hidden">
@@ -2014,8 +2006,8 @@
                             : 'Khách — Đã dùng hết lượt demo';
                     } else {
                         quotaEl.textContent = q.canStart
-                            ? `Free — Còn ${q.remaining}/${q.limit || 3} lượt trong tháng`
-                            : 'Free — Đã dùng hết lượt tháng này';
+                            ? `Free — Còn ${q.remaining}/${q.limit || 3} lượt trong tuần`
+                            : 'Free — Đã dùng hết lượt tuần này';
                     }
                 } else {
                     quotaEl.textContent = 'Khả dụng';
@@ -2422,7 +2414,7 @@
                 document.getElementById('mode-tile-voice')?.classList.add('active');
                 if (voiceGroup) voiceGroup.classList.remove('hidden');
                 if (modeBadge) {
-                    modeBadge.innerHTML = '<svg class="pm-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:3px;vertical-align:-1px;"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>Giọng nói (Voice AI)';
+                    modeBadge.innerHTML = '<svg class="pm-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:3px;"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>Giọng nói (Voice AI)';
                 }
             } else {
                 if (textRadio) textRadio.checked = true;
@@ -4062,15 +4054,15 @@
             } else {
                 // Free tier
                 if (quota.canStart && quota.remaining > 0) {
-                    textEl.innerHTML = `🎯 Bạn đang sử dụng gói <strong>Free</strong> (còn <strong>${quota.remaining}/${quota.limit || 3} lượt phỏng vấn</strong> trong tháng). Nâng cấp PRO để luyện tập không giới hạn.`;
+                    textEl.innerHTML = `🎯 Bạn đang sử dụng gói <strong>Free</strong> (còn <strong>${quota.remaining}/${quota.limit || 3} lượt phỏng vấn</strong> trong tuần). Nâng cấp PRO để luyện tập không giới hạn.`;
                     if (actionEl) {
                         actionEl.textContent = 'Nâng cấp PRO';
                         actionEl.href = '../../features/payment/pricing.html';
                     }
                 } else {
                     banner.classList.add('banner-exhausted');
-                    const resetDate = quota.resetAt ? new Date(quota.resetAt).toLocaleDateString('vi-VN') : 'đầu tháng sau';
-                    textEl.innerHTML = `⚠️ Bạn đã dùng hết <strong>${quota.limit || 3}/${quota.limit || 3} lượt phỏng vấn miễn phí</strong> trong tháng. Hạn mức sẽ tự động đặt lại vào ${resetDate}.`;
+                    const resetDate = quota.resetAt ? new Date(quota.resetAt).toLocaleDateString('vi-VN') : 'đầu tuần sau';
+                    textEl.innerHTML = `⚠️ Bạn đã dùng hết <strong>${quota.limit || 3}/${quota.limit || 3} lượt phỏng vấn miễn phí</strong> trong tuần. Hạn mức sẽ tự động đặt lại vào ${resetDate}.`;
                     if (actionEl) {
                         actionEl.textContent = 'Nâng cấp PRO ngay';
                         actionEl.href = '../../features/payment/pricing.html';
@@ -4155,7 +4147,7 @@
                     banner.style.background = '#f0fdf4';
                     banner.style.border = '1px solid #bbf7d0';
                     banner.style.color = '#15803d';
-                    banner.innerHTML = '<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><strong>Luyện tập lại:</strong> Đã tải lại cấu hình từ buổi phỏng vấn trước.';
+                    banner.innerHTML = '<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><strong>Luyện tập lại:</strong> Đã tải lại cấu hình từ buổi phỏng vấn trước.';
                 }
             } else if (sourceParam === 'cv' || sessionStorage.getItem('prepmate_interview_source') === 'cv') {
                 sessionStorage.removeItem('prepmate_interview_source');
@@ -4167,7 +4159,7 @@
                     banner.style.background = '#eff6ff';
                     banner.style.border = '1px solid #bfdbfe';
                     banner.style.color = '#1d4ed8';
-                    banner.innerHTML = `<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg><strong>Hồ sơ CV:</strong>` Đang thiết lập phỏng vấn dựa trên tệp CV (${cvName}).`;
+                    banner.innerHTML = `<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg><strong>Hồ sơ CV:</strong> Đang thiết lập phỏng vấn dựa trên tệp CV (${cvName}).`;
                 }
             } else if (topicParam || sourceParam === 'qbank') {
                 if (banner) {
@@ -4176,7 +4168,7 @@
                     banner.style.border = '1px solid #bfdbfe';
                     banner.style.color = '#1d4ed8';
                     const safeTopic = escapeHtml(topicParam || 'Chuyên đề STAR');
-                    banner.innerHTML = `<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><strong>Ngân hàng câu hỏi:</strong>` Đang chuẩn bị phỏng vấn trọng tâm: <em>${safeTopic}</em>.`;
+                    banner.innerHTML = `<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><strong>Ngân hàng câu hỏi:</strong> Đang chuẩn bị phỏng vấn trọng tâm: <em>${safeTopic}</em>.`;
                 }
             }
 

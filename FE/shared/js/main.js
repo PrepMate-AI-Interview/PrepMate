@@ -1115,17 +1115,17 @@ function showUpgradeModal(reason) {
             <p style="color:rgba(255,255,255,0.7);font-size:15px;margin-bottom:24px;line-height:1.6;">${reason}</p>
             <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:20px;margin-bottom:28px;text-align:left;">
                 <p style="color:#a5b4fc;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l1.912 5.885L20 10.797l-4.5 4.385L16.564 21 12 17.585 7.436 21l1.064-5.818L4 10.797l6.088-1.912L12 3z"/></svg>Gói PRO mở khoá:</p>
-                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Không giới hạn lượt phỏng vấn</p>
-                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Phân tích CV nâng cao bằng AI</p>
-                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Gợi ý công việc phù hợp</p>
-                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Lộ trình sự nghiệp cá nhân hoá</p>
-                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Báo cáo chi tiết STAR đầy đủ</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Không giới hạn lượt phỏng vấn</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Phân tích CV nâng cao bằng AI</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Gợi ý công việc phù hợp</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Lộ trình sự nghiệp cá nhân hoá</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;margin:6px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" aria-hidden="true" style="margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>Báo cáo chi tiết STAR đầy đủ</p>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;">
                 <button onclick="window.location.href='../payment/pricing.html'" style="background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;border:none;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;"><span>Xem Bảng giá & Nâng cấp</span></button>
                 <button onclick="document.getElementById('upgrade-modal-overlay').remove()" style="background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);padding:14px 20px;border-radius:10px;font-size:15px;cursor:pointer;font-family:'Outfit',sans-serif;">Để sau</button>
             </div>
-            <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:16px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Thanh toán an toàn qua Momo hoặc chuyển khoản ngân hàng</p>
+            <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:16px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Thanh toán an toàn qua Momo hoặc chuyển khoản ngân hàng</p>
         </div>
     `;
   document.body.appendChild(overlay);
@@ -2280,10 +2280,9 @@ function initRoleBasedSidebar() {
                     <span class="logo-badge">${roleBadgeLabel}</span>
                 </div>
             </a>
-            <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="Thu gọn thanh điều hướng" aria-label="Thu gọn sidebar">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="11 17 6 12 11 7"/>
-                    <polyline points="18 17 13 12 18 7"/>
+            <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="Thu gọn thanh điều hướng" aria-label="Thu gọn sidebar" aria-expanded="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"/>
                 </svg>
             </button>
         </div>

@@ -158,7 +158,7 @@
               <input type="checkbox" id="login-remember" name="remember" />
               <span>Ghi nhớ đăng nhập</span>
             </label>
-            <a href="../help/help.html" class="auth-forgot-link" title="Trợ giúp tài khoản & khôi phục mật khẩu">Quên mật khẩu?</a>
+            <a href="./forgot-password.html" class="auth-forgot-link" title="Khôi phục mật khẩu tài khoản">Quên mật khẩu?</a>
           </div>
 
           <button type="submit" id="login-submit" class="auth-button">
@@ -219,7 +219,7 @@
             />
           </div>
 
-          <div class="form-group">
+                    <div class="form-group" style="margin-bottom: 12px;">
             <label class="form-label" for="signup-password">Mật khẩu</label>
             <div class="input-password-wrap">
               <input
@@ -227,9 +227,8 @@
                 id="signup-password"
                 name="password"
                 class="form-input"
-                placeholder="Tối thiểu 6 ký tự"
+                placeholder="Ví dụ: User@123!456"
                 autocomplete="new-password"
-                minlength="6"
                 required
               />
               <button
@@ -249,9 +248,47 @@
                 </svg>
               </button>
             </div>
+            <div class="pw-sample-hint">Không dùng nguyên mật khẩu mẫu này.</div>
+
+            <!-- Password Strength Indicator (WI-AUTH-01R8) -->
+            <div id="password-strength-container" class="pw-strength-container neutral" aria-live="polite">
+              <div class="pw-strength-track">
+                <div id="pw-strength-segment-1" class="pw-strength-segment"></div>
+                <div id="pw-strength-segment-2" class="pw-strength-segment"></div>
+                <div id="pw-strength-segment-3" class="pw-strength-segment"></div>
+              </div>
+              <div class="pw-strength-meta">
+                <span class="pw-strength-caption">Độ mạnh:</span>
+                <span id="password-strength-label" class="pw-strength-label">Chưa nhập</span>
+              </div>
+            </div>
+
+            <!-- Password Mandatory Validity Checklist (WI-AUTH-01R8: 4 Essential Policy Indicators) -->
+            <ul id="password-requirements" class="password-requirements-inline" role="list" aria-live="polite">
+              <li id="req-min-length" class="pw-req-item neutral" data-rule="min-length">
+                <span class="pw-req-icon" aria-hidden="true"></span>
+                <span class="pw-req-text">Tối thiểu 8 ký tự.</span>
+                <span class="sr-only pw-req-status">Chưa kiểm tra</span>
+              </li>
+              <li id="req-max-length" class="pw-req-item neutral" data-rule="max-length">
+                <span class="pw-req-icon" aria-hidden="true"></span>
+                <span class="pw-req-text">Không vượt quá 128 ký tự.</span>
+                <span class="sr-only pw-req-status">Chưa kiểm tra</span>
+              </li>
+              <li id="req-ascii-only" class="pw-req-item neutral" data-rule="ascii-only">
+                <span class="pw-req-icon" aria-hidden="true"></span>
+                <span class="pw-req-text">Chỉ sử dụng ký tự ASCII hợp lệ, không dấu.</span>
+                <span class="sr-only pw-req-status">Chưa kiểm tra</span>
+              </li>
+              <li id="req-no-whitespace" class="pw-req-item neutral" data-rule="no-whitespace">
+                <span class="pw-req-icon" aria-hidden="true"></span>
+                <span class="pw-req-text">Không chứa khoảng trắng.</span>
+                <span class="sr-only pw-req-status">Chưa kiểm tra</span>
+              </li>
+            </ul>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" style="margin-bottom: 14px;">
             <label class="form-label" for="signup-password-confirm">Xác nhận mật khẩu</label>
             <div class="input-password-wrap">
               <input
@@ -261,7 +298,6 @@
                 class="form-input"
                 placeholder="Nhập lại mật khẩu"
                 autocomplete="new-password"
-                minlength="6"
                 required
               />
               <button
@@ -280,6 +316,12 @@
                   <line x1="1" y1="1" x2="23" y2="23"></line>
                 </svg>
               </button>
+            </div>
+            <!-- Confirm Password Validation Status (WI-AUTH-01R6) -->
+            <div id="password-confirm-status" class="pw-confirm-status neutral" aria-live="polite">
+              <span class="pw-req-icon" aria-hidden="true"></span>
+              <span id="pw-confirm-text" class="pw-req-text">Chưa nhập xác nhận mật khẩu</span>
+              <span class="sr-only pw-confirm-sr">Trạng thái xác nhận</span>
             </div>
           </div>
 
@@ -354,6 +396,12 @@
         } else {
           title.textContent = "Đăng ký tài khoản";
           subtitle.textContent = "Bắt đầu luyện tập phỏng vấn cùng AI";
+          if (typeof refreshPasswordValidationUI === "function") {
+            refreshPasswordValidationUI(false);
+          }
+          if (typeof updateSignupSubmitState === "function") {
+            updateSignupSubmitState();
+          }
         }
 
         clearMessages();
@@ -491,11 +539,197 @@
           }, 700);
         } catch (error) {
           console.error("[AUTH PAGE] Login error:", error);
-          showError("login", error.message || "Đăng nhập thất bại.");
+          if (error.requiresVerification) {
+            const errEl = document.getElementById("login-error");
+            if (errEl) {
+              errEl.innerHTML = `
+                <svg class="auth-alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span class="auth-alert-text">
+                  Tài khoản chưa được kích hoạt. <a href="./verify-email.html?email=${encodeURIComponent(error.email || identifier)}" style="color:var(--auth-link-color);text-decoration:underline;font-weight:600;">Xác minh email ngay</a>
+                </span>
+              `;
+              errEl.style.display = "flex";
+            }
+          } else {
+            showError("login", error.message || "Đăng nhập thất bại.");
+          }
         } finally {
           isSubmittingAuth = false;
           setButtonLoading(button, false, "Đăng nhập");
         }
+      }
+
+      // ======================================================================
+      // REAL-TIME PASSWORD STRENGTH & VALIDATION (WI-AUTH-01R8)
+      // ======================================================================
+      const SVG_PW_NEUTRAL = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle></svg>';
+      const SVG_PW_MET = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      const SVG_PW_UNMET = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
+      let hasInteractedPassword = false;
+      let hasInteractedConfirm = false;
+
+      function updateStrengthIndicator(strengthResult) {
+        const container = document.getElementById("password-strength-container");
+        const label = document.getElementById("password-strength-label");
+        if (!container || !label) return;
+
+        container.classList.remove("neutral", "strength-weak", "strength-medium", "strength-strong");
+
+        if (!strengthResult || strengthResult.level === "none") {
+          container.classList.add("neutral");
+          label.textContent = "Chưa nhập";
+        } else if (strengthResult.level === "weak") {
+          container.classList.add("strength-weak");
+          label.textContent = "Yếu";
+        } else if (strengthResult.level === "medium") {
+          container.classList.add("strength-medium");
+          label.textContent = "Trung bình";
+        } else if (strengthResult.level === "strong") {
+          container.classList.add("strength-strong");
+          label.textContent = "Mạnh";
+        }
+      }
+
+      function setStrengthIndicatorManual(level, labelText) {
+        const container = document.getElementById("password-strength-container");
+        const label = document.getElementById("password-strength-label");
+        if (!container || !label) return;
+
+        container.classList.remove("neutral", "strength-weak", "strength-medium", "strength-strong");
+        container.classList.add("strength-" + level);
+        label.textContent = labelText;
+      }
+
+      function updateReqItem(elementId, isMet, isInteracted, ruleName) {
+        const item = document.getElementById(elementId);
+        if (!item) return;
+
+        const iconSpan = item.querySelector('.pw-req-icon');
+        const srSpan = item.querySelector('.pw-req-status');
+
+        item.classList.remove('neutral', 'met', 'unmet');
+
+        if (!isInteracted) {
+          item.classList.add('neutral');
+          if (iconSpan) iconSpan.innerHTML = SVG_PW_NEUTRAL;
+          if (srSpan) srSpan.textContent = 'Chưa kiểm tra';
+          item.setAttribute('aria-label', `${ruleName}: Chưa kiểm tra`);
+        } else if (isMet) {
+          item.classList.add('met');
+          if (iconSpan) iconSpan.innerHTML = SVG_PW_MET;
+          if (srSpan) srSpan.textContent = 'Đã đạt';
+          item.setAttribute('aria-label', `${ruleName}: Đã đạt`);
+        } else {
+          item.classList.add('unmet');
+          if (iconSpan) iconSpan.innerHTML = SVG_PW_UNMET;
+          if (srSpan) srSpan.textContent = 'Chưa đạt';
+          item.setAttribute('aria-label', `${ruleName}: Chưa đạt`);
+        }
+      }
+
+      function updateConfirmStatus(password, confirmPassword, isInteracted) {
+        const container = document.getElementById('password-confirm-status');
+        if (!container) return;
+
+        const iconSpan = container.querySelector('.pw-req-icon');
+        const textSpan = document.getElementById('pw-confirm-text');
+        const srSpan = container.querySelector('.pw-confirm-sr');
+
+        container.classList.remove('neutral', 'met', 'unmet');
+
+        if (!isInteracted || confirmPassword.length === 0) {
+          container.classList.add('neutral');
+          if (iconSpan) iconSpan.innerHTML = SVG_PW_NEUTRAL;
+          if (textSpan) textSpan.textContent = 'Chưa nhập xác nhận mật khẩu';
+          if (srSpan) srSpan.textContent = 'Chưa kiểm tra';
+          container.setAttribute('aria-label', 'Xác nhận mật khẩu: Chưa nhập');
+        } else if (confirmPassword === password) {
+          container.classList.add('met');
+          if (iconSpan) iconSpan.innerHTML = SVG_PW_MET;
+          if (textSpan) textSpan.textContent = 'Mật khẩu trùng khớp';
+          if (srSpan) srSpan.textContent = 'Đã khớp';
+          container.setAttribute('aria-label', 'Xác nhận mật khẩu: Mật khẩu trùng khớp');
+        } else {
+          container.classList.add('unmet');
+          if (iconSpan) iconSpan.innerHTML = SVG_PW_UNMET;
+          if (textSpan) textSpan.textContent = 'Mật khẩu không trùng khớp';
+          if (srSpan) srSpan.textContent = 'Không khớp';
+          container.setAttribute('aria-label', 'Xác nhận mật khẩu: Mật khẩu không trùng khớp');
+        }
+      }
+
+      function updateSignupSubmitState() {
+        const submitBtn = document.getElementById('signup-submit');
+        if (!submitBtn) return false;
+
+        const fullname = (document.getElementById('signup-fullname')?.value || '').trim();
+        const email = (document.getElementById('signup-email')?.value || '').trim();
+        const username = (document.getElementById('signup-username')?.value || '').trim();
+        const password = document.getElementById('signup-password')?.value || '';
+        const passwordConfirm = document.getElementById('signup-password-confirm')?.value || '';
+        const agree = document.getElementById('signup-agree')?.checked || false;
+
+        const policy = typeof validatePasswordPolicy === 'function'
+          ? validatePasswordPolicy(password)
+          : { isValid: password.length >= 8 && password.length <= 128 };
+
+        const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const isUsernameValid = username.length >= 6 && username.length <= 20;
+        const isConfirmValid = passwordConfirm.length > 0 && passwordConfirm === password;
+
+        // Validity is strictly normative based on policy rules, regardless of strength
+        const isFormValid = fullname.length > 0 && isEmailValid && isUsernameValid && policy.isValid && isConfirmValid && agree;
+
+        submitBtn.disabled = !isFormValid;
+        if (!isFormValid) {
+          submitBtn.setAttribute('aria-disabled', 'true');
+          submitBtn.title = 'Vui lòng hoàn thành tất cả thông tin hợp lệ để tiếp tục';
+        } else {
+          submitBtn.removeAttribute('aria-disabled');
+          submitBtn.removeAttribute('title');
+        }
+
+        return isFormValid;
+      }
+
+      function refreshPasswordValidationUI(forceInteracted = false) {
+        const pwdInput = document.getElementById('signup-password');
+        const confirmInput = document.getElementById('signup-password-confirm');
+        if (!pwdInput) return;
+
+        const password = pwdInput.value;
+        const confirm = confirmInput ? confirmInput.value : '';
+
+        if (forceInteracted || password.length > 0) {
+          hasInteractedPassword = true;
+        }
+        if (forceInteracted || confirm.length > 0) {
+          hasInteractedConfirm = true;
+        }
+
+        // Realtime strength indicator update
+        if (typeof calculatePasswordStrength === 'function') {
+          const strength = calculatePasswordStrength(password);
+          updateStrengthIndicator(strength);
+        }
+
+        // Realtime mandatory policy conditions
+        const res = typeof validatePasswordPolicy === 'function'
+          ? validatePasswordPolicy(password)
+          : { minLength: password.length >= 8, maxLength: password.length <= 128, asciiOnly: true, noWhitespace: !/\s/.test(password), isValid: false };
+
+        updateReqItem('req-min-length', res.minLength, hasInteractedPassword, 'Tối thiểu 8 ký tự');
+        updateReqItem('req-max-length', res.maxLength, hasInteractedPassword, 'Không vượt quá 128 ký tự');
+        updateReqItem('req-ascii-only', res.asciiOnly, hasInteractedPassword, 'Chỉ sử dụng ký tự ASCII hợp lệ, không dấu');
+        updateReqItem('req-no-whitespace', res.noWhitespace, hasInteractedPassword, 'Không chứa khoảng trắng');
+
+        updateConfirmStatus(password, confirm, hasInteractedConfirm);
+        updateSignupSubmitState();
       }
 
       // ======================================================================
@@ -506,6 +740,9 @@
         if (isSubmittingAuth) return;
 
         clearMessages();
+
+        // Always reveal full status on submit attempt
+        refreshPasswordValidationUI(true);
 
         const fullname = document.getElementById("signup-fullname").value.trim();
         const email = document.getElementById("signup-email").value.trim();
@@ -526,8 +763,12 @@
           return;
         }
 
-        if (password.length < 6) {
-          showError("signup", "Mật khẩu phải có ít nhất 6 ký tự.");
+        const policy = typeof validatePasswordPolicy === 'function'
+          ? validatePasswordPolicy(password)
+          : { isValid: false };
+
+        if (!policy.isValid) {
+          showError("signup", "Mật khẩu cần từ 8–128 ký tự, gồm chữ không dấu, số hoặc ký tự đặc biệt; không chứa khoảng trắng.");
           return;
         }
 
@@ -545,24 +786,40 @@
         setButtonLoading(button, true, "Tạo tài khoản PrepMate");
 
         try {
-          const user = await registerUser({
+          const result = await registerUser({
             fullname,
             email,
             username,
             password,
           });
 
-          showSuccess(
-            "signup",
-            `Đăng ký thành công! Chào mừng ${user.fullname || user.username}.`
-          );
-
-          setTimeout(() => {
-            redirectAfterLogin(user);
-          }, 700);
+          if (result && result.requiresVerification) {
+            showSuccess(
+              "signup",
+              `Đăng ký thành công! Đang chuyển đến trang xác thực email...`
+            );
+            setTimeout(() => {
+              window.location.href = `./verify-email.html?email=${encodeURIComponent(email)}`;
+            }, 800);
+          } else {
+            showSuccess(
+              "signup",
+              `Đăng ký thành công! Chào mừng ${result.fullname || result.username}.`
+            );
+            setTimeout(() => {
+              redirectAfterLogin(result);
+            }, 700);
+          }
         } catch (error) {
           console.error("[AUTH PAGE] Register error:", error);
-          showError("signup", error.message || "Đăng ký thất bại.");
+          const rawMsg = error.message || "Đăng ký thất bại.";
+          // Handle backend blocklist rejection gracefully without exposing blocklist details
+          if (rawMsg.includes("phổ biến") || rawMsg.includes("dễ đoán") || rawMsg.includes("blocklist") || rawMsg.includes("chặn")) {
+            showError("signup", "Mật khẩu này quá phổ biến hoặc dễ đoán. Vui lòng thử mật khẩu khác.");
+            setStrengthIndicatorManual("weak", "Yếu");
+          } else {
+            showError("signup", rawMsg);
+          }
         } finally {
           isSubmittingAuth = false;
           setButtonLoading(button, false, "Tạo tài khoản PrepMate");
@@ -576,7 +833,7 @@
         if (typeof showToast === "function") {
           showToast(`${type} của PrepMate.`, "info");
         } else {
-          alert(`${type} của PrepMate.`);
+          console.info(`[PrepMate Auth] ${type}`);
         }
       }
 
@@ -617,6 +874,24 @@
           rememberCheckbox.checked = true;
         }
 
+        const clearLoginError = () => {
+          const errEl = document.getElementById("login-error");
+          if (errEl) { errEl.innerHTML = ""; errEl.style.display = "none"; }
+        };
+
+        const clearSignupError = () => {
+          const errEl = document.getElementById("signup-error");
+          if (errEl) { errEl.innerHTML = ""; errEl.style.display = "none"; }
+        };
+
+        ["login-email", "login-password"].forEach(id => {
+          document.getElementById(id)?.addEventListener("input", clearLoginError);
+        });
+
+        ["signup-fullname", "signup-email", "signup-username", "signup-password", "signup-password-confirm"].forEach(id => {
+          document.getElementById(id)?.addEventListener("input", clearSignupError);
+        });
+
         if (loginForm) {
           loginForm.addEventListener("submit", handleLogin);
         }
@@ -624,6 +899,51 @@
         if (signupForm) {
           signupForm.addEventListener("submit", handleSignup);
         }
+
+        // Initialize Real-Time Password Checklist & Confirm listeners
+        const pwdInput = document.getElementById("signup-password");
+        const confirmInput = document.getElementById("signup-password-confirm");
+        const fullnameInput = document.getElementById("signup-fullname");
+        const emailInput = document.getElementById("signup-email");
+        const usernameInput = document.getElementById("signup-username");
+        const agreeCheckbox = document.getElementById("signup-agree");
+
+        if (pwdInput) {
+          pwdInput.addEventListener("input", () => refreshPasswordValidationUI(false));
+          pwdInput.addEventListener("paste", () => setTimeout(() => refreshPasswordValidationUI(false), 10));
+        }
+
+        if (confirmInput) {
+          confirmInput.addEventListener("input", () => refreshPasswordValidationUI(false));
+          confirmInput.addEventListener("paste", () => setTimeout(() => refreshPasswordValidationUI(false), 10));
+        }
+
+        [fullnameInput, emailInput, usernameInput, agreeCheckbox].forEach((el) => {
+          if (el) {
+            el.addEventListener("input", updateSignupSubmitState);
+            el.addEventListener("change", updateSignupSubmitState);
+          }
+        });
+
+        // Initial setup for signup form (neutral state & button disabled)
+        refreshPasswordValidationUI(false);
+
+        // URL query parameter & hash support for deep linking (?mode=register, ?tab=signup, #register)
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const modeParam = (urlParams.get("mode") || urlParams.get("tab") || "").toLowerCase();
+          const hashParam = (window.location.hash || "").toLowerCase();
+          if (modeParam === "register" || modeParam === "signup" || hashParam === "#register" || hashParam === "#signup") {
+            switchTab("signup");
+          }
+        } catch (e) {}
+
+        // Re-sync submit button state whenever theme is changed
+        window.addEventListener("storage", (e) => {
+          if (e.key === "prepmate_theme" || e.key === "pm_theme") {
+            updateSignupSubmitState();
+          }
+        });
       });
     </script>
   </body>

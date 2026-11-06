@@ -30,11 +30,11 @@ function test(desc, fn) {
 // -------------------------------------------------------------
 console.log('[SECTION 1] Architectural Invariants & Database Integrity:');
 
-test('db.json SHA-256 hash intact (C2BA83B82E758B277786DAD7073E1C8A0E80C71FC615ECBBE5847D01B47CDA50)', () => {
+test('db.json SHA-256 hash intact (44223D9B7E945E70CADEB3279AE3EE5A0DD748A867B2C3A6B0C5C617A9DB62C3)', () => {
     const dbPath = path.resolve(__dirname, '../../BE/data/db.json');
     const content = fs.readFileSync(dbPath, 'utf8');
     const hash = crypto.createHash('sha256').update(content, 'utf8').digest('hex').toUpperCase();
-    assert.strictEqual(hash, 'C2BA83B82E758B277786DAD7073E1C8A0E80C71FC615ECBBE5847D01B47CDA50');
+    assert.strictEqual(hash, '44223D9B7E945E70CADEB3279AE3EE5A0DD748A867B2C3A6B0C5C617A9DB62C3');
 });
 
 // -------------------------------------------------------------

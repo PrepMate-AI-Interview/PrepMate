@@ -125,5 +125,95 @@ Cấp bậc: {{levelStr}}
 {{PromptOutputPolicy.GetJsonContract(schema)}}
 """;
         }
+
+        public static string BuildFromRole(
+            string position,
+            string experienceLevel = "",
+            string? sector = null,
+            CompanyContext? companyContext = null,
+            string? language = InterviewLanguage.Vietnamese)
+        {
+            var levelStr = !string.IsNullOrWhiteSpace(experienceLevel) ? experienceLevel : "Not specified";
+            var safePosition = string.IsNullOrWhiteSpace(position) ? ProfessionalDomainClassifier.DefaultPositionTitle : position.Trim();
+            var safeSector = !string.IsNullOrWhiteSpace(sector) ? sector : "Chuyên môn tổng quát";
+            var langInstruction = PromptLanguagePolicy.GetInstruction(language);
+
+            var companySection = "";
+            if (companyContext != null && !string.IsNullOrWhiteSpace(companyContext.CompanyName))
+            {
+                companySection = $@"
+Bối cảnh công ty tuyển dụng:
+- Tên công ty: {companyContext.CompanyName}
+- Ngành nghề: {companyContext.Industry}
+- Loại hình: {companyContext.CompanyType}
+";
+            }
+
+            var schema = $$"""
+{
+  "position": "{{safePosition}}",
+  "level": "{{levelStr}}",
+  "version": "1.0",
+  "areas": [
+    {
+      "name": "Tên nhóm năng lực chuẩn ngành nghề",
+      "description": "Mô tả ngắn nhóm năng lực cần đánh giá",
+      "importance": "HIGH | MEDIUM | LOW",
+      "requiredLevel": "Junior | Middle | Senior",
+      "competencies": [
+        "Năng lực cụ thể 1",
+        "Năng lực cụ thể 2"
+      ],
+      "concepts": [
+        {
+          "id": "slug-id",
+          "name": "Tên khái niệm hoặc kỹ năng chuyên môn",
+          "expectedUnderstanding": [
+            "Hiểu biết kỳ vọng về nguyên lý hoặc quy trình"
+          ],
+          "practicalSignals": [
+            "Dấu hiệu thực tế cho thấy ứng viên từng vận dụng hiệu quả"
+          ],
+          "failureSignals": [
+            "Dấu hiệu hiểu sai bản chất hoặc thiếu kỹ năng cơ bản"
+          ],
+          "requirementSource": "OFFICIAL",
+          "isMandatory": true
+        }
+      ]
+    }
+  ]
+}
+""";
+
+            return $$"""
+{{langInstruction}}
+
+{{PromptGroundingPolicy.Instruction}}
+
+{{PromptContextBoundary.SecurityDisclaimer}}
+
+Bạn là chuyên gia thẩm định khung năng lực tuyển dụng (Competency Architect).
+
+NHIỆM VỤ:
+Ứng viên không tải lên bản mô tả công việc (JD) riêng lẻ. Hãy xây dựng một BẢN ĐỒ ĐÁNH GIÁ NĂNG LỰC (KNOWLEDGE BLUEPRINT) chuẩn mực cho vị trí "{{safePosition}}" cấp độ "{{levelStr}}" thuộc lĩnh vực "{{safeSector}}".
+
+==================================================
+QUY TẮC BẮT BUỘC:
+==================================================
+1. TUYỆT ĐỐI KHÔNG TẠO CÂU HỎI PHỎNG VẤN (chỉ định nghĩa tiêu chí nội bộ: ExpectedUnderstanding, PracticalSignals, FailureSignals).
+2. Xây dựng 2 đến 4 nhóm năng lực cốt lõi (Knowledge Areas) đại diện thực chất cho vị trí "{{safePosition}}".
+3. Mỗi Area chứa từ 2 đến 4 Concepts trọng yếu có tính phân loại cao theo cấp bậc "{{levelStr}}".
+4. Đánh dấu isMandatory = true cho các kỹ năng chuyên môn bắt buộc phải có của vai trò này.
+
+THÔNG TIN VỊ TRÍ:
+- Vị trí ứng tuyển: {{safePosition}}
+- Cấp bậc kỳ vọng: {{levelStr}}
+- Nhóm ngành chuyên môn: {{safeSector}}
+{{companySection}}
+
+{{PromptOutputPolicy.GetJsonContract(schema)}}
+""";
+        }
     }
 }

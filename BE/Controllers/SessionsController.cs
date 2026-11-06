@@ -220,7 +220,7 @@ namespace backend.Controllers
                             0,
 
                         MaximumQuestions =
-                            context.Strategy?.TotalQuestionBudget ?? (request.MaximumQuestions ?? 15),
+                            request.MaximumQuestions ?? context.Strategy?.TotalQuestionBudget ?? InterviewState.DemoInterviewQuestionLimit,
 
                         IsReadyToFinish =
                             false,
@@ -515,16 +515,15 @@ namespace backend.Controllers
                 return Ok(session);
             }
 
-            // Guest Preview: strictly sanitize detailed evaluation and feedback data
+            // Guest Preview: strictly sanitize detailed evaluation and feedback data (WI-REPORT-PREVIEW-01)
+            var guestPreview = backend.Services.Evaluation.GuestReportPreviewBuilder.BuildGuestPreview(session);
+
             var previewSession = new
             {
                 id = session.Id,
-                userId = session.UserId,
+                userId = "guest",
                 jobTitle = session.JobTitle,
                 targetPosition = session.JobTitle,
-                jdText = session.JdText,
-                cvText = session.CvText,
-                questions = session.Questions,
                 experienceLevel = session.InterviewContext?.ExperienceLevel ?? "Middle",
                 targetLevel = session.InterviewContext?.ExperienceLevel ?? "Middle",
                 targetCompany = session.InterviewContext?.TargetCompany ?? string.Empty,
@@ -532,15 +531,23 @@ namespace backend.Controllers
                 isStarted = session.IsStarted,
                 startedAt = session.StartedAt,
                 createdAt = session.CreatedAt,
-                planSnapshot = session.PlanSnapshot,
                 language = session.Language,
-                interviewState = session.InterviewState,
-                interviewContext = session.InterviewContext,
+                questionsAnswered = session.Answers?.Count ?? 0,
                 isGuestPreview = true,
+                guestPreview = guestPreview,
                 report = session.Report != null ? new
                 {
                     overallScore = session.Report.OverallScore,
-                    isGuestPreview = true
+                    isGuestPreview = true,
+                    guestPreview = guestPreview,
+                    summary = guestPreview.Summary,
+                    interpretation = guestPreview.Interpretation,
+                    topStrengths = guestPreview.TopStrengths,
+                    improvementTeaser = guestPreview.ImprovementTeaser,
+                    improvementFocus = guestPreview.ImprovementFocus,
+                    analysisCapabilityTeaser = guestPreview.AnalysisCapabilityTeaser,
+                    evaluationRating = guestPreview.EvaluationRating,
+                    evaluationStatus = guestPreview.EvaluationStatus
                 } : null
             };
 

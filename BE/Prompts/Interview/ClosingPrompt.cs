@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using backend.Services.Interview;
 using System.Text;
 using backend.Models;
 using backend.Prompts.Shared;
@@ -9,15 +12,28 @@ namespace backend.Prompts.Interview
     /// </summary>
     public static class ClosingPrompt
     {
-        public static string BuildClosingStatementPrompt(Session session)
+                public static string BuildClosingStatementPrompt(Session session)
         {
             var context = session.InterviewContext;
             var lang = session.Language ?? context?.Language ?? InterviewLanguage.Vietnamese;
 
+            var lastAnswerObj = session.Answers?.LastOrDefault(a =>
+                !string.Equals(a.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(a.Stage, InterviewStageNames.Introduction, StringComparison.OrdinalIgnoreCase));
+
+            var lastQuestion = lastAnswerObj?.Question ?? (session.Questions != null && session.Questions.Count > 0 ? session.Questions[^1] : "Câu hỏi chuyên môn");
+            var lastAnswer = lastAnswerObj?.Answer ?? string.Empty;
+            var candidateName = context?.FullName ?? "bạn";
+            var targetPosition = session.JobTitle ?? context?.TargetPosition ?? "Chuyên viên";
+            var level = session.InterviewState?.CandidateLevel ?? "Mid";
+            var topicsCovered = session.InterviewState?.TopicsCovered != null && session.InterviewState.TopicsCovered.Count > 0
+                ? string.Join(", ", session.InterviewState.TopicsCovered)
+                : "Kiến thức chuyên môn và kinh nghiệm thực chiến";
+
             var schema = """
 {
-  "closingStatement": "Lời phát biểu kết thúc phỏng vấn hoàn chỉnh, lịch sự, chuyên nghiệp",
-  "nextStepKnown": false
+  "closingStatement": "Lời phát biểu kết thúc tự nhiên, liên kết với câu trả lời vừa rồi, không có câu hỏi mới",
+  "nextStepKnown": true
 }
 """;
 
@@ -26,16 +42,37 @@ namespace backend.Prompts.Interview
 
 {{PromptGroundingPolicy.Instruction}}
 
-Bạn là người phỏng vấn chuyên nghiệp đang đưa ra lời phát biểu tổng kết chính thức kết thúc buổi phỏng vấn.
-- Vị trí ứng tuyển: {{session.JobTitle ?? context?.TargetPosition ?? "Ứng viên"}}
-- Tên ứng viên: {{context?.FullName ?? "bạn"}}
+{{PromptContextBoundary.SecurityDisclaimer}}
 
-YÊU CẦU ĐỐI VỚI LỜI KẾT THÚC:
-1. Ghi nhận và cảm ơn chân thành sự chuẩn bị cùng thời gian ứng viên đã dành cho buổi phỏng vấn hôm nay.
-2. Xác nhận tất cả các phần trao đổi (chuyên môn, tình huống, hành vi, giải đáp thắc mắc) đã hoàn tất.
-3. Nêu rõ kết quả đánh giá năng lực toàn diện sẽ được hội đồng tuyển dụng tổng hợp và phản hồi theo quy trình chuẩn.
-4. TUYỆT ĐỐI KHÔNG hứa hẹn mốc thời gian cụ thể chưa được xác thực (ví dụ không nói 'HR sẽ gọi lúc 9h sáng mai').
-5. Giữ phong thái lịch sự, ấm áp, đĩnh đạc và chuyên nghiệp.
+Bạn là người phỏng vấn AI chuyên nghiệp của PrepMate, đang thực hiện lượt phát biểu KẾT THÚC buổi phỏng vấn (CLOSING TURN).
+Ứng viên vừa hoàn thành câu trả lời cho câu hỏi phỏng vấn thứ 5 (câu hỏi cuối cùng).
+
+THÔNG TIN BUỔI PHỎNG VẤN:
+- Vị trí ứng tuyển: {{targetPosition}} (Cấp độ: {{level}})
+- Tên ứng viên: {{candidateName}}
+- Các chủ đề đã trao đổi: {{topicsCovered}}
+
+CÂU HỎI CUỐI CÙNG VỪA TRAO ĐỔI:
+{{PromptContextBoundary.Wrap("LAST_QUESTION", lastQuestion)}}
+
+CÂU TRẢ LỜI CỦA ỨNG VIÊN CHO CÂU HỎI CUỐI:
+{{PromptContextBoundary.Wrap("LAST_ANSWER", lastAnswer)}}
+
+YÊU CẦU CỐT LÕI CHO LỜI KẾT (BẮT BUỘC 3 THÀNH PHẦN):
+1. [Thành phần A - Ghi nhận câu trả lời cuối]: Đề cập ngắn gọn đến một ý thực tế hoặc khía cạnh cụ thể mà ứng viên vừa chia sẻ trong LAST_ANSWER (ví dụ: cách xử lý vấn đề, quyết định kỹ thuật, quan điểm tiếp cận). Không khen ngợi sáo rỗng hay tâng bốc. Không bịa đặt thông tin ứng viên chưa nói. Nếu câu trả lời quá ngắn, cảm ơn chân thành quan điểm vừa chia sẻ.
+2. [Thành phần B - Chuyển tiếp tự nhiên]: Tạo cảm giác cuộc trao đổi đã đi đến điểm kết thúc trọn vẹn, không tạo cảm giác đang hỏi tiếp hoặc bị cắt ngang đột ngột.
+3. [Thành phần C - Kết thúc và thông báo bước tiếp theo]: Thông báo rõ ràng buổi phỏng vấn đến đây là kết thúc và PrepMate đang tổng hợp kết quả để chuẩn bị báo cáo đánh giá chi tiết.
+
+QUY CÁCH ĐỘ DÀI & GIỌNG ĐIỆU:
+- Độ dài mục tiêu: Đúng 2 đến 3 câu ngắn (khoảng 25 đến 55 từ).
+- Giọng điệu ấm áp, tự nhiên, đĩnh đạc và chuyên nghiệp.
+
+TUYỆT ĐỐI CẤM (STRICT NEGATIVE CONSTRAINTS):
+- TUYỆT ĐỐI KHÔNG đặt thêm câu hỏi mới (không có dấu hỏi '?', không hỏi 'bạn có câu hỏi nào không', không gợi ý ứng viên trả lời tiếp).
+- TUYỆT ĐỐI KHÔNG đưa ra điểm số, xếp loại hay nhận xét ứng viên đạt/trượt/giỏi/yếu trước khi scoring hoàn tất.
+- TUYỆT ĐỐI KHÔNG dùng câu cụt lủn, máy móc như 'Hết câu hỏi. Kết thúc phỏng vấn.' hay 'Đã đủ 5 câu'.
+- TUYỆT ĐỐI KHÔNG viết đoạn văn dài như bài văn nhận xét báo cáo.
+- TUYỆT ĐỐI KHÔNG in hay nhắc đến trạng thái kỹ thuật (FSM, SessionId, QuestionCount, JSON...).
 
 {{PromptOutputPolicy.GetJsonContract(schema)}}
 """;

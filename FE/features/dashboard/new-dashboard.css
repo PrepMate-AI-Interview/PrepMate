@@ -144,14 +144,15 @@ body.dashboard-body .glow-bg {
 /* Modern Floating Double Chevron (<< / >>) at the Sidebar Border Seam */
 .sidebar-toggle-btn {
     position: absolute;
-    top: 24px;
-    right: -13px;
-    width: 26px;
-    height: 26px;
+    top: 50%;
+    right: -18px;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background: #ffffff;
-    border: 1.5px solid #cbd5e1;
-    color: #475569;
+    background: var(--pm-bg-card, #ffffff);
+    border: 1.5px solid var(--pm-border, #cbd5e1);
+    color: var(--pm-text-secondary, #475569);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -162,15 +163,15 @@ body.dashboard-body .glow-bg {
     flex-shrink: 0;
     padding: 0;
     z-index: 120;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--pm-shadow-sm, 0 2px 8px rgba(15, 23, 42, 0.1));
 }
 
 .sidebar-toggle-btn:hover {
-    background: #1d4ed8;
+    background: var(--pm-primary, #1d4ed8);
     color: #ffffff;
-    border-color: #1d4ed8;
+    border-color: var(--pm-primary, #1d4ed8);
     box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);
-    transform: scale(1.08);
+    transform: translateY(-50%) scale(1.08);
 }
 
 .sidebar-toggle-btn svg {
@@ -1462,6 +1463,14 @@ body.dashboard-body .glow-bg {
     font-weight: 700;
     color: var(--pm-text-primary, #0f172a);
     letter-spacing: -0.2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.history-item-job-title svg {
+    color: var(--pm-text-muted, #64748b);
+    flex-shrink: 0;
 }
 
 /* History Company Pill */
@@ -1513,6 +1522,12 @@ body.dashboard-body .glow-bg {
 
 .history-item .pm-time-badge svg {
     color: var(--pm-primary, #1d4ed8);
+    flex-shrink: 0;
+}
+
+.history-item .pm-questions-badge svg,
+.history-item .pm-seniority-chip svg {
+    flex-shrink: 0;
 }
 
 .history-item .pm-seniority-chip {
@@ -1558,6 +1573,13 @@ body.dashboard-body .glow-bg {
     color: var(--pm-text-muted, #64748b);
     margin-left: auto;
     font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.history-item-date svg {
+    flex-shrink: 0;
 }
 
 .history-item-meta {

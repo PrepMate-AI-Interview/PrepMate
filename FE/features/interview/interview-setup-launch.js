@@ -59,7 +59,7 @@ async function startInterview() {
         if (typeof showUpgradeModal === "function") {
           const reason = quota.tier === "guest"
             ? "Bạn đã sử dụng hết <strong>1 lượt phỏng vấn thử nghiệm (Demo)</strong> dành cho Khách. Vui lòng đăng nhập hoặc đăng ký tài khoản để tiếp tục luyện tập."
-            : "Bạn đã sử dụng hết <strong>3 lượt phỏng vấn miễn phí</strong> trong tháng này. Nâng cấp tài khoản PRO để luyện tập không giới hạn!";
+            : "Bạn đã sử dụng hết <strong>3 lượt phỏng vấn miễn phí</strong> trong tuần này. Nâng cấp tài khoản PRO để luyện tập không giới hạn!";
           showUpgradeModal(reason);
         }
         return;

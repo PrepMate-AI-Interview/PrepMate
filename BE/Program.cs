@@ -10,6 +10,7 @@ using backend.Services.Company;
 using backend.Services.Evaluation;
 using backend.Services.Preparation;
 using backend.Services.Security;
+using backend.Services.Email;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -141,6 +142,73 @@ builder.Services.AddRateLimiter(options =>
         });
     });
 
+    // 1a. Fine-grained Auth endpoint policies (WI-AUTH-01R1)
+    options.AddPolicy("auth-login-policy", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown_ip";
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 50,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+    });
+
+    options.AddPolicy("auth-register-policy", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown_ip";
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+    });
+
+    options.AddPolicy("auth-forgot-policy", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown_ip";
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+    });
+
+    options.AddPolicy("auth-reset-policy", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown_ip";
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 15,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+    });
+
+    options.AddPolicy("auth-verify-policy", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown_ip";
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 20,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+    });
+
+    options.AddPolicy("auth-resend-policy", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown_ip";
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 6,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+    });
+
     // 2. AI & resource-intensive operations policy:
     // Gated by caller identity if authenticated, else IP.
     options.AddPolicy("ai-policy", httpContext =>
@@ -172,6 +240,13 @@ builder.Services.AddRateLimiter(options =>
 
 
 });
+// Register Unified Email Services (WI-AUTH-01)
+var emailOptions = EmailOptions.FromConfiguration(builder.Configuration);
+builder.Services.AddSingleton(emailOptions);
+builder.Services.AddSingleton<IEmailInboxStore, InMemoryEmailInboxStore>();
+builder.Services.AddSingleton<EmailTemplateRenderer>();
+builder.Services.AddSingleton<IEmailSender, CompositeEmailSender>();
+
 builder.Services.AddSingleton<FileDb>(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
@@ -305,6 +380,7 @@ builder.Services.AddSingleton<backend.Services.QBank.IQBankService, backend.Serv
 // Register JWT Security Services & Bearer Authentication
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<JwtTokenService>();
+builder.Services.AddSingleton<backend.Services.Security.ILoginProtectionService, backend.Services.Security.LoginProtectionService>();
 
 var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
     ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
@@ -377,6 +453,64 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             RoleClaimType = ClaimTypes.Role,
             NameClaimType = ClaimTypes.NameIdentifier
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                var fileDb = context.HttpContext.RequestServices.GetRequiredService<FileDb>();
+                var userId = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    context.Fail("Invalid user claim in token.");
+                    return Task.CompletedTask;
+                }
+
+                if (!fileDb.Users.TryGetValue(userId, out var user) || user == null)
+                {
+                    context.Fail("User no longer exists.");
+                    return Task.CompletedTask;
+                }
+
+                var tokenStamp = context.Principal?.FindFirst("security_stamp")?.Value;
+
+                // WI-01: JWT SecurityStamp Fail-Closed Verification
+                if (!string.IsNullOrWhiteSpace(user.SecurityStamp))
+                {
+                    // Modern token must have non-empty security stamp claim matching user.SecurityStamp
+                    if (string.IsNullOrWhiteSpace(tokenStamp))
+                    {
+                        context.Fail("Token is missing required security stamp claim.");
+                        return Task.CompletedTask;
+                    }
+
+                    if (!string.Equals(tokenStamp, user.SecurityStamp, StringComparison.Ordinal))
+                    {
+                        context.Fail("Token security stamp has been invalidated (password was changed/revoked).");
+                        return Task.CompletedTask;
+                    }
+                }
+                else
+                {
+                    // If user.SecurityStamp is empty/null:
+                    // 1. If token presents a security_stamp claim, it contradicts uninitialized user state -> fail closed.
+                    if (!string.IsNullOrWhiteSpace(tokenStamp))
+                    {
+                        context.Fail("Token contains security stamp but user account security stamp is uninitialized.");
+                        return Task.CompletedTask;
+                    }
+
+                    // 2. If user changed password in the past, token without security stamp is revoked.
+                    if (user.PasswordChangedAt.HasValue)
+                    {
+                        context.Fail("User credentials were updated; legacy token without security stamp is revoked.");
+                        return Task.CompletedTask;
+                    }
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 builder.Services.AddAuthorization();
 
@@ -413,7 +547,17 @@ app.Use(async (context, next) =>
 {
     context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
     context.Response.Headers.TryAdd("X-Frame-Options", "SAMEORIGIN");
-    context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+    var reqPath = context.Request.Path.Value ?? string.Empty;
+    if (reqPath.Contains("verify-email", StringComparison.OrdinalIgnoreCase) ||
+        reqPath.Contains("reset-password", StringComparison.OrdinalIgnoreCase) ||
+        reqPath.Contains("forgot-password", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.Headers["Referrer-Policy"] = "no-referrer";
+    }
+    else
+    {
+        context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+    }
     context.Response.Headers.TryAdd("Permissions-Policy", "camera=(self), microphone=(self), geolocation=()");
     context.Response.Headers.TryAdd("Content-Security-Policy-Report-Only", "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; object-src 'none'; frame-ancestors 'self';");
     if (context.Request.Path.StartsWithSegments("/api") || context.Request.Path.Value?.EndsWith(".html", StringComparison.OrdinalIgnoreCase) == true || context.Request.Path == "/")
@@ -444,6 +588,23 @@ app.Use(async (context, next) =>
     if (context.Request.Path.Equals("/auth.html", StringComparison.OrdinalIgnoreCase))
     {
         context.Response.Redirect("/features/auth/auth.html");
+        return;
+    }
+    if (context.Request.Path.Equals("/forgot-password.html", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.Redirect("/features/auth/forgot-password.html");
+        return;
+    }
+    if (context.Request.Path.Equals("/reset-password.html", StringComparison.OrdinalIgnoreCase))
+    {
+        var queryString = context.Request.QueryString.Value;
+        context.Response.Redirect("/features/auth/reset-password.html" + queryString);
+        return;
+    }
+    if (context.Request.Path.Equals("/verify-email.html", StringComparison.OrdinalIgnoreCase))
+    {
+        var queryString = context.Request.QueryString.Value;
+        context.Response.Redirect("/features/auth/verify-email.html" + queryString);
         return;
     }
     await next();

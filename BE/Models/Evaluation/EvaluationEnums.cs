@@ -3,6 +3,14 @@ using System.Text.Json.Serialization;
 namespace backend.Models
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum DimensionAssessmentStatus
+    {
+        ASSESSED,
+        NOT_ASSESSED,
+        EVALUATION_FAILED
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum EvidenceType
     {
         OBSERVED,
@@ -28,7 +36,8 @@ namespace backend.Models
         UNVERIFIED_HIGH_CLAIM,
         KNOWLEDGE_GAP,
         BUDGET_CONSTRAINED,
-        OVERCLAIMING
+        OVERCLAIMING,
+        EVALUATION_ERROR
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

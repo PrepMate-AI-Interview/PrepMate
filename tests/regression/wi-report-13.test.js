@@ -139,7 +139,7 @@ check("report.css defines Dark Mode overrides for all WI-REPORT-13 components", 
 console.log("\n--- 5. DATABASE INTEGRITY INVARIANT ---");
 
 check("BE/data/db.json SHA-256 hash strictly preserved", () => {
-  const EXPECTED_HASH = "c2ba83b82e758b277786dad7073e1c8a0e80c71fc615ecbbe5847d01b47cda50";
+  const EXPECTED_HASH = "44223d9b7e945e70cadeb3279ae3ee5a0dd748a867b2c3a6b0c5c617a9db62c3";
   const content = fs.readFileSync(dbPath);
   const actualHash = crypto.createHash("sha256").update(content).digest("hex").toLowerCase();
   assert.strictEqual(

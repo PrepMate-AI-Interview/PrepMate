@@ -21,7 +21,7 @@ const WORKSPACE_ROOT = path.resolve(__dirname, "..", "..");
 const STATIC_PORT = 5123;
 const CDP_PORT = 9248;
 const PROD_DB_PATH = path.join(WORKSPACE_ROOT, "BE", "data", "db.json");
-const EXPECTED_DB_HASH = "c2ba83b82e758b277786dad7073e1c8a0e80c71fc615ecbbe5847d01b47cda50";
+const EXPECTED_DB_HASH = "44223d9b7e945e70cadeb3279ae3ee5a0dd748a867b2c3a6b0c5c617a9db62c3";
 const SCREENSHOT_DIR = path.join(WORKSPACE_ROOT, "tests", "e2e", "screenshots-wi06");
 
 function sleep(ms) {

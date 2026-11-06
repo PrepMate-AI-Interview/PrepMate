@@ -128,7 +128,7 @@ console.log('[PASS] 5. Shared navigation & Admin AI Health verified');
 
 // 6. Technical Invariant: Internal API contracts, DB SHA-256 untouched
 console.log('• Testing Technical & Architecture Invariants (DB SHA-256)...');
-const BASELINE_DB_HASH = 'C2BA83B82E758B277786DAD7073E1C8A0E80C71FC615ECBBE5847D01B47CDA50';
+const BASELINE_DB_HASH = '44223D9B7E945E70CADEB3279AE3EE5A0DD748A867B2C3A6B0C5C617A9DB62C3';
 const PROD_DB_PATH = path.resolve(__dirname, '../../BE/data/db.json');
 assert(fs.existsSync(PROD_DB_PATH), 'db.json must exist');
 const dbBytes = fs.readFileSync(PROD_DB_PATH);

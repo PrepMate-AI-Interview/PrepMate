@@ -284,7 +284,7 @@
 
     const isFiltered = hasFilteredMs && recordingRecord.durationMs && (recordingRecord.durationMs - recordingRecord.speechActiveMs >= 600);
     const filterTagHtml = isFiltered
-      ? '<span class="speech-filter-badge" title="Tự động lọc khoảng lặng dài, chỉ phát giọng nói"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:3px;vertical-align:-1px;"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>Đã lọc khoảng lặng</span>'
+      ? '<span class="speech-filter-badge" title="Tự động lọc khoảng lặng dài, chỉ phát giọng nói"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:3px;"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>Đã lọc khoảng lặng</span>'
       : "";
 
     container.innerHTML = `

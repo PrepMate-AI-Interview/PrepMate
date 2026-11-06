@@ -2331,6 +2331,272 @@ body.dark-mode .anchor-link.active {
 }
 
 /* ==========================================================================
+   UNIFIED REPORT ACCESS GATE & COMPACT LOCKED SECTIONS (WI-REPORT-ACCESS-01R1)
+   Single login entry point invariant: Exactly ONE login CTA on the Report page.
+   ========================================================================== */
+.unified-access-gate {
+  margin-top: 24px;
+  padding: 24px 28px;
+  background: linear-gradient(135deg, rgba(238, 242, 255, 0.98) 0%, rgba(245, 243, 255, 0.98) 100%);
+  border: 1.5px solid rgba(99, 102, 241, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.10);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.unified-access-gate.hidden {
+  display: none !important;
+}
+
+.unified-access-gate.gate-pulse-highlight {
+  animation: unifiedGatePulse 1.8s ease-in-out;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.35), 0 8px 30px rgba(99, 102, 241, 0.25);
+}
+
+@keyframes unifiedGatePulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6);
+  }
+  30% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.4);
+  }
+  70% {
+    transform: scale(1.01);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.10);
+  }
+}
+
+.unified-gate-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.unified-gate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 4px 10px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4f46e5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.unified-gate-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  line-height: 1.35;
+}
+
+.unified-gate-desc {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #4b5563;
+  line-height: 1.55;
+  max-width: 680px;
+}
+
+.unified-gate-cta-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.btn-unified-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 26px;
+  background: #4f46e5;
+  color: #ffffff !important;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-unified-login:hover,
+.btn-unified-login:focus-visible {
+  background: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.45);
+  outline: 2px solid #818cf8;
+  outline-offset: 2px;
+}
+
+.unified-gate-sublink {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin-left: 2px;
+}
+
+.link-unified-register {
+  color: #4f46e5;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.link-unified-register:hover {
+  color: #4338ca;
+}
+
+/* Compact Locked Section Notice — ZERO login buttons, click/action routes to Unified Gate */
+.locked-section-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  background: #ffffff;
+  border: 1px dashed rgba(156, 163, 175, 0.6);
+  border-radius: 12px;
+  margin: 16px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.locked-section-notice:hover,
+.locked-section-notice:focus-visible {
+  border-color: #6366f1;
+  background: rgba(245, 243, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
+  outline: none;
+}
+
+.locked-notice-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.locked-notice-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.locked-mini-icon {
+  stroke: #6366f1;
+}
+
+.locked-notice-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4f46e5;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: rgba(99, 102, 241, 0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.locked-notice-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.locked-notice-desc {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #6b7280;
+  line-height: 1.45;
+}
+
+.locked-notice-action {
+  flex-shrink: 0;
+}
+
+.locked-notice-cta-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4f46e5;
+  padding: 6px 12px;
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 8px;
+  pointer-events: none;
+  transition: all 0.15s ease;
+}
+
+.locked-section-notice:hover .locked-notice-cta-link {
+  background: rgba(99, 102, 241, 0.16);
+  color: #3730a3;
+}
+
+/* Dark mode overrides for Unified Access Gate & Locked Notices */
+html[data-theme="dark"] .unified-access-gate,
+body.dark-mode .unified-access-gate {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.85) 0%, rgba(24, 24, 27, 0.95) 100%);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="dark"] .unified-gate-title,
+body.dark-mode .unified-gate-title {
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .unified-gate-desc,
+body.dark-mode .unified-gate-desc {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .locked-section-notice,
+body.dark-mode .locked-section-notice {
+  background: #18181b;
+  border-color: rgba(75, 85, 99, 0.5);
+}
+
+html[data-theme="dark"] .locked-section-notice:hover,
+body.dark-mode .locked-section-notice:hover {
+  background: rgba(30, 27, 75, 0.4);
+  border-color: #818cf8;
+}
+
+html[data-theme="dark"] .locked-notice-title,
+body.dark-mode .locked-notice-title {
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .locked-notice-desc,
+body.dark-mode .locked-notice-desc {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .locked-notice-cta-link,
+body.dark-mode .locked-notice-cta-link {
+  background: rgba(99, 102, 241, 0.18);
+  color: #a5b4fc;
+}
+
+/* ==========================================================================
    GUEST PREVIEW & LOCKED TEASER STYLES (WI-REPORT-ACCESS-01)
    ========================================================================== */
 .guest-preview-banner {
@@ -2425,37 +2691,39 @@ body.dark-mode .anchor-link.active {
 }
 
 .guest-locked-teaser-panel {
-  padding: 32px 24px;
-  background: #ffffff;
-  border: 1px dashed rgba(156, 163, 175, 0.5);
-  border-radius: 16px;
-  text-align: center;
+  padding: 18px 24px;
+  background: var(--rpt-surface, #ffffff);
+  border: 1px dashed rgba(156, 163, 175, 0.6);
+  border-radius: 12px;
+  text-align: left;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  max-width: 640px;
-  margin: 20px auto;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 100%;
+  margin: 16px 0;
 }
 
 .guest-locked-icon {
-  font-size: 32px;
-  margin-bottom: 4px;
+  font-size: 24px;
+  margin-bottom: 2px;
 }
 
 .guest-locked-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--rpt-text-primary, #1f2937);
   margin: 0;
+  text-align: left;
 }
 
 .guest-locked-desc {
   font-size: 0.88rem;
-  color: #6b7280;
-  max-width: 500px;
+  color: var(--rpt-text-secondary, #6b7280);
+  max-width: 100%;
   line-height: 1.5;
   margin: 0;
+  text-align: left;
 }
 
 .guest-locked-actions {
@@ -2479,6 +2747,64 @@ body.dark-mode .anchor-link.active {
 .btn-locked-unlock:hover {
   background: rgba(79, 70, 229, 0.16);
 }
+
+/* Stage Lock Badges & Highlights (WI-REPORT-ACCESS-01) */
+.stage-tab-btn.stage-tab-locked .stage-lock-badge {
+  font-size: 11px;
+  margin-left: 4px;
+  vertical-align: middle;
+  opacity: 0.85;
+}
+
+.highlight-item.guest-locked-highlight {
+  background: rgba(79, 70, 229, 0.05);
+  border: 1px dashed rgba(79, 70, 229, 0.25);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.highlight-item.priority.guest-locked-highlight {
+  background: rgba(217, 119, 6, 0.05);
+  border-color: rgba(217, 119, 6, 0.25);
+}
+
+.locked-inline-link {
+  font-weight: 600;
+  color: #4f46e5;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  margin-left: 4px;
+  display: inline-block;
+  transition: color 0.15s ease;
+}
+
+.locked-inline-link:hover {
+  color: #3730a3;
+}
+
+html[data-theme="dark"] .highlight-item.guest-locked-highlight,
+body.dark-mode .highlight-item.guest-locked-highlight {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+html[data-theme="dark"] .highlight-item.priority.guest-locked-highlight,
+body.dark-mode .highlight-item.priority.guest-locked-highlight {
+  background: rgba(217, 119, 6, 0.08);
+  border-color: rgba(217, 119, 6, 0.35);
+}
+
+html[data-theme="dark"] .locked-inline-link,
+body.dark-mode .locked-inline-link {
+  color: #818cf8;
+}
+
+html[data-theme="dark"] .locked-inline-link:hover,
+body.dark-mode .locked-inline-link:hover {
+  color: #a5b4fc;
+}
+
+
 
 /* Voice TTS Buttons */
 .btn-report-voice {
@@ -4838,7 +5164,9 @@ body.dark-mode .btn-report-voice {
 
 /* Needs breakdown toggle styles */
 .needs-toggle-wrap {
-  text-align: center;
+  text-align: left;
+  display: flex;
+  justify-content: flex-start;
   margin-top: 16px;
 }
 
@@ -9494,4 +9822,1074 @@ body.dark-mode .btn-report-voice {
 /* 6. Dark Mode Adjustments for Standardized Borders */
 [data-theme="dark"] #stage-panel-after .roadmap-steps-panel {
   border-top-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ==========================================================================
+   WI-REPORT-UX-16: RECOMMENDATION SECTION HIERARCHY & VISUAL LAYER OPTIMIZATION
+   Mandatory 4-step vertical hierarchy:
+     1. Badge / Section label (on its own line, left-aligned)
+     2. Section title (next line below badge, highest visual prominence)
+     3. Description / introductory text (below title)
+     4. Main content
+   ========================================================================== */
+
+/* 1. High-Level Recommendation Section Headers (Tầng 1, Tầng 2, Tầng 3, Ecosystem, Checklist) */
+#stage-panel-after .section-title-wrap,
+#stage-panel-after .ecosystem-title-wrap,
+#stage-panel-after .materials-header,
+.materials-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 6px !important;
+  width: 100% !important;
+  margin-bottom: 16px !important;
+}
+
+#stage-panel-after .section-badge,
+#stage-panel-after .ecosystem-badge,
+.materials-header .ecosystem-badge {
+  display: inline-flex !important;
+  align-self: flex-start !important;
+  margin: 0 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  line-height: 1.3 !important;
+}
+
+#stage-panel-after .section-title,
+#stage-panel-after .ecosystem-title,
+.materials-header .section-title {
+  margin: 0 !important;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  color: var(--rpt-text-primary, #1e293b) !important;
+  line-height: 1.35 !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+#stage-panel-after .section-desc,
+#stage-panel-after .ecosystem-desc,
+.materials-header .ecosystem-desc {
+  margin: 0 !important;
+  font-size: 0.9rem !important;
+  color: var(--rpt-text-secondary, #64748b) !important;
+  line-height: 1.55 !important;
+  max-width: 780px !important;
+}
+
+/* 2. Priority Recommendation Cards (Tầng 1: Đề xuất ưu tiên) */
+.priority-rec-top-row {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 6px !important;
+  margin-bottom: 10px !important;
+  width: 100% !important;
+}
+
+.priority-rec-badges {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  align-self: flex-start !important;
+  order: -1 !important;
+}
+
+.priority-rec-title {
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  color: var(--rpt-text-primary, #1e293b) !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+/* 3. Preparation Items (Chuyên môn, STAR, Company) */
+.prep-item-box {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 4px !important;
+  width: 100% !important;
+}
+
+.prep-item-badge-wrap {
+  display: flex !important;
+  align-items: center !important;
+  align-self: flex-start !important;
+  margin-bottom: 2px !important;
+}
+
+.prep-item-title {
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  color: var(--rpt-text-primary, #1e293b) !important;
+  margin: 0 !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* 4. Outfit Slide Card (Trang phục) */
+.outfit-visual-card .outfit-card-header,
+.outfit-card-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 4px !important;
+  margin-bottom: 6px !important;
+  width: 100% !important;
+}
+
+.outfit-rec-badge-wrap {
+  display: flex !important;
+  align-items: center !important;
+  align-self: flex-start !important;
+}
+
+.outfit-rec-badge {
+  display: inline-flex !important;
+  align-self: flex-start !important;
+  margin-bottom: 2px !important;
+}
+
+.outfit-title-group {
+  width: 100% !important;
+}
+
+.outfit-style-title {
+  margin: 0 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+}
+
+/* 5. Reference Material Categories (Tài liệu tham khảo) */
+.ref-category-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 4px !important;
+  margin-bottom: 12px !important;
+  width: 100% !important;
+}
+
+.ref-category-badge-wrap {
+  display: flex !important;
+  align-items: center !important;
+  align-self: flex-start !important;
+}
+
+.ref-category-badge {
+  display: inline-flex !important;
+  align-self: flex-start !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: var(--rpt-primary, #2563eb) !important;
+  background: rgba(37, 99, 235, 0.08) !important;
+  border: 1px solid rgba(37, 99, 235, 0.2) !important;
+  padding: 2px 8px !important;
+  border-radius: 4px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+}
+
+.ref-category-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  color: var(--rpt-text-primary, #1e293b) !important;
+}
+
+/* 6. Ecosystem Sub-groups */
+.ecosystem-group-badge-wrap {
+  display: flex !important;
+  align-items: center !important;
+  align-self: flex-start !important;
+  margin-bottom: 4px !important;
+}
+
+.ecosystem-group-title-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 4px !important;
+}
+
+/* 7. Dark Mode Synchronization */
+html[data-theme="dark"] #stage-panel-after .section-title,
+html[data-theme="dark"] #stage-panel-after .ecosystem-title,
+html[data-theme="dark"] .materials-header .section-title,
+body.dark-mode #stage-panel-after .section-title,
+body.dark-mode #stage-panel-after .ecosystem-title,
+body.dark-mode .materials-header .section-title {
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] #stage-panel-after .section-desc,
+html[data-theme="dark"] #stage-panel-after .ecosystem-desc,
+html[data-theme="dark"] .materials-header .ecosystem-desc,
+body.dark-mode #stage-panel-after .section-desc,
+body.dark-mode #stage-panel-after .ecosystem-desc,
+body.dark-mode .materials-header .ecosystem-desc {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .priority-rec-title,
+body.dark-mode .priority-rec-title,
+html[data-theme="dark"] .ref-category-title,
+body.dark-mode .ref-category-title {
+  color: #f1f5f9 !important;
+}
+
+/* 8. Responsive (Mobile & Tablet) */
+@media (max-width: 768px) {
+  #stage-panel-after .section-title-wrap,
+  #stage-panel-after .ecosystem-title-wrap,
+  #stage-panel-after .materials-header,
+  .materials-header,
+  .priority-rec-top-row,
+  .outfit-card-header,
+  .ref-category-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  #stage-panel-after .section-badge,
+  #stage-panel-after .ecosystem-badge,
+  .priority-rec-badges,
+  .outfit-rec-badge,
+  .ref-category-badge {
+    align-self: flex-start !important;
+  }
+}
+
+/* ======================================================================
+   WI-REPORT-UX-17: COMPREHENSIVE REPORT UI CONSISTENCY AUDIT &
+   HIERARCHY STANDARDIZATION (ALL STAGES 01, 02, 03, 04 & FOOTER)
+   ====================================================================== */
+
+/* 1. Global Strict Vertical Hierarchy: Badge (Line 1) -> Title (Line 2) -> Description (Line 3) */
+.section-title-wrap,
+.materials-header,
+.ecosystem-title-wrap,
+.domain-perspective-title-wrap,
+.cq-diag-title-wrap,
+.visual-coaching-title-wrap,
+.transparency-title-wrap,
+.competency-overall-title-wrap,
+.radar-title-wrap,
+.telemetry-subcard-header,
+.guidance-title-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  gap: 4px !important;
+  width: 100% !important;
+  margin-bottom: 8px !important;
+}
+
+/* 2. Standardized Section & Component Badges: Compact, left-aligned, uniform scale */
+.section-badge,
+.ecosystem-badge,
+.competency-overall-badge,
+.radar-badge,
+.domain-perspective-badge,
+.cq-diag-badge,
+.visual-badge,
+.limitations-badge,
+.priority-badge,
+.stage-step-tag,
+.delivery-badge {
+  order: -1 !important;
+  display: inline-flex !important;
+  align-self: flex-start !important;
+  text-align: left !important;
+  margin: 0 0 6px 0 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  padding: 3px 9px !important;
+  border-radius: 4px !important;
+  width: fit-content !important;
+  max-width: fit-content !important;
+  line-height: 1.3 !important;
+  box-sizing: border-box !important;
+}
+
+/* Default semantic badge styles for Stage 02 and Stage 03 badges */
+.section-badge {
+  background: var(--rpt-primary-soft, #eef2ff);
+  color: var(--rpt-primary, #4f46e5);
+  border: 1px solid var(--rpt-primary-border, #c7d2fe);
+}
+
+/* 3. Section Titles Uniformity across ALL Stages (20px, 800 weight, primary text, left-aligned) */
+.section-title,
+.materials-header .section-title {
+  display: block !important;
+  text-align: left !important;
+  font-size: 1.25rem !important; /* 20px */
+  font-weight: 800 !important;
+  color: var(--rpt-text-primary, #1e293b) !important;
+  line-height: 1.35 !important;
+  margin: 0 0 4px 0 !important;
+  letter-spacing: -0.3px !important;
+  width: 100% !important;
+  align-self: flex-start !important;
+}
+
+/* 4. Subsection Titles Uniformity across cards and modules (~17px, 700 weight, left-aligned) */
+.competency-overall-title,
+.radar-title,
+.domain-perspective-title,
+.cq-diag-title,
+.speech-card-title,
+.ecosystem-title,
+.ref-category-title,
+.delivery-assessment-header h3,
+.guidance-title-wrap h3,
+.transparency-title-wrap h4 {
+  font-size: 1.05rem !important; /* ~17px */
+  font-weight: 700 !important;
+  color: var(--rpt-text-primary, #1e293b) !important;
+  line-height: 1.4 !important;
+  margin: 0 0 4px 0 !important;
+  text-align: left !important;
+  align-self: flex-start !important;
+}
+
+/* 5. Uniform Description Styling across all levels */
+.section-desc,
+.ecosystem-desc,
+.competency-overall-subtitle,
+.radar-subtitle,
+.domain-perspective-desc,
+.telemetry-desc,
+.speech-card-desc,
+.transparency-subtitle,
+.stage-main-desc {
+  font-size: 13.5px !important;
+  color: var(--rpt-text-secondary, #475569) !important;
+  line-height: 1.55 !important;
+  margin: 4px 0 0 0 !important;
+  text-align: left !important;
+  display: block !important;
+  max-width: 820px !important;
+  align-self: flex-start !important;
+}
+
+/* 6. Guest Locked Teaser Panels & Notices: Strict Left-Alignment and Full Width */
+.guest-locked-teaser-panel,
+.locked-section-notice {
+  text-align: left !important;
+  align-items: flex-start !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.locked-section-notice .locked-notice-main,
+.locked-section-notice .locked-notice-text {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+  width: 100% !important;
+}
+
+.locked-section-notice .locked-notice-title,
+.locked-section-notice .locked-notice-desc {
+  text-align: left !important;
+}
+
+/* 7. Comprehensive Dark Mode Overrides */
+html[data-theme="dark"] .section-title,
+body.dark-mode .section-title,
+html[data-theme="dark"] .materials-header .section-title,
+body.dark-mode .materials-header .section-title,
+html[data-theme="dark"] .competency-overall-title,
+body.dark-mode .competency-overall-title,
+html[data-theme="dark"] .radar-title,
+body.dark-mode .radar-title,
+html[data-theme="dark"] .domain-perspective-title,
+body.dark-mode .domain-perspective-title,
+html[data-theme="dark"] .cq-diag-title,
+body.dark-mode .cq-diag-title,
+html[data-theme="dark"] .speech-card-title,
+body.dark-mode .speech-card-title,
+html[data-theme="dark"] .ecosystem-title,
+body.dark-mode .ecosystem-title,
+html[data-theme="dark"] .ref-category-title,
+body.dark-mode .ref-category-title,
+html[data-theme="dark"] .transparency-title-wrap h4,
+body.dark-mode .transparency-title-wrap h4 {
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .section-desc,
+body.dark-mode .section-desc,
+html[data-theme="dark"] .ecosystem-desc,
+body.dark-mode .ecosystem-desc,
+html[data-theme="dark"] .competency-overall-subtitle,
+body.dark-mode .competency-overall-subtitle,
+html[data-theme="dark"] .radar-subtitle,
+body.dark-mode .radar-subtitle,
+html[data-theme="dark"] .domain-perspective-desc,
+body.dark-mode .domain-perspective-desc,
+html[data-theme="dark"] .telemetry-desc,
+body.dark-mode .telemetry-desc,
+html[data-theme="dark"] .speech-card-desc,
+body.dark-mode .speech-card-desc,
+html[data-theme="dark"] .transparency-subtitle,
+body.dark-mode .transparency-subtitle {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .section-badge,
+body.dark-mode .section-badge {
+  background: rgba(99, 102, 241, 0.15) !important;
+  color: #a5b4fc !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+/* 8. Responsive Viewports (768px, 390px, 360px) */
+@media (max-width: 768px) {
+  .section-title,
+  .materials-header .section-title {
+    font-size: 1.15rem !important;
+  }
+
+  .section-title-wrap,
+  .competency-overall-title-wrap,
+  .radar-title-wrap,
+  .domain-perspective-title-wrap,
+  .cq-diag-title-wrap,
+  .visual-coaching-title-wrap,
+  .transparency-title-wrap,
+  .telemetry-subcard-header {
+    align-items: flex-start !important;
+  }
+
+  .section-badge,
+  .ecosystem-badge,
+  .competency-overall-badge,
+  .radar-badge,
+  .domain-perspective-badge,
+  .cq-diag-badge,
+  .visual-badge,
+  .limitations-badge,
+  .priority-badge {
+    align-self: flex-start !important;
+  }
+}
+
+/* ==========================================================================
+   WI-REPORT-PREVIEW-01: GUEST REPORT PREVIEW TIERS & SNAPSHOT STYLES
+   ========================================================================== */
+.guest-preview-section {
+  margin-top: 28px;
+  padding: 24px;
+  background: var(--surface-card, #ffffff);
+  border: 1px solid var(--border-subtle, #e5e7eb);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.guest-preview-section .section-header {
+  margin-bottom: 20px;
+}
+
+.guest-preview-section .section-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.guest-preview-section .section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+  margin: 0 0 6px 0;
+}
+
+.guest-preview-section .section-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+}
+
+/* Executive Highlights items */
+.highlight-item.guest-strength-item,
+.highlight-item.guest-priority-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface-ground, #f9fafb);
+  border: 1px solid var(--border-subtle, #e5e7eb);
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.highlight-item-evidence {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #4b5563);
+  font-style: italic;
+  margin-top: 4px;
+  padding-left: 8px;
+  border-left: 2px solid #16a34a;
+}
+
+.highlight-item-action {
+  display: block;
+  font-size: 0.85rem;
+  color: #b45309;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Performance Snapshot Grid */
+.performance-snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.performance-dimension-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--surface-ground, #f9fafb);
+  border: 1px solid var(--border-subtle, #e5e7eb);
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.performance-dimension-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.dim-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.dim-icon-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dim-icon {
+  font-size: 1.15rem;
+}
+
+.dim-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+}
+
+.dim-status-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 12px;
+  letter-spacing: 0.02em;
+}
+
+.dim-status-badge.badge-assessed {
+  background: rgba(22, 163, 74, 0.12);
+  color: #15803d;
+  border: 1px solid rgba(22, 163, 74, 0.25);
+}
+
+.dim-status-badge.badge-not-assessed {
+  background: rgba(156, 163, 175, 0.15);
+  color: #6b7280;
+  border: 1px solid rgba(156, 163, 175, 0.25);
+}
+
+.dim-score-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.dim-score-box {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.dim-score-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #4f46e5;
+  line-height: 1;
+}
+
+.dim-score-box.not-assessed .dim-score-value {
+  color: #9ca3af;
+}
+
+.dim-score-scale {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+}
+
+.dim-level-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4338ca;
+  background: rgba(99, 102, 241, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.dim-na-tag {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.dim-summary-text {
+  font-size: 0.84rem;
+  color: var(--text-secondary, #4b5563);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Multimodal Snapshot Grid */
+.multimodal-snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.multimodal-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--surface-ground, #f9fafb);
+  border: 1px solid var(--border-subtle, #e5e7eb);
+  border-radius: 12px;
+}
+
+.modality-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.modality-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modality-icon {
+  font-size: 1.15rem;
+}
+
+.modality-title {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+}
+
+.modality-status-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 12px;
+}
+
+.modality-status-badge.badge-avail {
+  background: rgba(22, 163, 74, 0.12);
+  color: #15803d;
+  border: 1px solid rgba(22, 163, 74, 0.25);
+}
+
+.modality-status-badge.badge-not-assessed,
+.modality-status-badge.badge-insufficient {
+  background: rgba(156, 163, 175, 0.15);
+  color: #6b7280;
+  border: 1px solid rgba(156, 163, 175, 0.25);
+}
+
+.modality-body {
+  margin-bottom: 12px;
+}
+
+.modality-summary {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #4b5563);
+  line-height: 1.45;
+  margin: 0 0 8px 0;
+}
+
+.modality-metrics-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+  background: #f3f4f6;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.modality-footer {
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-subtle, #e5e7eb);
+}
+
+.modality-locked-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  color: #9ca3af;
+}
+
+/* Representative Sample Card */
+.representative-sample-card {
+  padding: 18px 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border: 1.5px solid rgba(79, 70, 229, 0.22);
+  border-radius: 14px;
+  margin-top: 14px;
+}
+
+.sample-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.sample-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #4f46e5;
+  background: rgba(79, 70, 229, 0.1);
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+}
+
+.sample-competency-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  background: #e5e7eb;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.sample-question-box {
+  margin-bottom: 12px;
+}
+
+.sample-q-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.sample-q-text {
+  font-size: 0.95rem;
+  color: var(--text-primary, #111827);
+  line-height: 1.4;
+}
+
+.sample-answer-box {
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  background: rgba(243, 244, 246, 0.7);
+  border-left: 3px solid #6366f1;
+  border-radius: 0 8px 8px 0;
+}
+
+.sample-a-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.sample-a-quote {
+  margin: 0;
+  font-size: 0.88rem;
+  font-style: italic;
+  color: #374151;
+  line-height: 1.45;
+}
+
+.sample-ai-feedback-box {
+  padding: 12px 14px;
+  background: rgba(238, 242, 255, 0.6);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 10px;
+}
+
+.sample-feedback-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #4338ca;
+  margin-bottom: 4px;
+}
+
+.sample-feedback-text {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #1f2937;
+  line-height: 1.5;
+}
+
+.representative-sample-card.sample-empty {
+  text-align: center;
+  padding: 24px;
+  color: #9ca3af;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .guest-preview-section,
+body.dark-mode .guest-preview-section {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .guest-preview-section .section-title,
+body.dark-mode .guest-preview-section .section-title {
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .guest-preview-section .section-subtitle,
+body.dark-mode .guest-preview-section .section-subtitle {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .highlight-item.guest-strength-item,
+body.dark-mode .highlight-item.guest-strength-item,
+html[data-theme="dark"] .highlight-item.guest-priority-item,
+body.dark-mode .highlight-item.guest-priority-item {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+html[data-theme="dark"] .performance-dimension-card,
+body.dark-mode .performance-dimension-card,
+html[data-theme="dark"] .multimodal-card,
+body.dark-mode .multimodal-card {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+html[data-theme="dark"] .dim-title,
+body.dark-mode .dim-title,
+html[data-theme="dark"] .modality-title,
+body.dark-mode .modality-title {
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .dim-summary-text,
+body.dark-mode .dim-summary-text,
+html[data-theme="dark"] .modality-summary,
+body.dark-mode .modality-summary {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .modality-metrics-pill,
+body.dark-mode .modality-metrics-pill {
+  background: #1e293b;
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .representative-sample-card,
+body.dark-mode .representative-sample-card {
+  background: #0f172a;
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+html[data-theme="dark"] .sample-q-text,
+body.dark-mode .sample-q-text {
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .sample-answer-box,
+body.dark-mode .sample-answer-box {
+  background: #1e293b;
+}
+
+html[data-theme="dark"] .sample-a-quote,
+body.dark-mode .sample-a-quote {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .sample-ai-feedback-box,
+body.dark-mode .sample-ai-feedback-box {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: #4338ca;
+}
+
+html[data-theme="dark"] .sample-feedback-text,
+body.dark-mode .sample-feedback-text {
+  color: #e2e8f0;
+}
+
+/* ==========================================================================
+   WI-REPORT-PREVIEW-02: ANALYSIS CAPABILITY TEASER & RESTRAINED STYLING
+   ========================================================================== */
+.hero-interpretation-text {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #4f46e5;
+  margin-top: 6px;
+  line-height: 1.45;
+}
+
+.guest-capability-teaser {
+  margin-top: 24px;
+}
+
+.guest-capability-teaser.hidden {
+  display: none !important;
+}
+
+.capability-teaser-card {
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(249, 250, 251, 0.95) 0%, rgba(243, 244, 246, 0.95) 100%);
+  border: 1.5px solid rgba(209, 213, 219, 0.8);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.capability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 3px 8px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #4f46e5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.capability-teaser-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+  line-height: 1.35;
+}
+
+.capability-teaser-desc {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary, #4b5563);
+  line-height: 1.5;
+  max-width: 680px;
+}
+
+.capability-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.capability-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: #ffffff;
+  border: 1px solid rgba(209, 213, 219, 0.7);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Dark Mode Support for WI-REPORT-PREVIEW-02 */
+html[data-theme="dark"] .hero-interpretation-text,
+body.dark-mode .hero-interpretation-text {
+  color: #a5b4fc;
+}
+
+html[data-theme="dark"] .capability-teaser-card,
+body.dark-mode .capability-teaser-card {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+html[data-theme="dark"] .capability-teaser-title,
+body.dark-mode .capability-teaser-title {
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .capability-teaser-desc,
+body.dark-mode .capability-teaser-desc {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .capability-pill,
+body.dark-mode .capability-pill {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
 }

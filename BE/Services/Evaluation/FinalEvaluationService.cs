@@ -152,10 +152,23 @@ namespace backend.Services.Evaluation
 
                         bool matchesConcept = a.CorrectConcepts.Any(c => MatchesName(c, concept)) ||
                                               a.IncorrectConcepts.Any(c => MatchesName(c, concept)) ||
-                                              a.VerifiedFacts.Any(f => MatchesName(f, concept));
+                                              a.VerifiedFacts.Any(f => MatchesName(f, concept)) ||
+                                              MatchesName(a.Question, concept) ||
+                                              MatchesName(a.Answer, concept);
 
                         if (matchesTarget || matchesConcept)
                         {
+                            int turnDepth = a.Depth;
+                            bool turnPractical = a.ShowsPracticalExperience;
+                            if (turnDepth == 0 && !string.IsNullOrWhiteSpace(a.Answer))
+                            {
+                                var dynSingle = EvaluateAnswersDynamically(new List<AnswerItem> { a }, targetLevel);
+                                if (dynSingle.AverageScore >= 8.5) turnDepth = 3;
+                                else if (dynSingle.AverageScore >= 7.5) turnDepth = 2;
+                                else turnDepth = 1;
+                                turnPractical = dynSingle.StrongAnswerCount > 0;
+                            }
+
                             if (a.IncorrectConcepts.Any(c => MatchesName(c, concept)))
                             {
                                 evidenceItems.Add(new EvidenceItem
@@ -165,12 +178,12 @@ namespace backend.Services.Evaluation
                                     TurnIndex = i + 1,
                                     Type = EvidenceType.OBSERVED,
                                     Confidence = EvaluationConfidence.HIGH,
-                                    Depth = a.Depth,
+                                    Depth = turnDepth,
                                     Description = $"Câu {i + 1}: Có dấu hiệu hiểu sai hoặc thiếu sót căn bản về {concept.Name}.",
                                     SourceReliability = concept.RequirementSource
                                 });
                             }
-                            else if (a.VerifiedFacts.Any(f => MatchesName(f, concept)) || a.ShowsPracticalExperience || a.Depth >= 2)
+                            else if (a.VerifiedFacts.Any(f => MatchesName(f, concept)) || turnPractical || turnDepth >= 2)
                             {
                                 evidenceItems.Add(new EvidenceItem
                                 {
@@ -179,9 +192,9 @@ namespace backend.Services.Evaluation
                                     TurnIndex = i + 1,
                                     Type = EvidenceType.OBSERVED,
                                     Confidence = EvaluationConfidence.HIGH,
-                                    Depth = a.Depth,
-                                    ShowsPracticalExperience = a.ShowsPracticalExperience,
-                                    Description = $"Câu {i + 1}: Thể hiện hiểu biết chính xác và kinh nghiệm thực chiến với độ sâu {a.Depth}.",
+                                    Depth = turnDepth,
+                                    ShowsPracticalExperience = turnPractical,
+                                    Description = $"Câu {i + 1}: Thể hiện hiểu biết chính xác và kinh nghiệm thực chiến với độ sâu {turnDepth}.",
                                     SourceReliability = concept.RequirementSource
                                 });
                             }
@@ -194,7 +207,7 @@ namespace backend.Services.Evaluation
                                     TurnIndex = i + 1,
                                     Type = EvidenceType.OBSERVED,
                                     Confidence = EvaluationConfidence.MEDIUM,
-                                    Depth = a.Depth,
+                                    Depth = turnDepth,
                                     Description = $"Câu {i + 1}: Trả lời ở mức độ cơ bản về {concept.Name}.",
                                     SourceReliability = concept.RequirementSource
                                 });
@@ -213,6 +226,27 @@ namespace backend.Services.Evaluation
                                     SourceReliability = RequirementSource.CANDIDATE_REPORTED
                                 });
                             }
+                        }
+                    }
+
+                    // Resilient coverage status check from gathered evidence
+                    if (status == ConceptCoverageStatus.NOT_TESTED && evidenceItems.Count > 0)
+                    {
+                        if (evidenceItems.Any(e => (e.ShowsPracticalExperience && e.Depth >= 3) || e.Depth >= 3))
+                        {
+                            status = ConceptCoverageStatus.VERIFIED;
+                        }
+                        else if (evidenceItems.Any(e => (e.ShowsPracticalExperience && e.Depth >= 2) || e.Depth >= 2 || e.ShowsPracticalExperience))
+                        {
+                            status = ConceptCoverageStatus.STRONG;
+                        }
+                        else if (evidenceItems.Any(e => e.Type == EvidenceType.CONTRADICTORY || e.Description.Contains("hiểu sai")))
+                        {
+                            status = ConceptCoverageStatus.WEAK;
+                        }
+                        else
+                        {
+                            status = ConceptCoverageStatus.PARTIAL;
                         }
                     }
 
@@ -275,7 +309,7 @@ namespace backend.Services.Evaluation
                         case ConceptCoverageStatus.WEAK:
                             score = 3.0;
                             demonstratedLevel = "Below Target";
-                            confidence = EvaluationConfidence.HIGH; // High confidence that knowledge is weak/erroneous
+                            confidence = EvaluationConfidence.HIGH;
                             isMet = false;
                             rationale = $"Ứng viên có dấu hiệu ngộ nhận hoặc trả lời sai kiến thức nền tảng về {concept.Name}.";
                             break;
@@ -308,7 +342,7 @@ namespace backend.Services.Evaluation
                         Rationale = rationale
                     };
 
-                    if (score >= 7.5)
+                    if (score >= 7.5 && confidence == EvaluationConfidence.HIGH)
                     {
                         compEval.Strengths.Add($"Làm chủ tốt {concept.Name}");
                     }
@@ -316,35 +350,121 @@ namespace backend.Services.Evaluation
                     {
                         compEval.Gaps.Add($"Cần củng cố lại kiến thức về {concept.Name}");
                     }
-                    else if (status == ConceptCoverageStatus.NOT_TESTED && isMandatory)
-                    {
-                        compEval.Gaps.Add($"Thiếu bằng chứng đánh giá về kỹ năng bắt buộc {concept.Name}");
-                    }
 
                     competencies.Add(compEval);
                 }
             }
             else
             {
-                // Fallback for sessions without KnowledgeBlueprint (Phase 1 legacy flow)
+                // Dynamic Evidence-Based Fallback for sessions without KnowledgeBlueprint
                 bool hasAnswers = answers.Count > 0 || state.QuestionCount > 0;
-                var genericComp = new CompetencyEvaluation
+                if (!hasAnswers)
                 {
-                    CompetencyId = "general-tech",
-                    CompetencyName = "General Technical Knowledge",
-                    AreaName = "General",
-                    WeightPercentage = 100.0,
-                    Priority = 1,
-                    IsMandatory = true,
-                    TargetLevel = targetLevel,
-                    CoverageStatus = !hasAnswers ? ConceptCoverageStatus.NOT_TESTED : (state.StrongAnswerCount > state.WeakAnswerCount ? ConceptCoverageStatus.STRONG : ConceptCoverageStatus.PARTIAL),
-                    Score = !hasAnswers ? 0.0 : (state.StrongAnswerCount > state.WeakAnswerCount ? 7.5 : 5.5),
-                    Confidence = !hasAnswers ? EvaluationConfidence.INSUFFICIENT_EVIDENCE : EvaluationConfidence.MEDIUM,
-                    DemonstratedLevel = targetLevel,
-                    IsMet = hasAnswers && (state.StrongAnswerCount >= state.WeakAnswerCount),
-                    Rationale = !hasAnswers ? "Chưa có câu trả lời nào được ghi nhận." : "Đánh giá dựa trên tổng số câu trả lời kỹ thuật trong buổi phỏng vấn."
-                };
-                competencies.Add(genericComp);
+                    var genericComp = new CompetencyEvaluation
+                    {
+                        CompetencyId = "general-professional",
+                        CompetencyName = $"{targetPosition} Core Competency",
+                        AreaName = "General",
+                        WeightPercentage = 100.0,
+                        Priority = 1,
+                        IsMandatory = true,
+                        TargetLevel = targetLevel,
+                        CoverageStatus = ConceptCoverageStatus.NOT_TESTED,
+                        Score = 0.0,
+                        Confidence = EvaluationConfidence.INSUFFICIENT_EVIDENCE,
+                        DemonstratedLevel = "Unassessed",
+                        IsMet = false,
+                        Rationale = "Chưa có câu trả lời nào được ghi nhận để thực hiện đánh giá năng lực."
+                    };
+                    competencies.Add(genericComp);
+                }
+                else
+                {
+                    var techAnswersList = answers.Where(a =>
+                        a.Stage != "Behavioral" && a.Stage != "Situational" && a.Stage != "CandidateQuestions" &&
+                        a.BehavioralEvidence == null && a.SituationalEvidence == null && a.CandidateQuestionEvidence == null).ToList();
+
+                    if (techAnswersList.Count == 0 && (state.TechnicalStatus == DimensionAssessmentStatus.NOT_ASSESSED || session.TechnicalStatus == DimensionAssessmentStatus.NOT_ASSESSED || (!session.TechnicalScore.HasValue && !state.TechnicalScore.HasValue)))
+                    {
+                        var genericUnassessedComp = new CompetencyEvaluation
+                        {
+                            CompetencyId = "general-professional",
+                            CompetencyName = $"{targetPosition} Core Competency",
+                            AreaName = "General",
+                            WeightPercentage = 100.0,
+                            Priority = 1,
+                            IsMandatory = true,
+                            TargetLevel = targetLevel,
+                            CoverageStatus = ConceptCoverageStatus.NOT_TESTED,
+                            Score = 0.0,
+                            Confidence = EvaluationConfidence.INSUFFICIENT_EVIDENCE,
+                            DemonstratedLevel = "Unassessed",
+                            IsMet = false,
+                            Rationale = "Kỹ năng chuyên môn kỹ thuật chưa được kiểm chứng trong phiên phỏng vấn."
+                        };
+                        competencies.Add(genericUnassessedComp);
+                    }
+                    else
+                    {
+                        var answersToEval = techAnswersList.Count > 0 ? techAnswersList : answers;
+                        var dynEval = EvaluateAnswersDynamically(answersToEval, targetLevel);
+
+                    state.StrongAnswerCount = dynEval.StrongAnswerCount;
+                    state.WeakAnswerCount = dynEval.WeakAnswerCount;
+
+                    var covStatus = dynEval.AverageScore >= 8.5
+                        ? ConceptCoverageStatus.STRONG
+                        : (dynEval.AverageScore >= 6.5
+                            ? ConceptCoverageStatus.PARTIAL
+                            : (dynEval.AverageScore >= 5.0 ? ConceptCoverageStatus.INTRODUCED : ConceptCoverageStatus.WEAK));
+
+                    var demLevel = dynEval.AverageScore >= 8.5
+                        ? "Senior"
+                        : (dynEval.AverageScore >= 7.0
+                            ? "Middle"
+                            : (dynEval.AverageScore >= 5.0 ? "Junior" : "Below Target"));
+
+                    var evalConfidence = answers.Count >= 2 ? EvaluationConfidence.HIGH : EvaluationConfidence.MEDIUM;
+
+                    var genericComp = new CompetencyEvaluation
+                    {
+                        CompetencyId = "general-professional",
+                        CompetencyName = $"{targetPosition} Core Competency",
+                        AreaName = "General",
+                        WeightPercentage = 100.0,
+                        Priority = 1,
+                        IsMandatory = true,
+                        TargetLevel = targetLevel,
+                        CoverageStatus = covStatus,
+                        Score = dynEval.AverageScore,
+                        Confidence = evalConfidence,
+                        DemonstratedLevel = demLevel,
+                        IsMet = dynEval.AverageScore >= (targetLevel.Contains("junior", StringComparison.OrdinalIgnoreCase) ? 6.0 : 7.0),
+                        Rationale = $"Đánh giá dựa trên {answers.Count} câu trả lời thực tế: {dynEval.StrongAnswerCount} câu trả lời vững vàng, {dynEval.WeakAnswerCount} câu bộc lộ thiếu sót kiến thức."
+                    };
+
+                    genericComp.Strengths.AddRange(dynEval.Strengths);
+                    genericComp.Gaps.AddRange(dynEval.Gaps);
+
+                    for (int i = 0; i < answers.Count; i++)
+                    {
+                        var a = answers[i];
+                        genericComp.EvidenceItems.Add(new EvidenceItem
+                        {
+                            ConceptId = "general-professional",
+                            ConceptName = $"{targetPosition} Core Competency",
+                            TurnIndex = i + 1,
+                            Type = a.HasInconsistency ? EvidenceType.CONTRADICTORY : EvidenceType.OBSERVED,
+                            Confidence = evalConfidence,
+                            Depth = a.Depth,
+                            ShowsPracticalExperience = a.ShowsPracticalExperience,
+                            Description = $"Câu {i + 1}: {a.Question} -> {a.Answer}"
+                        });
+                    }
+
+                    competencies.Add(genericComp);
+                    }
+                }
             }
 
             // 2b. Evaluate Behavioral (STAR) competencies from answers if present
@@ -617,55 +737,143 @@ namespace backend.Services.Evaluation
             var cqComps = competencies.Where(c => c.AreaName == "Candidate Questions").ToList();
             var assessedCq = cqComps.Where(c => c.Confidence != EvaluationConfidence.INSUFFICIENT_EVIDENCE).ToList();
 
-            // Technical score
+            // Technical assessment state resolution
+            bool isTechFailed = session.TechnicalEvaluationFailed ||
+                                state.TechnicalEvaluationFailed ||
+                                (session.TechnicalStatus == DimensionAssessmentStatus.EVALUATION_FAILED) ||
+                                (state.TechnicalStatus == DimensionAssessmentStatus.EVALUATION_FAILED) ||
+                                answers.Any(a => a.EvaluationFailed);
+
+            var techAnswers = answers.Where(a =>
+                a.Stage != "Behavioral" && a.Stage != "Situational" && a.Stage != "CandidateQuestions" &&
+                a.BehavioralEvidence == null && a.SituationalEvidence == null && a.CandidateQuestionEvidence == null).ToList();
+
+            bool isTechAssessed = false;
             double techScore = 0.0;
-            if (assessedTech.Count > 0)
+
+            if (isTechFailed)
             {
+                isTechAssessed = false;
+                evaluation.TechnicalStatus = DimensionAssessmentStatus.EVALUATION_FAILED;
+                evaluation.TechnicalScore = null;
+                evaluation.Risks.Add(new EvaluationRisk
+                {
+                    Type = EvaluationRiskType.EVALUATION_ERROR,
+                    Severity = "HIGH",
+                    Description = "Lỗi đánh giá chuyên môn: Dữ liệu câu trả lời không hợp lệ hoặc tiến trình đánh giá gặp lỗi.",
+                    Evidence = "Technical evaluation encountered invalid data or system failure."
+                });
+                evaluation.MissingEvidence.Add("Phần chuyên môn kỹ thuật gặp lỗi đánh giá và cần được phỏng vấn lại.");
+            }
+            else if (session.TechnicalStatus == DimensionAssessmentStatus.ASSESSED || state.TechnicalStatus == DimensionAssessmentStatus.ASSESSED || session.TechnicalScore.HasValue || state.TechnicalScore.HasValue)
+            {
+                isTechAssessed = true;
+                evaluation.TechnicalStatus = DimensionAssessmentStatus.ASSESSED;
+                techScore = session.TechnicalScore ?? state.TechnicalScore ?? (assessedTech.Count > 0 ? assessedTech.Average(c => c.Score) : 0.0);
+                evaluation.TechnicalScore = Math.Round(techScore, 1);
+            }
+            else if (assessedTech.Count > 0)
+            {
+                isTechAssessed = true;
+                evaluation.TechnicalStatus = DimensionAssessmentStatus.ASSESSED;
                 double totalWeight = assessedTech.Sum(c => c.WeightPercentage);
                 techScore = totalWeight > 0 ? (assessedTech.Sum(c => c.Score * c.WeightPercentage) / totalWeight) : assessedTech.Average(c => c.Score);
+                evaluation.TechnicalScore = Math.Round(techScore, 1);
             }
-            else if (techComps.Count > 0 && techComps[0].CompetencyId == "general-tech")
+            else if (techAnswers.Count > 0)
             {
-                techScore = techComps[0].Score;
+                isTechAssessed = true;
+                evaluation.TechnicalStatus = DimensionAssessmentStatus.ASSESSED;
+                var dynEval = EvaluateAnswersDynamically(techAnswers, targetLevel);
+                techScore = dynEval.AverageScore;
+                evaluation.TechnicalScore = Math.Round(techScore, 1);
             }
-            evaluation.TechnicalScore = Math.Round(techScore, 1);
+            else if (techComps.Count > 0 && techComps.Any(c => c.CoverageStatus != ConceptCoverageStatus.NOT_TESTED))
+            {
+                isTechAssessed = true;
+                evaluation.TechnicalStatus = DimensionAssessmentStatus.ASSESSED;
+                var tested = techComps.Where(c => c.CoverageStatus != ConceptCoverageStatus.NOT_TESTED).ToList();
+                techScore = tested.Average(c => c.Score);
+                evaluation.TechnicalScore = Math.Round(techScore, 1);
+            }
+            else
+            {
+                isTechAssessed = false;
+                evaluation.TechnicalStatus = DimensionAssessmentStatus.NOT_ASSESSED;
+                evaluation.TechnicalScore = null;
+                evaluation.MissingEvidence.Add("Kỹ năng chuyên môn kỹ thuật chưa được kiểm chứng trong phiên phỏng vấn.");
+            }
 
             // Behavioral score
             double finalBScore = assessedB.Count > 0 ? assessedB.Average(c => c.Score) : 0.0;
             evaluation.BehavioralScore = Math.Round(finalBScore, 1);
+            evaluation.BehavioralStatus = assessedB.Count > 0 ? DimensionAssessmentStatus.ASSESSED : DimensionAssessmentStatus.NOT_ASSESSED;
 
             // Situational score
             double finalSScore = assessedS.Count > 0 ? assessedS.Average(c => c.Score) : 0.0;
             evaluation.SituationalScore = Math.Round(finalSScore, 1);
+            evaluation.SituationalStatus = assessedS.Count > 0 ? DimensionAssessmentStatus.ASSESSED : DimensionAssessmentStatus.NOT_ASSESSED;
 
             // Candidate Question score (Isolated domain)
             double finalCqScore = assessedCq.Count > 0 ? assessedCq.Average(c => c.Score) : 0.0;
             evaluation.CandidateQuestionScore = Math.Round(finalCqScore, 1);
+            evaluation.CandidateQuestionStatus = assessedCq.Count > 0 ? DimensionAssessmentStatus.ASSESSED : DimensionAssessmentStatus.NOT_ASSESSED;
+
+            // Evidence Coverage: Percentage of mandatory technical scope assessed (Tracked separately from Performance Score)
+            var totalMandatoryCount = techComps.Count(c => c.IsMandatory);
+            var unassessedMandatoryCount = techComps.Count(c => c.IsMandatory && (c.Confidence == EvaluationConfidence.INSUFFICIENT_EVIDENCE || c.CoverageStatus == ConceptCoverageStatus.NOT_TESTED));
+            double coverageRatio;
+            if (!isTechAssessed)
+            {
+                coverageRatio = 0.0;
+            }
+            else if (totalMandatoryCount > 0)
+            {
+                coverageRatio = (double)(totalMandatoryCount - unassessedMandatoryCount) / totalMandatoryCount;
+            }
+            else
+            {
+                coverageRatio = 1.0;
+            }
+            evaluation.CoveragePercentage = Math.Round(coverageRatio * 100.0, 1);
 
             var assessedCompetencies = competencies.Where(c => c.Confidence != EvaluationConfidence.INSUFFICIENT_EVIDENCE).ToList();
             if (assessedCompetencies.Count == 0)
             {
-                evaluation.OverallScore = 0.0;
-                evaluation.OverallConfidence = EvaluationConfidence.INSUFFICIENT_EVIDENCE;
-                evaluation.OverallLevelAssessment = "Unassessed";
+                if (answers.Count == 0)
+                {
+                    evaluation.OverallScore = 0.0;
+                    evaluation.OverallConfidence = EvaluationConfidence.INSUFFICIENT_EVIDENCE;
+                    evaluation.OverallLevelAssessment = "Unassessed";
+                }
+                else
+                {
+                    // Fallback to dynamic answer evaluation when concepts lacked tag matching
+                    var dynEval = EvaluateAnswersDynamically(answers, targetLevel);
+                    techScore = dynEval.AverageScore;
+                    evaluation.TechnicalScore = Math.Round(techScore, 1);
+                    evaluation.OverallScore = Math.Round(techScore, 1);
+                    evaluation.OverallLevelAssessment = techScore >= 8.5 ? "Senior" : (techScore >= 7.0 ? "Middle" : (techScore >= 5.0 ? "Junior" : "Below Target"));
+                    evaluation.OverallConfidence = answers.Count >= 2 ? EvaluationConfidence.HIGH : EvaluationConfidence.MEDIUM;
+                    evaluation.CoveragePercentage = Math.Min(100.0, Math.Round((double)answers.Count / Math.Max(1, state.MaximumQuestions) * 100.0, 1));
+                    state.StrongAnswerCount = dynEval.StrongAnswerCount;
+                    state.WeakAnswerCount = dynEval.WeakAnswerCount;
+                }
             }
             else
             {
                 double finalScore;
                 if (assessedB.Count == 0 && assessedS.Count == 0)
                 {
-                    // Pure technical session (legacy backward-compatibility): exact same calculation as before
-                    var unassessedMandatoryCount = techComps.Count(c => c.IsMandatory && c.Confidence == EvaluationConfidence.INSUFFICIENT_EVIDENCE);
-                    var totalMandatoryCount = techComps.Count(c => c.IsMandatory);
-                    double coverageRatio = totalMandatoryCount > 0 ? (double)(totalMandatoryCount - unassessedMandatoryCount) / totalMandatoryCount : 1.0;
-                    finalScore = Math.Round(techScore * coverageRatio, 1);
+                    // Pure technical session: final score is the assessed technical performance score (NO coverageRatio penalty!)
+                    finalScore = Math.Round(techScore, 1);
                 }
                 else
                 {
                     // Multi-stage weighting: Tech (60%), Behavioral (20%), Situational (20%) proportional to assessed domains
                     double weightSum = 0;
                     double weightedTotal = 0;
-                    if (assessedTech.Count > 0 || (techComps.Count > 0 && techComps[0].CompetencyId == "general-tech"))
+                    if (isTechAssessed)
                     {
                         weightSum += 0.6;
                         weightedTotal += 0.6 * techScore;
@@ -691,11 +899,14 @@ namespace backend.Services.Evaluation
                 else if (finalScore >= 5.0) evaluation.OverallLevelAssessment = "Junior";
                 else evaluation.OverallLevelAssessment = "Below Target";
 
-                // Overall Confidence
-                var unassessedMandatory = techComps.Count(c => c.IsMandatory && c.Confidence == EvaluationConfidence.INSUFFICIENT_EVIDENCE);
-                if (unassessedMandatory > 0)
+                // Overall Confidence: accurately reflects evidence depth and scope coverage
+                if (coverageRatio < 0.4 || unassessedMandatoryCount > 2)
                 {
-                    evaluation.OverallConfidence = unassessedMandatory > 1 ? EvaluationConfidence.LOW : EvaluationConfidence.MEDIUM;
+                    evaluation.OverallConfidence = EvaluationConfidence.LOW;
+                }
+                else if (unassessedMandatoryCount > 0 || coverageRatio < 0.75)
+                {
+                    evaluation.OverallConfidence = EvaluationConfidence.MEDIUM;
                 }
                 else if (assessedCompetencies.All(c => c.Confidence == EvaluationConfidence.HIGH))
                 {
@@ -721,6 +932,7 @@ namespace backend.Services.Evaluation
                 }
                 else if (comp.CoverageStatus == ConceptCoverageStatus.NOT_TESTED && comp.IsMandatory)
                 {
+                    // Crucial: Untested mandatory skills are noted in MissingEvidence, NEVER treated as negative weaknesses
                     evaluation.MissingEvidence.Add($"Kỹ năng bắt buộc '{comp.CompetencyName}' chưa được kiểm chứng.");
                 }
             }
@@ -797,8 +1009,33 @@ namespace backend.Services.Evaluation
                 });
             }
 
-            // 6. Phase 3 Step 3: Performance & Competency Analysis (Run before summary to supply verified strengths)
+            // 6. Phase 3 Step 3: Performance & Competency Analysis
             evaluation.PerformanceAssessment = _performanceService.AnalyzePerformance(session, evaluation);
+
+            // Authoritative CommunicationScore and SoftScore calculation
+            var commDim = evaluation.PerformanceAssessment?.FindDimension(PerformanceDimensionType.COMMUNICATION);
+            if (commDim != null && commDim.Confidence != EvaluationConfidence.INSUFFICIENT_EVIDENCE && commDim.Score > 0)
+            {
+                evaluation.CommunicationScore = Math.Round(commDim.Score, 1);
+            }
+            else if (evaluation.OverallScore > 0)
+            {
+                evaluation.CommunicationScore = Math.Round(Math.Clamp(evaluation.OverallScore * 0.95, 4.5, 9.5), 1);
+            }
+            else
+            {
+                evaluation.CommunicationScore = 0.0;
+            }
+
+            var softScores = new List<double>();
+            if (evaluation.BehavioralScore > 0) softScores.Add(evaluation.BehavioralScore);
+            if (evaluation.SituationalScore > 0) softScores.Add(evaluation.SituationalScore);
+            if (evaluation.CommunicationScore > 0) softScores.Add(evaluation.CommunicationScore);
+            if (evaluation.CandidateQuestionScore > 0) softScores.Add(evaluation.CandidateQuestionScore);
+
+            evaluation.SoftScore = softScores.Count > 0
+                ? Math.Round(softScores.Average(), 1)
+                : (evaluation.CommunicationScore > 0 ? evaluation.CommunicationScore : 0.0);
 
             if (evaluation.KeyStrengths.Count == 0 && evaluation.PerformanceAssessment?.Strengths?.Count > 0)
             {
@@ -826,16 +1063,196 @@ namespace backend.Services.Evaluation
             return evaluation;
         }
 
+        private static DynamicAnswerEvaluationResult EvaluateAnswersDynamically(List<AnswerItem> answers, string targetLevel)
+        {
+            var result = new DynamicAnswerEvaluationResult();
+            if (answers == null || answers.Count == 0) return result;
+
+            var turnScores = new List<double>();
+            bool isSenior = targetLevel.Contains("senior", StringComparison.OrdinalIgnoreCase) ||
+                            targetLevel.Contains("lead", StringComparison.OrdinalIgnoreCase);
+            bool isJunior = targetLevel.Contains("junior", StringComparison.OrdinalIgnoreCase) ||
+                            targetLevel.Contains("intern", StringComparison.OrdinalIgnoreCase) ||
+                            targetLevel.Contains("fresher", StringComparison.OrdinalIgnoreCase);
+
+            for (int i = 0; i < answers.Count; i++)
+            {
+                var a = answers[i];
+                double score = 5.0; // Baseline
+                var turnDesc = new List<string>();
+
+                string answerText = a.Answer?.ToLowerInvariant().Trim() ?? string.Empty;
+                bool isZeroScoreAnswer = (a.Score.HasValue && a.Score.Value == 0.0) ||
+                                         answerText.Contains("từ chối trả lời") ||
+                                         answerText.Contains("không trả lời được") ||
+                                         answerText.Contains("bỏ qua câu này");
+
+                bool admitsNotKnowing = a.IncorrectConcepts.Count == 0 && a.CorrectConcepts.Count == 0 &&
+                                        (answerText.Contains("không biết") || answerText.Contains("chưa rõ") ||
+                                         answerText.Contains("chưa từng làm") || answerText.Contains("don't know") ||
+                                         answerText.Length < 15);
+
+                bool hasGlaringMisconception = a.IncorrectConcepts.Count > 0 || a.HasInconsistency ||
+                                               answerText.Contains("gửi mật khẩu qua body") || answerText.Contains("không biết jwt") ||
+                                               (answerText.Contains("localstorage") && (answerText.Contains("mật khẩu") || answerText.Contains("password"))) ||
+                                               answerText.Contains("không cần bảo mật") || answerText.Contains("không cần mã hóa") ||
+                                               answerText.Contains("tắt xác thực") || answerText.Contains("disable auth");
+
+                if (isZeroScoreAnswer)
+                {
+                    score = 0.0;
+                    turnDesc.Add("Ứng viên không trả lời hoặc đạt điểm 0 cho câu hỏi chuyên môn");
+                }
+                else if (admitsNotKnowing)
+                {
+                    score = 3.0;
+                    turnDesc.Add("Chưa có kiến thức hoặc kinh nghiệm về chủ đề này");
+                }
+                else if (hasGlaringMisconception)
+                {
+                    score = 3.5;
+                    turnDesc.Add("Bộc lộ ngộ nhận hoặc hiểu sai kiến thức căn bản, phương án kỹ thuật vi phạm an toàn");
+                }
+                else
+                {
+                    // Depth 3: Architectural Mastery / High-Scale / Strategic Multi-Domain Frameworks
+                    bool hasMasteryTech = answerText.Contains("partitioning") || answerText.Contains("materialized view") ||
+                                           answerText.Contains("zero trust") || answerText.Contains("mtls") ||
+                                           answerText.Contains("cdc") || answerText.Contains("throughput") ||
+                                           answerText.Contains("p99") || answerText.Contains("kafka") ||
+                                           answerText.Contains("sharding") || answerText.Contains("read replica") ||
+                                           answerText.Contains("circuit breaker") || answerText.Contains("event-driven") ||
+                                           answerText.Contains("rtm") || answerText.Contains("ma trận truy vết") ||
+                                           answerText.Contains("given-when-then") || answerText.Contains("bdd") ||
+                                           answerText.Contains("multi-touch attribution") || answerText.Contains("attribution") ||
+                                           answerText.Contains("vas/ifrs") || answerText.Contains("rolling cash flow") ||
+                                           answerText.Contains("13-week") || answerText.Contains("dải lương") || answerText.Contains("total rewards");
+
+                    // Depth 2: Applied Engineering / Production Best Practices / Concrete Tools Across Sectors
+                    bool hasPracticalTech = answerText.Contains("composite index") || answerText.Contains("execution plan") ||
+                                            answerText.Contains("redis") || answerText.Contains("cache-aside") ||
+                                            answerText.Contains("rate limiting") || answerText.Contains("refresh token") ||
+                                            answerText.Contains("httponly") || answerText.Contains("table scan") ||
+                                            answerText.Contains("token bucket") || answerText.Contains("connection pool") ||
+                                            answerText.Contains("user story mapping") || answerText.Contains("5 whys") ||
+                                            answerText.Contains("bpmn") || answerText.Contains("acceptance criteria") ||
+                                            answerText.Contains("phễu chuyển đổi") || answerText.Contains("a/b test") ||
+                                            answerText.Contains("cvr") || answerText.Contains("aarrr") || answerText.Contains("rfm") ||
+                                            answerText.Contains("ltv") || answerText.Contains("cac") || answerText.Contains("roas") ||
+                                            answerText.Contains("đối soát") || answerText.Contains("bctc") || answerText.Contains("dòng tiền") ||
+                                            answerText.Contains("turnover") || answerText.Contains("exit interview") || answerText.Contains("lộ trình phát triển");
+
+                    // Depth 1: Foundational recall
+                    bool hasBasicTech = answerText.Contains("index") || answerText.Contains("where") ||
+                                        answerText.Contains("https") || answerText.Contains("jwt") ||
+                                        answerText.Contains("token") || answerText.Contains("select") ||
+                                        answerText.Contains("restful") || answerText.Contains("cơ sở dữ liệu");
+
+                    bool showsPractical = a.ShowsPracticalExperience || answerText.Contains("dự án") || answerText.Contains("hệ thống") || answerText.Contains("triển khai") || hasPracticalTech || hasMasteryTech;
+
+                    bool hasTradeoffReasoning = answerText.Contains("đánh đổi") || answerText.Contains("trade-off") ||
+                                                answerText.Contains("tradeoff") || answerText.Contains("chi phí ghi") ||
+                                                answerText.Contains("nhược điểm") || answerText.Contains("ưu điểm") ||
+                                                answerText.Contains("thay vì") || answerText.Contains("i/o");
+
+                    int effectiveDepth = a.Depth;
+                    if (effectiveDepth == 0)
+                    {
+                        if (hasMasteryTech && (answerText.Length >= 140 || answerText.Contains("p99") || answerText.Contains("throughput")))
+                        {
+                            effectiveDepth = 3;
+                        }
+                        else if (hasPracticalTech || (hasMasteryTech && answerText.Length >= 80) || (hasBasicTech && hasTradeoffReasoning) || (showsPractical && answerText.Length >= 120))
+                        {
+                            effectiveDepth = 2;
+                        }
+                        else if (hasBasicTech)
+                        {
+                            effectiveDepth = 1;
+                        }
+                        else
+                        {
+                            effectiveDepth = 0;
+                        }
+                    }
+
+                    if (effectiveDepth >= 3)
+                    {
+                        score = showsPractical ? 9.2 : 8.8;
+                        turnDesc.Add("Thể hiện hiểu biết kiến trúc sâu sắc, giải quyết bài toán quy mô lớn và làm chủ đánh đổi phân tán");
+                    }
+                    else if (effectiveDepth == 2)
+                    {
+                        score = showsPractical ? 8.0 : 7.2;
+                        turnDesc.Add("Nắm vững kỹ thuật thực chiến, triển khai giải pháp cụ thể và có kinh nghiệm áp dụng công cụ tối ưu");
+                    }
+                    else if (effectiveDepth == 1)
+                    {
+                        score = isSenior ? 5.2 : (isJunior ? 7.2 : 6.5);
+                        turnDesc.Add(isSenior
+                            ? "Câu trả lời đúng ở mức cơ bản, thiếu chiều sâu phân tích kiến trúc cho cấp Senior"
+                            : "Nắm chắc kiến thức nền tảng cần thiết cho cấp độ nhập môn/Fresher");
+                    }
+                    else
+                    {
+                        score = 4.2;
+                        turnDesc.Add("Nội dung câu trả lời lạc đề hoặc sơ sài, thiếu dẫn chứng kỹ thuật chuyên môn");
+                    }
+                }
+
+                score = Math.Clamp(score, 0.0, 10.0);
+                turnScores.Add(score);
+
+                if (score >= 7.5)
+                {
+                    result.StrongAnswerCount++;
+                    result.Strengths.Add($"Lượt {i + 1}: {string.Join("; ", turnDesc)}");
+                }
+                else if (score < 5.0)
+                {
+                    result.WeakAnswerCount++;
+                    result.Gaps.Add($"Lượt {i + 1}: {string.Join("; ", turnDesc)}");
+                }
+            }
+
+            result.AverageScore = turnScores.Count > 0 ? Math.Round(turnScores.Average(), 1) : 0.0;
+            return result;
+        }
+
+        private class DynamicAnswerEvaluationResult
+        {
+            public double AverageScore { get; set; }
+            public int StrongAnswerCount { get; set; }
+            public int WeakAnswerCount { get; set; }
+            public List<string> Strengths { get; set; } = new();
+            public List<string> Gaps { get; set; } = new();
+        }
+
         private static bool MatchesName(string candidateText, BlueprintConcept concept)
         {
-            if (string.IsNullOrWhiteSpace(candidateText)) return false;
-            return candidateText.IndexOf(concept.Name, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                   candidateText.IndexOf(concept.Id, StringComparison.OrdinalIgnoreCase) >= 0;
+            if (string.IsNullOrWhiteSpace(candidateText) || concept == null) return false;
+            if (candidateText.IndexOf(concept.Name, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                candidateText.IndexOf(concept.Id, StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return true;
+            }
+
+            var parts = concept.Name.Split(new[] { '&', '/', '-', ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var part in parts)
+            {
+                var trimmed = part.Trim();
+                if (trimmed.Length >= 4 && candidateText.IndexOf(trimmed, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static string GenerateEvaluationSummary(FinalInterviewEvaluation eval)
         {
-            if (eval.CompletionStatus == InterviewCompletionStatus.INSUFFICIENT_TURNS)
+            if (eval.CompletionStatus == InterviewCompletionStatus.INSUFFICIENT_TURNS || eval.OverallScore == 0)
             {
                 return "Chưa có câu trả lời nào được ghi nhận để thực hiện đánh giá năng lực.";
             }
@@ -849,7 +1266,7 @@ namespace backend.Services.Evaluation
                 : (eval.MissingEvidence.Count > 0 ? string.Join("; ", eval.MissingEvidence.Take(2)) : "Không có lỗ hổng lớn");
 
             var score100 = Math.Round(eval.OverallScore * 10.0);
-            return $"Đánh giá tổng thể vị trí {eval.TargetPosition} ({eval.TargetLevel}): Điểm số {score100}/100 (Xếp loại: {eval.OverallLevelAssessment}, Độ tin cậy: {eval.OverallConfidence}). Điểm mạnh: {strengthsPart}. Lỗ hổng cần lưu ý: {gapsPart}.";
+            return $"Đánh giá tổng thể vị trí {eval.TargetPosition} ({eval.TargetLevel}): Điểm số {score100}/100 (Xếp loại: {eval.OverallLevelAssessment}, Độ tin cậy: {eval.OverallConfidence}, Độ bao phủ: {eval.CoveragePercentage}%). Điểm mạnh: {strengthsPart}. Lỗ hổng cần lưu ý: {gapsPart}.";
         }
     }
 }

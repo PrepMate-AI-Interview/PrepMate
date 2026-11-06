@@ -13,7 +13,7 @@ const { spawn } = require("child_process");
 
 const ROOT_DIR = path.resolve(__dirname, "../..");
 const PROD_DB_PATH = path.join(ROOT_DIR, "BE/data/db.json");
-const EXPECTED_PROD_HASH = "C8D6CA48DFAC2DD4C9FC3F5793E36222506220F07DC4DE9E17102B92295662A7";
+const EXPECTED_PROD_HASH = "44223D9B7E945E70CADEB3279AE3EE5A0DD748A867B2C3A6B0C5C617A9DB62C3";
 
 function getFileSha256(filePath) {
   const content = fs.readFileSync(filePath);

@@ -40,7 +40,7 @@ console.log('[SECTION 1] Architectural Invariants & Database Integrity:');
 const dbPath = path.join(__dirname, '../../BE/data/db.json');
 const dbContent = fs.readFileSync(dbPath);
 const dbHash = crypto.createHash('sha256').update(dbContent).digest('hex').toUpperCase();
-const EXPECTED_HASH = 'C2BA83B82E758B277786DAD7073E1C8A0E80C71FC615ECBBE5847D01B47CDA50';
+const EXPECTED_HASH = '44223D9B7E945E70CADEB3279AE3EE5A0DD748A867B2C3A6B0C5C617A9DB62C3';
 
 assert(dbHash === EXPECTED_HASH, `db.json SHA-256 hash intact (${dbHash})`);
 

@@ -33,7 +33,7 @@ function initDashboard() {
     if (currentUser) {
         const userNameEl = document.getElementById('current-user-name');
         if (userNameEl) {
-            userNameEl.innerHTML = `<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;vertical-align:-1px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0"/></svg><span>${escapeHtml(currentUser.fullname)}</span>`;
+            userNameEl.innerHTML = `<svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0"/></svg><span>${escapeHtml(currentUser.fullname)}</span>`;
         }
         const welcomeUserEl = document.getElementById('current-user-name-welcome');
         if (welcomeUserEl) {
@@ -650,16 +650,21 @@ function renderHistoryList(sessions) {
         const historyItem = document.createElement('div');
         historyItem.className = 'history-item glass-card';
 
-        const isCompleted = session.status === 'completed' || !!session.report || !!session.overallEvaluation || (typeof session.score === 'number' && session.score > 0);
-        const isInProgress = session.status === 'in_progress' || session.status === 'active';
+        const isCompleted = (session.status === 'completed' || session.Status === 'completed') || !!session.report || !!session.Report || !!session.overallEvaluation || !!session.OverallEvaluation || (typeof session.score === 'number' && session.score > 0) || (typeof session.Score === 'number' && session.Score > 0) || (typeof session.overallScore === 'number' && session.overallScore > 0) || (typeof session.OverallScore === 'number' && session.OverallScore > 0);
+        const isInProgress = session.status === 'in_progress' || session.Status === 'in_progress' || session.status === 'active' || session.Status === 'active';
 
         let displayScore = '—';
         let scoreClass = 'score-null';
 
         if (isCompleted) {
             let numericScore = 0;
-            if (typeof session.score === 'number') numericScore = session.score;
-            else if (typeof session.overallScore === 'number') numericScore = session.overallScore;
+            if (typeof session.overallScore === 'number') numericScore = session.overallScore;
+            else if (typeof session.OverallScore === 'number') numericScore = session.OverallScore;
+            else if (typeof session.score === 'number') numericScore = session.score;
+            else if (typeof session.Score === 'number') numericScore = session.Score;
+            else if (session.report && typeof session.report.overallScore === 'number') numericScore = session.report.overallScore;
+            else if (session.report && typeof session.report.OverallScore === 'number') numericScore = session.report.OverallScore;
+            else if (session.Report && typeof session.Report.OverallScore === 'number') numericScore = session.Report.OverallScore;
             else if (session.report?.overallEvaluation?.normalizedScore) numericScore = session.report.overallEvaluation.normalizedScore;
             else if (session.report?.overallEvaluation?.score) numericScore = session.report.overallEvaluation.score <= 10 ? session.report.overallEvaluation.score * 10 : session.report.overallEvaluation.score;
 
@@ -742,7 +747,7 @@ function renderHistoryList(sessions) {
             </div>
             <div class="history-item-info">
                 <div class="history-item-title-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
-                    <span class="history-item-job-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>${escapeHtml(jobTitle)}</span>
+                    <span class="history-item-job-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" ><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>${escapeHtml(jobTitle)}</span>
                     <span class="pm-company-pill">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22.01"/><line x1="15" y1="22" x2="15" y2="22.01"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="9" y2="18.01"/><line x1="15" y1="18" x2="15" y2="18.01"/></svg>
                         <span>${escapeHtml(compName)}</span>
@@ -758,7 +763,7 @@ function renderHistoryList(sessions) {
                     <span class="pm-seniority-chip" title="Cấp bậc ứng tuyển: ${escapeHtml(displayLevel)}">Cấp bậc: ${escapeHtml(displayLevel)}</span>
                     ${difficultyBadgeHtml}
                     ${statusBadgeHtml}
-                    <span class="history-item-date"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:3px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${sessionDate}</span>
+                    <span class="history-item-date"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" ><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${sessionDate}</span>
                 </div>
             </div>
             <div class="history-item-actions">
@@ -769,7 +774,7 @@ function renderHistoryList(sessions) {
         historyList.appendChild(historyItem);
     });
 
-    if (sessions.length > 5) {
+    if (sessions.length > MAX_OVERVIEW_SESSIONS) {
         const viewAllRow = document.createElement('div');
         viewAllRow.style.cssText = 'text-align:center;padding:12px 0 6px;';
         viewAllRow.innerHTML = `
@@ -783,10 +788,13 @@ function renderHistoryList(sessions) {
 }
 
 function updateDashboardStats(sessions) {
-    const completedSessions = sessions.filter(s => s.status === 'completed' || s.overallScore || s.score || s.report);
+    const completedSessions = sessions.filter(s => s.status === 'completed' || s.Status === 'completed' || s.overallScore || s.OverallScore || s.score || s.Score || s.report || s.Report);
     const scores = completedSessions.map(s => {
         if (typeof s.overallScore === 'number' && s.overallScore > 0) return s.overallScore <= 10 ? s.overallScore * 10 : s.overallScore;
         if (typeof s.score === 'number' && s.score > 0) return s.score <= 10 ? s.score * 10 : s.score;
+        if (s.report && typeof s.report.overallScore === 'number' && s.report.overallScore > 0) return s.report.overallScore <= 10 ? s.report.overallScore * 10 : s.report.overallScore;
+        if (s.report && typeof s.report.OverallScore === 'number' && s.report.OverallScore > 0) return s.report.OverallScore <= 10 ? s.report.OverallScore * 10 : s.report.OverallScore;
+        if (s.Report && typeof s.Report.OverallScore === 'number' && s.Report.OverallScore > 0) return s.Report.OverallScore <= 10 ? s.Report.OverallScore * 10 : s.Report.OverallScore;
         if (s.report?.overallEvaluation?.normalizedScore) return s.report.overallEvaluation.normalizedScore;
         if (s.report?.overallEvaluation?.score) return s.report.overallEvaluation.score <= 10 ? s.report.overallEvaluation.score * 10 : s.report.overallEvaluation.score;
         return 0;

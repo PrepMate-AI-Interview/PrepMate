@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PrepMate - Xác thực Email</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Canonical Design Tokens & System Stylesheets -->
+    <link rel="stylesheet" href="../../shared/css/tokens.css?v=26" />
+    <link rel="stylesheet" href="../../shared/css/base.css?v=26" />
+    <link rel="stylesheet" href="../../shared/css/layout.css?v=26" />
+    <link rel="stylesheet" href="../../shared/css/components.css?v=26" />
+    <link rel="stylesheet" href="../../shared/css/style.css?v=18" />
+    <link rel="stylesheet" href="./auth.css?v=21" />
+
+    <!-- Morphicons & Centralized PrepMate Iconography -->
+    <script src="../../shared/js/morphicons.js"></script>
+    <script src="../../shared/js/icons.js"></script>
+  </head>
+
+  <body class="auth-body">
+    <!-- Top Navigation Bar -->
+    <div class="auth-top-bar">
+      <a href="../../index.html" class="auth-nav-home" title="Về trang chủ PrepMate">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Trang chủ</span>
+      </a>
+
+      <button
+        type="button"
+        class="auth-theme-toggle"
+        id="auth-theme-toggle"
+        aria-label="Chuyển đổi giao diện Sáng / Tối"
+        title="Chuyển đổi giao diện Sáng / Tối"
+        onclick="toggleGlobalTheme(event)"
+      >
+        <span class="auth-theme-icon-dark" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </span>
+        <span class="auth-theme-icon-light" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+
+    <!-- Main Authentication Shell -->
+    <main class="auth-container">
+      <section class="auth-card" aria-label="Xác thực Email PrepMate">
+        <!-- Brand Header -->
+        <header class="auth-header">
+          <a href="../../index.html" class="auth-brand-logo" aria-label="PrepMate - Về trang chủ">
+            Prep<span class="auth-brand-accent">Mate</span>
+          </a>
+          <h1 class="auth-title" id="verify-title">Xác thực Email</h1>
+          <p class="auth-subtitle" id="verify-subtitle">Kích hoạt tài khoản để trải nghiệm luyện phỏng vấn AI</p>
+        </header>
+
+        <!-- Dynamic Content Containers -->
+
+        <!-- 1. Loading State -->
+        <div id="state-loading" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 32px 0; gap: 12px;">
+          <div class="auth-loading-spinner" style="width: 28px; height: 28px; border: 3px solid rgba(37,99,235,0.2); border-top-color: #2563eb; border-radius: 50%; animation: auth-spin 0.8s linear infinite;"></div>
+          <span style="font-size: 14px; color: var(--auth-text-muted);">Đang tiến hành xác minh liên kết email...</span>
+        </div>
+
+        <!-- 1b. Human Confirmation State (WI-02 Email Scanner Defense) -->
+        <div id="state-confirm" style="display: none; flex-direction: column; gap: 20px; text-align: center;">
+          <div style="background-color: var(--pm-surface-subtle, #f8fafc); border: 1px solid var(--auth-border); border-radius: 12px; padding: 24px 20px; text-align: center;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+            <h2 style="font-size: 17px; font-weight: 700; margin: 0 0 8px 0; color: var(--auth-text-main);">
+              Xác nhận kích hoạt tài khoản
+            </h2>
+            <p style="font-size: 14px; color: var(--auth-text-muted); margin: 0; line-height: 1.5;">
+              Nhấn nút bên dưới để hoàn tất việc xác minh địa chỉ email và bắt đầu sử dụng PrepMate.
+            </p>
+          </div>
+
+          <button type="button" id="btn-confirm-verify" class="auth-button" onclick="handleConfirmVerification()">
+            Xác nhận kích hoạt tài khoản
+          </button>
+
+          <div class="auth-link">
+            <a href="./auth.html">Quay lại Đăng nhập</a>
+          </div>
+        </div>
+
+        <!-- 2. Success State -->
+        <div id="state-success" style="display: none; flex-direction: column; gap: 20px; text-align: center;">
+          <div class="success-message" role="status" style="display: flex;">
+            <svg class="auth-alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span class="auth-alert-text" id="success-msg-text">Xác minh địa chỉ email thành công!</span>
+          </div>
+          <p style="font-size: 14px; color: var(--auth-text-muted); margin: 0; line-height: 1.6;">
+            Tài khoản PrepMate của bạn đã được kích hoạt đầy đủ. Bây giờ bạn có thể đăng nhập để tham gia phỏng vấn mô phỏng.
+          </p>
+          <a href="./auth.html" class="auth-button" style="text-align: center; text-decoration: none;">
+            Đăng nhập ngay
+          </a>
+        </div>
+
+        <!-- 3. Pending Verification State (Shown after registration) -->
+        <div id="state-pending" style="display: none; flex-direction: column; gap: 20px;">
+          <div style="background-color: var(--pm-surface-subtle, #f8fafc); border: 1px solid var(--auth-border); border-radius: 12px; padding: 20px; text-align: center;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <h2 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; color: var(--auth-text-main);">
+              Vui lòng kiểm tra hộp thư
+            </h2>
+            <p style="font-size: 14px; color: var(--auth-text-muted); margin: 0 0 12px 0; line-height: 1.5;">
+              Chúng tôi đã gửi email xác minh đến:
+            </p>
+            <p style="font-size: 15px; font-weight: 600; color: var(--auth-text-main); margin: 0; word-break: break-all;" id="pending-email-display">
+              email@example.com
+            </p>
+          </div>
+
+          <div id="resend-alert-error" class="error-message" role="alert" style="display: none;"></div>
+          <div id="resend-alert-success" class="success-message" role="status" style="display: none;"></div>
+
+          <button type="button" id="btn-resend-verification" class="auth-button" onclick="handleResendVerification()">
+            Gửi lại email xác minh
+          </button>
+
+          <div class="auth-link">
+            Đã xác minh xong?
+            <a href="./auth.html">Đăng nhập tài khoản</a>
+          </div>
+        </div>
+
+        <!-- 4. Error State (Invalid / Expired) -->
+        <div id="state-error" style="display: none; flex-direction: column; gap: 20px;">
+          <div class="error-message" role="alert" style="display: flex;">
+            <svg class="auth-alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span class="auth-alert-text" id="error-msg-text">Liên kết xác minh không hợp lệ hoặc đã hết hạn.</span>
+          </div>
+
+          <div class="form-group" id="resend-email-group" style="display: none;">
+            <label class="form-label" for="resend-input-email">Nhập email để nhận liên kết mới</label>
+            <input
+              type="email"
+              id="resend-input-email"
+              class="form-input"
+              placeholder="name@example.com"
+            />
+          </div>
+
+          <div id="error-resend-error" class="error-message" role="alert" style="display: none;"></div>
+          <div id="error-resend-success" class="success-message" role="status" style="display: none;"></div>
+
+          <button type="button" id="btn-request-new-token" class="auth-button" onclick="handleRequestNewToken()">
+            Gửi lại email xác minh
+          </button>
+
+          <div class="auth-link">
+            <a href="./auth.html">Quay lại Đăng nhập</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Dedicated Clean Auth Footer -->
+    <footer class="auth-footer" role="contentinfo">
+      <div class="auth-footer-content">
+        <p class="auth-footer-copy">© 2026 PrepMate AI Inc. Tất cả quyền được bảo lưu.</p>
+        <nav class="auth-footer-nav" aria-label="Liên kết pháp lý và hỗ trợ">
+          <a href="../legal/legal-center.html#terms-of-use" class="auth-footer-link">Điều khoản dịch vụ</a>
+          <span class="auth-footer-bullet" aria-hidden="true">•</span>
+          <a href="../legal/legal-center.html#privacy-policy" class="auth-footer-link">Chính sách bảo mật</a>
+          <span class="auth-footer-bullet" aria-hidden="true">•</span>
+          <a href="../help/help.html" class="auth-footer-link">Trung tâm hỗ trợ</a>
+        </nav>
+      </div>
+    </footer>
+
+    <!-- Shared Application Scripts -->
+    <script src="../../shared/js/main.js?v=18"></script>
+    <script src="auth.js?v=20"></script>
+    <script src="../../shared/js/components.js?v=18"></script>
+
+    <script>
+      let userEmail = "";
+      let isResending = false;
+      let resendTimer = null;
+      let resendCountdown = 0;
+
+      function escapeHtml(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      let pendingVerificationToken = "";
+
+      function hideAllStates() {
+        document.getElementById("state-loading").style.display = "none";
+        const confirmEl = document.getElementById("state-confirm");
+        if (confirmEl) confirmEl.style.display = "none";
+        document.getElementById("state-success").style.display = "none";
+        document.getElementById("state-pending").style.display = "none";
+        document.getElementById("state-error").style.display = "none";
+      }
+
+      function showConfirmState() {
+        hideAllStates();
+        document.getElementById("verify-title").textContent = "Kích hoạt tài khoản";
+        document.getElementById("verify-subtitle").textContent = "Xác nhận địa chỉ email của bạn để bắt đầu";
+        const confirmEl = document.getElementById("state-confirm");
+        if (confirmEl) confirmEl.style.display = "flex";
+      }
+
+      async function handleConfirmVerification() {
+        if (!pendingVerificationToken) {
+          showErrorState("Không tìm thấy mã xác thực. Vui lòng kiểm tra lại liên kết.", true);
+          return;
+        }
+        const btn = document.getElementById("btn-confirm-verify");
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "Đang kích hoạt tài khoản...";
+        }
+        await verifyToken(pendingVerificationToken);
+      }
+
+      function showPendingState(email) {
+        hideAllStates();
+        userEmail = email;
+        const display = document.getElementById("pending-email-display");
+        if (display) display.textContent = email;
+        document.getElementById("verify-title").textContent = "Kiểm tra Email";
+        document.getElementById("verify-subtitle").textContent = "Chúng tôi đã gửi hướng dẫn kích hoạt tài khoản";
+        document.getElementById("state-pending").style.display = "flex";
+      }
+
+      function showSuccessState(msg) {
+        hideAllStates();
+        document.getElementById("verify-title").textContent = "Xác minh thành công";
+        document.getElementById("verify-subtitle").textContent = "Tài khoản của bạn đã sẵn sàng sử dụng";
+        if (msg) document.getElementById("success-msg-text").textContent = msg;
+        document.getElementById("state-success").style.display = "flex";
+      }
+
+      function showErrorState(msg, allowResend = true, email = "") {
+        hideAllStates();
+        document.getElementById("verify-title").textContent = "Xác minh không thành công";
+        document.getElementById("verify-subtitle").textContent = "Liên kết không còn hiệu lực hoặc đã được sử dụng";
+        if (msg) document.getElementById("error-msg-text").textContent = msg;
+
+        const emailGroup = document.getElementById("resend-email-group");
+        const emailInput = document.getElementById("resend-input-email");
+        if (allowResend) {
+          emailGroup.style.display = "block";
+          if (email && emailInput) emailInput.value = email;
+        } else {
+          emailGroup.style.display = "none";
+        }
+        document.getElementById("state-error").style.display = "flex";
+      }
+
+      function startResendCooldown(btnId, seconds) {
+        resendCountdown = seconds;
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+
+        clearInterval(resendTimer);
+        btn.disabled = true;
+        btn.textContent = `Gửi lại sau (${resendCountdown}s)`;
+
+        resendTimer = setInterval(() => {
+          resendCountdown--;
+          if (resendCountdown <= 0) {
+            clearInterval(resendTimer);
+            btn.disabled = false;
+            btn.textContent = "Gửi lại email xác minh";
+          } else {
+            btn.textContent = `Gửi lại sau (${resendCountdown}s)`;
+          }
+        }, 1000);
+      }
+
+      async function verifyToken(token) {
+        hideAllStates();
+        document.getElementById("state-loading").style.display = "flex";
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/auth/verify-email`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token })
+          });
+
+          const data = await res.json().catch(() => ({}));
+
+          if (!res.ok) {
+            showErrorState(data.error || "Liên kết xác minh không hợp lệ hoặc đã hết hạn.", true, data.email || "");
+            return;
+          }
+
+          showSuccessState(data.message || "Xác minh địa chỉ email thành công!");
+        } catch (error) {
+          showErrorState("Không thể kết nối tới máy chủ để xác minh email. Vui lòng thử lại sau.", true);
+        }
+      }
+
+      async function handleResendVerification() {
+        if (isResending || resendCountdown > 0) return;
+        if (!userEmail) return;
+
+        isResending = true;
+        const errEl = document.getElementById("resend-alert-error");
+        const sucEl = document.getElementById("resend-alert-success");
+        if (errEl) errEl.style.display = "none";
+        if (sucEl) sucEl.style.display = "none";
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: userEmail })
+          });
+
+          const data = await res.json().catch(() => ({}));
+
+          if (!res.ok) {
+            if (errEl) {
+              errEl.innerHTML = `<span class="auth-alert-text">${escapeHtml(data.error || "Không thể gửi lại email xác minh.")}</span>`;
+              errEl.style.display = "flex";
+            }
+            if (data.cooldownRemaining) {
+              startResendCooldown("btn-resend-verification", data.cooldownRemaining);
+            }
+            return;
+          }
+
+          if (sucEl) {
+            sucEl.innerHTML = `<span class="auth-alert-text">${escapeHtml(data.message || "Đã gửi lại email xác minh!")}</span>`;
+            sucEl.style.display = "flex";
+          }
+          startResendCooldown("btn-resend-verification", 60);
+        } catch (error) {
+          if (errEl) {
+            errEl.innerHTML = `<span class="auth-alert-text">Lỗi kết nối khi gửi lại email.</span>`;
+            errEl.style.display = "flex";
+          }
+        } finally {
+          isResending = false;
+        }
+      }
+
+      async function handleRequestNewToken() {
+        const emailInput = document.getElementById("resend-input-email");
+        const email = emailInput ? emailInput.value.trim() : "";
+        const errEl = document.getElementById("error-resend-error");
+        const sucEl = document.getElementById("error-resend-success");
+
+        if (errEl) { errEl.innerHTML = ""; errEl.style.display = "none"; }
+        if (sucEl) { sucEl.innerHTML = ""; sucEl.style.display = "none"; }
+
+        if (!email) {
+          if (errEl) {
+            errEl.innerHTML = `
+              <svg class="auth-alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span class="auth-alert-text">Vui lòng nhập địa chỉ email để nhận lại mã xác minh.</span>
+            `;
+            errEl.style.display = "flex";
+          }
+          emailInput && emailInput.focus();
+          return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          if (errEl) {
+            errEl.innerHTML = `
+              <svg class="auth-alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span class="auth-alert-text">Địa chỉ email không đúng định dạng.</span>
+            `;
+            errEl.style.display = "flex";
+          }
+          emailInput && emailInput.focus();
+          return;
+        }
+
+        const btn = document.getElementById("btn-request-new-token");
+        const originalText = btn ? btn.textContent : "Gửi lại email xác minh";
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "Đang gửi yêu cầu...";
+        }
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+          });
+          const data = await res.json().catch(() => ({}));
+
+          if (!res.ok) {
+            if (errEl) {
+              errEl.innerHTML = `
+                <svg class="auth-alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span class="auth-alert-text">${escapeHtml(data.error || "Không thể gửi lại email xác minh. Vui lòng thử lại sau.")}</span>
+              `;
+              errEl.style.display = "flex";
+            }
+            if (btn) {
+              btn.disabled = false;
+              btn.textContent = originalText;
+            }
+            if (data.cooldownRemaining) {
+              startResendCooldown("btn-request-new-token", data.cooldownRemaining);
+            }
+            return;
+          }
+
+          if (sucEl) {
+            sucEl.innerHTML = `
+              <svg class="auth-alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <span class="auth-alert-text">${escapeHtml(data.message || "Nếu email tồn tại, PrepMate đã gửi liên kết xác minh mới.")}</span>
+            `;
+            sucEl.style.display = "flex";
+          }
+          startResendCooldown("btn-request-new-token", 60);
+        } catch (error) {
+          if (errEl) {
+            errEl.innerHTML = `
+              <svg class="auth-alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span class="auth-alert-text">Không thể kết nối máy chủ để gửi lại email. Vui lòng thử lại sau.</span>
+            `;
+            errEl.style.display = "flex";
+          }
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = originalText;
+          }
+        }
+      }
+
+      (function initTheme() {
+        const theme = typeof getGlobalTheme === "function"
+          ? getGlobalTheme()
+          : localStorage.getItem("prepmate_theme") || "light";
+        if (typeof applyGlobalTheme === "function") {
+          applyGlobalTheme(theme);
+        } else {
+          document.documentElement.setAttribute("data-theme", theme);
+          if (theme === "dark") {
+            document.body.classList.add("dark-mode");
+            document.documentElement.classList.add("dark");
+          }
+        }
+      })();
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const resendInput = document.getElementById("resend-input-email");
+        if (resendInput) {
+          resendInput.addEventListener("input", () => {
+            const errEl = document.getElementById("error-resend-error");
+            if (errEl) {
+              errEl.innerHTML = "";
+              errEl.style.display = "none";
+            }
+          });
+        }
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+        const verified = params.get("verified");
+        const email = params.get("email");
+        const error = params.get("error");
+
+        if (token) {
+          pendingVerificationToken = token;
+          // WI-04 Token Privacy: Scrub token from URL address bar immediately upon load
+          if (window.history && window.history.replaceState) {
+            const cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete("token");
+            window.history.replaceState({}, document.title, cleanUrl.toString());
+          }
+          // WI-02: Require active human confirmation to defend against email scanners
+          showConfirmState();
+        } else if (verified === "true") {
+          showSuccessState();
+        } else if (error) {
+          const errText = error === "expired"
+            ? "Liên kết xác minh email đã hết hạn (24 giờ). Vui lòng yêu cầu liên kết mới."
+            : "Liên kết xác minh không hợp lệ hoặc đã được sử dụng.";
+          showErrorState(errText, true, email || "");
+        } else if (email) {
+          showPendingState(email);
+        } else {
+          showErrorState("Không tìm thấy thông tin xác minh. Vui lòng kiểm tra lại đường dẫn.", true);
+        }
+      });
+    </script>
+    <style>
+      @keyframes auth-spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </body>
+</html>

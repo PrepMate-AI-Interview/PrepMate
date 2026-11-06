@@ -230,9 +230,9 @@
         if (user && tierStatus.isFree && bannerText) {
             banner.style.display = 'flex';
             if (tierStatus.remaining <= 0) {
-                bannerText.innerHTML = 'Gói Free: Đã dùng hết <strong>3/3 lượt phỏng vấn</strong> tháng này.';
+                bannerText.innerHTML = 'Gói Free: Đã dùng hết <strong>3/3 lượt phỏng vấn</strong> tuần này.';
             } else {
-                bannerText.innerHTML = `Gói Free: Còn <strong>${tierStatus.remaining} lượt</strong> phỏng vấn miễn phí tháng này.`;
+                bannerText.innerHTML = `Gói Free: Còn <strong>${tierStatus.remaining} lượt</strong> phỏng vấn miễn phí tuần này.`;
             }
         } else if (banner) {
             banner.style.display = 'none';
@@ -246,9 +246,9 @@
                     if (user && quota.tier === 'free' && bt) {
                         b.style.display = 'flex';
                         if (quota.remaining <= 0) {
-                            bt.innerHTML = 'Gói Free: Đã dùng hết <strong>3/3 lượt phỏng vấn</strong> tháng này.';
+                            bt.innerHTML = 'Gói Free: Đã dùng hết <strong>3/3 lượt phỏng vấn</strong> tuần này.';
                         } else {
-                            bt.innerHTML = `Gói Free: Còn <strong>${quota.remaining} lượt</strong> phỏng vấn miễn phí tháng này.`;
+                            bt.innerHTML = `Gói Free: Còn <strong>${quota.remaining} lượt</strong> phỏng vấn miễn phí tuần này.`;
                         }
                     } else if (b && quota.tier !== 'free') {
                         b.style.display = 'none';

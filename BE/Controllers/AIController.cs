@@ -113,27 +113,63 @@ namespace backend.Controllers
                 return accessCheck;
             }
 
-            if (_fileDb.Sessions.TryGetValue(request.SessionId, out var introSession) && introSession != null && !introSession.IsStarted)
+            bool wasIntroStarted = false;
+            Session? introSession = null;
+            if (_fileDb.Sessions.TryGetValue(request.SessionId, out introSession) && introSession != null)
             {
-                var startResult = _quotaService.CommitSessionStart(introSession, User, HttpContext);
-                if (!startResult.Success)
+                wasIntroStarted = introSession.IsStarted;
+                if (!wasIntroStarted)
                 {
-                    return StatusCode(startResult.StatusCode, new
+                    var startResult = _quotaService.CommitSessionStart(introSession, User, HttpContext);
+                    if (!startResult.Success)
                     {
-                        error = startResult.ErrorMessage,
-                        code = startResult.ErrorCode ?? "INTERVIEW_QUOTA_EXCEEDED"
-                    });
+                        return StatusCode(startResult.StatusCode, new
+                        {
+                            error = startResult.ErrorMessage,
+                            code = startResult.ErrorCode ?? "INTERVIEW_QUOTA_EXCEEDED"
+                        });
+                    }
                 }
             }
 
-            var result =
-                await _interviewFlowService
-                    .ProcessIntroductionAsync(request);
+            try
+            {
+                var result =
+                    await _interviewFlowService
+                        .ProcessIntroductionAsync(request);
 
-            return StatusCode(
-                result.StatusCode,
-                result.Data
-            );
+                if (result.StatusCode >= 400 && !wasIntroStarted && introSession != null && (introSession.Questions == null || introSession.Questions.Count == 0))
+                {
+                    _fileDb.WithLock(() =>
+                    {
+                        introSession.IsStarted = false;
+                        introSession.StartedAt = null;
+                        introSession.PlanSnapshot = null;
+                        _fileDb.Sessions[introSession.Id] = introSession;
+                        _fileDb.Save();
+                    });
+                }
+
+                return StatusCode(
+                    result.StatusCode,
+                    result.Data
+                );
+            }
+            catch (Exception)
+            {
+                if (!wasIntroStarted && introSession != null && (introSession.Questions == null || introSession.Questions.Count == 0))
+                {
+                    _fileDb.WithLock(() =>
+                    {
+                        introSession.IsStarted = false;
+                        introSession.StartedAt = null;
+                        introSession.PlanSnapshot = null;
+                        _fileDb.Sessions[introSession.Id] = introSession;
+                        _fileDb.Save();
+                    });
+                }
+                throw;
+            }
         }
 
         [HttpPost("respond")]
@@ -166,27 +202,63 @@ namespace backend.Controllers
                 return accessCheck;
             }
 
-            if (_fileDb.Sessions.TryGetValue(request.SessionId, out var respSession) && respSession != null && !respSession.IsStarted)
+            bool wasRespStarted = false;
+            Session? respSession = null;
+            if (_fileDb.Sessions.TryGetValue(request.SessionId, out respSession) && respSession != null)
             {
-                var startResult = _quotaService.CommitSessionStart(respSession, User, HttpContext);
-                if (!startResult.Success)
+                wasRespStarted = respSession.IsStarted;
+                if (!wasRespStarted)
                 {
-                    return StatusCode(startResult.StatusCode, new
+                    var startResult = _quotaService.CommitSessionStart(respSession, User, HttpContext);
+                    if (!startResult.Success)
                     {
-                        error = startResult.ErrorMessage,
-                        code = startResult.ErrorCode ?? "INTERVIEW_QUOTA_EXCEEDED"
-                    });
+                        return StatusCode(startResult.StatusCode, new
+                        {
+                            error = startResult.ErrorMessage,
+                            code = startResult.ErrorCode ?? "INTERVIEW_QUOTA_EXCEEDED"
+                        });
+                    }
                 }
             }
 
-            var result =
-                await _interviewFlowService
-                    .RespondAsync(request);
+            try
+            {
+                var result =
+                    await _interviewFlowService
+                        .RespondAsync(request);
 
-            return StatusCode(
-                result.StatusCode,
-                result.Data
-            );
+                if (result.StatusCode >= 400 && !wasRespStarted && respSession != null && (respSession.Questions == null || respSession.Questions.Count == 0))
+                {
+                    _fileDb.WithLock(() =>
+                    {
+                        respSession.IsStarted = false;
+                        respSession.StartedAt = null;
+                        respSession.PlanSnapshot = null;
+                        _fileDb.Sessions[respSession.Id] = respSession;
+                        _fileDb.Save();
+                    });
+                }
+
+                return StatusCode(
+                    result.StatusCode,
+                    result.Data
+                );
+            }
+            catch (Exception)
+            {
+                if (!wasRespStarted && respSession != null && (respSession.Questions == null || respSession.Questions.Count == 0))
+                {
+                    _fileDb.WithLock(() =>
+                    {
+                        respSession.IsStarted = false;
+                        respSession.StartedAt = null;
+                        respSession.PlanSnapshot = null;
+                        _fileDb.Sessions[respSession.Id] = respSession;
+                        _fileDb.Save();
+                    });
+                }
+                throw;
+            }
         }
 
         [HttpPost("report")]
@@ -224,10 +296,20 @@ namespace backend.Controllers
 
                 if (!isAuthOwner && s != null && s.Report != null)
                 {
+                    var guestPreview = backend.Services.Evaluation.GuestReportPreviewBuilder.BuildGuestPreview(s);
                     var previewReport = new
                     {
                         overallScore = s.Report.OverallScore,
-                        isGuestPreview = true
+                        isGuestPreview = true,
+                        guestPreview = guestPreview,
+                        summary = guestPreview.Summary,
+                        interpretation = guestPreview.Interpretation,
+                        topStrengths = guestPreview.TopStrengths,
+                        improvementTeaser = guestPreview.ImprovementTeaser,
+                        improvementFocus = guestPreview.ImprovementFocus,
+                        analysisCapabilityTeaser = guestPreview.AnalysisCapabilityTeaser,
+                        evaluationRating = guestPreview.EvaluationRating,
+                        evaluationStatus = guestPreview.EvaluationStatus
                     };
                     return StatusCode(result.StatusCode, previewReport);
                 }
@@ -259,6 +341,22 @@ namespace backend.Controllers
                 if (accessCheck != null)
                 {
                     return accessCheck;
+                }
+
+                if (_fileDb.Sessions.TryGetValue(request.SessionId, out var sess) && sess != null)
+                {
+                    int answeredCount = sess.Answers?.Count(a =>
+                        !string.Equals(a.Question, "Giới thiệu bản thân", StringComparison.OrdinalIgnoreCase) &&
+                        !string.Equals(a.Stage, InterviewStageNames.Introduction, StringComparison.OrdinalIgnoreCase)) ?? 0;
+                    int askedCount = sess.Questions?.Count ?? 0;
+                    bool isCompleted = sess.Status.Equals("completed", StringComparison.OrdinalIgnoreCase) ||
+                                       sess.InterviewState?.InterviewPhase.Equals("COMPLETED", StringComparison.OrdinalIgnoreCase) == true ||
+                                       sess.InterviewState?.InterviewPhase.Equals("CLOSING", StringComparison.OrdinalIgnoreCase) == true;
+
+                    if (isCompleted || answeredCount >= InterviewState.DemoInterviewQuestionLimit || askedCount >= InterviewState.DemoInterviewQuestionLimit)
+                    {
+                        return BadRequest(new { error = $"Buổi phỏng vấn đã hoàn tất tối đa {InterviewState.DemoInterviewQuestionLimit} câu hỏi." });
+                    }
                 }
             }
 
@@ -358,7 +456,7 @@ namespace backend.Controllers
                 }
             }
 
-            if (request.Turns != null && request.Turns.Count > 50)
+                if (request.Turns != null && request.Turns.Count > 50)
             {
                 return BadRequest(new { error = "Số lượt đối thoại vượt quá giới hạn cho phép (tối đa 50 lượt)." });
             }

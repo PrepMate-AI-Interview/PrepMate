@@ -254,11 +254,12 @@ async function loginUser(identifier, password) {
   if (!response.ok) {
     console.warn("[AUTH] Login failed:", response.status, data);
 
-    throw new Error(
-      data.error ||
-        data.message ||
-        "Email/username hoặc mật khẩu không chính xác.",
-    );
+    const err = new Error(data.error || data.message || "Email/username hoặc mật khẩu không chính xác.");
+    if (data.requiresVerification) {
+      err.requiresVerification = true;
+      err.email = data.email || email;
+    }
+    throw err;
   }
 
   if (!data.id || !data.token) {
@@ -274,6 +275,80 @@ async function loginUser(identifier, password) {
   console.log("[AUTH] Login successful:", user.username);
 
   return user;
+}
+
+// ==========================================
+// PASSWORD POLICY & STRENGTH ENGINE (WI-AUTH-01R8)
+// ==========================================
+
+function calculatePasswordStrength(password) {
+  const pwd = String(password || "");
+  if (!pwd) {
+    return { score: 0, level: "none", label: "Chưa nhập" };
+  }
+
+  let score = 0;
+
+  // Length factors
+  if (pwd.length >= 8) score += 1;
+  if (pwd.length >= 12) score += 1;
+  if (pwd.length >= 16) score += 1;
+
+  // Character variety factors
+  const hasLower = /[a-z]/.test(pwd);
+  const hasUpper = /[A-Z]/.test(pwd);
+  const hasNumber = /[0-9]/.test(pwd);
+  const hasSymbol = /[^a-zA-Z0-9\s]/.test(pwd);
+
+  const varietyCount = [hasLower, hasUpper, hasNumber, hasSymbol].filter(Boolean).length;
+  if (varietyCount >= 2) score += 1;
+  if (varietyCount >= 3) score += 1;
+  if (varietyCount >= 4) score += 1;
+
+  // Repetition / trivial sequences penalty
+  if (/^(.)\1+$/.test(pwd)) score -= 2;
+  if (/^(12345678|abcdefgh|password)/i.test(pwd)) score -= 2;
+
+  // Evaluation: score <= 2 -> Yếu, 3-4 -> Trung bình, >= 5 -> Mạnh
+  if (pwd.length < 8 || score <= 2) {
+    return { score: 1, level: "weak", label: "Yếu" };
+  } else if (score <= 4) {
+    return { score: 2, level: "medium", label: "Trung bình" };
+  } else {
+    return { score: 3, level: "strong", label: "Mạnh" };
+  }
+}
+
+function validatePasswordPolicy(password) {
+  const pwd = String(password || "");
+  const minLength = pwd.length >= 8;
+  const maxLength = pwd.length <= 128;
+  let asciiOnly = true;
+  for (let i = 0; i < pwd.length; i++) {
+    const c = pwd.charCodeAt(i);
+    if (c > 126 || (c < 32 && c !== 9 && c !== 10 && c !== 13)) {
+      asciiOnly = false;
+      break;
+    }
+    if (c >= 0xD800 && c <= 0xDFFF) {
+      asciiOnly = false;
+      break;
+    }
+  }
+  const noWhitespace = !/\s/.test(pwd);
+  const isValid = minLength && maxLength && asciiOnly && noWhitespace && pwd.length > 0;
+  return {
+    minLength,
+    maxLength,
+    asciiOnly,
+    noWhitespace,
+    isValid
+  };
+}
+
+if (typeof window !== "undefined") {
+  window.validatePasswordPolicy = validatePasswordPolicy;
+  window.calculatePasswordStrength = calculatePasswordStrength;
 }
 
 // ==========================================
@@ -340,9 +415,15 @@ async function registerUser({ fullname, email, username, password }) {
 
   const user = normalizeUser(data);
 
-  setCurrentUser(user);
+  if (data.token) {
+    setCurrentUser(user);
+  }
 
-  return user;
+  return {
+    ...user,
+    requiresVerification: !!data.requiresVerification,
+    message: data.message
+  };
 }
 
 // ==========================================
@@ -647,14 +728,142 @@ function updateApiKeyStatus(hasKey) {
   }
 
   if (hasKey) {
-    status.innerHTML = '<svg class="pm-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3"/></svg>Đã cấu hình Gemini API Key';
+    status.innerHTML = '<svg class="pm-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" style="margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3"/></svg>Đã cấu hình Gemini API Key';
 
     status.style.color = "#10b981";
   } else {
-    status.innerHTML = '<svg class="pm-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Đang chạy chế độ Tiêu chuẩn (Backend Engine)';
+    status.innerHTML = '<svg class="pm-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Đang chạy chế độ Tiêu chuẩn (Backend Engine)';
 
     status.style.color = "#94a3b8";
   }
+}
+
+
+// ==========================================
+// EMAIL VERIFICATION & PASSWORD RESET (WI-AUTH-01)
+// ==========================================
+
+async function forgotPassword(email) {
+  const cleanEmail = String(email || "").trim();
+  if (!cleanEmail) {
+    throw new Error("Vui lòng nhập địa chỉ email.");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: cleanEmail }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.error || "Không thể gửi yêu cầu đặt lại mật khẩu.");
+  }
+
+  return data;
+}
+
+async function verifyResetToken(token) {
+  const cleanToken = String(token || "").trim();
+  if (!cleanToken) {
+    throw new Error("Mã token không hợp lệ.");
+  }
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/auth/verify-reset-token?token=${encodeURIComponent(cleanToken)}`,
+  );
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.valid) {
+    throw new Error(data.error || "Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.");
+  }
+
+  return data;
+}
+
+async function resetPassword(token, newPassword) {
+  const cleanToken = String(token || "").trim();
+  const cleanPassword = String(newPassword || "");
+
+  if (!cleanToken || !cleanPassword) {
+    throw new Error("Vui lòng điền đầy đủ thông tin.");
+  }
+
+  if (cleanPassword.length < 8 || cleanPassword.length > 128) {
+    throw new Error("Mật khẩu cần từ 8–128 ký tự, gồm chữ không dấu, số hoặc ký tự đặc biệt; không chứa khoảng trắng.");
+  }
+
+  for (let i = 0; i < cleanPassword.length; i++) {
+    const code = cleanPassword.charCodeAt(i);
+    if (code < 33 || code > 126) {
+      throw new Error("Mật khẩu cần từ 8–128 ký tự, gồm chữ không dấu, số hoặc ký tự đặc biệt; không chứa khoảng trắng.");
+    }
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: cleanToken, newPassword: cleanPassword }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.error || "Không thể đặt lại mật khẩu.");
+  }
+
+  return data;
+}
+
+async function verifyEmail(token) {
+  const cleanToken = String(token || "").trim();
+  if (!cleanToken) {
+    throw new Error("Mã xác minh không hợp lệ.");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/verify-email`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: cleanToken }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const err = new Error(data.error || "Xác minh email không thành công.");
+    err.code = data.code;
+    err.email = data.email;
+    throw err;
+  }
+
+  return data;
+}
+
+async function resendVerification(email) {
+  const cleanEmail = String(email || "").trim();
+  if (!cleanEmail) {
+    throw new Error("Vui lòng nhập địa chỉ email.");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: cleanEmail }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const err = new Error(data.error || "Không thể gửi lại email xác minh.");
+    err.cooldownRemaining = data.cooldownRemaining;
+    throw err;
+  }
+
+  return data;
+}
+
+if (typeof window !== "undefined") {
+  window.forgotPassword = forgotPassword;
+  window.verifyResetToken = verifyResetToken;
+  window.resetPassword = resetPassword;
+  window.verifyEmail = verifyEmail;
+  window.resendVerification = resendVerification;
 }
 
 // ==========================================
@@ -674,7 +883,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const isAuthPage = window.location.pathname
     .toLowerCase()
-    .includes("/features/auth/auth.html");
+    .includes("/features/auth/");
 
   if (isAuthPage) {
     return;
