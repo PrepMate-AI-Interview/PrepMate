@@ -1137,16 +1137,25 @@
             }
         }
 
+        let _sessionsSummary = null;
+        async function fetchSessionsSummary() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/sessions-summary`, { headers: getAdminAuthHeaders() });
+                if (res.ok) _sessionsSummary = await res.json();
+            } catch (e) {}
+        }
+
         async function loadAllData() {
-            renderPlans();
             renderQuestions();
             renderAuditLogs();
-            renderReports();
             await Promise.all([
                 fetchOrLoadUsers(),
-                renderTransactions(),
-                loadSystemConfig()
+                renderTransactions(true),
+                loadSystemConfig(),
+                fetchSessionsSummary()
             ]);
+            renderPlans();
+            renderReports();
             updateKpiStats();
         }
 
@@ -1160,21 +1169,18 @@
 
         async function fetchOrLoadUsers() {
             try {
-                // Try backend first
                 const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
                     headers: getAdminAuthHeaders()
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    if (Array.isArray(data) && data.length > 0) {
+                    if (Array.isArray(data)) {
                         localStorage.setItem(STORAGE_USERS, JSON.stringify(data));
                         renderUsersList(data);
                         return;
                     }
                 }
-            } catch(e) {
-                // Fallback to local db.json sync
-            }
+            } catch(e) {}
             const localUsers = getUsersList();
             renderUsersList(localUsers);
         }
@@ -1231,23 +1237,24 @@
                 if (u.role === 'admin') roleBadge = `<span class="badge-pill badge-role-admin">Admin</span>`;
                 else if (u.role === 'manager') roleBadge = `<span class="badge-pill badge-role-manager">Manager</span>`;
 
+                const isProUser = u.subscription === 'pro' || u.subscription === 'premium';
                 let planBadge = `<span class="badge-pill badge-plan-free">Free</span>`;
-                if (u.subscription === 'pro') planBadge = `<span class="badge-pill badge-plan-pro">${'<svg class="pm-icon" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true" style="margin-right:3px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'}PRO</span>`;
+                if (isProUser) planBadge = `<span class="badge-pill badge-plan-pro">${'<svg class="pm-icon" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true" style="margin-right:3px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'}PRO</span>`;
 
                 let statusBadge = u.status === 'locked' 
                     ? `<span class="badge-pill badge-status-locked">Đã khóa</span>` 
                     : `<span class="badge-pill badge-status-active">Hoạt động</span>`;
 
                 const regDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('vi-VN') : '-';
-                const expDate = u.subscriptionExpiry ? new Date(u.subscriptionExpiry).toLocaleDateString('vi-VN') : (u.subscription === 'pro' ? 'Vĩnh viễn' : '-');
+                const expDate = u.subscriptionExpiry ? new Date(u.subscriptionExpiry).toLocaleDateString('vi-VN') : (isProUser ? 'Vĩnh viễn' : '-');
 
                 const actionsContainer = document.createElement('div');
                 actionsContainer.style.cssText = 'display:flex;gap:6px;justify-content:flex-end;';
 
                 const proBtn = document.createElement('button');
-                proBtn.className = u.subscription === 'pro' ? 'btn-ui btn-ui-amber btn-ui-sm' : 'btn-ui btn-ui-primary btn-ui-sm';
-                proBtn.title = u.subscription === 'pro' ? 'Hạ cấp xuống Free' : 'Cấp gói PRO';
-                proBtn.textContent = u.subscription === 'pro' ? 'Hạ Free' : 'Cấp PRO';
+                proBtn.className = isProUser ? 'btn-ui btn-ui-amber btn-ui-sm' : 'btn-ui btn-ui-primary btn-ui-sm';
+                proBtn.title = isProUser ? 'Hạ cấp xuống Free' : 'Cấp gói PRO';
+                proBtn.textContent = isProUser ? 'Hạ Free' : 'Cấp PRO';
                 proBtn.addEventListener('click', () => toggleUserPro(u.id));
                 actionsContainer.appendChild(proBtn);
 
@@ -1464,17 +1471,6 @@
             user.email = document.getElementById('edit-user-email').value.trim();
             user.status = document.getElementById('edit-user-status').value;
 
-            if (activeRoleView === 'admin' && uid !== 'user_admin') {
-                user.role = newRole;
-                try {
-                    await fetch(`${API_BASE_URL}/api/admin/users/${uid}/role`, {
-                        method: 'POST',
-                        headers: getAdminAuthHeaders({ 'Content-Type': 'application/json' }),
-                        body: JSON.stringify({ role: newRole })
-                    });
-                } catch(e) {}
-            }
-
             if (planOption === 'free') {
                 user.subscription = 'free';
                 user.subscriptionExpiry = null;
@@ -1485,6 +1481,17 @@
                 if (planOption === 'pro_90') days = 90;
                 if (planOption === 'pro_365') days = 365;
                 user.subscriptionExpiry = planOption === 'pro_forever' ? null : new Date(Date.now() + days*24*60*60*1000).toISOString();
+            }
+
+            if (activeRoleView === 'admin') {
+                if (uid !== 'user_admin') user.role = newRole;
+                try {
+                    await fetch(`${API_BASE_URL}/api/admin/users/${uid}`, {
+                        method: 'PUT',
+                        headers: getAdminAuthHeaders({ 'Content-Type': 'application/json' }),
+                        body: JSON.stringify({ fullname: user.fullname, email: user.email, role: user.role, subscription: user.subscription, subscriptionExpiry: user.subscriptionExpiry })
+                    });
+                } catch(e) {}
             }
 
             saveUsersList(users);
@@ -1514,30 +1521,36 @@
             openModal('modal-create-user');
         }
 
-        function handleCreateUser(e) {
+        async function handleCreateUser(e) {
             e.preventDefault();
             const users = getUsersList();
+            const fullname = document.getElementById('new-user-fullname').value.trim();
             const username = document.getElementById('new-user-username').value.trim().toLowerCase();
             const email = document.getElementById('new-user-email').value.trim().toLowerCase();
+            const password = document.getElementById('new-user-password').value;
+            const role = document.getElementById('new-user-role').value;
+            const subscription = document.getElementById('new-user-plan').value;
 
             if (users.some(u => u.username === username || u.email === email)) {
                 alert('Tên đăng nhập hoặc Email này đã tồn tại trong hệ thống.');
                 return;
             }
 
-            const newUser = {
-                id: 'user_' + Date.now(),
-                fullname: document.getElementById('new-user-fullname').value.trim(),
-                username: username,
-                email: email,
-                role: document.getElementById('new-user-role').value,
-                subscription: document.getElementById('new-user-plan').value,
-                subscriptionExpiry: document.getElementById('new-user-plan').value === 'pro' ? new Date(Date.now() + 30*24*60*60*1000).toISOString() : null,
-                status: 'active',
-                createdAt: new Date().toISOString()
+            let newUser = {
+                id: 'user_' + Date.now(), fullname, username, email, role, subscription,
+                subscriptionExpiry: subscription === 'pro' ? new Date(Date.now() + 30*24*60*60*1000).toISOString() : null,
+                status: 'active', createdAt: new Date().toISOString()
             };
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
+                    method: 'POST',
+                    headers: getAdminAuthHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify({ fullname, username, email, password, role, subscription })
+                });
+                if (res.ok) newUser = { ...(await res.json()), status: 'active' };
+            } catch (err) {}
 
-            users.push(newUser);
+            users.unshift(newUser);
             saveUsersList(users);
             closeModal('modal-create-user');
 
@@ -1603,7 +1616,7 @@
             container.innerHTML = '';
 
             const users = getUsersList();
-            const proCount = users.filter(u => u.subscription === 'pro').length;
+            const proCount = users.filter(u => u.subscription === 'pro' || u.subscription === 'premium').length;
             const freeCount = users.length - proCount;
 
             plans.forEach(plan => {
@@ -1936,25 +1949,19 @@
         // ==========================================
         function renderReports() {
             const container = document.getElementById('reports-content-container');
-            
-            // Check real sessions in storage
             let realSessions = [];
             try {
-                // Check all user session keys
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
                     if (key && key.startsWith('interview_sessions')) {
-                        const raw = localStorage.getItem(key);
-                        if (raw) {
-                            const parsed = JSON.parse(raw);
-                            if (Array.isArray(parsed)) realSessions.push(...parsed);
-                        }
+                        const parsed = JSON.parse(localStorage.getItem(key) || '[]');
+                        if (Array.isArray(parsed)) realSessions.push(...parsed);
                     }
                 }
             } catch(e) {}
 
-            if (realSessions.length === 0) {
-                // Pure empty state without inventing data
+            const hasBackendSessions = _sessionsSummary && _sessionsSummary.totalSessions > 0;
+            if (!hasBackendSessions && realSessions.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state-panel">
                         <div class="empty-state-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
@@ -1965,17 +1972,17 @@
                     </div>
                 `;
             } else {
-                // If real sessions exist, calculate actual averages
                 const completedSessions = realSessions.filter(s => s.status === 'completed' || s.score);
-                const avgScore = completedSessions.length > 0 
+                const completedCount = hasBackendSessions ? _sessionsSummary.completedSessions : completedSessions.length;
+                const avgScore = hasBackendSessions ? _sessionsSummary.averageScore : (completedSessions.length > 0
                     ? Math.round(completedSessions.reduce((acc, s) => acc + (s.score || s.starScore || 0), 0) / completedSessions.length)
-                    : 0;
+                    : 0);
 
                 container.innerHTML = `
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
                         <div class="admin-subcard" style="padding:18px;border-radius:12px;">
                             <div style="font-size:12px;font-weight:700;color:var(--pm-admin-text-muted);">TỔNG SỐ PHIÊN ĐÃ HOÀN THÀNH</div>
-                            <div style="font-size:26px;font-weight:850;color:#3b82f6;margin:8px 0 2px;">${completedSessions.length}</div>
+                            <div style="font-size:26px;font-weight:850;color:#3b82f6;margin:8px 0 2px;">${completedCount}</div>
                             <div style="font-size:12px;color:var(--pm-admin-text-muted);">Dữ liệu thực tế từ cơ sở dữ liệu</div>
                         </div>
                         <div class="admin-subcard" style="padding:18px;border-radius:12px;">
@@ -2004,7 +2011,7 @@
                     });
                     if (res.ok) {
                         const data = await res.json();
-                        if (Array.isArray(data) && data.length > 0) {
+                        if (Array.isArray(data)) {
                             _cachedTransactions = data.map(t => ({
                                 id: t.transactionId || 'TX-' + t.timestamp,
                                 user: t.user,
@@ -2026,11 +2033,11 @@
             return _fetchingTransactionsPromise;
         }
 
-        async function renderTransactions() {
+        async function renderTransactions(forceRefresh = false) {
             const tbody = document.getElementById('transactions-table-body');
             tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#64748b;">Đang tải danh sách giao dịch...</td></tr>';
 
-            const transactions = await fetchOrLoadTransactions();
+            const transactions = await fetchOrLoadTransactions(forceRefresh);
             tbody.innerHTML = '';
 
             if (transactions.length === 0) {
@@ -2185,26 +2192,24 @@
         async function updateKpiStats() {
             const users = getUsersList();
             const total = users.length;
-            const proCount = users.filter(u => u.subscription === 'pro').length;
+            const proCount = users.filter(u => u.subscription === 'pro' || u.subscription === 'premium').length;
             const proRatio = total > 0 ? Math.round((proCount / total) * 100) : 0;
 
             const transactions = await fetchOrLoadTransactions();
             const totalRevenue = transactions.reduce((acc, t) => acc + (Number(t.amount) || 0), 0);
 
-            // Real sessions
-            let realSessionsCount = 0;
-            try {
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (key && key.startsWith('interview_sessions')) {
-                        const raw = localStorage.getItem(key);
-                        if (raw) {
-                            const parsed = JSON.parse(raw);
+            let realSessionsCount = (_sessionsSummary && typeof _sessionsSummary.totalSessions === 'number') ? _sessionsSummary.totalSessions : 0;
+            if (!_sessionsSummary) {
+                try {
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && key.startsWith('interview_sessions')) {
+                            const parsed = JSON.parse(localStorage.getItem(key) || '[]');
                             if (Array.isArray(parsed)) realSessionsCount += parsed.length;
                         }
                     }
-                }
-            } catch(e) {}
+                } catch(e) {}
+            }
 
             document.getElementById('kpi-total-users').innerText = total;
             document.getElementById('kpi-user-subtext').innerText = `${total} tài khoản trong hệ thống`;

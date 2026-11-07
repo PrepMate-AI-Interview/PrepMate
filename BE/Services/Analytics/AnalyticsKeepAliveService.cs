@@ -98,10 +98,12 @@ namespace backend.Services.Analytics
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // Only skip if running against a test fixture database (NOTE: Dockerfile sets DATABASE_FILE_PATH=/app/data/db.json in Production!)
+            // Only skip if running against an isolated/temp test database (NOTE: Dockerfile sets DATABASE_FILE_PATH=/app/data/db.json in Production!)
             var dbPath = Environment.GetEnvironmentVariable("DATABASE_FILE_PATH") ?? string.Empty;
-            if (dbPath.Contains("test", StringComparison.OrdinalIgnoreCase) ||
-                dbPath.Contains("fixture", StringComparison.OrdinalIgnoreCase))
+            if ((!string.IsNullOrWhiteSpace(dbPath) && dbPath.StartsWith(System.IO.Path.GetTempPath(), StringComparison.OrdinalIgnoreCase)) ||
+                dbPath.Contains("test", StringComparison.OrdinalIgnoreCase) ||
+                dbPath.Contains("fixture", StringComparison.OrdinalIgnoreCase) ||
+                dbPath.Contains("isolated", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }

@@ -45,7 +45,15 @@ namespace backend.Services
                          ?? config?["ConnectionStrings:Neon"]
                          ?? config?["ConnectionStrings:Postgres"];
 
-            if (!string.IsNullOrWhiteSpace(pgConnStr))
+            bool isIsolatedTestDb = !string.IsNullOrWhiteSpace(explicitPath)
+                || _filePath.StartsWith(Path.GetTempPath(), StringComparison.OrdinalIgnoreCase)
+                || _filePath.Contains("test", StringComparison.OrdinalIgnoreCase)
+                || _filePath.Contains("fixture", StringComparison.OrdinalIgnoreCase)
+                || _filePath.Contains("isolated", StringComparison.OrdinalIgnoreCase);
+
+            bool forcePgSync = string.Equals(Environment.GetEnvironmentVariable("FORCE_POSTGRES_SYNC"), "true", StringComparison.OrdinalIgnoreCase);
+
+            if (!string.IsNullOrWhiteSpace(pgConnStr) && (!isIsolatedTestDb || forcePgSync))
             {
                 _postgresSync = new PostgresSyncService(pgConnStr);
             }
@@ -770,6 +778,20 @@ namespace backend.Services
         {
             SaveLocalFile();
             _postgresSync?.EnqueuePush(this);
+        }
+
+        internal void SaveLocalFileOnly()
+        {
+            SaveLocalFile();
+        }
+
+        public System.Threading.Tasks.Task RefreshFromCloudAsync(TimeSpan? minInterval = null)
+        {
+            if (_postgresSync == null || !_postgresSync.IsEnabled)
+            {
+                return System.Threading.Tasks.Task.CompletedTask;
+            }
+            return _postgresSync.RefreshFromPostgresAsync(this, minInterval);
         }
 
         private void SaveLocalFile()

@@ -77,6 +77,7 @@ namespace backend.Controllers
             }
 
             var normalizedEmail = request.Email.Trim().ToLowerInvariant();
+            await _fileDb.RefreshFromCloudAsync(TimeSpan.FromSeconds(5));
 
             // Check if email already exists
             foreach (var existingUser in _fileDb.Users.Values)
@@ -167,7 +168,7 @@ namespace backend.Controllers
         // ======================================================================
         [EnableRateLimiting("auth-login-policy")]
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             if (request == null)
             {
@@ -178,6 +179,8 @@ namespace backend.Controllers
             {
                 return BadRequest(new { error = "Vui lòng nhập đầy đủ tài khoản và mật khẩu." });
             }
+
+            await _fileDb.RefreshFromCloudAsync(TimeSpan.FromSeconds(5));
 
             var loginInput = request.Email.Trim().ToLowerInvariant();
             var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown_ip";
@@ -566,13 +569,15 @@ namespace backend.Controllers
         // ======================================================================
         [Authorize]
         [HttpGet("me")]
-        public IActionResult GetMe([FromQuery] string? userId = null)
+        public async Task<IActionResult> GetMe([FromQuery] string? userId = null)
         {
             var authenticatedUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(authenticatedUserId))
             {
                 return Unauthorized(new { error = "Không tìm thấy danh tính người dùng từ token xác thực." });
             }
+
+            await _fileDb.RefreshFromCloudAsync(TimeSpan.FromSeconds(5));
 
             if (!_fileDb.Users.TryGetValue(authenticatedUserId, out var user))
             {
