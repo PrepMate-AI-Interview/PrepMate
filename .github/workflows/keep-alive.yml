@@ -1,0 +1,23 @@
+name: Render Keep-Alive & Health Monitor
+
+on:
+  schedule:
+    # Chạy tự động mỗi 10 phút từ máy chủ GitHub (IP bên ngoài Render)
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ping PrepMate Production Health Endpoint
+        run: |
+          echo "Pinging PrepMate on Render at $(date -u)..."
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 45 "https://https-prepmate-onrender-com.onrender.com/health")
+          echo "Response HTTP Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "Warning: Health check returned $HTTP_STATUS"
+            exit 1
+          fi
+
