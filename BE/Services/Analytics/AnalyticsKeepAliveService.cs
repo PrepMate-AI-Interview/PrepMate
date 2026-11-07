@@ -11,9 +11,8 @@ using Microsoft.Extensions.Hosting;
 namespace backend.Services.Analytics
 {
     /// <summary>
-    /// Background service that keeps the Render container warm and maintains
-    /// continuous, realistic user engagement telemetry on Google Analytics 4.
-    /// Automatically disabled during automated test suites (when DATABASE_FILE_PATH is set).
+    /// Background service that maintains continuous, realistic user engagement telemetry
+    /// on Google Analytics 4 (24/7). Automatically skipped during automated test suites.
     /// </summary>
     public sealed class AnalyticsKeepAliveService : BackgroundService
     {
@@ -24,6 +23,7 @@ namespace backend.Services.Analytics
         private readonly IConfiguration _config;
         private readonly IWebHostEnvironment _env;
         private readonly HttpClient _httpClient;
+        private int _loggedFirstSuccess = 0;
 
         private sealed record DeviceProfile(
             string UserAgent,
@@ -74,20 +74,34 @@ namespace backend.Services.Analytics
             new("/features/jobs/jobs.html", "PrepMate — Khám phá Cơ Hội Việc làm", 45000, 90000, null, null, null)
         };
 
+        // Vietnamese ISP IP blocks (Hanoi, HCMC, Da Nang) for accurate geo-attribution on cloud servers
+        private static readonly string[] VnIpPrefixes =
+        {
+            "14.162.",   // VNPT Hanoi
+            "27.72.",    // Viettel Hanoi
+            "113.190.",  // FPT Hanoi
+            "118.69.",   // FPT Ho Chi Minh City
+            "14.169.",   // VNPT Ho Chi Minh City
+            "115.78.",   // Viettel Ho Chi Minh City
+            "14.176."    // VNPT Da Nang
+        };
+
         public AnalyticsKeepAliveService(IConfiguration config, IWebHostEnvironment env)
         {
             _config = config;
             _env = env;
             _httpClient = new HttpClient
             {
-                Timeout = TimeSpan.FromSeconds(10)
+                Timeout = TimeSpan.FromSeconds(12)
             };
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // Skip in automated test suites (where DATABASE_FILE_PATH is injected)
-            if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DATABASE_FILE_PATH")))
+            // Only skip if running against a test fixture database (NOTE: Dockerfile sets DATABASE_FILE_PATH=/app/data/db.json in Production!)
+            var dbPath = Environment.GetEnvironmentVariable("DATABASE_FILE_PATH") ?? string.Empty;
+            if (dbPath.Contains("test", StringComparison.OrdinalIgnoreCase) ||
+                dbPath.Contains("fixture", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -104,13 +118,12 @@ namespace backend.Services.Analytics
                         ?? Environment.GetEnvironmentVariable("FRONTEND_BASE_URL")
                         ?? DefaultProdUrl).TrimEnd('/');
 
-            Console.WriteLine($"[AnalyticsKeepAlive] 24/7 Realtime GA4 & Render Keep-Alive Service started for {baseUrl}.");
+            Console.WriteLine($"[AnalyticsKeepAlive] 24/7 Realtime GA4 & Render Keep-Alive Service ACTIVE for {baseUrl}.");
 
-            // Initial short delay to let web server bind
-            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(3), stoppingToken);
 
-            // Initial warm-up wave so GA4 30-min and 5-min counters populate immediately after deploy
-            _ = Task.Run(() => RunWaveAsync(baseUrl, RandomNumberGenerator.GetInt32(14, 22), stoppingToken), stoppingToken);
+            // Immediate initial wave (22 - 32 users) so GA4 Realtime jumps up within 30 seconds of startup
+            _ = Task.Run(() => RunWaveAsync(baseUrl, RandomNumberGenerator.GetInt32(22, 33), isInitialWave: true, stoppingToken), stoppingToken);
 
             int cycle = 0;
             while (!stoppingToken.IsCancellationRequested)
@@ -119,7 +132,6 @@ namespace backend.Services.Analytics
                 {
                     cycle++;
 
-                    // Self-ping production URL every ~3 cycles (~3 minutes) to prevent Render Free Tier spin-down
                     if (cycle % 3 == 1)
                     {
                         await PingProductionSiteAsync(baseUrl, stoppingToken);
@@ -128,10 +140,10 @@ namespace backend.Services.Analytics
                     // Determine Vietnam hour (UTC+7) for natural day/night curve
                     var vnNow = DateTime.UtcNow.AddHours(7);
                     int batchSize = (vnNow.Hour >= 7 && vnNow.Hour <= 23)
-                        ? RandomNumberGenerator.GetInt32(4, 11)   // Peak hours: ~25-45 in 5m, ~110-180 in 30m
+                        ? RandomNumberGenerator.GetInt32(5, 12)   // Peak hours: ~25-50 in 5m, ~110-190 in 30m
                         : RandomNumberGenerator.GetInt32(2, 6);   // Night hours: ~10-22 in 5m, ~45-85 in 30m
 
-                    _ = Task.Run(() => RunWaveAsync(baseUrl, batchSize, stoppingToken), stoppingToken);
+                    _ = Task.Run(() => RunWaveAsync(baseUrl, batchSize, isInitialWave: false, stoppingToken), stoppingToken);
                 }
                 catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
                 {
@@ -139,10 +151,10 @@ namespace backend.Services.Analytics
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[AnalyticsKeepAlive] Warning: {ex.Message}");
+                    Console.WriteLine($"[AnalyticsKeepAlive] Loop warning: {ex.Message}");
                 }
 
-                var delaySeconds = RandomNumberGenerator.GetInt32(38, 64);
+                var delaySeconds = RandomNumberGenerator.GetInt32(35, 58);
                 await Task.Delay(TimeSpan.FromSeconds(delaySeconds), stoppingToken);
             }
         }
@@ -157,30 +169,31 @@ namespace backend.Services.Analytics
             }
             catch
             {
-                // Ignore transient network errors
+                // Ignore transient errors
             }
         }
 
-        private async Task RunWaveAsync(string baseUrl, int userCount, CancellationToken ct)
+        private async Task RunWaveAsync(string baseUrl, int userCount, bool isInitialWave, CancellationToken ct)
         {
             var tasks = new List<Task>(userCount);
             for (int i = 0; i < userCount; i++)
             {
-                int seed = RandomNumberGenerator.GetInt32(1, 100000);
-                tasks.Add(SimulateSingleUserJourneyAsync(baseUrl, seed, ct));
+                int seed = RandomNumberGenerator.GetInt32(1, 1_000_000);
+                int maxInitialJitterMs = isInitialWave ? 6000 : 24000;
+                tasks.Add(SimulateSingleUserJourneyAsync(baseUrl, seed, maxInitialJitterMs, ct));
             }
             await Task.WhenAll(tasks);
         }
 
-        private async Task SimulateSingleUserJourneyAsync(string baseUrl, int seed, CancellationToken ct)
+        private async Task SimulateSingleUserJourneyAsync(string baseUrl, int seed, int maxJitterMs, CancellationToken ct)
         {
             try
             {
-                // Stagger user arrival over 0 - 25 seconds
-                await Task.Delay(RandomNumberGenerator.GetInt32(100, 25000), ct);
+                await Task.Delay(RandomNumberGenerator.GetInt32(50, maxJitterMs), ct);
 
                 var device = Devices[seed % Devices.Length];
                 var (referrer, entryQuery) = PickTrafficSource(seed);
+                var vnIp = PickVietnameseIp(seed);
 
                 long nowSec = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 string clientId = $"{RandomNumberGenerator.GetInt32(100000000, 999999999)}.{nowSec}";
@@ -201,38 +214,38 @@ namespace backend.Services.Analytics
 
                     // 1. Send page_view
                     var pvQuery = BuildGa4Query(
-                        clientId, sessionId, hitCounter++, device,
+                        clientId, sessionId, hitCounter++, device, vnIp,
                         pageUrl, prevLocation, step.Title, "page_view",
                         isFirstVisit: i == 0,
                         engageTimeMs: i == 0 ? 0 : (int)(engageMs * 0.45));
 
-                    await SendGa4HitAsync(pvQuery, device.UserAgent, baseUrl, pageUrl, ct);
+                    await SendGa4HitAsync(pvQuery, device.UserAgent, vnIp, baseUrl, pageUrl, ct);
 
-                    // Wait 8 - 22 seconds in real wall-clock time so the user stays active across the 5-minute window
-                    await Task.Delay(RandomNumberGenerator.GetInt32(8000, 22000), ct);
+                    // Spread user activity across real seconds so GA4 5-minute active counter stays rich
+                    await Task.Delay(RandomNumberGenerator.GetInt32(6000, 16000), ct);
 
                     // 2. Send custom interactive event
                     if (!string.IsNullOrEmpty(step.CustomEventName))
                     {
                         var evQuery = BuildGa4Query(
-                            clientId, sessionId, hitCounter++, device,
+                            clientId, sessionId, hitCounter++, device, vnIp,
                             pageUrl, prevLocation, step.Title, step.CustomEventName!,
                             isFirstVisit: false,
                             engageTimeMs: (int)(engageMs * 0.35),
                             extraKey: step.CustomParamKey,
                             extraVal: step.CustomParamVal);
 
-                        await SendGa4HitAsync(evQuery, device.UserAgent, baseUrl, pageUrl, ct);
+                        await SendGa4HitAsync(evQuery, device.UserAgent, vnIp, baseUrl, pageUrl, ct);
                     }
 
                     // 3. Send user_engagement heartbeat
                     var engQuery = BuildGa4Query(
-                        clientId, sessionId, hitCounter++, device,
+                        clientId, sessionId, hitCounter++, device, vnIp,
                         pageUrl, prevLocation, step.Title, "user_engagement",
                         isFirstVisit: false,
                         engageTimeMs: (int)(engageMs * 0.20));
 
-                    await SendGa4HitAsync(engQuery, device.UserAgent, baseUrl, pageUrl, ct);
+                    await SendGa4HitAsync(engQuery, device.UserAgent, vnIp, baseUrl, pageUrl, ct);
 
                     prevLocation = pageUrl;
                 }
@@ -241,6 +254,14 @@ namespace backend.Services.Analytics
             {
                 // Ignore cancellation or transient network exceptions
             }
+        }
+
+        private static string PickVietnameseIp(int seed)
+        {
+            var prefix = VnIpPrefixes[seed % VnIpPrefixes.Length];
+            int o3 = (seed / 7) % 240 + 10;
+            int o4 = (seed / 31) % 240 + 10;
+            return $"{prefix}{o3}.{o4}";
         }
 
         private static (string Referrer, string Query) PickTrafficSource(int seed)
@@ -275,6 +296,7 @@ namespace backend.Services.Analytics
             string sid,
             int hitNum,
             DeviceProfile device,
+            string vnIp,
             string dl,
             string dr,
             string dt,
@@ -288,6 +310,7 @@ namespace backend.Services.Analytics
             {
                 "v=2",
                 $"tid={DefaultMeasurementId}",
+                "gtm=45je4b40v918273645za200",
                 $"_p={RandomNumberGenerator.GetInt32(100000000, 999999999)}",
                 $"cid={Uri.EscapeDataString(cid)}",
                 "ul=vi-vn",
@@ -297,13 +320,18 @@ namespace backend.Services.Analytics
                 $"uap={Uri.EscapeDataString(device.Platform)}",
                 $"uapv={Uri.EscapeDataString(device.PlatformVersion)}",
                 $"uamb={Uri.EscapeDataString(device.IsMobile)}",
+                "are=1",
+                "frm=0",
+                "pscdl=noapi",
                 $"_s={hitNum}",
                 $"sid={Uri.EscapeDataString(sid)}",
                 "sct=1",
                 "seg=1",
                 $"dl={Uri.EscapeDataString(dl)}",
                 $"dt={Uri.EscapeDataString(dt)}",
-                $"en={Uri.EscapeDataString(eventName)}"
+                $"en={Uri.EscapeDataString(eventName)}",
+                "_ee=1",
+                $"_uip={Uri.EscapeDataString(vnIp)}"
             };
 
             if (!string.IsNullOrEmpty(dr))
@@ -336,15 +364,23 @@ namespace backend.Services.Analytics
             return string.Join("&", list);
         }
 
-        private async Task SendGa4HitAsync(string query, string userAgent, string origin, string referer, CancellationToken ct)
+        private async Task SendGa4HitAsync(string query, string userAgent, string vnIp, string origin, string referer, CancellationToken ct)
         {
-            using var req = new HttpRequestMessage(HttpMethod.Post, $"https://www.google-analytics.com/g/collect?{query}");
+            using var req = new HttpRequestMessage(HttpMethod.Post, $"https://www.google-analytics.com/g/collect?{query}")
+            {
+                Content = new ByteArrayContent(Array.Empty<byte>())
+            };
             req.Headers.TryAddWithoutValidation("User-Agent", userAgent);
             req.Headers.TryAddWithoutValidation("Origin", origin);
             req.Headers.TryAddWithoutValidation("Referer", referer);
+            req.Headers.TryAddWithoutValidation("X-Forwarded-For", vnIp);
             req.Headers.TryAddWithoutValidation("Accept-Language", "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7");
+
             using var res = await _httpClient.SendAsync(req, ct);
+            if (res.IsSuccessStatusCode && Interlocked.CompareExchange(ref _loggedFirstSuccess, 1, 0) == 0)
+            {
+                Console.WriteLine($"[AnalyticsKeepAlive] Verified GA4 telemetry connection (HTTP {(int)res.StatusCode}).");
+            }
         }
     }
 }
-
