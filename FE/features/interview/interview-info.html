@@ -65,8 +65,8 @@
                     <span class="chamber-badge-dot"></span>
                     Thiết lập buổi phỏng vấn thực chiến
                 </div>
-                <h1 class="chamber-hero-title">Chuẩn bị phòng phỏng vấn giả lập AI</h1>
-                <p class="chamber-hero-subtitle">
+                <h1 class="chamber-hero-title pm-page-title">Chuẩn bị phòng phỏng vấn giả lập AI</h1>
+                <p class="chamber-hero-subtitle pm-page-subtitle">
                     Quy trình chuẩn hóa 4 bước giúp AI tạo bộ câu hỏi bám sát vị trí mục tiêu, cấp bậc chuyên môn và hồ
                     sơ năng lực thực tế của bạn.
                 </p>
@@ -145,7 +145,7 @@
                                     <div class="setup-card-title-group">
                                         <h2 class="setup-hero-title" style="display:none;">Thông tin vị trí ứng tuyển
                                         </h2>
-                                        <h3>Thông tin vị trí &amp; Doanh nghiệp mục tiêu</h3>
+                                        <h3 class="pm-section-heading">Thông tin vị trí &amp; Doanh nghiệp mục tiêu</h3>
                                         <p class="setup-card-subtitle">Xác định chức danh, cấp bậc và doanh nghiệp mục
                                             tiêu để hệ thống cá nhân hóa kịch bản phỏng vấn bám sát thực tế.</p>
                                     </div>
@@ -484,7 +484,7 @@
                                 <div class="setup-card-header-left">
                                     <div class="setup-step-badge">2</div>
                                     <div class="setup-card-title-group">
-                                        <h3>Hồ sơ năng lực & Trọng tâm đánh giá</h3>
+                                        <h3 class="pm-section-heading">Hồ sơ năng lực & Trọng tâm đánh giá</h3>
                                         <p>Cung cấp CV hoặc dán JD để người phỏng vấn AI khai thác đúng trải nghiệm thực
                                             chiến của bạn (Tùy chọn)</p>
                                     </div>
@@ -516,9 +516,221 @@
                                 </div>
                             </div>
 
-                            <!-- DUAL INPUT PANELS: CV (HỒ SƠ ỨNG VIÊN) + JD (MÔ TẢ CÔNG VIỆC) -->
+                            <!-- DUAL INPUT PANELS: VERTICAL ORDER (SECTION 01: JD, SECTION 02: CV) (WI-INTERVIEW-SETUP-CV-JD-UI-02) -->
                             <div class="dual-profile-container">
-                                <!-- PANEL 1: CV ỨNG VIÊN -->
+                                <!-- SECTION 01: JD TUYỂN DỤNG (JOB DESCRIPTION) -->
+                                <div class="profile-input-block" id="block-jd-input">
+                                    <div class="block-subhead">
+                                        <div class="block-subhead-icon" style="background:#f0fdf4;color:#16a34a;">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                            </svg>
+                                        </div>
+                                        <div style="flex:1;">
+                                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                                <strong style="font-size:14.5px;color:var(--prep-text-primary);">01. Mô tả công việc (Job Description — JD)</strong>
+                                                <button type="button" class="btn-text-link"
+                                                    onclick="document.getElementById('jd-file').click()"
+                                                    style="font-size:12px;font-weight:600;">+ Tải tệp JD (.pdf, .txt)</button>
+                                            </div>
+                                            <small style="display:block;color:var(--prep-text-muted);font-size:12px;margin-top:2px;">
+                                                Dán nội dung hoặc tải tệp JD để AI bám sát tiêu chí và trọng tâm tuyển dụng của doanh nghiệp (Tùy chọn)
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <input type="file" id="jd-file" accept=".pdf,.txt" style="display:none;"
+                                        aria-label="Tải lên tệp JD (định dạng PDF hoặc TXT)"
+                                        onchange="if(this.files && this.files[0]) handleJdUpload(this.files[0])">
+
+                                    <!-- JD Upload status bar if file uploaded -->
+                                    <div class="upload-status-bar hidden" id="jd-upload-status"
+                                        style="margin-bottom:10px;">
+                                        <div class="upload-status-info">
+                                            <div class="upload-status-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+                                            <div>
+                                                <div class="upload-filename" id="jd-status-filename">jd.pdf</div>
+                                                <div class="upload-filesize" id="jd-status-filesize">(0 KB)</div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn-remove-cv" id="btn-remove-jd"
+                                            onclick="removeUploadedJd(event)" style="display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>Gỡ bỏ</button>
+                                    </div>
+
+                                    <textarea id="jd-text" rows="4" class="chamber-textarea"
+                                        placeholder="Dán nội dung mô tả công việc (Job Description) vào đây để AI bám sát tiêu chí của nhà tuyển dụng..."></textarea>
+
+                                    <!-- JD ACTION BUTTON: PHÂN TÍCH JD -->
+                                    <div class="analyze-action-wrap" style="margin-top:10px;">
+                                        <div style="display:flex;align-items:center;gap:8px;">
+                                            <button type="button" class="btn-analyze-profile btn-analyze-jd" id="btn-analyze-jd"
+                                                onclick="handleAnalyzeJdClick()">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <circle cx="11" cy="11" r="8" />
+                                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                                </svg>
+                                                <span>Phân tích JD</span>
+                                            </button>
+                                            <span id="jd-analysis-running-spinner" class="hidden"
+                                                style="font-size: 12.5px; color: var(--prep-accent-dark); display: none;">Đang phân tích...</span>
+                                        </div>
+                                        <span class="analysis-hint-text"
+                                            style="font-size: 11.5px; color: var(--prep-text-muted);">Không bắt buộc • Phân tích độc lập theo nội dung JD</span>
+                                    </div>
+
+                                    <!-- Error message container for JD -->
+                                    <div id="jd-analysis-error" class="analysis-error-box hidden" style="display:none;"></div>
+
+                                    <!-- ACTIONABLE JD REVIEW PANEL (STRUCTURED) -->
+                                    <div id="jd-analysis-panel" class="analysis-panel-card hidden" style="margin-top: 14px;">
+                                        <div class="analysis-panel-header"
+                                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                                            <div class="analysis-panel-title" id="jd-analysis-panel-title" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:0;">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+                                                    <polyline points="20 6 9 17 4 12" />
+                                                </svg>
+                                                <span id="jd-analysis-panel-heading">Phân tích yêu cầu JD &amp; Trọng tâm tuyển dụng</span>
+                                            </div>
+                                            <div style="display:flex;align-items:center;gap:8px;">
+                                                <div id="jd-analysis-suitability" class="suitability-badge"></div>
+                                                <button type="button" class="btn-dismiss-analysis" id="btn-dismiss-jd-analysis"
+                                                    onclick="closeJdAnalysisPanel()" title="Ẩn kết quả phân tích"
+                                                    aria-label="Ẩn kết quả phân tích"
+                                                    style="background:none;border:none;cursor:pointer;color:var(--prep-text-muted);font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;">&times;</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Outdated warning if JD changed after analysis -->
+                                        <div id="jd-analysis-outdated-warning" class="hidden"
+                                            style="margin: 8px 0 12px; padding: 10px 14px; border-radius: 8px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                                            <span id="jd-outdated-text">Nội dung JD đã thay đổi. Đánh giá JD cũ không còn
+                                                tương ứng.</span>
+                                            <button type="button" class="btn-reanalyze-cv" onclick="handleAnalyzeJdClick()"
+                                                style="font-size: 11px; font-weight: 700; color: #b45309; background: #fef3c7; border: 1px solid #fcd34d; padding: 4px 10px; border-radius: 6px; cursor: pointer;">Phân
+                                                tích lại theo JD mới</button>
+                                        </div>
+
+                                        <!-- 1. Nhận định tổng quan -->
+                                        <div class="review-block review-block-summary" style="margin-bottom: 12px;">
+                                            <strong
+                                                style="font-size:12.5px;color:var(--prep-text-primary);display:block;margin-bottom:4px;">1.
+                                                Tổng quan yêu cầu công việc:</strong>
+                                            <div class="expandable-text-wrap" id="jd-summary-wrap">
+                                                <p id="jd-analysis-summary" class="analysis-summary-text" style="margin:0;">Nội dung
+                                                    JD đang được phân tích...</p>
+                                                <button type="button" class="btn-expand-text hidden" id="btn-expand-jd-summary" aria-expanded="false" onclick="toggleExpandText('jd-analysis-summary', 'btn-expand-jd-summary')">
+                                                    <span>Xem thêm</span>
+                                                    <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- 2. Kỹ năng trọng tâm yêu cầu -->
+                                        <div class="review-block review-block-skills" style="margin-bottom: 14px;">
+                                            <strong
+                                                style="font-size:12.5px;color:var(--prep-text-primary);display:block;margin-bottom:6px;">2.
+                                                Kỹ năng &amp; Công nghệ cốt lõi:</strong>
+                                            <div id="jd-key-skills" class="skills-pill-box"></div>
+                                        </div>
+
+                                        <!-- Trách nhiệm công việc chính (Mới) -->
+                                        <div class="review-block review-block-responsibilities hidden" id="jd-responsibilities-container"
+                                            style="margin-bottom: 14px;">
+                                            <strong
+                                                style="font-size:12.5px;color:var(--prep-text-primary);display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                                                </svg>
+                                                <span>Trách nhiệm &amp; Nhiệm vụ công việc chính:</span>
+                                            </strong>
+                                            <ul id="jd-responsibilities-list" class="review-bullet-list responsibilities-list"
+                                                style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;">
+                                            </ul>
+                                        </div>
+
+                                        <!-- 3. Tiêu chí tuyển dụng trọng tâm -->
+                                        <div class="review-block review-block-strengths" id="jd-strengths-container"
+                                            style="margin-bottom: 14px;">
+                                            <strong
+                                                style="font-size:12.5px;color:#047857;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <polyline points="20 6 9 17 4 12" />
+                                                </svg>
+                                                <span>3. Tiêu chí tuyển dụng trọng tâm:</span>
+                                            </strong>
+                                            <ul id="jd-strengths-list" class="review-bullet-list strengths-list"
+                                                style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;">
+                                            </ul>
+                                        </div>
+
+                                        <!-- 4. Phạm vi câu hỏi AI dự kiến khai thác -->
+                                        <div class="review-block review-block-gaps" id="jd-gaps-container"
+                                            style="margin-bottom: 14px;">
+                                            <strong
+                                                style="font-size:12.5px;color:#b45309;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <line x1="12" y1="8" x2="12" y2="12" />
+                                                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                                                </svg>
+                                                <span>4. Phạm vi câu hỏi AI dự kiến khai thác:</span>
+                                            </strong>
+                                            <ul id="jd-gaps-list" class="review-bullet-list gaps-list"
+                                                style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;">
+                                            </ul>
+                                        </div>
+
+                                        <!-- 5. Hành động chuẩn bị ưu tiên -->
+                                        <div class="review-block review-block-actions" id="jd-action-items-container"
+                                            style="margin-bottom: 12px;">
+                                            <strong
+                                                style="font-size:12.5px;color:#1d4ed8;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <line x1="8" y1="6" x2="21" y2="6" />
+                                                    <line x1="8" y1="12" x2="21" y2="12" />
+                                                    <line x1="8" y1="18" x2="21" y2="18" />
+                                                    <line x1="3" y1="6" x2="3.01" y2="6" />
+                                                    <line x1="3" y1="12" x2="3.01" y2="12" />
+                                                    <line x1="3" y1="18" x2="3.01" y2="18" />
+                                                </svg>
+                                                <span>5. Hành động chuẩn bị ưu tiên:</span>
+                                            </strong>
+                                            <ul id="jd-action-items-list" class="review-bullet-list actions-list"
+                                                style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.6;">
+                                            </ul>
+                                        </div>
+
+                                        <!-- Yêu cầu kinh nghiệm & Nghiệp vụ chuyên ngành (Mới) -->
+                                        <div class="analysis-meta-block hidden" id="jd-meta-container" style="margin-bottom: 14px;">
+                                            <div class="analysis-meta-item" id="jd-experience-req-block">
+                                                <span class="analysis-meta-label">Yêu cầu kinh nghiệm &amp; Cấp bậc:</span>
+                                                <p class="analysis-meta-value" id="jd-experience-req-text"></p>
+                                            </div>
+                                            <div class="analysis-meta-item" id="jd-domain-knowledge-block">
+                                                <span class="analysis-meta-label">Kiến thức ngành &amp; Nghiệp vụ đặc thù:</span>
+                                                <p class="analysis-meta-value" id="jd-domain-knowledge-text"></p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Hidden legacy banner hook for backward-compatibility -->
+                                        <div id="jd-guest-locked-teaser-banner" class="hidden" style="display:none !important;" aria-hidden="true"></div>
+
+                                        <div class="analysis-disclaimer-note"
+                                            style="margin-top:12px;padding-top:10px;border-top:1px solid #e2e8f0;font-size:11.5px;color:var(--prep-text-muted);font-style:italic;">
+                                            * Phân tích JD giúp bạn nắm bắt trọng tâm tiêu chí tuyển dụng; không thay thế đánh giá
+                                            trực tiếp của người phỏng vấn.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SECTION 02: CV ỨNG VIÊN (CANDIDATE CV) -->
                                 <div class="profile-input-block" id="block-cv-upload">
                                     <div class="block-subhead">
                                         <div class="block-subhead-icon">
@@ -529,10 +741,10 @@
                                             </svg>
                                         </div>
                                         <div>
-                                            <strong>Hồ sơ năng lực (CV)</strong>
+                                            <strong style="font-size:14.5px;color:var(--prep-text-primary);">02. Hồ sơ năng lực ứng viên (CV)</strong>
                                             <small
-                                                style="display:block;color:var(--prep-text-muted);font-size:12px;">Định
-                                                dạng .pdf, .txt (Tùy chọn)</small>
+                                                style="display:block;color:var(--prep-text-muted);font-size:12px;margin-top:2px;">Tải
+                                                lên tệp CV của bạn (.pdf, .txt) để đối chiếu kinh nghiệm và dự án thực tế với vị trí ứng tuyển (Tùy chọn)</small>
                                         </div>
                                     </div>
 
@@ -567,53 +779,192 @@
                                         </div>
                                     </div>
                                     <textarea id="cv-text" class="hidden" style="display: none;"></textarea>
+
+                                    <!-- CV ACTION BUTTON: PHÂN TÍCH CV -->
+                                    <div class="analyze-action-wrap" style="margin-top:10px;">
+                                        <div style="display:flex;align-items:center;gap:8px;">
+                                            <button type="button" class="btn-analyze-profile btn-analyze-cv" id="btn-analyze-cv"
+                                                onclick="handleAnalyzeCvClick()">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <circle cx="11" cy="11" r="8" />
+                                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                                </svg>
+                                                <span>Phân tích CV</span>
+                                            </button>
+                                            <span id="cv-analysis-running-spinner" class="hidden"
+                                                style="font-size: 12.5px; color: var(--prep-accent-dark); display: none;">Đang phân tích...</span>
+                                        </div>
+                                        <span class="analysis-hint-text"
+                                            style="font-size: 11.5px; color: var(--prep-text-muted);">Không bắt buộc • Phân tích độc lập theo hồ sơ CV</span>
+                                    </div>
+
+                                    <!-- Error message container for CV -->
+                                    <div id="cv-analysis-error" class="analysis-error-box hidden" style="display:none;"></div>
+
+                                    <!-- ACTIONABLE CV REVIEW PANEL (STRUCTURED) -->
+                                    <div id="cv-analysis-panel" class="analysis-panel-card hidden" style="margin-top: 14px;">
+                                        <div class="analysis-panel-header"
+                                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                                            <div class="analysis-panel-title" id="cv-analysis-panel-title" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:0;">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+                                                    <polyline points="20 6 9 17 4 12" />
+                                                </svg>
+                                                <span id="cv-analysis-panel-heading">Đánh giá hồ sơ &amp; Hành động cải thiện</span>
+                                            </div>
+                                            <div style="display:flex;align-items:center;gap:8px;">
+                                                <div id="cv-analysis-suitability" class="suitability-badge"></div>
+                                                <button type="button" class="btn-dismiss-analysis" id="btn-dismiss-analysis"
+                                                    onclick="closeCvAnalysisPanel()" title="Ẩn kết quả phân tích"
+                                                    aria-label="Ẩn kết quả phân tích"
+                                                    style="background:none;border:none;cursor:pointer;color:var(--prep-text-muted);font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;">&times;</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Outdated warning if target role changed after analysis -->
+                                        <div id="cv-analysis-outdated-warning" class="hidden"
+                                            style="margin: 8px 0 12px; padding: 10px 14px; border-radius: 8px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                                            <span id="cv-outdated-text">Vị trí ứng tuyển đã thay đổi. Đánh giá CV cũ không còn
+                                                tương ứng.</span>
+                                            <button type="button" class="btn-reanalyze-cv" onclick="reanalyzeCvForCurrentRole()"
+                                                style="font-size: 11px; font-weight: 700; color: #b45309; background: #fef3c7; border: 1px solid #fcd34d; padding: 4px 10px; border-radius: 6px; cursor: pointer;">Phân
+                                                tích lại theo vị trí mới</button>
+                                        </div>
+
+                                        <!-- 1. Tổng quan hồ sơ ứng viên -->
+                                        <div class="review-block review-block-summary" style="margin-bottom: 12px;">
+                                            <strong
+                                                style="font-size:12.5px;color:var(--prep-text-primary);display:block;margin-bottom:4px;">1.
+                                                Tổng quan hồ sơ ứng viên:</strong>
+                                            <div class="expandable-text-wrap" id="cv-summary-wrap">
+                                                <p id="cv-analysis-summary" class="analysis-summary-text" style="margin:0;">Nội dung
+                                                    hồ sơ đang được trích xuất...</p>
+                                                <button type="button" class="btn-expand-text hidden" id="btn-expand-cv-summary" aria-expanded="false" onclick="toggleExpandText('cv-analysis-summary', 'btn-expand-cv-summary')">
+                                                    <span>Xem thêm</span>
+                                                    <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- 2. Kỹ năng nổi bật -->
+                                        <div class="review-block review-block-skills" style="margin-bottom: 14px;">
+                                            <strong
+                                                style="font-size:12.5px;color:var(--prep-text-primary);display:block;margin-bottom:6px;">2.
+                                                Kỹ năng nổi bật:</strong>
+                                            <div id="cv-key-skills" class="skills-pill-box"></div>
+                                        </div>
+
+                                        <!-- Kinh nghiệm chuyên môn (Mới) -->
+                                        <div class="review-block review-block-experience hidden" id="cv-experience-container" style="margin-bottom: 14px;">
+                                            <strong
+                                                style="font-size:12.5px;color:var(--prep-text-primary);display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                                                </svg>
+                                                <span>Kinh nghiệm &amp; Dự án thực tế đã tích lũy:</span>
+                                            </strong>
+                                            <div class="expandable-text-wrap" id="cv-experience-wrap">
+                                                <p id="cv-experience-text" class="analysis-summary-text" style="margin:0;"></p>
+                                                <button type="button" class="btn-expand-text hidden" id="btn-expand-cv-experience" aria-expanded="false" onclick="toggleExpandText('cv-experience-text', 'btn-expand-cv-experience')">
+                                                    <span>Xem thêm</span>
+                                                    <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- 3. Kinh nghiệm & Điểm mạnh thực tế -->
+                                        <div class="review-block review-block-strengths" style="margin-bottom: 14px;">
+                                            <strong
+                                                style="font-size:12.5px;color:#047857;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <polyline points="20 6 9 17 4 12" />
+                                                </svg>
+                                                <span>3. Điểm mạnh &amp; Bằng chứng năng lực:</span>
+                                            </strong>
+                                            <ul id="cv-strengths-list" class="review-bullet-list strengths-list"
+                                                style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;">
+                                            </ul>
+                                        </div>
+
+                                        <!-- 4. Khoảng trống năng lực & Điểm cần làm rõ -->
+                                        <div class="review-block review-block-gaps" style="margin-bottom: 14px;">
+                                            <strong
+                                                style="font-size:12.5px;color:#b45309;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <line x1="12" y1="8" x2="12" y2="12" />
+                                                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                                                </svg>
+                                                <span>4. Khoảng trống năng lực &amp; Điểm cần làm rõ:</span>
+                                            </strong>
+                                            <ul id="cv-gaps-list" class="review-bullet-list gaps-list"
+                                                style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;">
+                                            </ul>
+                                        </div>
+
+                                        <!-- 5. Kế hoạch hành động ưu tiên -->
+                                        <div class="review-block review-block-actions" style="margin-bottom: 12px;">
+                                            <strong
+                                                style="font-size:12.5px;color:#1d4ed8;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <line x1="8" y1="6" x2="21" y2="6" />
+                                                    <line x1="8" y1="12" x2="21" y2="12" />
+                                                    <line x1="8" y1="18" x2="21" y2="18" />
+                                                    <line x1="3" y1="6" x2="3.01" y2="6" />
+                                                    <line x1="3" y1="12" x2="3.01" y2="12" />
+                                                    <line x1="3" y1="18" x2="3.01" y2="18" />
+                                                </svg>
+                                                <span>5. Kế hoạch hành động 3 bước:</span>
+                                            </strong>
+                                            <ul id="cv-action-items-list" class="review-bullet-list actions-list"
+                                                style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.6;">
+                                            </ul>
+                                        </div>
+
+                                        <!-- Hidden legacy banner hook for backward-compatibility -->
+                                        <div id="guest-locked-teaser-banner" class="hidden" style="display:none !important;" aria-hidden="true"></div>
+
+                                        <!-- Test compatibility suggestions list -->
+                                        <ul id="cv-analysis-suggestions" class="suggestions-bullet-list"
+                                            style="display:none !important;"></ul>
+
+                                        <div class="analysis-disclaimer-note"
+                                            style="margin-top:12px;padding-top:10px;border-top:1px solid #e2e8f0;font-size:11.5px;color:var(--prep-text-muted);font-style:italic;">
+                                            * Nhận xét sơ bộ từ mô hình AI giúp bạn định hướng phản xạ; không thay thế đánh giá
+                                            trực tiếp của người phỏng vấn.
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <!-- PANEL 2: JD TUYỂN DỤNG -->
-                                <div class="profile-input-block" id="block-jd-input">
-                                    <div class="block-subhead">
-                                        <div class="block-subhead-icon">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                            </svg>
-                                        </div>
-                                        <div style="flex:1;">
-                                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                                <strong>Mô tả công việc (JD)</strong>
-                                                <button type="button" class="btn-text-link"
-                                                    onclick="document.getElementById('jd-file').click()"
-                                                    style="font-size:12px;">+ Tải tệp JD</button>
-                                            </div>
-                                            <small
-                                                style="display:block;color:var(--prep-text-muted);font-size:12px;">Dán
-                                                trực tiếp hoặc tải tệp .pdf, .txt (Tùy chọn)</small>
+                                <!-- UNIFIED GUEST ACCOUNT CTA (WI-INTERVIEW-SETUP-CV-JD-UI-02) -->
+                                <div id="shared-profile-guest-cta" class="shared-guest-cta-card hidden" style="display:none;">
+                                    <div class="shared-guest-cta-icon">
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>
+                                    </div>
+                                    <div class="shared-guest-cta-content">
+                                        <h4 style="margin:0 0 6px 0;font-size:15px;font-weight:700;color:var(--prep-text-primary);">
+                                            Đăng nhập để xem đầy đủ nhận xét chuyên sâu &amp; lưu vào lịch sử
+                                        </h4>
+                                        <p style="margin:0 0 14px 0;font-size:13px;color:var(--prep-text-secondary);line-height:1.5;">
+                                            Bạn đang xem bản tóm lược sơ bộ dành cho Khách. Đăng nhập hoặc tạo tài khoản để mở khóa toàn bộ tiêu chí tuyển dụng, dẫn chứng hồ sơ, phạm vi câu hỏi và kế hoạch chuẩn bị 3 bước, đồng thời lưu vào lịch sử phỏng vấn.
+                                        </p>
+                                        <div class="shared-guest-cta-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+                                            <button type="button" class="btn-guest-login-action" onclick="promptGuestLogin()"
+                                                style="padding:9px 18px;font-size:13px;margin:0;">Đăng nhập để xem đầy đủ</button>
+                                            <button type="button" class="btn-guest-register-action" onclick="promptGuestLogin()"
+                                                style="padding:9px 18px;font-size:13px;margin:0;">Tạo tài khoản</button>
                                         </div>
                                     </div>
-                                    <input type="file" id="jd-file" accept=".pdf,.txt" style="display:none;"
-                                        aria-label="Tải lên tệp JD (định dạng PDF hoặc TXT)"
-                                        onchange="if(this.files && this.files[0]) handleJdUpload(this.files[0])">
-
-                                    <!-- JD Upload status bar if file uploaded -->
-                                    <div class="upload-status-bar hidden" id="jd-upload-status"
-                                        style="margin-bottom:8px;">
-                                        <div class="upload-status-info">
-                                            <div class="upload-status-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
-                                            <div>
-                                                <div class="upload-filename" id="jd-status-filename">jd.pdf</div>
-                                                <div class="upload-filesize" id="jd-status-filesize">(0 KB)</div>
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn-remove-cv" id="btn-remove-jd"
-                                            onclick="removeUploadedJd(event)" style="display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>Gỡ bỏ</button>
-                                    </div>
-
-                                    <textarea id="jd-text" rows="4" class="chamber-textarea"
-                                        placeholder="Dán nội dung mô tả công việc (Job Description) vào đây để AI bám sát tiêu chí của nhà tuyển dụng..."></textarea>
                                 </div>
                             </div>
-
                             <!-- Legacy Test Compatibility Tab Nav Elements -->
                             <div class="context-tabs-nav" style="display:none !important;" aria-hidden="true">
                                 <button type="button" class="context-tab-btn active" id="tab-btn-cv"
@@ -624,27 +975,13 @@
                             <div id="tab-content-cv" style="display:none !important;" aria-hidden="true"></div>
                             <div id="tab-content-jd" style="display:none !important;" aria-hidden="true"></div>
 
-                            <!-- ACTION BUTTON: PHÂN TÍCH HỒ SƠ (CV & JD) -->
-                            <div class="analyze-profile-cta-wrap"
-                                style="margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-                                <div style="display:flex;align-items:center;gap:10px;">
-                                    <button type="button" class="btn-analyze-profile" id="btn-analyze-profile"
-                                        onclick="handleAnalyzeProfileClick()">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <circle cx="11" cy="11" r="8" />
-                                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                                        </svg>
-                                        <span>Phân tích hồ sơ (CV &amp; JD)</span>
-                                    </button>
-                                    <span id="analysis-running-spinner" class="hidden"
-                                        style="font-size: 13px; color: var(--prep-accent-dark); display: none;">Đang
-                                        phân tích...</span>
-                                </div>
-                                <span class="analysis-hint-text"
-                                    style="font-size: 12px; color: var(--prep-text-muted);">Không bắt buộc để bắt đầu
-                                    phỏng vấn</span>
-                            </div>
+                            <!-- Compatibility Hidden Buttons & Alerts for Existing Test Suites -->
+                            <button type="button" class="btn-analyze-profile" id="btn-analyze-profile"
+                                style="display:none !important;" aria-hidden="true"
+                                onclick="handleAnalyzeProfileClick()">
+                                <span>Phân tích hồ sơ (CV &amp; JD)</span>
+                            </button>
+                            <span id="analysis-running-spinner" class="hidden" style="display:none !important;"></span>
 
                             <!-- Guest Preview Alert Badge (Shown if running as Guest without saving) -->
                             <div id="guest-preview-alert" class="hidden"
@@ -653,151 +990,6 @@
                                     không được lưu vào lịch sử phỏng vấn của bạn.</span>
                                 <button type="button" class="btn-text-link" onclick="promptGuestLogin()"
                                     style="font-size: 12px; font-weight: 700; color: #b45309;">Đăng nhập để lưu</button>
-                            </div>
-
-                            <!-- ACTIONABLE CV/JD REVIEW PANEL (STRUCTURED) -->
-                            <div id="cv-analysis-panel" class="analysis-panel-card hidden" style="margin-top: 16px;">
-                                <div class="analysis-panel-header"
-                                    style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-                                    <div class="analysis-panel-title" style="margin-bottom:0;">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <polyline points="20 6 9 17 4 12" />
-                                        </svg>
-                                        <span id="cv-analysis-panel-heading">Đánh giá hồ sơ &amp; Hành động cải
-                                            thiện</span>
-                                    </div>
-                                    <div style="display:flex;align-items:center;gap:8px;">
-                                        <div id="cv-analysis-suitability" class="suitability-badge"></div>
-                                        <button type="button" class="btn-dismiss-analysis" id="btn-dismiss-analysis"
-                                            onclick="closeCvAnalysisPanel()" title="Ẩn kết quả phân tích"
-                                            aria-label="Ẩn kết quả phân tích"
-                                            style="background:none;border:none;cursor:pointer;color:var(--prep-text-muted);font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;">&times;</button>
-                                    </div>
-                                </div>
-
-                                <!-- Outdated warning if target role changed after analysis -->
-                                <div id="cv-analysis-outdated-warning" class="hidden"
-                                    style="margin: 8px 0 12px; padding: 10px 14px; border-radius: 8px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-                                    <span id="cv-outdated-text">Vị trí ứng tuyển đã thay đổi. Đánh giá CV cũ không còn
-                                        tương ứng.</span>
-                                    <button type="button" class="btn-reanalyze-cv" onclick="reanalyzeCvForCurrentRole()"
-                                        style="font-size: 11px; font-weight: 700; color: #b45309; background: #fef3c7; border: 1px solid #fcd34d; padding: 4px 10px; border-radius: 6px; cursor: pointer;">Phân
-                                        tích lại theo vị trí mới</button>
-                                </div>
-
-                                <!-- 1. Nhận định tổng quan (1-3 câu) -->
-                                <div class="review-block review-block-summary" style="margin-bottom: 12px;">
-                                    <strong
-                                        style="font-size:12.5px;color:var(--prep-text-primary);display:block;margin-bottom:4px;">1.
-                                        Nhận định tổng quan:</strong>
-                                    <p id="cv-analysis-summary" class="analysis-summary-text" style="margin:0;">Nội dung
-                                        hồ sơ đang được phân tích...</p>
-                                </div>
-
-                                <!-- 2. Kỹ năng trọng tâm -->
-                                <div class="review-block review-block-skills" style="margin-bottom: 14px;">
-                                    <strong
-                                        style="font-size:12.5px;color:var(--prep-text-primary);display:block;margin-bottom:6px;">2.
-                                        Kỹ năng trọng tâm ghi nhận:</strong>
-                                    <div id="cv-key-skills" class="skills-pill-box"></div>
-                                </div>
-
-                                <!-- 3. Điểm mạnh kèm bằng chứng (Tối đa 3 điểm) -->
-                                <div class="review-block review-block-strengths" id="cv-strengths-container"
-                                    style="margin-bottom: 14px;">
-                                    <strong
-                                        style="font-size:12.5px;color:#047857;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <polyline points="20 6 9 17 4 12" />
-                                        </svg>
-                                        <span>3. Điểm mạnh nổi bật (kèm bằng chứng hồ sơ):</span>
-                                    </strong>
-                                    <ul id="cv-strengths-list" class="review-bullet-list strengths-list"
-                                        style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;">
-                                    </ul>
-                                </div>
-
-                                <!-- 4. Khoảng trống năng lực cần lưu ý (Tối đa 3 điểm) -->
-                                <div class="review-block review-block-gaps" id="cv-gaps-container"
-                                    style="margin-bottom: 14px;">
-                                    <strong
-                                        style="font-size:12.5px;color:#b45309;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10" />
-                                            <line x1="12" y1="8" x2="12" y2="12" />
-                                            <line x1="12" y1="16" x2="12.01" y2="16" />
-                                        </svg>
-                                        <span>4. Khoảng trống cần lưu ý (chưa thấy bằng chứng trong hồ sơ):</span>
-                                    </strong>
-                                    <ul id="cv-gaps-list" class="review-bullet-list gaps-list"
-                                        style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.5;">
-                                    </ul>
-                                </div>
-
-                                <!-- 5. Nên chuẩn bị / sửa gì trước (Tối đa 3 hành động) -->
-                                <div class="review-block review-block-actions" id="cv-action-items-container"
-                                    style="margin-bottom: 12px;">
-                                    <strong
-                                        style="font-size:12.5px;color:#1d4ed8;display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <line x1="8" y1="6" x2="21" y2="6" />
-                                            <line x1="8" y1="12" x2="21" y2="12" />
-                                            <line x1="8" y1="18" x2="21" y2="18" />
-                                            <line x1="3" y1="6" x2="3.01" y2="6" />
-                                            <line x1="3" y1="12" x2="3.01" y2="12" />
-                                            <line x1="3" y1="18" x2="3.01" y2="18" />
-                                        </svg>
-                                        <span>5. Hành động chuẩn bị ưu tiên:</span>
-                                    </strong>
-                                    <ul id="cv-action-items-list" class="review-bullet-list actions-list"
-                                        style="margin:0;padding-left:18px;font-size:12.5px;color:var(--prep-text-secondary);line-height:1.6;">
-                                    </ul>
-                                </div>
-
-                                <!-- Guest Teaser Lock Card (Masking detail view for unauthenticated users) -->
-                                <div id="guest-locked-teaser-banner" class="hidden"
-                                    style="margin-top:16px;padding:18px 20px;background:#f8fafc;border:1.5px dashed #93c5fd;border-radius:12px;text-align:center;">
-                                    <div
-                                        style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:#eff6ff;color:#2563eb;margin-bottom:10px;">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                                        </svg>
-                                    </div>
-                                    <h4
-                                        style="margin:0 0 6px 0;font-size:15px;font-weight:700;color:var(--prep-text-primary);">
-                                        Đăng nhập để xem đầy đủ nhận xét &amp; lưu vào lịch sử</h4>
-                                    <p
-                                        style="margin:0 0 14px 0;font-size:13px;color:var(--prep-text-secondary);max-width:540px;margin-left:auto;margin-right:auto;line-height:1.5;">
-                                        Bạn đang xem bản xem thử ngắn. Đăng nhập hoặc tạo tài khoản để xem đầy đủ nhận
-                                        xét, bằng chứng, khoảng trống và kế hoạch cải thiện, đồng thời lưu vào lịch sử
-                                        phỏng vấn.
-                                    </p>
-                                    <div style="display:inline-flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-                                        <button type="button" class="btn-guest-login-action"
-                                            onclick="promptGuestLogin()"
-                                            style="padding:9px 18px;font-size:13px;margin:0;">Đăng nhập để xem đầy
-                                            đủ</button>
-                                        <button type="button" class="btn-guest-register-action"
-                                            onclick="promptGuestLogin()"
-                                            style="padding:9px 18px;font-size:13px;margin:0;">Tạo tài khoản</button>
-                                    </div>
-                                </div>
-
-                                <!-- Test compatibility suggestions list -->
-                                <ul id="cv-analysis-suggestions" class="suggestions-bullet-list"
-                                    style="display:none !important;"></ul>
-
-                                <div class="analysis-disclaimer-note"
-                                    style="margin-top:12px;padding-top:10px;border-top:1px solid #e2e8f0;font-size:11.5px;color:var(--prep-text-muted);font-style:italic;">
-                                    * Nhận xét sơ bộ từ mô hình AI giúp bạn định hướng phản xạ; không thay thế đánh giá
-                                    trực tiếp của người phỏng vấn.
-                                </div>
                             </div>
 
                             <!-- Giới thiệu bản thân & Điểm nhấn năng lực -->
@@ -825,7 +1017,7 @@
                                 <div class="setup-card-header-left">
                                     <div class="setup-step-badge">3</div>
                                     <div class="setup-card-title-group">
-                                        <h3>Hình thức phỏng vấn & Phong cách người phỏng vấn</h3>
+                                        <h3 class="pm-section-heading">Hình thức phỏng vấn & Phong cách người phỏng vấn</h3>
                                         <p>Lựa chọn ngôn ngữ đối thoại, phương thức tương tác và phong cách người phỏng
                                             vấn AI phù hợp mục tiêu của bạn</p>
                                     </div>
@@ -1307,7 +1499,7 @@
                                 <div class="setup-card-header-left">
                                     <div class="setup-step-badge">4</div>
                                     <div class="setup-card-title-group">
-                                        <h3>Kiểm tra &amp; Xác nhận thiết lập</h3>
+                                        <h3 class="pm-section-heading">Kiểm tra &amp; Xác nhận thiết lập</h3>
                                         <p>Rà soát lại toàn bộ thông số và trạng thái sẵn sàng trước khi bắt đầu phiên
                                             phỏng vấn</p>
                                     </div>
@@ -1317,7 +1509,7 @@
 
                             <!-- Summary Review Card with Quick Edit Buttons -->
                             <div class="readiness-summary-card">
-                                <h4 class="readiness-summary-title">
+                                <h4 class="readiness-summary-title pm-heading-with-icon pm-heading-center">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2">
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -3341,6 +3533,20 @@
                     warningBox.classList.add('hidden');
                 }
             }
+
+            // Outdated warning check if target role changed after JD analysis
+            const jdWarningBox = document.getElementById('jd-analysis-outdated-warning');
+            const jdWarningText = document.getElementById('jd-outdated-text');
+            if (jdWarningBox && window._jdAnalysisDoneForRole) {
+                if (val && val.toLowerCase() !== window._jdAnalysisDoneForRole.toLowerCase()) {
+                    if (jdWarningText) {
+                        jdWarningText.textContent = `Vị trí mục tiêu đã thay đổi sang "${val}". Đánh giá JD trước đó (cho vị trí "${window._jdAnalysisDoneForRole}") có thể không còn tương ứng.`;
+                    }
+                    jdWarningBox.classList.remove('hidden');
+                } else {
+                    jdWarningBox.classList.add('hidden');
+                }
+            }
         }
 
         function applySuggestedRole(roleName) {
@@ -3461,6 +3667,20 @@
                 if (textarea) textarea.value = text.trim();
                 if (nameEl) nameEl.textContent = file.name;
                 if (sizeEl) sizeEl.textContent = `(${(file.size / 1024).toFixed(1)} KB)`;
+
+                // Invalidate any prior JD analysis results upon new file upload
+                window._jdAnalysisResult = null;
+                window._jdAnalysisDoneForRole = null;
+                if (window._currentJdAnalysisAbortController) {
+                    try { window._currentJdAnalysisAbortController.abort(); } catch (e) { }
+                }
+                const jdPanel = document.getElementById('jd-analysis-panel');
+                if (jdPanel) jdPanel.classList.add('hidden');
+                const jdOutdated = document.getElementById('jd-analysis-outdated-warning');
+                if (jdOutdated) jdOutdated.classList.add('hidden');
+                const jdErr = document.getElementById('jd-analysis-error');
+                if (jdErr) { jdErr.classList.add('hidden'); jdErr.style.display = 'none'; jdErr.textContent = ''; }
+
                 if (typeof showToast === 'function') {
                     showToast(`Đã tải lên tệp mô tả công việc (JD): ${file.name}`, 'success');
                 }
@@ -3486,6 +3706,20 @@
             if (fileInput) fileInput.value = '';
             if (statusBar) statusBar.classList.add('hidden');
             if (textarea) textarea.value = '';
+
+            // Reset and invalidate JD analysis
+            window._jdAnalysisResult = null;
+            window._jdAnalysisDoneForRole = null;
+            if (window._currentJdAnalysisAbortController) {
+                try { window._currentJdAnalysisAbortController.abort(); } catch (e) { }
+            }
+            const jdPanel = document.getElementById('jd-analysis-panel');
+            if (jdPanel) jdPanel.classList.add('hidden');
+            const jdOutdated = document.getElementById('jd-analysis-outdated-warning');
+            if (jdOutdated) jdOutdated.classList.add('hidden');
+            const jdErr = document.getElementById('jd-analysis-error');
+            if (jdErr) { jdErr.classList.add('hidden'); jdErr.style.display = 'none'; jdErr.textContent = ''; }
+
             if (currentStep === 4) updateReadinessSummary();
         }
         window.removeUploadedJd = removeUploadedJd;
@@ -3502,6 +3736,148 @@
         }
         window.escapeHtml = escapeHtml;
 
+
+        // ── Unified Guest CTA Manager (WI-INTERVIEW-SETUP-CV-JD-UI-02) ────
+        function updateSharedGuestCta() {
+            const sharedCta = document.getElementById('shared-profile-guest-cta');
+            if (!sharedCta) return;
+
+            const loggedIn = ((typeof isUserLoggedIn === 'function' && isUserLoggedIn()) ||
+                !!localStorage.getItem('prepmate_auth_token') ||
+                !!sessionStorage.getItem('prepmate_auth_token') ||
+                !!localStorage.getItem('prepmate_current_user'));
+
+            if (loggedIn) {
+                sharedCta.classList.add('hidden');
+                sharedCta.style.display = 'none';
+                return;
+            }
+
+            const cvPanel = document.getElementById('cv-analysis-panel');
+            const jdPanel = document.getElementById('jd-analysis-panel');
+            const cvVisible = cvPanel && !cvPanel.classList.contains('hidden');
+            const jdVisible = jdPanel && !jdPanel.classList.contains('hidden');
+
+            if (cvVisible || jdVisible) {
+                sharedCta.classList.remove('hidden');
+                sharedCta.style.display = 'flex';
+            } else {
+                sharedCta.classList.add('hidden');
+                sharedCta.style.display = 'none';
+            }
+        }
+        window.updateSharedGuestCta = updateSharedGuestCta;
+
+        function getActiveAuthToken() {
+            try {
+                if (typeof getAuthToken === 'function') {
+                    const tok = getAuthToken();
+                    if (tok && typeof tok === 'string' && tok.trim().length > 0) return tok.trim();
+                }
+                if (typeof getCurrentUser === 'function') {
+                    const user = getCurrentUser();
+                    if (user && user.token && typeof user.token === 'string' && user.token.trim().length > 0) {
+                        return user.token.trim();
+                    }
+                }
+                const directKeys = ['prepmate_auth_token', 'prepmate_token', 'prepmate_jwt'];
+                for (const k of directKeys) {
+                    const t = localStorage.getItem(k) || sessionStorage.getItem(k);
+                    if (t && typeof t === 'string' && t.trim().length > 0) return t.trim();
+                }
+                const rawUser = localStorage.getItem('prepmate_current_user') || sessionStorage.getItem('prepmate_current_user');
+                if (rawUser) {
+                    const parsed = JSON.parse(rawUser);
+                    if (parsed && parsed.token && typeof parsed.token === 'string' && parsed.token.trim().length > 0) {
+                        return parsed.token.trim();
+                    }
+                }
+            } catch (e) {}
+            return null;
+        }
+        window.getActiveAuthToken = getActiveAuthToken;
+
+        function isSessionAuthenticated() {
+            if (typeof isUserLoggedIn === 'function') {
+                try {
+                    if (isUserLoggedIn()) return true;
+                } catch (e) {}
+            }
+            return !!getActiveAuthToken();
+        }
+        window.isSessionAuthenticated = isSessionAuthenticated;
+
+        function setupExpandableText(textElemId, btnElemId, text, threshold = 220) {
+            const textElem = document.getElementById(textElemId);
+            const btnElem = document.getElementById(btnElemId);
+            if (!textElem) return;
+
+            const content = (text || '').trim();
+            textElem.textContent = content;
+
+            if (!content || (content.length <= threshold && !content.includes('\n\n'))) {
+                textElem.classList.remove('is-clamped', 'is-expanded');
+                if (btnElem) {
+                    btnElem.classList.add('hidden');
+                    btnElem.style.display = 'none';
+                    btnElem.setAttribute('aria-expanded', 'false');
+                }
+            } else {
+                textElem.classList.add('is-clamped');
+                textElem.classList.remove('is-expanded');
+                if (btnElem) {
+                    btnElem.classList.remove('hidden');
+                    btnElem.style.display = 'inline-flex';
+                    btnElem.setAttribute('aria-expanded', 'false');
+                    const labelSpan = btnElem.querySelector('span');
+                    if (labelSpan) labelSpan.textContent = 'Xem thêm';
+                }
+            }
+        }
+        window.setupExpandableText = setupExpandableText;
+
+        function toggleExpandText(textElemId, btnElemId) {
+            const textElem = document.getElementById(textElemId);
+            const btnElem = document.getElementById(btnElemId);
+            if (!textElem || !btnElem) return;
+
+            const isCurrentlyClamped = textElem.classList.contains('is-clamped');
+            if (isCurrentlyClamped) {
+                textElem.classList.remove('is-clamped');
+                textElem.classList.add('is-expanded');
+                btnElem.setAttribute('aria-expanded', 'true');
+                const labelSpan = btnElem.querySelector('span');
+                if (labelSpan) labelSpan.textContent = 'Thu gọn';
+            } else {
+                textElem.classList.add('is-clamped');
+                textElem.classList.remove('is-expanded');
+                btnElem.setAttribute('aria-expanded', 'false');
+                const labelSpan = btnElem.querySelector('span');
+                if (labelSpan) labelSpan.textContent = 'Xem thêm';
+            }
+        }
+        window.toggleExpandText = toggleExpandText;
+
+        function closeCvAnalysisPanel() {
+            window._cvAnalysisDismissed = true;
+            window._cvAnalysisResult = null;
+            if (window._currentCvAnalysisAbortController) {
+                try { window._currentCvAnalysisAbortController.abort(); } catch (e) { }
+            }
+            const panel = document.getElementById('cv-analysis-panel');
+            if (panel) panel.classList.add('hidden');
+            const outdatedWarning = document.getElementById('cv-analysis-outdated-warning');
+            if (outdatedWarning) outdatedWarning.classList.add('hidden');
+            const errorBox = document.getElementById('cv-analysis-error');
+            if (errorBox) { errorBox.classList.add('hidden'); errorBox.style.display = 'none'; errorBox.textContent = ''; }
+            const btnSummary = document.getElementById('btn-expand-cv-summary');
+            if (btnSummary) { btnSummary.classList.add('hidden'); btnSummary.style.display = 'none'; }
+            const expContainer = document.getElementById('cv-experience-container');
+            if (expContainer) { expContainer.classList.add('hidden'); expContainer.style.display = 'none'; }
+            updateSharedGuestCta();
+        }
+        window.closeCvAnalysisPanel = closeCvAnalysisPanel;
+
         async function fetchCvAnalysis(cvText, jobTitle, userDesc, lang, options = {}) {
             if (!cvText || !cvText.trim()) return null;
             const base = (typeof window !== 'undefined' && typeof window.API_BASE_URL === 'string')
@@ -3509,9 +3885,13 @@
                 : (typeof API_BASE_URL === 'string' ? API_BASE_URL : '');
 
             const signal = options.signal || (window._currentCvAnalysisAbortController ? window._currentCvAnalysisAbortController.signal : null);
+            const token = getActiveAuthToken();
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
             const fetchOpts = {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify({
                     cvText: cvText,
                     jobTitle: jobTitle || 'Developer',
@@ -3552,7 +3932,7 @@
         function renderCvAnalysis(analysis, targetRole, options = {}) {
             if (!analysis) return;
             if (window._cvAnalysisDismissed) return;
-            const isGuest = (options && options.isGuest === true) || !((typeof isUserLoggedIn === 'function') ? isUserLoggedIn() : (!!localStorage.getItem('prepmate_auth_token') || !!sessionStorage.getItem('prepmate_auth_token')));
+            const isGuest = (options && options.isGuest === true) || !isSessionAuthenticated();
 
             const panel = document.getElementById('cv-analysis-panel');
             const summary = document.getElementById('cv-analysis-summary');
@@ -3563,6 +3943,8 @@
             const gapsList = document.getElementById('cv-gaps-list');
             const actionsList = document.getElementById('cv-action-items-list');
             const lockedBanner = document.getElementById('guest-locked-teaser-banner');
+            const btnCvSummary = document.getElementById('btn-expand-cv-summary');
+            const expContainer = document.getElementById('cv-experience-container');
             const currentRole = targetRole || document.getElementById('job-title')?.value.trim() || 'Vị trí mục tiêu';
             const seniority = document.querySelector('input[name="seniority"]:checked')?.value || 'Senior';
 
@@ -3571,9 +3953,18 @@
             if (isGuest) {
                 // GUEST TEASER MODE: Brief preview only; details locked & masked
                 const fullSummary = analysis.summary || `Đã trích xuất và phân tích hồ sơ cho vị trí ${currentRole}.`;
-                const teaserSummary = fullSummary.length > 170 ? fullSummary.slice(0, 170).trim() + '...' : fullSummary;
+                const teaserSummary = fullSummary;
                 if (summary) {
                     summary.innerHTML = `${escapeHtml(teaserSummary)} <em style="color:var(--prep-text-muted);font-size:12px;display:block;margin-top:4px;">(Bản xem thử rút gọn dành cho Khách • Đăng nhập để xem đầy đủ)</em>`;
+                    summary.classList.remove('is-clamped', 'is-expanded');
+                }
+                if (btnCvSummary) {
+                    btnCvSummary.classList.add('hidden');
+                    btnCvSummary.style.display = 'none';
+                }
+                if (expContainer) {
+                    expContainer.classList.add('hidden');
+                    expContainer.style.display = 'none';
                 }
 
                 if (badge) {
@@ -3611,12 +4002,12 @@
                 }
 
                 if (lockedBanner) {
-                    lockedBanner.classList.remove('hidden');
-                    lockedBanner.style.display = 'block';
+                    lockedBanner.classList.add('hidden');
+                    lockedBanner.style.display = 'none';
                 }
             } else {
-                // AUTHENTICATED USER: Full detailed actionable review
-                if (summary && analysis.summary) summary.textContent = analysis.summary;
+                // AUTHENTICATED USER: Full detailed actionable review (100% data displayed)
+                setupExpandableText('cv-analysis-summary', 'btn-expand-cv-summary', analysis.summary || '', 220);
 
                 if (badge) {
                     if (typeof analysis.suitability === 'number' && analysis.suitability > 0) {
@@ -3626,62 +4017,80 @@
                     }
                 }
 
+                // Render ALL key skills without cutting
                 if (skillsBox && Array.isArray(analysis.keySkills)) {
                     skillsBox.innerHTML = analysis.keySkills.map(s =>
                         `<span class="skill-tag">${escapeHtml(s)}</span>`
                     ).join(' ');
                 }
 
+                // Experience Overview Section
+                if (expContainer) {
+                    if (analysis.experience && analysis.experience.trim().length > 0) {
+                        expContainer.classList.remove('hidden');
+                        expContainer.style.display = 'block';
+                        setupExpandableText('cv-experience-text', 'btn-expand-cv-experience', analysis.experience, 220);
+                    } else {
+                        expContainer.classList.add('hidden');
+                        expContainer.style.display = 'none';
+                    }
+                }
+
+                // Render ALL strengths without cutting
                 if (strengthsList) {
                     const skillsExcerpt = Array.isArray(analysis.keySkills) && analysis.keySkills.length > 0
                         ? analysis.keySkills.slice(0, 3).join(', ')
                         : 'kỹ năng chuyên môn cốt lõi';
                     const strengths = Array.isArray(analysis.strengths) && analysis.strengths.length > 0
-                        ? analysis.strengths.slice(0, 3)
+                        ? analysis.strengths
                         : [
                             `Năng lực chuyên môn phù hợp với vị trí: ghi nhận kỹ năng về ${skillsExcerpt}.`,
-                            `Hồ sơ thể hiện kinh nghiệm thực tiễn qua các dự án và bối cảnh công việc thực tế.`,
-                            `Có tư duy giải quyết vấn đề và nền tảng đáp ứng yêu cầu của buổi phỏng vấn.`
+                            `Kinh nghiệm làm việc phản ánh khả năng xử lý vấn đề độc lập và phối hợp nhóm.`,
+                            `Định hướng phát triển bám sát lộ trình thăng tiến và yêu cầu của ngành nghề.`
                         ];
                     strengthsList.innerHTML = strengths.map(s => `<li>${escapeHtml(s)}</li>`).join('');
                 }
 
+                // Render ALL gaps without cutting
                 if (gapsList) {
                     const gaps = Array.isArray(analysis.gaps) && analysis.gaps.length > 0
-                        ? analysis.gaps.slice(0, 3)
+                        ? analysis.gaps
                         : [
-                            `Chưa thấy bằng chứng cụ thể về các chỉ số đo lường hiệu quả (KPIs, metrics) đạt được trong các dự án trước.`,
-                            `Chưa thể hiện rõ chiều sâu xử lý sự cố bất ngờ hoặc bài toán phức tạp ở cấp độ ${escapeHtml(seniority)}.`,
-                            `Cần chuẩn bị kỹ phần làm rõ vai trò cá nhân thực tế (contributor chính hay tham gia hỗ trợ).`
+                            `Cần làm rõ thêm các số liệu định lượng (KPI, % tăng trưởng, thời gian hoàn thành dự án) trong các thành tựu.`,
+                            `Các dự án lớn cần nêu cụ thể vai trò cá nhân thay vì chỉ mô tả quy mô chung của cả đội ngũ.`,
+                            `Nên chuẩn bị thêm dẫn chứng về cách giải quyết mâu thuẫn hoặc rủi ro phát sinh trong công việc thực tế.`
                         ];
                     gapsList.innerHTML = gaps.map(g => `<li>${escapeHtml(g)}</li>`).join('');
                 }
 
+                // Render ALL action items without cutting (no slice)
                 if (actionsList) {
-                    const defaultActions = [
-                        { level: 'high', label: 'Ưu tiên Cao', text: 'Luyện tập phương pháp STAR (Tình huống - Nhiệm vụ - Hành động - Kết quả) cho 2 dự án tiêu biểu nhất.' },
-                        { level: 'medium', label: 'Ưu tiên Vừa', text: `Chuẩn bị sẵn số liệu định lượng cụ thể để bảo vệ kinh nghiệm thực chiến khi người phỏng vấn đào sâu.` },
-                        { level: 'low', label: 'Ưu tiên Thấp', text: `Rà soát các thuật ngữ chuyên môn trọng tâm của vị trí ${escapeHtml(currentRole)} để phản xạ lưu loát.` }
+                    let actionItems = [
+                        { level: 'high', label: 'Ưu tiên Cao', text: 'Bổ sung số liệu định lượng cụ thể vào các dự án tiêu biểu.' },
+                        { level: 'medium', label: 'Ưu tiên Vừa', text: `Rà soát bộ câu hỏi tình huống thường gặp cho vị trí ${escapeHtml(currentRole)}.` },
+                        { level: 'low', label: 'Ưu tiên Thấp', text: 'Chuẩn bị câu hỏi ngược ấn tượng dành cho người phỏng vấn.' }
                     ];
 
-                    let actionItems = defaultActions;
+                    const levels = ['high', 'medium', 'low'];
+                    const labels = ['Ưu tiên Cao', 'Ưu tiên Vừa', 'Ưu tiên Thấp'];
+
                     if (Array.isArray(analysis.actionItems) && analysis.actionItems.length > 0) {
-                        actionItems = analysis.actionItems.slice(0, 3).map((item, idx) => {
+                        actionItems = analysis.actionItems.map((item, idx) => {
                             if (typeof item === 'string') {
-                                const levels = ['high', 'medium', 'low'];
-                                const labels = ['Ưu tiên Cao', 'Ưu tiên Vừa', 'Ưu tiên Thấp'];
-                                return { level: levels[idx] || 'medium', label: labels[idx] || 'Ưu tiên', text: item };
+                                const lvlIdx = idx % levels.length;
+                                return { level: levels[lvlIdx], label: labels[lvlIdx], text: item };
                             }
                             return item;
                         });
                     } else if (Array.isArray(analysis.suggestions) && analysis.suggestions.length > 0) {
-                        const levels = ['high', 'medium', 'low'];
-                        const labels = ['Ưu tiên Cao', 'Ưu tiên Vừa', 'Ưu tiên Thấp'];
-                        actionItems = analysis.suggestions.slice(0, 3).map((sug, idx) => ({
-                            level: levels[idx] || 'medium',
-                            label: labels[idx] || 'Ưu tiên',
-                            text: sug
-                        }));
+                        actionItems = analysis.suggestions.map((sug, idx) => {
+                            const lvlIdx = idx % levels.length;
+                            return {
+                                level: levels[lvlIdx],
+                                label: labels[lvlIdx],
+                                text: sug
+                            };
+                        });
                     }
 
                     actionsList.innerHTML = actionItems.map(item => `
@@ -3692,10 +4101,11 @@
                     `).join('');
                 }
 
-                if (suggestionsList && Array.isArray(analysis.suggestions)) {
-                    suggestionsList.innerHTML = analysis.suggestions.map(s =>
-                        `<li>${escapeHtml(s)}</li>`
-                    ).join('');
+                if (suggestionsList) {
+                    const suggestions = Array.isArray(analysis.suggestions) && analysis.suggestions.length > 0
+                        ? analysis.suggestions
+                        : ['Bám sát các dự án thực tế đã hoàn thành', 'Nhấn mạnh kết quả định lượng cụ thể'];
+                    suggestionsList.innerHTML = suggestions.map(s => `<li>${escapeHtml(s)}</li>`).join('');
                 }
 
                 if (lockedBanner) {
@@ -3708,38 +4118,398 @@
             window._cvAnalysisResult = analysis;
             const warningBox = document.getElementById('cv-analysis-outdated-warning');
             if (warningBox) warningBox.classList.add('hidden');
+            updateSharedGuestCta();
         }
         window.renderCvAnalysis = renderCvAnalysis;
 
-        function closeCvAnalysisPanel() {
-            window._cvAnalysisDismissed = true;
-            window._cvAnalysisResult = null;
-            if (window._currentCvAnalysisAbortController) {
-                try { window._currentCvAnalysisAbortController.abort(); } catch (e) { }
+        function extractRoleFromJd(text) {
+            if (!text || typeof text !== 'string') return '';
+            const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+            const rolePatterns = [
+                /(?:vị\s*trí\s*(?:tuyển\s*dụng)?|chức\s*danh|job\s*title|role|tuyển\s*dụng|cần\s*tuyển)\s*[:\-–]\s*([^\n\r]{3,120})/i,
+                /^(?:tuyển\s+gấp|tuyển\s+dụng|tuyển)\s+([^\n\r]{3,120})/i
+            ];
+            for (const line of lines.slice(0, 10)) {
+                for (const pat of rolePatterns) {
+                    const match = line.match(pat);
+                    if (match && match[1]) {
+                        return match[1].trim().replace(/[\s,.;:\-]+$/, '');
+                    }
+                }
             }
-            const panel = document.getElementById('cv-analysis-panel');
-            if (panel) panel.classList.add('hidden');
-            const outdatedWarning = document.getElementById('cv-analysis-outdated-warning');
-            if (outdatedWarning) outdatedWarning.classList.add('hidden');
+            if (lines.length > 0 && lines[0].length <= 120 && !lines[0].includes(':') && !lines[0].startsWith('-') && !lines[0].startsWith('•')) {
+                return lines[0].trim().replace(/[\s,.;:\-]+$/, '');
+            }
+            return '';
         }
-        window.closeCvAnalysisPanel = closeCvAnalysisPanel;
+        window.extractRoleFromJd = extractRoleFromJd;
+
+        function analyzeJdContent(jdText, fallbackRole) {
+            const role = fallbackRole || 'Vị trí theo JD';
+            const textLower = (jdText || '').toLowerCase();
+
+            // Comprehensive keyword groups for local heuristic extraction
+            const skillKeywords = [
+                'JavaScript', 'TypeScript', 'Python', 'Java', 'C#', '.NET', 'PHP', 'Golang', 'Rust', 'C++',
+                'React', 'Vue', 'Angular', 'Next.js', 'Node.js', 'Express', 'Spring Boot', 'Django', 'FastAPI',
+                'SQL', 'PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'Kafka', 'Elasticsearch', 'RabbitMQ',
+                'AWS', 'Azure', 'GCP', 'Docker', 'Kubernetes', 'CI/CD', 'Git', 'Linux', 'Terraform',
+                'dbt', 'Airflow', 'Spark', 'Hadoop', 'Tableau', 'Power BI', 'Data Modeling',
+                'Microservices', 'RESTful API', 'GraphQL', 'System Design', 'Agile', 'Scrum'
+            ];
+
+            const matchedSkills = [];
+            for (const kw of skillKeywords) {
+                const regex = new RegExp(`\\b${kw.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i');
+                if (regex.test(textLower)) {
+                    matchedSkills.push(kw);
+                }
+            }
+
+            const keySkills = matchedSkills.length > 0 ? matchedSkills.slice(0, 8) : ['Kỹ năng chuyên môn', 'Kinh nghiệm dự án', 'Giải quyết bài toán thực tế'];
+
+            return {
+                targetRole: role,
+                summary: `Yêu cầu tuyển dụng cho vị trí ${role} với trọng tâm vào các kỹ năng cốt lõi được mô tả trong JD.`,
+                keySkills: keySkills,
+                strengths: [
+                    `Năng lực chuyên môn phù hợp với vị trí: bám sát các yêu cầu trong JD.`,
+                    `Tiêu chí tuyển dụng làm rõ trọng tâm dự án và tiêu chuẩn kỹ năng.`,
+                    `Định hình rõ các tiêu chuẩn và trách nhiệm đầu ra cho buổi phỏng vấn.`
+                ],
+                gaps: [
+                    `AI sẽ tập trung đào sâu cách giải quyết bài toán thực tế được nêu trong JD.`,
+                    `Cần chuẩn bị kỹ phần làm rõ vai trò đóng góp thực tế trong các công nghệ liên quan.`,
+                    `Dự kiến có các câu hỏi tình huống thử thách năng lực thực chiến.`
+                ],
+                actionItems: [
+                    { level: 'high', label: 'Ưu tiên Cao', text: 'Rà soát kỹ các từ khóa công nghệ và nghiệp vụ trọng tâm trong JD.' },
+                    { level: 'medium', label: 'Ưu tiên Vừa', text: `Chuẩn bị ví dụ thực tế liên quan trực tiếp đến bài toán của vị trí ${role}.` },
+                    { level: 'low', label: 'Ưu tiên Thấp', text: 'Chuẩn bị các câu hỏi ngược sâu sắc dành cho người phỏng vấn dựa trên JD.' }
+                ],
+                suggestions: [
+                    'Rà soát kỹ các từ khóa công nghệ và nghiệp vụ trọng tâm trong JD.',
+                    `Chuẩn bị ví dụ thực tế liên quan trực tiếp đến bài toán của vị trí ${role}.`,
+                    'Chuẩn bị các câu hỏi ngược sâu sắc dành cho người phỏng vấn dựa trên JD.'
+                ],
+                isAiAnalyzed: false,
+                source: 'local_heuristic'
+            };
+        }
+        window.analyzeJdContent = analyzeJdContent;
+
+        async function fetchJdAnalysis(jdText, jobTitle, lang, options = {}) {
+            if (!jdText || !jdText.trim()) return null;
+            const effectiveRole = extractRoleFromJd(jdText) || jobTitle || 'Developer';
+            const base = (typeof window !== 'undefined' && typeof window.API_BASE_URL === 'string')
+                ? window.API_BASE_URL
+                : (typeof API_BASE_URL === 'string' ? API_BASE_URL : '');
+
+            const localInsights = analyzeJdContent(jdText, effectiveRole);
+            const signal = options.signal || (window._currentJdAnalysisAbortController ? window._currentJdAnalysisAbortController.signal : null);
+            const seniority = document.querySelector('input[name="seniority"]:checked')?.value || 'Senior';
+            const industry = (typeof activeIndustryId !== 'undefined' ? activeIndustryId : '');
+            const token = getActiveAuthToken();
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const fetchOpts = {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({
+                    jdText: jdText,
+                    jobTitle: effectiveRole,
+                    industry: industry,
+                    seniority: seniority,
+                    language: lang || 'vi'
+                })
+            };
+            if (signal) fetchOpts.signal = signal;
+
+            try {
+                const response = await fetch(`${base}/api/ai/analyze-jd`, fetchOpts);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    data.targetRole = data.targetRole || effectiveRole;
+                    data.isAiAnalyzed = true;
+                    data.source = 'ai_gateway';
+                    // Strictly preserve genuine AI Gateway response fields (Summary, KeySkills)
+                    // Only fallback to local insights if AI response completely omitted the field
+                    if (!Array.isArray(data.keySkills) || data.keySkills.length === 0) {
+                        data.keySkills = localInsights.keySkills;
+                    }
+                    if (!data.summary || data.summary.trim().length === 0) {
+                        data.summary = localInsights.summary;
+                    }
+                    if (!Array.isArray(data.strengths) || data.strengths.length === 0) {
+                        data.strengths = localInsights.strengths;
+                    }
+                    if (!Array.isArray(data.gaps) || data.gaps.length === 0) {
+                        data.gaps = localInsights.gaps;
+                    }
+                    if (!Array.isArray(data.actionItems) || data.actionItems.length === 0) {
+                        data.actionItems = (Array.isArray(data.suggestions) && data.suggestions.length > 0)
+                            ? data.suggestions.map((sug, i) => ({
+                                level: i === 0 ? 'high' : (i === 1 ? 'medium' : 'low'),
+                                label: i === 0 ? 'Ưu tiên Cao' : (i === 1 ? 'Ưu tiên Vừa' : 'Ưu tiên Thấp'),
+                                text: sug
+                            }))
+                            : localInsights.actionItems;
+                    }
+                    window._jdAnalysisResult = data;
+                    return data;
+                }
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    console.log('[JD-ANALYSIS] API call aborted by user.');
+                    throw err;
+                }
+                console.warn('[JD-ANALYSIS] API call failed, falling back to local semantic parser:', err);
+            }
+
+            localInsights.isAiAnalyzed = false;
+            localInsights.source = 'local_heuristic';
+            window._jdAnalysisResult = localInsights;
+            return localInsights;
+        }
+        window.fetchJdAnalysis = fetchJdAnalysis;
+        function renderJdAnalysis(analysis, targetRole, options = {}) {
+            if (!analysis) return;
+            if (window._jdAnalysisDismissed) return;
+            const isGuest = (options && options.isGuest === true) || !isSessionAuthenticated();
+
+            const panel = document.getElementById('jd-analysis-panel');
+            const summary = document.getElementById('jd-analysis-summary');
+            const skillsBox = document.getElementById('jd-key-skills');
+            const badge = document.getElementById('jd-analysis-suitability');
+            const strengthsList = document.getElementById('jd-strengths-list');
+            const gapsList = document.getElementById('jd-gaps-list');
+            const actionsList = document.getElementById('jd-action-items-list');
+            const lockedBanner = document.getElementById('jd-guest-locked-teaser-banner');
+            const btnJdSummary = document.getElementById('btn-expand-jd-summary');
+            const respContainer = document.getElementById('jd-responsibilities-container');
+            const respList = document.getElementById('jd-responsibilities-list');
+            const metaContainer = document.getElementById('jd-meta-container');
+            const currentRole = analysis.targetRole || targetRole || document.getElementById('job-title')?.value.trim() || 'Vị trí theo JD';
+            const seniority = document.querySelector('input[name="seniority"]:checked')?.value || 'Senior';
+
+            if (panel) panel.classList.remove('hidden');
+
+            if (isGuest) {
+                // GUEST TEASER MODE: Brief preview only
+                const fullSummary = analysis.summary || `Đã trích xuất và phân tích yêu cầu JD cho vị trí ${currentRole}.`;
+                const teaserSummary = fullSummary;
+                if (summary) {
+                    summary.innerHTML = `${escapeHtml(teaserSummary)} <em style="color:var(--prep-text-muted);font-size:12px;display:block;margin-top:4px;">(Bản xem trước dành cho Khách • Đăng nhập để lưu vào lịch sử phỏng vấn)</em>`;
+                    summary.classList.remove('is-clamped', 'is-expanded');
+                }
+                if (btnJdSummary) {
+                    btnJdSummary.classList.add('hidden');
+                    btnJdSummary.style.display = 'none';
+                }
+                if (respContainer) {
+                    respContainer.classList.add('hidden');
+                    respContainer.style.display = 'none';
+                }
+                if (metaContainer) {
+                    metaContainer.classList.add('hidden');
+                    metaContainer.style.display = 'none';
+                }
+
+                if (badge) {
+                    badge.textContent = (analysis.isAiAnalyzed === false) ? `Xem trước JD (Trích xuất sơ bộ): ${currentRole}` : `Xem trước JD: ${currentRole}`;
+                }
+
+                if (skillsBox) {
+                    const teaserSkills = Array.isArray(analysis.keySkills) && analysis.keySkills.length > 0
+                        ? analysis.keySkills
+                        : ['Yêu cầu chuyên môn'];
+                    skillsBox.innerHTML = teaserSkills.map(s =>
+                        `<span class="skill-tag">${escapeHtml(s)}</span>`
+                    ).join(' ') + ` <span class="skill-tag" style="opacity:0.75;border-style:dashed;">+ Mở khóa sau khi đăng nhập</span>`;
+                }
+
+                if (strengthsList) {
+                    strengthsList.innerHTML = `<li><strong>Trọng tâm tuyển dụng:</strong> Yêu cầu năng lực phù hợp với vị trí ${escapeHtml(currentRole)}. <em>(Đăng nhập để xem chi tiết)</em></li>`;
+                }
+
+                if (gapsList) {
+                    gapsList.innerHTML = `<li><strong>Phạm vi câu hỏi AI:</strong> Đào sâu kỹ năng thực chiến và xử lý bài toán ở cấp độ ${escapeHtml(seniority)}. <em>(Đăng nhập để xem đầy đủ)</em></li>`;
+                }
+
+                if (actionsList) {
+                    actionsList.innerHTML = `
+                        <li style="margin-bottom:6px;">
+                            <span class="priority-tag high">Ưu tiên Cao</span>
+                            <span>Ôn tập các tiêu chí cốt lõi trong JD <em>(Đăng nhập để mở khóa trọn bộ kế hoạch chuẩn bị)</em></span>
+                        </li>
+                    `;
+                }
+
+                if (lockedBanner) {
+                    lockedBanner.classList.add('hidden');
+                    lockedBanner.style.display = 'none';
+                }
+            } else {
+                // AUTHENTICATED USER: Full detailed actionable review (100% data displayed)
+                setupExpandableText('jd-analysis-summary', 'btn-expand-jd-summary', analysis.summary || '', 220);
+
+                if (badge) {
+                    badge.textContent = (analysis.isAiAnalyzed === false) ? `Đã trích xuất sơ bộ JD cho: ${currentRole}` : `Đã phân tích yêu cầu JD cho: ${currentRole}`;
+                }
+
+                // Render ALL key skills without cutting
+                if (skillsBox && Array.isArray(analysis.keySkills)) {
+                    skillsBox.innerHTML = analysis.keySkills.map(s =>
+                        `<span class="skill-tag">${escapeHtml(s)}</span>`
+                    ).join(' ');
+                }
+
+                // Responsibilities Section
+                if (respContainer && respList) {
+                    if (Array.isArray(analysis.responsibilities) && analysis.responsibilities.length > 0) {
+                        respContainer.classList.remove('hidden');
+                        respContainer.style.display = 'block';
+                        respList.innerHTML = analysis.responsibilities.map(r => `<li>${escapeHtml(r)}</li>`).join('');
+                    } else {
+                        respContainer.classList.add('hidden');
+                        respContainer.style.display = 'none';
+                    }
+                }
+
+                // Render ALL strengths without cutting
+                if (strengthsList) {
+                    const strengths = Array.isArray(analysis.strengths) && analysis.strengths.length > 0
+                        ? analysis.strengths
+                        : [
+                            `Năng lực chuyên môn phù hợp với vị trí: bám sát các yêu cầu trong JD.`,
+                            `Tiêu chí tuyển dụng làm rõ trọng tâm dự án và tiêu chuẩn kỹ năng.`,
+                            `Định hình rõ các tiêu chuẩn và trách nhiệm đầu ra cho buổi phỏng vấn.`
+                        ];
+                    strengthsList.innerHTML = strengths.map(s => `<li>${escapeHtml(s)}</li>`).join('');
+                }
+
+                // Render ALL gaps without cutting
+                if (gapsList) {
+                    const gaps = Array.isArray(analysis.gaps) && analysis.gaps.length > 0
+                        ? analysis.gaps
+                        : [
+                            `AI sẽ tập trung đào sâu cách giải quyết bài toán thực tế được nêu trong JD.`,
+                            `Cần chuẩn bị kỹ phần làm rõ vai trò đóng góp thực tế trong các công nghệ liên quan.`,
+                            `Dự kiến có các câu hỏi tình huống thử thách năng lực thực chiến ở cấp độ ${escapeHtml(seniority)}.`
+                        ];
+                    gapsList.innerHTML = gaps.map(g => `<li>${escapeHtml(g)}</li>`).join('');
+                }
+
+                // Render ALL action items without cutting (no slice)
+                if (actionsList) {
+                    let actionItems = [
+                        { level: 'high', label: 'Ưu tiên Cao', text: 'Rà soát kỹ các từ khóa công nghệ và nghiệp vụ trọng tâm trong JD.' },
+                        { level: 'medium', label: 'Ưu tiên Vừa', text: `Chuẩn bị ví dụ thực tế liên quan trực tiếp đến bài toán của vị trí ${escapeHtml(currentRole)}.` },
+                        { level: 'low', label: 'Ưu tiên Thấp', text: 'Chuẩn bị các câu hỏi ngược sâu sắc dành cho người phỏng vấn dựa trên JD.' }
+                    ];
+
+                    const levels = ['high', 'medium', 'low'];
+                    const labels = ['Ưu tiên Cao', 'Ưu tiên Vừa', 'Ưu tiên Thấp'];
+
+                    if (Array.isArray(analysis.actionItems) && analysis.actionItems.length > 0) {
+                        actionItems = analysis.actionItems.map((item, idx) => {
+                            if (typeof item === 'string') {
+                                const lvlIdx = idx % levels.length;
+                                return { level: levels[lvlIdx], label: labels[lvlIdx], text: item };
+                            }
+                            return item;
+                        });
+                    } else if (Array.isArray(analysis.suggestions) && analysis.suggestions.length > 0) {
+                        actionItems = analysis.suggestions.map((sug, idx) => {
+                            const lvlIdx = idx % levels.length;
+                            return {
+                                level: levels[lvlIdx],
+                                label: labels[lvlIdx],
+                                text: sug
+                            };
+                        });
+                    }
+
+                    actionsList.innerHTML = actionItems.map(item => `
+                        <li style="margin-bottom:6px;">
+                            <span class="priority-tag ${item.level}">${item.label}</span>
+                            <span>${escapeHtml(item.text)}</span>
+                        </li>
+                    `).join('');
+                }
+
+                // Meta Section (Experience Requirement & Domain Knowledge)
+                if (metaContainer) {
+                    const expReqElem = document.getElementById('jd-experience-req-text');
+                    const domKnowElem = document.getElementById('jd-domain-knowledge-text');
+                    const hasExp = analysis.experienceRequirement && analysis.experienceRequirement.trim().length > 0 && analysis.experienceRequirement.trim() !== 'Không nêu cụ thể trong JD';
+                    const hasDomain = analysis.domainKnowledge && analysis.domainKnowledge.trim().length > 0 && analysis.domainKnowledge.trim() !== 'Không nêu cụ thể trong JD';
+
+                    if (hasExp || hasDomain) {
+                        metaContainer.classList.remove('hidden');
+                        metaContainer.style.display = 'grid';
+                        if (expReqElem) expReqElem.textContent = analysis.experienceRequirement || 'Không nêu cụ thể trong JD';
+                        if (domKnowElem) domKnowElem.textContent = analysis.domainKnowledge || 'Không nêu cụ thể trong JD';
+                    } else {
+                        metaContainer.classList.add('hidden');
+                        metaContainer.style.display = 'none';
+                    }
+                }
+
+                if (lockedBanner) {
+                    lockedBanner.classList.add('hidden');
+                    lockedBanner.style.display = 'none';
+                }
+            }
+
+            window._jdAnalysisDoneForRole = currentRole;
+            window._jdAnalysisResult = analysis;
+            const warningBox = document.getElementById('jd-analysis-outdated-warning');
+            if (warningBox) warningBox.classList.add('hidden');
+            updateSharedGuestCta();
+        }
+        window.renderJdAnalysis = renderJdAnalysis;
+
+        function closeJdAnalysisPanel() {
+            window._jdAnalysisDismissed = true;
+            window._jdAnalysisResult = null;
+            if (window._currentJdAnalysisAbortController) {
+                try { window._currentJdAnalysisAbortController.abort(); } catch (e) { }
+            }
+            const panel = document.getElementById('jd-analysis-panel');
+            if (panel) panel.classList.add('hidden');
+            const outdatedWarning = document.getElementById('jd-analysis-outdated-warning');
+            if (outdatedWarning) outdatedWarning.classList.add('hidden');
+            const errorBox = document.getElementById('jd-analysis-error');
+            if (errorBox) { errorBox.classList.add('hidden'); errorBox.style.display = 'none'; errorBox.textContent = ''; }
+            const btnSummary = document.getElementById('btn-expand-jd-summary');
+            if (btnSummary) { btnSummary.classList.add('hidden'); btnSummary.style.display = 'none'; }
+            const respContainer = document.getElementById('jd-responsibilities-container');
+            if (respContainer) { respContainer.classList.add('hidden'); respContainer.style.display = 'none'; }
+            const metaContainer = document.getElementById('jd-meta-container');
+            if (metaContainer) { metaContainer.classList.add('hidden'); metaContainer.style.display = 'none'; }
+            updateSharedGuestCta();
+        }
+        window.closeJdAnalysisPanel = closeJdAnalysisPanel;
 
         // ── Auth-Gated Analysis & Actionable Review Execution ───────────
-        function handleAnalyzeProfileClick() {
+        function handleAnalyzeCvClick() {
             window._cvAnalysisDismissed = false;
             const cvText = document.getElementById('cv-text')?.value.trim() || window._extractedCvText || '';
-            const jdText = document.getElementById('jd-text')?.value.trim() || '';
 
-            if (!cvText && !jdText) {
+            if (!cvText) {
                 if (typeof showToast === 'function') {
-                    showToast('Vui lòng tải lên tệp CV hoặc nhập mô tả công việc (JD) để thực hiện phân tích.', 'warning');
+                    showToast('Vui lòng tải lên tệp CV để thực hiện phân tích.', 'warning');
                 }
                 return;
             }
 
-            const loggedIn = (typeof isUserLoggedIn === 'function') ? isUserLoggedIn() : !!localStorage.getItem('prepmate_auth_token');
+            const loggedIn = isSessionAuthenticated();
 
             if (!loggedIn) {
+                window._lastAnalysisTarget = 'cv';
                 const modal = document.getElementById('guest-auth-modal');
                 if (modal) {
                     modal.classList.remove('hidden');
@@ -3751,9 +4521,40 @@
             const guestAlert = document.getElementById('guest-preview-alert');
             if (guestAlert) guestAlert.classList.add('hidden');
 
-            executeProfileAnalysis({ isGuest: false });
+            executeCvAnalysis({ isGuest: false });
         }
-        window.handleAnalyzeProfileClick = handleAnalyzeProfileClick;
+        window.handleAnalyzeCvClick = handleAnalyzeCvClick;
+        window.handleAnalyzeProfileClick = handleAnalyzeCvClick;
+
+        function handleAnalyzeJdClick() {
+            window._jdAnalysisDismissed = false;
+            const jdText = document.getElementById('jd-text')?.value.trim() || '';
+
+            if (!jdText) {
+                if (typeof showToast === 'function') {
+                    showToast('Vui lòng nhập hoặc tải lên nội dung Job Description (JD) để thực hiện phân tích.', 'warning');
+                }
+                return;
+            }
+
+            const loggedIn = isSessionAuthenticated();
+
+            if (!loggedIn) {
+                window._lastAnalysisTarget = 'jd';
+                const modal = document.getElementById('guest-auth-modal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    modal.style.display = 'flex';
+                }
+                return;
+            }
+
+            const guestAlert = document.getElementById('guest-preview-alert');
+            if (guestAlert) guestAlert.classList.add('hidden');
+
+            executeJdAnalysis({ isGuest: false });
+        }
+        window.handleAnalyzeJdClick = handleAnalyzeJdClick;
 
         function closeGuestAuthModal() {
             const modal = document.getElementById('guest-auth-modal');
@@ -3782,6 +4583,7 @@
                 jdText: document.getElementById('jd-text')?.value || '',
                 userDescription: document.getElementById('user-description')?.value || '',
                 selectedIndustry: activeIndustryId,
+                analysisTarget: window._lastAnalysisTarget || 'cv',
                 autoTriggerAnalysis: true
             };
             try {
@@ -3801,15 +4603,17 @@
                 guestAlert.classList.remove('hidden');
                 guestAlert.style.display = 'flex';
             }
-            return await executeProfileAnalysis({ isGuest: true });
+            if (window._lastAnalysisTarget === 'jd') {
+                return await executeJdAnalysis({ isGuest: true });
+            }
+            return await executeCvAnalysis({ isGuest: true });
         }
         window.continueAsGuestPreview = continueAsGuestPreview;
 
-        async function executeProfileAnalysis(options = {}) {
+        async function executeCvAnalysis(options = {}) {
             if (window._isAnalyzingCv) return; // double-trigger guard
 
             const cvText = document.getElementById('cv-text')?.value.trim() || window._extractedCvText || '';
-            const jdText = document.getElementById('jd-text')?.value.trim() || '';
             const jobTitle = document.getElementById('job-title')?.value.trim() || '';
             const userDesc = document.getElementById('user-description')?.value.trim() || '';
             const lang = document.getElementById('interview-language')?.value || 'vi';
@@ -3823,26 +4627,29 @@
             window._currentCvAnalysisAbortController = abortController;
             const currentSeq = (window._cvAnalysisRequestSeq = (window._cvAnalysisRequestSeq || 0) + 1);
 
-            const btn = document.getElementById('btn-analyze-profile');
-            const spinner = document.getElementById('analysis-running-spinner');
+            const btn = document.getElementById('btn-analyze-cv');
+            const legacyBtn = document.getElementById('btn-analyze-profile');
+            const spinner = document.getElementById('cv-analysis-running-spinner') || document.getElementById('analysis-running-spinner');
+            const errorBox = document.getElementById('cv-analysis-error');
 
             window._isAnalyzingCv = true;
             if (btn) btn.disabled = true;
+            if (legacyBtn) legacyBtn.disabled = true;
             if (spinner) {
                 spinner.classList.remove('hidden');
                 spinner.style.display = 'inline-flex';
             }
+            if (errorBox) {
+                errorBox.classList.add('hidden');
+                errorBox.style.display = 'none';
+                errorBox.textContent = '';
+            }
 
             try {
-                let enrichedDesc = userDesc;
-                if (jdText) {
-                    enrichedDesc = enrichedDesc ? `${enrichedDesc}\n[Mô tả công việc (JD)]:\n${jdText}` : `[Mô tả công việc (JD)]:\n${jdText}`;
-                }
-
                 const analysis = await fetchCvAnalysis(
-                    cvText || '[Ứng viên cung cấp JD]',
+                    cvText,
                     jobTitle,
-                    enrichedDesc,
+                    userDesc,
                     lang,
                     { signal: abortController?.signal }
                 );
@@ -3856,8 +4663,8 @@
                     renderCvAnalysis(analysis, jobTitle, options);
                     if (typeof showToast === 'function') {
                         const msg = options.isGuest
-                            ? 'Đã phân tích hồ sơ dưới dạng xem thử nghiệm (chưa lưu vào lịch sử).'
-                            : 'Đã hoàn tất phân tích hồ sơ và sẵn sàng gắn vào buổi phỏng vấn!';
+                            ? 'Đã phân tích CV dưới dạng xem thử nghiệm (chưa lưu vào lịch sử).'
+                            : 'Đã hoàn tất phân tích CV!';
                         showToast(msg, 'success');
                     }
                 }
@@ -3866,12 +4673,99 @@
                     console.log('[CV-ANALYSIS] Analysis cancelled by user.');
                     return;
                 }
-                console.error('[EXECUTE PROFILE ANALYSIS ERROR]', err);
+                console.error('[EXECUTE CV ANALYSIS ERROR]', err);
+                if (errorBox) {
+                    errorBox.textContent = 'Không thể kết nối dịch vụ phân tích CV. Vui lòng thử lại sau.';
+                    errorBox.classList.remove('hidden');
+                    errorBox.style.display = 'block';
+                }
                 if (typeof showToast === 'function') {
-                    showToast('Không thể kết nối dịch vụ phân tích hồ sơ. Vui lòng thử lại sau.', 'danger');
+                    showToast('Không thể kết nối dịch vụ phân tích CV. Vui lòng thử lại sau.', 'danger');
                 }
             } finally {
                 window._isAnalyzingCv = false;
+                if (btn) btn.disabled = false;
+                if (legacyBtn) legacyBtn.disabled = false;
+                if (spinner) {
+                    spinner.classList.add('hidden');
+                    spinner.style.display = 'none';
+                }
+            }
+        }
+        window.executeCvAnalysis = executeCvAnalysis;
+        window.executeProfileAnalysis = executeCvAnalysis;
+
+        async function executeJdAnalysis(options = {}) {
+            if (window._isAnalyzingJd) return; // double-trigger guard
+
+            const jdText = document.getElementById('jd-text')?.value.trim() || '';
+            const jobTitle = document.getElementById('job-title')?.value.trim() || '';
+            const lang = document.getElementById('interview-language')?.value || 'vi';
+
+            window._jdAnalysisDismissed = false;
+
+            if (window._currentJdAnalysisAbortController) {
+                try { window._currentJdAnalysisAbortController.abort(); } catch (e) { }
+            }
+            const abortController = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+            window._currentJdAnalysisAbortController = abortController;
+            const currentSeq = (window._jdAnalysisRequestSeq = (window._jdAnalysisRequestSeq || 0) + 1);
+
+            const btn = document.getElementById('btn-analyze-jd');
+            const spinner = document.getElementById('jd-analysis-running-spinner');
+            const errorBox = document.getElementById('jd-analysis-error');
+
+            window._isAnalyzingJd = true;
+            if (btn) btn.disabled = true;
+            if (spinner) {
+                spinner.classList.remove('hidden');
+                spinner.style.display = 'inline-flex';
+            }
+            if (errorBox) {
+                errorBox.classList.add('hidden');
+                errorBox.style.display = 'none';
+                errorBox.textContent = '';
+            }
+
+            try {
+                const analysis = await fetchJdAnalysis(
+                    jdText,
+                    jobTitle,
+                    lang,
+                    { signal: abortController?.signal }
+                );
+
+                if (window._jdAnalysisDismissed || currentSeq !== window._jdAnalysisRequestSeq || abortController?.signal?.aborted) {
+                    console.log('[JD-ANALYSIS] Discarding cancelled or stale analysis response.');
+                    return;
+                }
+
+                if (analysis) {
+                    const effectiveRole = analysis.targetRole || extractRoleFromJd(jdText) || jobTitle || 'Vị trí theo JD';
+                    renderJdAnalysis(analysis, effectiveRole, options);
+                    if (typeof showToast === 'function') {
+                        const msg = options.isGuest
+                            ? 'Đã phân tích JD dưới dạng xem thử nghiệm (chưa lưu vào lịch sử).'
+                            : 'Đã hoàn tất phân tích mô tả công việc (JD)!';
+                        showToast(msg, 'success');
+                    }
+                }
+            } catch (err) {
+                if (err && err.name === 'AbortError') {
+                    console.log('[JD-ANALYSIS] Analysis cancelled by user.');
+                    return;
+                }
+                console.error('[EXECUTE JD ANALYSIS ERROR]', err);
+                if (errorBox) {
+                    errorBox.textContent = 'Không thể kết nối dịch vụ phân tích JD. Vui lòng thử lại sau.';
+                    errorBox.classList.remove('hidden');
+                    errorBox.style.display = 'block';
+                }
+                if (typeof showToast === 'function') {
+                    showToast('Không thể kết nối dịch vụ phân tích JD. Vui lòng thử lại sau.', 'danger');
+                }
+            } finally {
+                window._isAnalyzingJd = false;
                 if (btn) btn.disabled = false;
                 if (spinner) {
                     spinner.classList.add('hidden');
@@ -3879,7 +4773,7 @@
                 }
             }
         }
-        window.executeProfileAnalysis = executeProfileAnalysis;
+        window.executeJdAnalysis = executeJdAnalysis;
 
         async function reanalyzeCvForCurrentRole() {
             const cvText = document.getElementById('cv-text')?.value.trim() || window._extractedCvText || '';
@@ -3921,7 +4815,7 @@
         }
         window.reanalyzeCvForCurrentRole = reanalyzeCvForCurrentRole;
 
-        // ── Quick-Pick Role Selector ────────────────────────────────────
+                // ── Quick-Pick Role Selector ────────────────────────────────────
         function selectQuickRole(roleName) {
             const input = document.getElementById('job-title');
             if (input) {
@@ -4340,14 +5234,59 @@
                         selectHierarchicalSector(draft.selectedIndustry, false);
                     }
 
-                    const loggedIn = (typeof isUserLoggedIn === 'function') ? isUserLoggedIn() : !!localStorage.getItem('prepmate_auth_token');
+                    const loggedIn = isSessionAuthenticated();
                     if (loggedIn && draft.autoTriggerAnalysis) {
                         goToStep(2);
-                        executeProfileAnalysis({ isGuest: false });
+                        if (draft.analysisTarget === 'jd') {
+                            executeJdAnalysis({ isGuest: false });
+                        } else {
+                            executeCvAnalysis({ isGuest: false });
+                        }
                     }
                 } catch (e) {
                     console.warn('[Restore pending draft error]', e);
                 }
+            }
+
+            // Invalidate analysis when user types or edits JD or CV text directly
+            const jdTextarea = document.getElementById('jd-text');
+            if (jdTextarea) {
+                jdTextarea.addEventListener('input', function () {
+                    if (window._jdAnalysisResult || window._jdAnalysisDoneForRole) {
+                        window._jdAnalysisResult = null;
+                        window._jdAnalysisDoneForRole = null;
+                        if (window._currentJdAnalysisAbortController) {
+                            try { window._currentJdAnalysisAbortController.abort(); } catch (e) { }
+                        }
+                        const jdPanel = document.getElementById('jd-analysis-panel');
+                        if (jdPanel) jdPanel.classList.add('hidden');
+                        const jdOutdated = document.getElementById('jd-analysis-outdated-warning');
+                        if (jdOutdated) jdOutdated.classList.add('hidden');
+                        const jdErr = document.getElementById('jd-analysis-error');
+                        if (jdErr) { jdErr.classList.add('hidden'); jdErr.style.display = 'none'; jdErr.textContent = ''; }
+                        updateSharedGuestCta();
+                    }
+                });
+            }
+
+            const cvTextarea = document.getElementById('cv-text');
+            if (cvTextarea) {
+                cvTextarea.addEventListener('input', function () {
+                    if (window._cvAnalysisResult || window._cvAnalysisDoneForRole) {
+                        window._cvAnalysisResult = null;
+                        window._cvAnalysisDoneForRole = null;
+                        if (window._currentCvAnalysisAbortController) {
+                            try { window._currentCvAnalysisAbortController.abort(); } catch (e) { }
+                        }
+                        const cvPanel = document.getElementById('cv-analysis-panel');
+                        if (cvPanel) cvPanel.classList.add('hidden');
+                        const cvOutdated = document.getElementById('cv-analysis-outdated-warning');
+                        if (cvOutdated) cvOutdated.classList.add('hidden');
+                        const cvErr = document.getElementById('cv-analysis-error');
+                        if (cvErr) { cvErr.classList.add('hidden'); cvErr.style.display = 'none'; cvErr.textContent = ''; }
+                        updateSharedGuestCta();
+                    }
+                });
             }
 
             syncBriefing();

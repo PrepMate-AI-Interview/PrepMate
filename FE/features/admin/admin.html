@@ -55,13 +55,13 @@
     <!-- MAIN CONTENT -->
     <main class="main-content main-content-new">
         <!-- TOP BREADCRUMB / HEADER -->
-        <div class="admin-top-header">
+        <div class="admin-top-header pm-page-header">
             <div class="admin-header-titles">
-                <h1 id="page-role-heading">
+                <h1 id="page-role-heading" class="pm-page-title pm-heading-with-icon">
                     <span id="role-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
                     <span id="role-title-text">Bảng Quản Trị Hệ Thống</span>
                 </h1>
-                <p id="role-desc-text">
+                <p id="role-desc-text" class="pm-page-subtitle pm-content-wrap">
                     Trung tâm kiểm soát thành viên, quản lý gói dịch vụ, giám sát ngân hàng câu hỏi và nhật ký hoạt động.
                 </p>
             </div>
@@ -83,33 +83,33 @@
             <div class="kpi-card">
                 <div class="kpi-icon-wrap blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
                 <div>
-                    <div class="kpi-label">Tổng số tài khoản</div>
-                    <div class="kpi-value" id="kpi-total-users">0</div>
-                    <div class="kpi-subtext" id="kpi-user-subtext">Đã ghi nhận trong cơ sở dữ liệu</div>
+                    <div class="kpi-label pm-stat-label">Tổng số tài khoản</div>
+                    <div class="kpi-value pm-stat-value" id="kpi-total-users">0</div>
+                    <div class="kpi-subtext pm-stat-caption" id="kpi-user-subtext">Đã ghi nhận trong cơ sở dữ liệu</div>
                 </div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-icon-wrap amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
                 <div>
-                    <div class="kpi-label">Hội viên PRO</div>
-                    <div class="kpi-value" id="kpi-pro-users">0</div>
-                    <div class="kpi-subtext" id="kpi-pro-ratio">0% tổng thành viên</div>
+                    <div class="kpi-label pm-stat-label">Hội viên PRO</div>
+                    <div class="kpi-value pm-stat-value" id="kpi-pro-users">0</div>
+                    <div class="kpi-subtext pm-stat-caption" id="kpi-pro-ratio">0% tổng thành viên</div>
                 </div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-icon-wrap emerald"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
                 <div>
-                    <div class="kpi-label">Doanh thu ghi nhận</div>
-                    <div class="kpi-value" id="kpi-revenue">0đ</div>
-                    <div class="kpi-subtext" id="kpi-trans-subtext">Từ các giao dịch thanh toán</div>
+                    <div class="kpi-label pm-stat-label">Doanh thu ghi nhận</div>
+                    <div class="kpi-value pm-stat-value" id="kpi-revenue">0đ</div>
+                    <div class="kpi-subtext pm-stat-caption" id="kpi-trans-subtext">Từ các giao dịch thanh toán</div>
                 </div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-icon-wrap purple"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
                 <div>
-                    <div class="kpi-label">Phiên phỏng vấn hoàn thành</div>
-                    <div class="kpi-value" id="kpi-sessions-count">0</div>
-                    <div class="kpi-subtext" id="kpi-sessions-subtext">Chưa có phiên phỏng vấn nào</div>
+                    <div class="kpi-label pm-stat-label">Phiên phỏng vấn hoàn thành</div>
+                    <div class="kpi-value pm-stat-value" id="kpi-sessions-count">0</div>
+                    <div class="kpi-subtext pm-stat-caption" id="kpi-sessions-subtext">Chưa có phiên phỏng vấn nào</div>
                 </div>
             </div>
         </div>
@@ -118,7 +118,7 @@
         <section id="users-tab" class="tab-panel-section active">
             <div class="panel-top-bar">
                 <div class="panel-title-block">
-                    <h3>Quản lý Thành viên & Tài khoản</h3>
+                    <h3 class="pm-section-heading">Quản lý Thành viên & Tài khoản</h3>
                     <p>Theo dõi danh sách tài khoản thực tế trong hệ thống, cấp hoặc hủy gói PRO và phân quyền quản trị.</p>
                 </div>
                 <div class="panel-actions-group">
@@ -178,7 +178,7 @@
         <section id="roles-tab" class="tab-panel-section">
             <div class="panel-top-bar">
                 <div class="panel-title-block">
-                    <h3>Phân Quyền Theo Vai Trò</h3>
+                    <h3 class="pm-section-heading">Phân Quyền Theo Vai Trò</h3>
                     <p>Quy định chi tiết các quyền thao tác giữa Quản trị viên (Admin), Quản lý (Manager) và Ứng viên (User).</p>
                 </div>
             </div>
@@ -264,7 +264,7 @@
         <section id="plans-tab" class="tab-panel-section">
             <div class="panel-top-bar">
                 <div class="panel-title-block">
-                    <h3>Bảng Giá & Gói Dịch Vụ</h3>
+                    <h3 class="pm-section-heading">Bảng Giá & Gói Dịch Vụ</h3>
                     <p>Thiết lập thông tin gói, giá bán, chu kỳ tính phí, danh sách tính năng mở khóa và thêm các gói mới.</p>
                 </div>
                 <div class="panel-actions-group">
@@ -287,7 +287,7 @@
         <section id="content-tab" class="tab-panel-section">
             <div class="panel-top-bar">
                 <div class="panel-title-block">
-                    <h3>Ngân Hàng Câu Hỏi Phỏng Vấn</h3>
+                    <h3 class="pm-section-heading">Ngân Hàng Câu Hỏi Phỏng Vấn</h3>
                     <p>Quản lý câu hỏi chuyên môn thực tế dùng để phỏng vấn ứng viên theo các ngành nghề tuyển dụng.</p>
                 </div>
                 <div class="panel-actions-group">
@@ -340,7 +340,7 @@
         <section id="reports-tab" class="tab-panel-section">
             <div class="panel-top-bar">
                 <div class="panel-title-block">
-                    <h3>Báo Cáo Năng Lực & Đánh Giá STAR</h3>
+                    <h3 class="pm-section-heading">Báo Cáo Năng Lực & Đánh Giá STAR</h3>
                     <p>Tổng hợp dữ liệu kết quả phỏng vấn, điểm phản xạ theo cấu trúc STAR của các ứng viên trên hệ thống.</p>
                 </div>
             </div>
@@ -355,7 +355,7 @@
         <section id="transactions-tab" class="tab-panel-section">
             <div class="panel-top-bar">
                 <div class="panel-title-block">
-                    <h3>Lịch Sử Giao Dịch & Thanh Toán</h3>
+                    <h3 class="pm-section-heading">Lịch Sử Giao Dịch & Thanh Toán</h3>
                     <p>Danh sách các giao dịch thanh toán nâng cấp gói đã được lưu trong cơ sở dữ liệu hệ thống.</p>
                 </div>
                 <div class="panel-actions-group">
@@ -389,7 +389,7 @@
         <section id="settings-tab" class="tab-panel-section">
             <div class="panel-top-bar">
                 <div class="panel-title-block">
-                    <h3>Cấu Hình Hệ Thống & Trí Tuệ Nhân Tạo AI</h3>
+                    <h3 class="pm-section-heading">Cấu Hình Hệ Thống & Trí Tuệ Nhân Tạo AI</h3>
                     <p>Thiết lập thông số mô hình AI, định mức hạn ngạch miễn phí và phát thông báo hệ thống.</p>
                 </div>
             </div>
@@ -584,7 +584,7 @@
         <section id="audit-tab" class="tab-panel-section">
             <div class="panel-top-bar">
                 <div class="panel-title-block">
-                    <h3>Nhật Ký Hoạt Động Quản Trị</h3>
+                    <h3 class="pm-section-heading">Nhật Ký Hoạt Động Quản Trị</h3>
                     <p>Ghi nhận các thao tác quản trị tài khoản, cập nhật bảng giá và cấu hình hệ thống thực hiện trong phiên làm việc.</p>
                 </div>
                 <div class="panel-actions-group">
@@ -644,7 +644,7 @@
     <div class="admin-modal-overlay" id="modal-edit-user">
         <div class="admin-modal-container">
             <div class="admin-modal-header">
-                <h3 id="modal-edit-user-title">Phân quyền & Chỉnh sửa Người dùng</h3>
+                <h3 id="modal-edit-user-title" class="pm-card-heading">Phân quyền & Chỉnh sửa Người dùng</h3>
                 <button class="admin-modal-close-btn" onclick="closeModal('modal-edit-user')" aria-label="Đóng"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
             </div>
             <form id="form-edit-user" onsubmit="handleSaveUser(event)">
@@ -703,7 +703,7 @@
     <div class="admin-modal-overlay" id="modal-create-user">
         <div class="admin-modal-container">
             <div class="admin-modal-header">
-                <h3>Thêm Tài Khoản Mới</h3>
+                <h3 class="pm-card-heading">Thêm Tài Khoản Mới</h3>
                 <button class="admin-modal-close-btn" onclick="closeModal('modal-create-user')" aria-label="Đóng" data-icon="close" data-icon-size="16"></button>
             </div>
             <form id="form-create-user" onsubmit="handleCreateUser(event)">
@@ -759,7 +759,7 @@
     <div class="admin-modal-overlay" id="modal-plan">
         <div class="admin-modal-container">
             <div class="admin-modal-header">
-                <h3 id="modal-plan-title">Thêm Gói Dịch Vụ Mới</h3>
+                <h3 id="modal-plan-title" class="pm-card-heading">Thêm Gói Dịch Vụ Mới</h3>
                 <button class="admin-modal-close-btn" onclick="closeModal('modal-plan')" aria-label="Đóng"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
             </div>
             <form id="form-plan" onsubmit="handleSavePlan(event)">
@@ -836,7 +836,7 @@
     <div class="admin-modal-overlay" id="modal-question">
         <div class="admin-modal-container">
             <div class="admin-modal-header">
-                <h3 id="modal-question-title">Thêm Câu Hỏi Phỏng Vấn Mới</h3>
+                <h3 id="modal-question-title" class="pm-card-heading">Thêm Câu Hỏi Phỏng Vấn Mới</h3>
                 <button class="admin-modal-close-btn" onclick="closeModal('modal-question')" aria-label="Đóng"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
             </div>
             <form id="form-question" onsubmit="handleSaveQuestion(event)">

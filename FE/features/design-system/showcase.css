@@ -3,7 +3,9 @@
  * Design Authority: Mobbin Analysis Specification
  */
 
-body {
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
   background-color: var(--mobbin-canvas, #ffffff);
   color: var(--mobbin-ink, #141414);
   font-family: var(--pm-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
@@ -80,6 +82,8 @@ body {
 
 .showcase-container {
   max-width: 1140px;
+  width: 100%;
+  box-sizing: border-box;
   margin: 40px auto 80px;
   padding: 0 24px;
 }
@@ -186,6 +190,20 @@ body {
   font-size: 11px;
   color: var(--mobbin-text-faint, #adadad);
   margin-top: 4px;
+}
+
+
+/* ── RESPONSIVE TABLE WRAPPER & GEOMETRY GRID ── */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.geometry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 /* ── TYPOGRAPHY SPECIMEN TABLE ── */
@@ -383,11 +401,39 @@ body {
 }
 
 @media (max-width: 768px) {
+  .showcase-header-dock {
+    padding: 0 12px;
+  }
+  .showcase-floating-nav {
+    padding: 6px 12px;
+  }
+  .showcase-nav-links {
+    display: none;
+  }
+  .showcase-brand span {
+    display: none;
+  }
+  .showcase-cta-group .btn-outline-pill {
+    display: none;
+  }
+  .showcase-container {
+    padding: 0 16px;
+    margin: 20px auto 40px;
+  }
+  .palette-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .geometry-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .component-showcase-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .showcase-hero h1 {
-    font-size: 38px;
+    font-size: 28px;
+    line-height: 1.2;
+    word-break: break-word;
   }
 }
 

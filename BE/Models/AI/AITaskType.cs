@@ -19,6 +19,7 @@ namespace backend.Models.AI
         public const string Closing = "Closing";
         public const string ReportGeneration = "ReportGeneration";
         public const string CvAnalysis = "CvAnalysis";
+        public const string JdAnalysis = "JdAnalysis";
         public const string JobRecommendation = "JobRecommendation";
         public const string CareerRoadmap = "CareerRoadmap";
 
@@ -34,6 +35,7 @@ namespace backend.Models.AI
             Closing,
             ReportGeneration,
             CvAnalysis,
+            JdAnalysis,
             JobRecommendation,
             CareerRoadmap
         };

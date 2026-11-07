@@ -199,3 +199,19 @@ html[data-theme="dark"] .error-links-box a,
 body.dark-mode .error-links-box a {
   color: #38bdf8 !important;
 }
+
+
+/* Responsive Navigation Protection */
+@media (max-width: 768px) {
+  .nav-public-links {
+    display: none !important;
+  }
+  .navbar {
+    padding: 0 16px;
+    height: 64px;
+  }
+  .error-card {
+    padding: 32px 20px;
+    margin: 0 12px;
+  }
+}

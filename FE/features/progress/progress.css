@@ -56,12 +56,28 @@ body.dark-mode {
   margin-bottom: 20px;
 }
 
+@media (max-width: 768px) {
+  .progress-hero {
+    padding: 20px 16px 0;
+    margin-bottom: 16px;
+  }
+}
+
 .progress-hero h1 {
   font-size: clamp(22px, 3vw, 28px);
   font-weight: var(--pm-font-weight-bold, 652);
   color: var(--prog-text-primary);
   margin: 0 0 6px;
   letter-spacing: -0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.progress-hero h1 svg {
+  flex-shrink: 0;
+  margin-right: 0 !important;
 }
 
 .progress-hero p {
@@ -152,10 +168,10 @@ body.dark-mode {
   box-shadow: 0 4px 12px rgba(29, 78, 216, 0.35);
 }
 
-/* Key Stats Grid */
+/* Key Stats Grid (WI-PROGRESS-UI-CONSISTENCY-01: Clear Visual Hierarchy) */
 .progress-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   padding: 0 32px 24px;
 }
@@ -163,6 +179,14 @@ body.dark-mode {
 @media (max-width: 768px) {
   .progress-grid {
     padding: 0 16px 20px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 
@@ -170,11 +194,16 @@ body.dark-mode {
   background: var(--prog-surface);
   border: 1px solid var(--prog-border);
   border-radius: var(--prog-radius);
-  padding: 18px 20px;
+  padding: 18px 16px;
   text-align: center;
   box-shadow: var(--prog-shadow-sm);
   transition: all 0.2s ease;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 140px;
 }
 
 .progress-stat:hover {
@@ -189,14 +218,24 @@ body.dark-mode {
 .progress-stat.stat-growth  { border-top: 3px solid var(--prog-success); }
 .progress-stat.stat-streak  { border-top: 3px solid var(--prog-warning); }
 
+.progress-stat .stat-lbl {
+  font-size: 13px;
+  color: var(--prog-text-muted);
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 6px;
+  display: block;
+}
+
 .progress-stat .stat-num {
   font-size: 32px;
   font-weight: var(--pm-font-weight-bold, 652);
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-  line-height: 1.1;
-  margin-bottom: 6px;
+  line-height: 1.15;
+  margin: 0 0 8px;
 }
 
 .progress-stat.stat-primary .stat-num { color: var(--prog-primary); }
@@ -205,21 +244,19 @@ body.dark-mode {
 .progress-stat.stat-growth .stat-num  { color: var(--prog-success); }
 .progress-stat.stat-streak .stat-num  { color: var(--prog-warning); }
 
-.progress-stat .stat-lbl {
-  font-size: 13px;
-  color: var(--prog-text-muted);
-  font-weight: 600;
-}
-
 .progress-stat .stat-delta {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   font-size: 11.5px;
-  margin-top: 6px;
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 999px;
+  line-height: 1.35;
+  margin-top: auto;
+  text-align: center;
+  max-width: 100%;
 }
 
 .progress-stat .stat-delta.up {
@@ -293,9 +330,27 @@ body.dark-mode {
   gap: 8px;
 }
 
+.chart-card h3 span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-card h3 svg,
+.chart-card h3 span svg {
+  flex-shrink: 0;
+  margin-right: 0 !important;
+}
+
 .chart-canvas-wrap {
   position: relative;
   height: 250px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.chart-canvas-wrap canvas {
+  max-width: 100% !important;
 }
 
 /* Chart Empty State */
@@ -381,6 +436,14 @@ body.dark-mode {
   font-weight: 700;
   color: var(--prog-text-primary);
   margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.heatmap-title-wrap h3 svg {
+  flex-shrink: 0;
+  margin-right: 0 !important;
 }
 
 .heatmap-summary-badge {
@@ -594,6 +657,14 @@ body.dark-mode {
   font-weight: 700;
   color: var(--prog-text-primary);
   margin: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.streak-card h3 svg {
+  flex-shrink: 0;
+  margin-right: 0 !important;
 }
 
 .streak-display {
@@ -714,9 +785,14 @@ body.dark-mode {
   font-weight: var(--pm-font-weight-semibold, 600);
   color: var(--prog-text-primary);
   margin: 0 0 4px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+.improvements-header-left h3 svg {
+  flex-shrink: 0;
+  margin-right: 0 !important;
 }
 
 .improvements-subtitle {
@@ -1006,7 +1082,7 @@ body.dark-mode {
 }
 
 .imp-modal-section-title {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   font-size: 12.5px;
@@ -1015,6 +1091,11 @@ body.dark-mode {
   text-transform: uppercase;
   letter-spacing: 0.4px;
   margin-bottom: 10px;
+}
+
+.imp-modal-section-title svg {
+  flex-shrink: 0;
+  margin-right: 0 !important;
 }
 
 .imp-modal-diagnosis-text {
@@ -1259,6 +1340,13 @@ body.dark-mode .heatmap-day-cell.level-0 {
 
 .reports-section {
   margin-top: 28px;
+  padding: 0 32px 24px;
+}
+
+@media (max-width: 768px) {
+  .reports-section {
+    padding: 0 16px 20px;
+  }
 }
 
 .reports-card {
@@ -1275,13 +1363,21 @@ body.dark-mode .heatmap-day-cell.level-0 {
   margin-bottom: 18px;
 }
 
+.reports-header-left h3,
 .reports-header h3 {
   font-size: 16px;
   font-weight: 700;
   color: var(--pm-text-primary, #0f172a);
   margin: 0 0 4px 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
+}
+
+.reports-header-left h3 svg,
+.reports-header h3 svg {
+  flex-shrink: 0;
+  margin-right: 0 !important;
 }
 
 .reports-subtitle {
@@ -1432,4 +1528,53 @@ body.dark-mode .trend-single-hint {
   background: #242528 !important;
   border-color: #3C4043 !important;
   color: #9AA0A6 !important;
+}
+
+/* ==========================================================================
+   UNIFIED PROGRESS HEADING + ICON ALIGNMENT SSOT (WI-PROGRESS-UI-CONSISTENCY-01)
+   ========================================================================== */
+.progress-hero h1,
+.chart-card h3 span,
+.heatmap-title-wrap h3,
+.streak-card h3,
+.improvements-header-left h3,
+.reports-header-left h3,
+.reports-header h3,
+.imp-modal-section-title {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  line-height: 1.35;
+}
+
+.progress-hero h1 svg,
+.chart-card h3 svg,
+.chart-card h3 span svg,
+.heatmap-title-wrap h3 svg,
+.streak-card h3 svg,
+.improvements-header-left h3 svg,
+.reports-header-left h3 svg,
+.reports-header h3 svg,
+.imp-modal-section-title svg {
+  flex-shrink: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Reports responsive layout */
+@media (max-width: 640px) {
+  .progress-report-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .report-row-main {
+    width: 100%;
+  }
+  .report-row-action {
+    width: 100%;
+  }
+  .btn-open-report {
+    width: 100%;
+    justify-content: center;
+  }
 }

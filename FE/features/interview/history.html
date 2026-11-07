@@ -42,12 +42,12 @@
     <!-- MAIN CONTENT -->
     <main class="main-content main-content-new">
         <!-- Page Header -->
-        <div class="history-page-header">
+        <div class="history-page-header pm-page-header">
             <div>
-                <h1>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Lịch sử phỏng vấn
+                <h1 class="pm-page-title pm-heading-with-icon pm-heading-center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>Lịch sử phỏng vấn</span>
                 </h1>
-                <p>
+                <p class="pm-page-subtitle">
                     Hồ sơ chi tiết và báo cáo đánh giá của toàn bộ các phiên phỏng vấn mô phỏng đã hoàn thành
                 </p>
             </div>
@@ -80,22 +80,27 @@
         </div>
 
         <!-- Metrics Overview -->
+                <!-- Metrics Overview -->
         <div class="history-metrics-row">
-            <div class="metric-mini-card">
-                <div class="val" id="hist-total-count">0</div>
-                <div class="lbl">Tổng số buổi phỏng vấn</div>
+            <div class="metric-mini-card pm-stat-card">
+                <div class="lbl pm-stat-label">Tổng số buổi phỏng vấn</div>
+                <div class="val pm-stat-value" id="hist-total-count">0</div>
+                <div class="sub pm-stat-caption">Đã lưu trữ</div>
             </div>
-            <div class="metric-mini-card">
-                <div class="val val-primary" id="hist-avg-score">—</div>
-                <div class="lbl">Điểm trung bình (Thang 100)</div>
+            <div class="metric-mini-card pm-stat-card">
+                <div class="lbl pm-stat-label">Điểm trung bình (Thang 100)</div>
+                <div class="val val-primary pm-stat-value" id="hist-avg-score">—</div>
+                <div class="sub pm-stat-caption">Đánh giá AI</div>
             </div>
-            <div class="metric-mini-card">
-                <div class="val val-success" id="hist-completed-count">0</div>
-                <div class="lbl">Buổi có báo cáo hoàn chỉnh</div>
+            <div class="metric-mini-card pm-stat-card">
+                <div class="lbl pm-stat-label">Buổi có báo cáo hoàn chỉnh</div>
+                <div class="val val-success pm-stat-value" id="hist-completed-count">0</div>
+                <div class="sub pm-stat-caption">Đầy đủ số câu</div>
             </div>
-            <div class="metric-mini-card">
-                <div class="val" id="hist-total-minutes">0</div>
-                <div class="lbl">Tổng phút thực chiến</div>
+            <div class="metric-mini-card pm-stat-card">
+                <div class="lbl pm-stat-label">Tổng phút thực chiến</div>
+                <div class="val pm-stat-value" id="hist-total-minutes">0</div>
+                <div class="sub pm-stat-caption">Tích lũy</div>
             </div>
         </div>
 
@@ -674,7 +679,10 @@
                     const sessId = session.backendSessionId || session.id || session.sessionId;
 
                     if (isCompleted) {
-                        statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Đã hoàn thành</span>` + (session.isGuestPreview ? ` <span class="pm-status-pill guest" style="background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;"><span class="pm-status-dot" style="background:#64748b;"></span> Dùng thử</span>` : '');
+                        statusBadgeHtml = `<span class="pm-status-pill done"><span class="pm-status-dot"></span> Đã hoàn thành</span>`;
+                        if (session.isGuestPreview) {
+                            statusBadgeHtml += ` <span class="pm-status-pill guest" style="background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;"><span class="pm-status-dot" style="background:#64748b;"></span> Dùng thử</span>`;
+                        }
                         const reportUrl = sessId ? `../report/report.html?sessionId=${encodeURIComponent(sessId)}` : `../report/report.html?index=${originalIdx}`;
                         actionButtonsHtml = `
                             <a href="${reportUrl}" class="btn-action-report" title="Xem báo cáo chi tiết buổi phỏng vấn">

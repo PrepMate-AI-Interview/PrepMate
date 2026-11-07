@@ -103,6 +103,11 @@ async function handleCvUpload(fileOrEvent) {
     if (outdatedWarning) {
       outdatedWarning.classList.add("hidden");
     }
+    const cvError = document.getElementById("cv-analysis-error");
+    if (cvError) {
+      cvError.classList.add("hidden");
+      cvError.style.display = "none";
+    }
 
     // H1: Server-persisted CV sync for authenticated session setup
     const authToken = (typeof getAuthToken === "function" ? getAuthToken() : (typeof getCurrentUser === "function" ? getCurrentUser()?.token : null)) || localStorage.getItem("prepmate_auth_token") || sessionStorage.getItem("prepmate_auth_token");
@@ -166,6 +171,15 @@ function removeUploadedCv(e) {
   if (outdatedWarning) {
     outdatedWarning.classList.add("hidden");
   }
+  const cvError = document.getElementById("cv-analysis-error");
+  if (cvError) {
+    cvError.classList.add("hidden");
+    cvError.style.display = "none";
+  }
+  const btnCvSummary = document.getElementById("btn-expand-cv-summary");
+  if (btnCvSummary) { btnCvSummary.classList.add("hidden"); btnCvSummary.style.display = "none"; }
+  const expContainer = document.getElementById("cv-experience-container");
+  if (expContainer) { expContainer.classList.add("hidden"); expContainer.style.display = "none"; }
   if (uploadStatus) uploadStatus.classList.add("hidden");
   if (uploadBox) uploadBox.classList.remove("hidden");
 }

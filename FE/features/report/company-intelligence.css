@@ -397,6 +397,10 @@
   .company-nav-container {
     padding: 0 16px;
   }
+  .company-brand .nav-divider,
+  .company-brand .nav-page-title {
+    display: none !important;
+  }
   .company-container {
     padding: 0 16px;
   }

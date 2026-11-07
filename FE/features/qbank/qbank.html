@@ -46,29 +46,29 @@
     <!-- MAIN CONTENT -->
     <main class="main-content main-content-new">
         <!-- Top Hero Section -->
-        <div class="dashboard-hero" style="margin-bottom: 24px;">
+        <div class="dashboard-hero pm-page-header" style="margin-bottom: 24px;">
             <div class="hero-left">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
                     <span class="qbank-hero-pill-blue">Thư viện chuyên đề thực chiến</span>
                     <span class="qbank-hero-pill-emerald">Tích hợp AI hỏi đào sâu & STAR</span>
                 </div>
-                <h1 style="font-size:24px;margin-bottom:8px;">Ngân hàng Câu hỏi & Kiến thức cốt lõi AI</h1>
-                <p style="font-size:14px;color:var(--pm-text-secondary, #475569);margin-bottom:0;max-width:650px;">
+                <h1 class="pm-page-title" style="margin-bottom:8px;">Ngân hàng Câu hỏi & Kiến thức cốt lõi AI</h1>
+                <p class="pm-page-subtitle" style="margin-bottom:0;max-width:650px;">
                     Cẩm nang tra cứu và định hướng trả lời câu hỏi phỏng vấn chuẩn hóa theo phương pháp STAR từ các doanh nghiệp hàng đầu. Bấm <strong>"Xem gợi ý & STAR"</strong> trên từng câu hỏi để tham khảo mục tiêu đánh giá, khung cấu trúc trả lời, từ khóa trọng tâm và các lỗi phổ biến cần tránh.
                 </p>
             </div>
             <div class="hero-stats">
-                <div class="hero-stat-item">
-                    <span class="num" id="stat-total-q">24</span>
-                    <span class="lbl">Chuyên đề câu hỏi</span>
+                <div class="hero-stat-item pm-stat-card">
+                    <span class="lbl pm-stat-label">Chuyên đề câu hỏi</span>
+                    <span class="num pm-stat-value" id="stat-total-q">24</span>
                 </div>
-                <div class="hero-stat-item">
-                    <span class="num" style="color:#059669;">8+</span>
-                    <span class="lbl">Lĩnh vực ngành nghề</span>
+                <div class="hero-stat-item pm-stat-card">
+                    <span class="lbl pm-stat-label">Lĩnh vực ngành nghề</span>
+                    <span class="num pm-stat-value" style="color:#059669;">8+</span>
                 </div>
-                <div class="hero-stat-item">
-                    <span class="num" style="color:#7c3aed;">100%</span>
-                    <span class="lbl">Kèm AI hỏi đào sâu</span>
+                <div class="hero-stat-item pm-stat-card">
+                    <span class="lbl pm-stat-label">Kèm AI hỏi đào sâu</span>
+                    <span class="num pm-stat-value" style="color:#7c3aed;">100%</span>
                 </div>
             </div>
         </div>
@@ -78,13 +78,13 @@
             <div class="qbank-filter-panel">
                 <!-- Panel Header -->
                 <div class="filter-panel-header">
-                    <div class="filter-header-left">
+                    <div class="filter-header-left pm-heading-with-icon">
                         <div class="filter-header-icon">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
                         </div>
                         <div>
-                            <h3 class="filter-panel-title">Bộ lọc chuyên môn & Doanh nghiệp</h3>
-                            <p class="filter-panel-desc">Lọc câu hỏi theo nguồn doanh nghiệp, lĩnh vực, cấp bậc độ khó, ngôn ngữ và từ khóa kỹ thuật</p>
+                            <h3 class="filter-panel-title pm-section-heading">Bộ lọc chuyên môn & Doanh nghiệp</h3>
+                            <p class="filter-panel-desc pm-section-desc">Lọc câu hỏi theo nguồn doanh nghiệp, lĩnh vực, cấp bậc độ khó, ngôn ngữ và từ khóa kỹ thuật</p>
                         </div>
                     </div>
                     <div class="filter-header-actions">
@@ -305,7 +305,7 @@
                 <div class="qbank-modal-meta-top" id="modal-meta-top">
                     <!-- Dynamic badges: Industry, Role, Language, Type, Difficulty -->
                 </div>
-                <h3 class="qbank-modal-title" id="modal-title">Tiêu đề câu hỏi</h3>
+                <h3 class="qbank-modal-title pm-card-heading pm-content-wrap" id="modal-title">Tiêu đề câu hỏi</h3>
             </div>
 
             <!-- Modal Scrollable Body -->
@@ -1043,7 +1043,7 @@
                                 <span class="badge-qtype">${item.typeLabel || item.type}</span>
                                 <span class="pm-flag-badge">${item.langLabel || 'Tiếng Việt'}</span>
                             </div>
-                            <h4 class="qbank-row-title">${item.title}</h4>
+                            <h4 class="qbank-row-title pm-content-wrap">${item.title}</h4>
                             <div class="qbank-row-submeta">
                                 <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-primary);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>${item.duration || '6-8 phút'}</span>
                                 <span><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="color:#d97706;" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Kèm AI đào sâu</span>

@@ -337,6 +337,7 @@ builder.Services.AddScoped<InterviewReportService>();
 builder.Services.AddScoped<CoachingSynthesisService>();
 builder.Services.AddScoped<LegacyQuestionService>();
 builder.Services.AddScoped<CvAnalysisService>();
+builder.Services.AddScoped<JdAnalysisService>();
 builder.Services.AddScoped<JobRecommendationService>();
 builder.Services.AddScoped<CareerRoadmapService>();
 builder.Services.AddScoped<IFinalEvaluationService, FinalEvaluationService>();

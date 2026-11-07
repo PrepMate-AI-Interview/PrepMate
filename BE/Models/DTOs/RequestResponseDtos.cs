@@ -101,6 +101,29 @@ namespace backend.Models
         public string? Language { get; set; }
     }
 
+
+    public class AnalyzeJdRequest
+    {
+        public string JdText { get; set; } = string.Empty;
+        public string? JobTitle { get; set; }
+        public string? Industry { get; set; }
+        public string? Seniority { get; set; }
+        public string? Language { get; set; }
+    }
+
+    public class AnalyzeJdResponse
+    {
+        public string TargetRole { get; set; } = string.Empty;
+        public string Summary { get; set; } = string.Empty;
+        public List<string> KeySkills { get; set; } = new List<string>();
+        public List<string> Responsibilities { get; set; } = new List<string>();
+        public List<string> Strengths { get; set; } = new List<string>();
+        public List<string> Gaps { get; set; } = new List<string>();
+        public List<string> Suggestions { get; set; } = new List<string>();
+        public string ExperienceRequirement { get; set; } = string.Empty;
+        public string DomainKnowledge { get; set; } = string.Empty;
+    }
+
     public class AnalyzeCvResponse
     {
         public string Summary { get; set; } = string.Empty;

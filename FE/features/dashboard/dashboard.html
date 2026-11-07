@@ -37,9 +37,9 @@
         </section>
 
         <!-- Dashboard Header Title & Welcome -->
-        <div class="dashboard-header-row">
-            <h1 class="dashboard-page-title">Tổng quan</h1>
-            <p class="dashboard-page-subtitle">Theo dõi tiến độ, rèn luyện tư duy STAR và chuẩn bị cho các buổi phỏng vấn tuyển dụng tiếp theo.</p>
+        <div class="dashboard-header-row pm-page-header">
+            <h1 class="dashboard-page-title pm-page-title">Tổng quan</h1>
+            <p class="dashboard-page-subtitle pm-page-subtitle">Theo dõi tiến độ, rèn luyện tư duy STAR và chuẩn bị cho các buổi phỏng vấn tuyển dụng tiếp theo.</p>
         </div>
 
         <!-- Dashboard Hero Card -->
@@ -59,18 +59,21 @@
                 </div>
             </div>
             <div class="hero-stats">
-                <div class="hero-stat-item">
-                    <span class="num" id="stat-sessions">0</span>
-                    <span class="lbl">Đã hoàn thành</span>
+                <div class="hero-stat-item pm-stat-card">
+                    <span class="lbl pm-stat-label">Đã hoàn thành</span>
+                    <span class="num pm-stat-value" id="stat-sessions">0</span>
+                    <span class="sub pm-stat-caption">Phiên luyện tập</span>
                     <span id="stat-sessions-total" style="display:none;">0</span>
                 </div>
-                <div class="hero-stat-item">
-                    <span class="num"><span id="stat-avg-score">—</span> <span class="num-unit">/ 100</span></span>
-                    <span class="lbl" id="stat-avg-score-lbl">Điểm đánh giá TB</span>
+                <div class="hero-stat-item pm-stat-card">
+                    <span class="lbl pm-stat-label" id="stat-avg-score-lbl">Điểm đánh giá TB</span>
+                    <span class="num pm-stat-value"><span id="stat-avg-score">—</span> <span class="num-unit">/ 100</span></span>
+                    <span class="sub pm-stat-caption">Thang điểm 0–100</span>
                 </div>
-                <div class="hero-stat-item">
-                    <span class="num" id="stat-time">0 phút</span>
-                    <span class="lbl">Thời gian luyện</span>
+                <div class="hero-stat-item pm-stat-card">
+                    <span class="lbl pm-stat-label">Thời gian luyện</span>
+                    <span class="num pm-stat-value" id="stat-time">0 phút</span>
+                    <span class="sub pm-stat-caption">Tổng tích lũy</span>
                 </div>
             </div>
         </div>
@@ -139,7 +142,7 @@
                 <div class="section-title">
                     <div class="section-title-group">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="section-title-icon" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        <h3>Lịch sử phỏng vấn gần đây</h3>
+                        <h3 class="pm-section-heading">Lịch sử phỏng vấn gần đây</h3>
                     </div>
                     <div class="section-actions-group">
                         <span id="history-total-count" class="badge-realtime">Thời gian thực</span>

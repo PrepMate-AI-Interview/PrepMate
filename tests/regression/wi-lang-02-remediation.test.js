@@ -108,7 +108,7 @@ assert(adminHtml.includes('Xóa khóa API đã lưu trong cơ sở dữ liệu')
 assert(!adminHtml.includes('(Clear stored key)'), 'admin.html removed (Clear stored key)');
 
 const progressHtml = fs.readFileSync(resolvePath('FE/features/progress/progress.html'), 'utf8');
-assert(progressHtml.includes('<span class="stat-lbl">Chuỗi ngày luyện tập</span>'), 'progress.html uses "Chuỗi ngày luyện tập"');
+assert(/<span[^>]*class="[^"]*stat-lbl[^"]*"[^>]*>\s*Chuỗi ngày luyện tập\s*<\/span>/.test(progressHtml), 'progress.html uses "Chuỗi ngày luyện tập"');
 assert(!progressHtml.includes('<span class="stat-lbl">Streak hiện tại</span>'), 'progress.html removed "Streak hiện tại"');
 console.log('[PASS] 8. Admin & Progress verified');
 

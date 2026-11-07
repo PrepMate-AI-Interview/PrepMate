@@ -1008,6 +1008,35 @@ body.dashboard-body .glow-bg {
     text-align: center;
     box-shadow: none;
     transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.hero-stat-item .lbl {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--pm-text-muted, #64748b);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    display: block;
+    order: 1;
+}
+.hero-stat-item .num {
+    font-size: 22px;
+    font-weight: var(--pm-font-weight-bold, 700);
+    color: var(--pm-primary, #1d4ed8);
+    display: block;
+    line-height: 1.2;
+    order: 2;
+}
+.hero-stat-item .sub {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--pm-text-muted, #94a3b8);
+    margin-top: 4px;
+    display: block;
+    order: 3;
 }
 
 .hero-stat-item:hover {
