@@ -85,7 +85,7 @@ console.log('\n--- SECTION 2: Dashboard Professional Hierarchy ---');
 const dashHtml = fs.readFileSync(path.join(ROOT_DIR, 'FE/features/dashboard/dashboard.html'), 'utf8');
 const dashJs = fs.readFileSync(path.join(ROOT_DIR, 'FE/features/dashboard/dashboard.js'), 'utf8');
 
-assert(dashHtml.includes('class="dashboard-page-title">Tổng quan<'), 'Dashboard presents left-aligned "Tổng quan" heading');
+assert(/class="[^"]*dashboard-page-title[^"]*"[^>]*>\s*Tổng quan\s*</.test(dashHtml), 'Dashboard presents left-aligned "Tổng quan" heading');
 assert(dashHtml.includes('class="btn-start-interview"'), 'Dashboard includes prominent interview action CTA');
 assert(dashHtml.includes('id="stat-sessions"') && dashHtml.includes('id="stat-avg-score"') && dashHtml.includes('id="stat-time"'), 'Dashboard defines 3 core KPI metrics without fabricated clutter');
 assert(dashHtml.includes('class="readiness-card glass-card"'), 'Dashboard defines 4 executive readiness pillars');

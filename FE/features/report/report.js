@@ -603,6 +603,178 @@ function renderHeaderMeta(sessInfo, session) {
 // ==========================================================================
 // 5. SECTION 1: OVERVIEW & READINESS HERO
 // ==========================================================================
+
+/**
+ * Executive Overall Assessment Renderer (WI-REPORT-OVERALL-ASSESSMENT-UX-01)
+ * Consolidates the Hero Summary into a unified executive assessment answering:
+ * "Nhìn toàn bộ buổi phỏng vấn, ứng viên đã thể hiện năng lực như thế nào?"
+ * Eliminates duplication of position, score wheel, and strengths/gaps badges.
+ * Provides progressive disclosure with expandable toggle for long content.
+ */
+function renderStructuredHeroSummary(sumEl, summary, isGuest, gpInterpretation, perf = null, report = null, ev = null) {
+  if (!sumEl) return;
+  const rawText = (summary || "").trim();
+  if (!rawText) {
+    sumEl.innerHTML = `
+      <div class="hero-summary-card">
+        <div class="hero-summary-eyebrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Nhận định tổng thể</span>
+        </div>
+        <p class="hero-summary-lead is-single text-muted">Chưa có thông tin nhận định tổng quan cho phiên phỏng vấn này.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // State E: Guest Preview Mode (Restrained preview, zero leaks)
+  if (isGuest) {
+    const hasInterpretation = Boolean(gpInterpretation && gpInterpretation.trim());
+    sumEl.innerHTML = `
+      <div class="hero-summary-card">
+        <div class="hero-summary-eyebrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Nhận định tổng thể (Bản xem trước)</span>
+        </div>
+        <div class="hero-summary-lead hero-summary-main${!hasInterpretation ? ' is-single' : ''}">${escapeHtml(rawText)}</div>
+        ${hasInterpretation ? `<div class="hero-interpretation-text">${escapeHtml(gpInterpretation.trim())}</div>` : ''}
+      </div>
+    `;
+    return;
+  }
+
+  // Authenticated Mode: Distill into Executive Narrative
+  // 1. Strip mechanical score/position boilerplate (already present in header & score wheel)
+  let textToProcess = rawText.replace(/^Đánh giá tổng thể vị trí\s+[^:]+:\s*Điểm số\s+\d+(?:\.\d+)?\s*\/\s*100(?:\.0)?\s*(?:\([^)]+\))?\.?\s*/i, "").trim();
+  if (!textToProcess) {
+    textToProcess = rawText;
+  }
+
+  let leadSentence = "";
+  const supportingParagraphs = [];
+
+  const hasStrengths = textToProcess.includes("Điểm mạnh:");
+  const hasGaps = textToProcess.includes("Lỗ hổng cần lưu ý:") || textToProcess.includes("Khuyến nghị:");
+
+  if (hasStrengths || hasGaps) {
+    let leadPart = "";
+    let strengthsPart = "";
+    let gapsPart = "";
+
+    const firstSplitIdx = textToProcess.search(/Điểm mạnh:|Lỗ hổng cần lưu ý:|Khuyến nghị:/);
+    if (firstSplitIdx > 0) {
+      leadPart = textToProcess.slice(0, firstSplitIdx).trim();
+      const rest = textToProcess.slice(firstSplitIdx);
+      const gapsIdx = rest.search(/Lỗ hổng cần lưu ý:|Khuyến nghị:/);
+      if (gapsIdx !== -1 && rest.startsWith("Điểm mạnh:")) {
+        strengthsPart = rest.slice(0, gapsIdx).replace(/^Điểm mạnh:\s*/, "").trim();
+        gapsPart = rest.slice(gapsIdx).replace(/^(?:Lỗ hổng cần lưu ý|Khuyến nghị):\s*/, "").trim();
+      } else if (rest.startsWith("Điểm mạnh:")) {
+        strengthsPart = rest.replace(/^Điểm mạnh:\s*/, "").trim();
+      } else {
+        gapsPart = rest.replace(/^(?:Lỗ hổng cần lưu ý|Khuyến nghị):\s*/, "").trim();
+      }
+    } else {
+      const rest = textToProcess;
+      const gapsIdx = rest.search(/Lỗ hổng cần lưu ý:|Khuyến nghị:/);
+      if (gapsIdx !== -1 && rest.startsWith("Điểm mạnh:")) {
+        strengthsPart = rest.slice(0, gapsIdx).replace(/^Điểm mạnh:\s*/, "").trim();
+        gapsPart = rest.slice(gapsIdx).replace(/^(?:Lỗ hổng cần lưu ý|Khuyến nghị):\s*/, "").trim();
+      } else if (rest.startsWith("Điểm mạnh:")) {
+        strengthsPart = rest.replace(/^Điểm mạnh:\s*/, "").trim();
+      } else {
+        gapsPart = rest.replace(/^(?:Lỗ hổng cần lưu ý|Khuyến nghị):\s*/, "").trim();
+      }
+    }
+
+    if (perf?.readinessRationale && perf.readinessRationale.trim()) {
+      leadSentence = perf.readinessRationale.trim();
+    } else if (leadPart) {
+      leadSentence = leadPart;
+    } else if (ev?.demonstratedLevel) {
+      leadSentence = `Ứng viên thể hiện năng lực tổng thể phù hợp với cấp độ ${ev.demonstratedLevel}, duy trì lập luận kỹ thuật và tư duy giải quyết vấn đề nhất quán qua các câu hỏi phỏng vấn.`;
+    } else {
+      leadSentence = "Ứng viên thể hiện năng lực tổng thể đáp ứng tốt yêu cầu chuyên môn, có tư duy logic và lập luận rõ ràng trong toàn bộ buổi phỏng vấn.";
+    }
+
+    if (strengthsPart) {
+      supportingParagraphs.push(strengthsPart);
+    }
+    if (gapsPart) {
+      supportingParagraphs.push(gapsPart);
+    }
+  } else {
+    // Natural multi-sentence prose
+    const sentences = textToProcess.split(/(?<=[.!?])\s+(?=[A-ZÀ-Ỹ0-9])/u).map(s => s.trim()).filter(Boolean);
+    if (sentences.length <= 1) {
+      sumEl.innerHTML = `
+        <div class="hero-summary-card">
+          <div class="hero-summary-eyebrow">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Nhận định tổng thể</span>
+          </div>
+          <div class="hero-summary-lead is-single">${escapeHtml(textToProcess)}</div>
+        </div>
+      `;
+      return;
+    }
+
+    leadSentence = sentences[0];
+    for (let i = 1; i < sentences.length; i += 2) {
+      supportingParagraphs.push(sentences.slice(i, i + 2).join(" "));
+    }
+  }
+
+  let bodyHtml = "";
+  const totalBodyLength = supportingParagraphs.join(" ").length;
+  const shouldClamp = totalBodyLength > 200 || supportingParagraphs.length > 1;
+
+  if (supportingParagraphs.length > 0) {
+    const clampedAttr = shouldClamp ? " is-clamped" : "";
+    bodyHtml = `
+      <div class="hero-summary-body${clampedAttr}">
+        ${supportingParagraphs.map(p => `<p class="hero-summary-para">${escapeHtml(p)}</p>`).join("")}
+      </div>
+    `;
+    if (shouldClamp) {
+      bodyHtml += `
+        <button class="btn-expand-summary" id="btn-expand-hero-summary" type="button" aria-expanded="false" onclick="toggleHeroSummaryExpand()">
+          <span>Xem thêm</span>
+          <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      `;
+    }
+  }
+
+  sumEl.innerHTML = `
+    <div class="hero-summary-card">
+      <div class="hero-summary-eyebrow">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Nhận định tổng thể</span>
+      </div>
+      <div class="hero-summary-lead${supportingParagraphs.length === 0 ? " is-single" : ""}">${escapeHtml(leadSentence)}</div>
+      ${bodyHtml}
+    </div>
+  `;
+}
+
+window.toggleHeroSummaryExpand = function() {
+  const body = document.querySelector('.hero-summary-body');
+  const btn = document.getElementById('btn-expand-hero-summary');
+  if (!body || !btn) return;
+  const isExpanded = body.classList.contains('is-expanded');
+  if (isExpanded) {
+    body.classList.remove('is-expanded');
+    body.classList.add('is-clamped');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = `<span>Xem thêm</span> <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`;
+  } else {
+    body.classList.remove('is-clamped');
+    body.classList.add('is-expanded');
+    btn.setAttribute('aria-expanded', 'true');
+    btn.innerHTML = `<span>Thu gọn</span> <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`;
+  }
+};
 function renderOverviewHero(ev, perf, sessInfo, compInfo, evidenceSummary, session, report = null) {
   // Title & Badges
   const posEl = document.getElementById("hero-target-position");
@@ -746,20 +918,15 @@ function renderOverviewHero(ev, perf, sessInfo, compInfo, evidenceSummary, sessi
     }
   }
 
+  const gpInterpretation = (isGuest ? (report?.guestPreview?.interpretation || report?.interpretation || "") : "");
   if (isGuest) {
     const gpSummary = report?.guestPreview?.summary || report?.summary;
     if (gpSummary) {
       summary = gpSummary;
     }
-    const gpInterpretation = report?.guestPreview?.interpretation || report?.interpretation || "";
-    if (gpInterpretation && sumEl) {
-      sumEl.innerHTML = `<span class="hero-summary-main">${escapeHtml(summary)}</span> <span class="hero-interpretation-text">${escapeHtml(gpInterpretation)}</span>`;
-    } else if (sumEl) {
-      sumEl.textContent = summary;
-    }
-  } else {
-    if (sumEl) sumEl.textContent = summary;
   }
+
+  renderStructuredHeroSummary(sumEl, summary, isGuest, gpInterpretation, perf, report, ev);
 
   // Details
   const dur = sessInfo.interviewDurationMinutes || session.duration || 15;
@@ -3555,7 +3722,7 @@ function renderTurnProvenanceSection(report, session) {
       const turnNum = t.turnIndex || (i + 1);
       const turnId = `turn-panel-${turnNum}`;
       const triggerId = `turn-trigger-${turnNum}`;
-      const qSnippet = (t.question || "Câu hỏi").length > 85 ? (t.question.slice(0, 85) + "...") : t.question;
+      const qSnippet = t.question || "Câu hỏi";
 
       return `
         <div class="turn-trace-card glass-panel ${isFirst ? 'is-expanded' : 'is-collapsed'}" data-turn-index="${turnNum}">

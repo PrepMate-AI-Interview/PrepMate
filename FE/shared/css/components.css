@@ -1556,3 +1556,195 @@ body.dark-mode .btn-danger *,
 html[data-theme="dark"] .btn-danger * {
   color: #ffffff !important;
 }
+
+/* ========================================================
+   14. WI-GLOBAL-UI-STANDARDIZATION-01: CANONICAL SHARED UI FOUNDATION (SSOT)
+   ======================================================== */
+
+/* 14.1 Page Header & Typography */
+.pm-page-header {
+  margin-bottom: var(--pm-space-6, 24px);
+}
+
+.pm-page-title {
+  font-family: var(--pm-font-display, var(--pm-font-sans));
+  font-size: var(--pm-font-size-h1, 1.75rem);
+  font-weight: var(--pm-font-weight-bold, 700);
+  line-height: var(--pm-line-height-compact, 1.2);
+  letter-spacing: var(--pm-tracking-tight, -0.015em);
+  color: var(--pm-ink, #0f172a);
+  margin: 0 0 var(--pm-space-2, 8px) 0;
+}
+
+.pm-page-subtitle {
+  font-size: var(--pm-font-size-body, 14px);
+  font-weight: var(--pm-font-weight-regular, 400);
+  line-height: var(--pm-line-height-normal, 1.5);
+  color: var(--pm-text-secondary, #334155);
+  margin: 0;
+  max-width: 720px;
+}
+
+/* 14.2 Section & Card Headings */
+.pm-section-header {
+  margin-bottom: var(--pm-space-4, 16px);
+}
+
+.pm-section-heading {
+  font-size: var(--pm-font-size-h2, 1.375rem);
+  font-weight: var(--pm-font-weight-bold, 700);
+  line-height: var(--pm-line-height-tight, 1.25);
+  letter-spacing: var(--pm-tracking-snug, -0.01em);
+  color: var(--pm-ink, #0f172a);
+  margin: 0 0 var(--pm-space-1, 4px) 0;
+}
+
+.pm-section-subtitle,
+.pm-section-desc {
+  font-size: var(--pm-font-size-body-sm, 13px);
+  font-weight: var(--pm-font-weight-regular, 400);
+  line-height: var(--pm-line-height-normal, 1.5);
+  color: var(--pm-text-muted, #64748b);
+  margin: 0;
+}
+
+.pm-card-heading {
+  font-size: var(--pm-font-size-h3, 1.125rem);
+  font-weight: var(--pm-font-weight-semibold, 600);
+  line-height: var(--pm-line-height-snug, 1.35);
+  color: var(--pm-ink-soft, #262626);
+  margin: 0;
+}
+
+/* 14.3 Heading With Icon System (First-Line Optical Anchor) */
+.pm-heading-with-icon {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pm-space-2, 8px);
+  min-width: 0;
+}
+
+.pm-heading-with-icon > svg,
+.pm-heading-with-icon > morph-icon,
+.pm-heading-with-icon > .pm-icon {
+  flex-shrink: 0;
+  margin-top: 0.15em;
+}
+
+.pm-heading-with-icon > .pm-heading-text,
+.pm-heading-with-icon > span:not(.pm-badge):not(.badge):not(.pm-status-pill) {
+  flex: 1 1 auto;
+  min-width: 0;
+  word-break: break-word;
+}
+
+/* For single-line or compact action headings where center alignment is desired */
+.pm-heading-with-icon.pm-heading-center {
+  align-items: center;
+}
+
+.pm-heading-with-icon.pm-heading-center > svg,
+.pm-heading-with-icon.pm-heading-center > morph-icon,
+.pm-heading-with-icon.pm-heading-center > .pm-icon {
+  margin-top: 0;
+}
+
+/* 14.4 Metric & Statistic 3-Tier Hierarchy */
+.pm-stat-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--pm-space-5, 20px) var(--pm-space-4, 16px);
+  background: var(--pm-bg-card, #ffffff);
+  border: 1px solid var(--pm-hairline, #e2e8f0);
+  border-radius: var(--pm-radius-card-sm, 12px);
+  min-width: 0;
+}
+
+.pm-stat-label {
+  font-size: var(--pm-font-size-body-sm, 13px);
+  font-weight: var(--pm-font-weight-semibold, 600);
+  color: var(--pm-text-muted, #64748b);
+  line-height: var(--pm-line-height-tight, 1.25);
+  margin-bottom: var(--pm-space-2, 8px);
+}
+
+.pm-stat-value {
+  font-size: var(--pm-font-size-display, 2rem);
+  font-weight: var(--pm-font-weight-bold, 700);
+  color: var(--pm-text-primary, #0f172a);
+  line-height: var(--pm-line-height-compact, 1.15);
+  letter-spacing: var(--pm-tracking-tight, -0.02em);
+  word-break: break-word;
+}
+
+.pm-stat-delta,
+.pm-stat-caption {
+  font-size: var(--pm-font-size-caption, 12px);
+  font-weight: var(--pm-font-weight-medium, 500);
+  color: var(--pm-text-muted, #64748b);
+  line-height: var(--pm-line-height-snug, 1.35);
+  margin-top: var(--pm-space-2, 8px);
+}
+
+.pm-stat-card.pm-stat-stretch .pm-stat-delta,
+.pm-stat-card.pm-stat-stretch .pm-stat-caption {
+  margin-top: auto;
+}
+
+/* 14.5 Content Wrapping & Constrained Truncation Utilities */
+.pm-content-wrap {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.pm-truncate-constrained {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  min-width: 0;
+}
+
+/* 14.6 Section Gap */
+.pm-section-gap {
+  margin-bottom: var(--pm-space-8, 32px);
+}
+
+@media (max-width: 768px) {
+  .pm-section-gap {
+    margin-bottom: var(--pm-space-5, 20px);
+  }
+}
+
+/* 14.7 Dark Mode Support for Canonical Shared Foundation */
+html[data-theme="dark"] .pm-page-title,
+body.dark-mode .pm-page-title,
+html[data-theme="dark"] .pm-section-heading,
+body.dark-mode .pm-section-heading {
+  color: var(--pm-text-primary, #ffffff);
+}
+
+html[data-theme="dark"] .pm-card-heading,
+body.dark-mode .pm-card-heading {
+  color: #e2e8f0;
+}
+
+html[data-theme="dark"] .pm-page-subtitle,
+body.dark-mode .pm-page-subtitle,
+html[data-theme="dark"] .pm-section-subtitle,
+body.dark-mode .pm-section-subtitle,
+html[data-theme="dark"] .pm-section-desc,
+body.dark-mode .pm-section-desc {
+  color: var(--pm-text-muted, #94a3b8);
+}
+
+html[data-theme="dark"] .pm-stat-card,
+body.dark-mode .pm-stat-card {
+  background: var(--pm-bg-card, #292A2D);
+  border-color: var(--pm-hairline, #3C4043);
+}
+
+html[data-theme="dark"] .pm-stat-value,
+body.dark-mode .pm-stat-value {
+  color: var(--pm-text-primary, #ffffff);
+}

@@ -31,25 +31,25 @@
         <div id="settings-status-announcer" class="sr-only" aria-live="polite"></div>
 
         <!-- Top Hero -->
-        <div class="dashboard-hero" style="margin-bottom: 24px;">
+        <div class="dashboard-hero pm-page-header" style="margin-bottom: 24px;">
             <div class="hero-left">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
                     <span style="font-size:12px;font-weight:700;color:#1d4ed8;background:#eff6ff;padding:3px 10px;border-radius:100px;border:1px solid #bfdbfe;">Thiết lập cá nhân</span>
                     <span id="role-sync-badge" style="font-size:12px;font-weight:700;color:#059669;background:#ecfdf5;padding:3px 10px;border-radius:100px;border:1px solid #a7f3d0;">Tất cả vai trò</span>
                 </div>
-                <h1 style="font-size:24px;margin-bottom:8px;">Cài đặt cá nhân & Trải nghiệm</h1>
-                <p style="font-size:14px;color:var(--text-secondary);margin-bottom:0;max-width:650px;">
+                <h1 class="pm-page-title" style="font-size:24px;margin-bottom:8px;">Cài đặt cá nhân & Trải nghiệm</h1>
+                <p class="pm-page-subtitle pm-content-wrap" style="font-size:14px;color:var(--text-secondary);margin-bottom:0;max-width:650px;">
                     Tùy chỉnh chế độ hiển thị sáng/tối, ngôn ngữ hệ thống, âm thanh người phỏng vấn ảo, bảo mật phiên và thông báo luyện tập. Cấu hình tự động lưu trên trình duyệt của bạn.
                 </p>
             </div>
             <div class="hero-stats">
                 <div class="hero-stat-item">
-                    <span class="num" id="current-lang-stat">🇻🇳 VN</span>
-                    <span class="lbl">Ngôn ngữ</span>
+                    <span class="num pm-stat-value" id="current-lang-stat">🇻🇳 VN</span>
+                    <span class="lbl pm-stat-label">Ngôn ngữ</span>
                 </div>
                 <div class="hero-stat-item">
-                    <span class="num" id="current-theme-stat" style="color:#1d4ed8;">Sáng</span>
-                    <span class="lbl">Giao diện</span>
+                    <span class="num pm-stat-value" id="current-theme-stat" style="color:#1d4ed8;">Sáng</span>
+                    <span class="lbl pm-stat-label">Giao diện</span>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
                 <div class="pref-card-header">
                     <div class="pref-icon-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10c0 2.5-1.5 3.5-3 3.5h-1.5a1.5 1.5 0 0 0-1.5 1.5c0 .8.7 1.5.7 2.5 0 1.5-1 2.5-2.7 2.5A10 10 0 0 1 12 2z"/></svg></div>
                     <div>
-                        <h3 style="margin:0;font-size:16px;">Giao diện hiển thị</h3>
+                        <h3 class="pm-card-heading" style="margin:0;font-size:16px;">Giao diện hiển thị</h3>
                         <span style="font-size:12px;color:var(--text-secondary);">Chuyển đổi nhanh phong cách hiển thị sáng, tối hoặc tự động theo hệ điều hành</span>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                 <div class="pref-card-header">
                     <div class="pref-icon-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
                     <div>
-                        <h3 style="margin:0;font-size:16px;">Ngôn ngữ hiển thị</h3>
+                        <h3 class="pm-card-heading" style="margin:0;font-size:16px;">Ngôn ngữ hiển thị</h3>
                         <span style="font-size:12px;color:var(--text-secondary);">Ngôn ngữ hiển thị cho toàn bộ bảng điều khiển, thanh điều hướng và báo cáo</span>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
                 <div class="pref-card-header">
                     <div class="pref-icon-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
                     <div>
-                        <h3 style="margin:0;font-size:16px;">Âm thanh & Người phỏng vấn AI</h3>
+                        <h3 class="pm-card-heading" style="margin:0;font-size:16px;">Âm thanh & Người phỏng vấn AI</h3>
                         <span style="font-size:12px;color:var(--text-secondary);">Cấu hình giọng đọc và micro thu âm trong buồng mô phỏng</span>
                     </div>
                 </div>
@@ -176,7 +176,7 @@
                 <div class="pref-card-header">
                     <div class="pref-icon-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
                     <div>
-                        <h3 style="margin:0;font-size:16px;">Thông báo & Nhắc nhở luyện tập</h3>
+                        <h3 class="pm-card-heading" style="margin:0;font-size:16px;">Thông báo & Nhắc nhở luyện tập</h3>
                         <span style="font-size:12px;color:var(--text-secondary);">Duy trì nhịp phản xạ và nhắc nhở duy trì lịch trình phỏng vấn</span>
                     </div>
                 </div>
@@ -211,7 +211,7 @@
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     </div>
                     <div>
-                        <h3 style="margin:0;font-size:16px;">Bảo mật & Phiên làm việc</h3>
+                        <h3 class="pm-card-heading" style="margin:0;font-size:16px;">Bảo mật & Phiên làm việc</h3>
                         <span style="font-size:12px;color:var(--text-secondary);">Quản lý phiên đăng nhập an toàn, mật khẩu và xóa bộ nhớ tạm</span>
                     </div>
                 </div>

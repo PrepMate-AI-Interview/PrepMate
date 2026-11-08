@@ -148,16 +148,29 @@ const startTime = Date.now();
 for (const suite of suites) {
   const fullPath = path.join(rootDir, suite.path);
   process.stdout.write(`â€¢ Running ${suite.name.padEnd(38)} ... `);
+  const isLiveOrAi = /live|ai|cdp|gateway/i.test(suite.path) || /live|ai|cdp|gateway/i.test(suite.name);
+  const suiteTimeout = isLiveOrAi ? 60000 : 30000;
   try {
-    const out = execSync(`node "${fullPath}"`, { cwd: rootDir, encoding: 'utf8' });
+    const out = execSync(`node "${fullPath}"`, {
+      cwd: rootDir,
+      encoding: 'utf8',
+      timeout: suiteTimeout,
+      env: { ...process.env, TEST_TIMEOUT_MS: String(suiteTimeout) }
+    });
     const assertions = (out.match(/\[PASS\]/g) || []).length;
     totalAssertions += assertions;
     totalPassedSuites++;
     console.log(`PASS (${assertions} checks)`);
   } catch (err) {
     totalFailedSuites++;
-    console.log(`FAIL`);
-    failures.push({ name: suite.name, error: err.stdout || err.message });
+    const isTimeout = err.killed || err.signal === 'SIGTERM' || err.code === 'ETIMEDOUT' || (err.message && err.message.includes('TIMEDOUT'));
+    if (isTimeout) {
+      console.log(`TIMEOUT (${suiteTimeout / 1000}s)`);
+      failures.push({ name: suite.name, error: `Suite timed out after ${suiteTimeout / 1000}s` });
+    } else {
+      console.log(`FAIL`);
+      failures.push({ name: suite.name, error: err.stdout || err.message });
+    }
   }
 }
 

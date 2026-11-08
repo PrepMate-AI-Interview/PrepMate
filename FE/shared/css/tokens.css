@@ -23,9 +23,9 @@
   --mobbin-accent:          #0066ff; /* Electric Blue — strictly commercial decision signal */
 
   /* Mobbin Typography Weights */
-  --mobbin-weight-display:  652;    /* Chunky display & heading-1..4 weight */
+  --mobbin-weight-display:  700;    /* Chunky display & heading-1..4 weight */
   --mobbin-weight-title:    600;    /* Titles & button links */
-  --mobbin-weight-body:     456;    /* Standard running text */
+  --mobbin-weight-body:     400;    /* Standard running text */
   --mobbin-weight-lead:     300;    /* Airy hero subtitles */
 
   /* Mobbin Action Primitives */
@@ -331,12 +331,12 @@
   --line-height-normal:     var(--pm-line-height-normal);
   --line-height-relaxed:    var(--pm-line-height-relaxed);
 
-  /* 5.4 Canonical Font Weights (Mobbin Variable Weights: 652 display/headings, 600 title/link, 456 body, 300 lead) */
-  --pm-font-weight-light:    300;      /* Light subtitle counterpoint (Mobbin 300) */
-  --pm-font-weight-regular:  456;      /* Default body copy (Mobbin 456) */
+  /* 5.4 Canonical Font Weights (Conventional Standard Weights: 700 Bold, 600 Semibold, 500 Medium, 400 Regular, 300 Light) */
+  --pm-font-weight-light:    300;      /* Light subtitle counterpoint */
+  --pm-font-weight-regular:  400;      /* Default body copy (Conventional 400) */
   --pm-font-weight-medium:   500;      /* Emphasized table data & secondary actions */
-  --pm-font-weight-semibold: 600;      /* Card titles, button labels, badges (Mobbin 600) */
-  --pm-font-weight-bold:     652;      /* Major headings, display metrics (Mobbin 652) */
+  --pm-font-weight-semibold: 600;      /* Card titles, button labels, badges */
+  --pm-font-weight-bold:     700;      /* Major headings, display metrics (Conventional 700) */
 
   /* Backward-compatible Font Weight Aliases */
   --font-weight-light:       var(--pm-font-weight-light);

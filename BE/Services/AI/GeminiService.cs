@@ -180,6 +180,7 @@ namespace backend.Services
                 AITaskType.Closing => 250,
                 AITaskType.ReportGeneration => 2500,
                 AITaskType.CvAnalysis => 1000,
+                AITaskType.JdAnalysis => 1000,
                 AITaskType.JobRecommendation => 1000,
                 AITaskType.CareerRoadmap => 1200,
                 _ => null

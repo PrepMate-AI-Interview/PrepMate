@@ -126,7 +126,7 @@
       <div class="report-header-banner" id="report-header-banner">
         <div class="report-header-content">
           <div class="report-title-row">
-            <h1 class="report-page-title">Báo Cáo Đánh Giá Phỏng Vấn</h1>
+            <h1 class="report-page-title pm-page-title">Báo Cáo Đánh Giá Phỏng Vấn</h1>
             <span class="report-session-status-badge text-success" id="header-completion-status">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
               <span id="header-status-text">Đã hoàn thành</span>
@@ -224,9 +224,17 @@
               </span>
             </div>
             <h1 class="hero-title">Đánh giá Năng lực Phỏng vấn</h1>
-            <p class="hero-summary" id="hero-summary-text">
-              Ứng viên thể hiện nền tảng kỹ thuật vững vàng với khả năng giải quyết vấn đề thực tế tốt.
-            </p>
+            <div class="hero-summary" id="hero-summary-text" role="region" aria-label="Nhận định tổng thể phỏng vấn">
+              <div class="hero-summary-card">
+                <div class="hero-summary-eyebrow">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  <span>Nhận định tổng thể</span>
+                </div>
+                <div class="hero-summary-lead is-single">
+                  Ứng viên thể hiện nền tảng kỹ thuật vững vàng với khả năng giải quyết vấn đề thực tế tốt.
+                </div>
+              </div>
+            </div>
 
             <div class="hero-details-grid">
               <div class="hero-detail-item">
@@ -623,11 +631,11 @@
         <!-- 2. Most Frequent Fillers and Delivery Breakdown -->
         <div class="speech-analysis-columns" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 20px;">
           <div class="speech-analysis-card glass-panel" id="speech-fillers-breakdown-card" style="padding: 20px;">
-            <h3 class="speech-card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:6px;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>Thống Kê Từ Đệm & Quán Tính Nói</h3>
+            <h3 class="speech-card-title pm-heading-with-icon pm-heading-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" ><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>Thống Kê Từ Đệm & Quán Tính Nói</h3>
             <div id="speech-fillers-list" class="speech-fillers-list"></div>
           </div>
           <div class="speech-analysis-card glass-panel" id="speech-delivery-structure-card" style="padding: 20px;">
-            <h3 class="speech-card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:6px;"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>Cấu Trúc & Độ Súc Tích</h3>
+            <h3 class="speech-card-title pm-heading-with-icon pm-heading-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" ><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>Cấu Trúc & Độ Súc Tích</h3>
             <div id="speech-structure-summary" class="speech-structure-summary"></div>
           </div>
         </div>
@@ -635,7 +643,7 @@
         <!-- 3. Targeted Practice Moments with Per-Turn Audio Player -->
         <div class="speech-practice-box glass-panel" style="margin-top: 24px; padding: 20px;">
           <div class="speech-practice-header" style="margin-bottom: 16px;">
-            <h3 class="speech-card-title" style="margin-bottom: 4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:6px;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Các Lượt Cần Luyện Lại & Nghe Bản Ghi Âm</h3>
+            <h3 class="speech-card-title pm-heading-with-icon pm-heading-center" style="margin-bottom: 4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" ><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Các Lượt Cần Luyện Lại & Nghe Bản Ghi Âm</h3>
             <p class="speech-card-desc">Đối chiếu trích đoạn có từ đệm hoặc ngập ngừng và nghe lại đúng bản ghi âm của câu trả lời đó.</p>
           </div>
           <div id="speech-practice-moments-list" class="speech-practice-moments-list"></div>

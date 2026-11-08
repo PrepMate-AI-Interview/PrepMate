@@ -23,6 +23,7 @@ namespace backend.Controllers
         private readonly InterviewReportService _interviewReportService;
         private readonly LegacyQuestionService _legacyQuestionService;
         private readonly CvAnalysisService _cvAnalysisService;
+        private readonly JdAnalysisService _jdAnalysisService;
         private readonly JobRecommendationService _jobRecommendationService;
         private readonly CareerRoadmapService _careerRoadmapService;
         private readonly IInterviewQuotaService _quotaService;
@@ -34,6 +35,7 @@ namespace backend.Controllers
             InterviewReportService interviewReportService,
             LegacyQuestionService legacyQuestionService,
             CvAnalysisService cvAnalysisService,
+            JdAnalysisService jdAnalysisService,
             JobRecommendationService jobRecommendationService,
             CareerRoadmapService careerRoadmapService,
             IInterviewQuotaService quotaService,
@@ -44,6 +46,7 @@ namespace backend.Controllers
             _interviewReportService = interviewReportService;
             _legacyQuestionService = legacyQuestionService;
             _cvAnalysisService = cvAnalysisService;
+            _jdAnalysisService = jdAnalysisService;
             _jobRecommendationService = jobRecommendationService;
             _careerRoadmapService = careerRoadmapService;
             _quotaService = quotaService;
@@ -373,6 +376,52 @@ namespace backend.Controllers
             );
         }
 
+
+        [HttpPost("analyze-jd")]
+        public async Task<IActionResult> AnalyzeJd(
+            [FromBody] AnalyzeJdRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.JdText))
+            {
+                return BadRequest(new { error = "Thiếu nội dung Job Description (JD)." });
+            }
+
+            if (request.JdText.Length > 100000)
+            {
+                return BadRequest(new { error = "Nội dung JD vượt quá giới hạn độ dài cho phép (100.000 ký tự)." });
+            }
+
+            var result = await _jdAnalysisService.AnalyzeAsync(request);
+
+            if (User.Identity?.IsAuthenticated != true)
+            {
+                // Enforce Guest teaser boundary at server boundary (SEC-F1)
+                if (result.StatusCode == 200 && result.Data is AnalyzeJdResponse resp)
+                {
+                    var fullSummary = resp.Summary ?? string.Empty;
+                    var teaserSummary = CleanTeaserSummary(fullSummary, 170);
+                    var teaser = new AnalyzeJdResponse
+                    {
+                        TargetRole = resp.TargetRole,
+                        Summary = teaserSummary,
+                        KeySkills = resp.KeySkills?.Take(2).ToList() ?? new List<string>(),
+                        Responsibilities = resp.Responsibilities?.Take(2).ToList() ?? new List<string>(),
+                        Strengths = new List<string>(), // Gated for authenticated accounts
+                        Gaps = new List<string>(),      // Gated for authenticated accounts
+                        Suggestions = new List<string>(), // Gated for authenticated accounts
+                        ExperienceRequirement = string.Empty,
+                        DomainKnowledge = string.Empty
+                    };
+                    return StatusCode(result.StatusCode, teaser);
+                }
+            }
+
+            return StatusCode(
+                result.StatusCode,
+                result.Data
+            );
+        }
+
         [HttpPost("analyze-cv")]
         public async Task<IActionResult> AnalyzeCv(
             [FromBody] AnalyzeCvRequest request)
@@ -397,7 +446,7 @@ namespace backend.Controllers
                 if (result.StatusCode == 200 && result.Data is AnalyzeCvResponse resp)
                 {
                     var fullSummary = resp.Summary ?? string.Empty;
-                    var teaserSummary = fullSummary.Length > 170 ? (fullSummary.Length > 167 ? fullSummary[..167].Trim() + "..." : fullSummary[..170]) : fullSummary;
+                    var teaserSummary = CleanTeaserSummary(fullSummary, 170);
                     var teaser = new AnalyzeCvResponse
                     {
                         Summary = teaserSummary,
@@ -493,5 +542,22 @@ namespace backend.Controllers
                 result.Data
             );
         }
+        private static string CleanTeaserSummary(string? fullSummary, int maxLen = 170)
+        {
+            if (string.IsNullOrWhiteSpace(fullSummary)) return string.Empty;
+            if (fullSummary.Length <= maxLen) return fullSummary;
+
+            var cutoff = Math.Min(maxLen - 3, fullSummary.Length);
+            var slice = fullSummary[..cutoff];
+            var lastSpace = slice.LastIndexOf(' ');
+            if (lastSpace > 80)
+            {
+                slice = slice[..lastSpace].TrimEnd();
+            }
+            // Strip any dangling single letter or punctuation before ellipsis
+            slice = System.Text.RegularExpressions.Regex.Replace(slice, @"s+p{L}$", "").TrimEnd();
+            return slice + "...";
+        }
+
     }
 }

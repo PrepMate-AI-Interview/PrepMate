@@ -45,6 +45,11 @@ function requestJson(url, options = {}, body = null) {
     const u = new URL(url);
     const isHttps = u.protocol === 'https:';
     const client = isHttps ? https : http;
+    const isExternalAi = u.hostname.includes('vilao.ai') || u.hostname.includes('openai.com');
+    const isAiEndpoint = isExternalAi || u.pathname.includes("/api/ai/") || u.pathname.includes("/api/sessions");
+    const defaultTimeout = isAiEndpoint ? 75000 : 25000;
+    const timeoutMs = options.timeoutMs || defaultTimeout;
+
     const reqOptions = {
       hostname: u.hostname,
       port: u.port || (isHttps ? 443 : 80),
@@ -57,17 +62,49 @@ function requestJson(url, options = {}, body = null) {
       }
     };
 
+    let settled = false;
+    let timer = null;
+
+    function cleanup() {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    }
+
     const req = client.request(reqOptions, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
+        if (settled) return;
+        settled = true;
+        cleanup();
         let parsed = null;
         try { parsed = JSON.parse(data); } catch (e) { parsed = data; }
         resolve({ status: res.statusCode, headers: res.headers, body: parsed });
       });
+      res.on('error', (err) => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        reject(err);
+      });
     });
 
-    req.on('error', reject);
+    timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      try { req.destroy(new Error(`HTTP request timeout after ${timeoutMs}ms for ${url}`)); } catch(e){}
+      reject(new Error(`HTTP request timeout after ${timeoutMs}ms for ${url}`));
+    }, timeoutMs);
+
+    req.on('error', (err) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(err);
+    });
+
     if (body) {
       req.write(typeof body === 'string' ? body : JSON.stringify(body));
     }
@@ -548,7 +585,15 @@ async function runTestSuite() {
     console.log('  • Fallback report evaluation deterministic integrity verified');
 
   } finally {
-    beProcess.kill();
+    if (beProcess && beProcess.pid) {
+      try {
+        if (process.platform === 'win32') {
+          require('child_process').execSync(`taskkill /pid ${beProcess.pid} /t /f`, { stdio: 'ignore' });
+        } else {
+          beProcess.kill('SIGKILL');
+        }
+      } catch (e) {}
+    }
     try {
       fs.rmSync(TEST_DIR, { recursive: true, force: true });
     } catch (e) {}

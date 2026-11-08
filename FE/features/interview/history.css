@@ -613,6 +613,17 @@
     margin-left: 0;
     width: 100%;
   }
+
+  .filter-date-group,
+  .filter-date-range-group {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .filter-date-input {
+    flex: 1 1 110px;
+    min-width: 0;
+  }
 }
 
 /* ==========================================================================

@@ -37,9 +37,9 @@
         <div class="jobs-container">
 
             <!-- Page Header Section -->
-            <div class="jobs-header-section">
-                <h1 class="jobs-page-title">Cơ hội việc làm</h1>
-                <p class="jobs-page-sub">Tìm kiếm và theo dõi các vị trí tuyển dụng thực tế từ các doanh nghiệp hàng đầu. Nắm bắt yêu cầu chuyên môn, kỹ năng trọng yếu và mức lương thị trường để định hướng lộ trình nghề nghiệp phù hợp.</p>
+            <div class="jobs-header-section pm-page-header">
+                <h1 class="jobs-page-title pm-page-title">Cơ hội việc làm</h1>
+                <p class="jobs-page-sub pm-page-subtitle">Tìm kiếm và theo dõi các vị trí tuyển dụng thực tế từ các doanh nghiệp hàng đầu. Nắm bắt yêu cầu chuyên môn, kỹ năng trọng yếu và mức lương thị trường để định hướng lộ trình nghề nghiệp phù hợp.</p>
             </div>
 
             <!-- Search Panel (Central Discovery Dock - TopCV Pattern) -->
@@ -84,7 +84,7 @@
                 <aside class="jobs-sidebar" id="jobs-sidebar-filters">
                     <div class="jobs-filters-card">
                         <div class="filters-header">
-                            <div class="filters-title-group"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span class="filters-title-text">Bộ lọc tuyển dụng</span><span class="active-filters-badge" id="active-filters-count" style="display:none;">0</span></div>
+                            <div class="filters-title-group pm-heading-with-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span class="filters-title-text pm-section-heading">Bộ lọc tuyển dụng</span><span class="active-filters-badge" id="active-filters-count" style="display:none;">0</span></div>
                             <button type="button" class="btn-reset-filters" onclick="resetFilters()" title="Xóa toàn bộ bộ lọc và đặt lại ban đầu">Xóa tất cả</button>
                         </div>
                         <div id="active-filter-chips" class="active-chips-box" style="display:none;"></div>
@@ -305,7 +305,7 @@
                 '<span class="job-meta-item"><span>' + escapeHtml(expText) + '</span></span><span class="job-meta-sep">•</span>' +
                 '<span class="job-meta-item match-score"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Phù hợp ' + (job.matchScore || 85) + '%</span></span>' +
             '</div>' +
-            '<p class="job-desc-snippet">' + escapeHtml(job.description) + '</p>' +
+            '<p class="job-desc-snippet pm-content-wrap">' + escapeHtml(job.description) + '</p>' +
             (tags.length ? '<div class="job-tags-row">' + tags.slice(0, 5).map(t => '<span class="job-tag">' + escapeHtml(t) + '</span>').join('') + '</div>' : '') +
             '<div class="job-card-footer">' +
                 postedHtml +

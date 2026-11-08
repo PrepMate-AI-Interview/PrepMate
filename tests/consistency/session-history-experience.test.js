@@ -83,7 +83,7 @@ runCheck(1, "1.3 Clean hairline border and elevation hierarchy", () => {
 console.log("\n--- GROUP 2: Visual Hierarchy & Preserved DOM Structural Elements ---");
 
 runCheck(2, "2.1 Essential page structure elements exist", () => {
-  assert(htmlContent.includes('class="history-page-header"'), "history-page-header container must exist");
+  assert(/class="[^"]*history-page-header[^"]*"/.test(htmlContent), "history-page-header container must exist");
   assert(htmlContent.includes('class="history-metrics-row"'), "history-metrics-row container must exist");
   assert(htmlContent.includes('class="history-filter-bar"'), "history-filter-bar container must exist");
   assert(htmlContent.includes('id="history-full-list"'), "history-full-list container must exist");

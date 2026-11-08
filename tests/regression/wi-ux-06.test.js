@@ -84,8 +84,8 @@ console.log('\n[SECTION 3] Dashboard Information Hierarchy & Hero (WI-02, WI-03,
 const dashHtml = fs.readFileSync(path.resolve(__dirname, '../../FE/features/dashboard/dashboard.html'), 'utf8');
 
 test('dashboard.html defines structured page title row (.dashboard-header-row)', () => {
-    assert.ok(dashHtml.includes('class="dashboard-header-row"'), 'dashboard-header-row present');
-    assert.ok(dashHtml.includes('class="dashboard-page-title"'), 'dashboard-page-title present');
+    assert.ok(/class="[^"]*dashboard-header-row[^"]*"/.test(dashHtml), 'dashboard-header-row present');
+    assert.ok(/class="[^"]*dashboard-page-title[^"]*"/.test(dashHtml), 'dashboard-page-title present');
     assert.ok(dashHtml.includes('Tổng quan'), 'Features concise "Tổng quan" title');
 });
 

@@ -41,9 +41,9 @@
   <main class="showcase-container">
 
     <!-- HERO SECTION -->
-    <section class="showcase-hero">
+    <section class="showcase-hero pm-page-header">
       <div class="showcase-tag">Mobbin Analysis Specification</div>
-      <h1>Sự tinh tế của không gian âm.</h1>
+      <h1 class="pm-page-title">Sự tinh tế của không gian âm.</h1>
       <p>
         Hệ thống thiết kế monochrome gallery-white: Nền trắng tinh khiết, cấu trúc phân lớp bằng thang sắc độ xám trung tính, tương tác stadium pill và typography Saans/Inter đa trọng số.
       </p>
@@ -52,7 +52,7 @@
     <!-- 1. BRAND PALETTE MATRIX -->
     <section class="showcase-section" id="palette">
       <div class="section-head">
-        <h2>1. Thang sắc tố & Bảng màu (Monochrome Ladder)</h2>
+        <h2 class="pm-section-heading">1. Thang sắc tố & Bảng màu (Monochrome Ladder)</h2>
         <p>Bảng màu hoàn toàn không màu ngoại trừ một điểm nhấn Electric Blue dành riêng cho tín hiệu thương mại.</p>
       </div>
 
@@ -135,10 +135,11 @@
     <!-- 2. TYPOGRAPHY SPECIMEN TABLE -->
     <section class="showcase-section" id="typography">
       <div class="section-head">
-        <h2>2. Thang đo Typography (Saans / Inter Weights)</h2>
+        <h2 class="pm-section-heading">2. Thang đo Typography (Saans / Inter Weights)</h2>
         <p>Sự tương phản trọng số: 652 cho tiêu đề, 456 cho văn bản chuẩn, 300 cho phụ đề lead.</p>
       </div>
 
+      <div class="table-responsive">
       <table class="type-specimen-table">
         <thead>
           <tr>
@@ -193,12 +194,13 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </section>
 
     <!-- 3. COMPONENT SHOWCASE -->
     <section class="showcase-section" id="components">
       <div class="section-head">
-        <h2>3. Hệ thống Thành phần (Component Primitives)</h2>
+        <h2 class="pm-section-heading">3. Hệ thống Thành phần (Component Primitives)</h2>
         <p>Tất cả phần tử tương tác đều là Stadium Pill (9999px), các khối chứa là Card 24px.</p>
       </div>
 
@@ -252,11 +254,11 @@
     <!-- 4. GEOMETRY & SHAPES -->
     <section class="showcase-section" id="geometry">
       <div class="section-head">
-        <h2>4. Ngôn ngữ Hình học (Geometric Language)</h2>
+        <h2 class="pm-section-heading">4. Ngôn ngữ Hình học (Geometric Language)</h2>
         <p>Quy tắc bo góc: 0px (Toàn màn hình), 16px (Inputs/Pills nhỏ), 24px (Thẻ nội dung), 9999px (Tất cả nút).</p>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+      <div class="geometry-grid">
         <div style="background: var(--mobbin-canvas-soft); padding: 24px; border-radius: 16px; border: 1px solid var(--mobbin-hairline-soft);">
           <strong style="display:block; font-size: 14px; margin-bottom: 4px;">rounded.sm (16px)</strong>
           <span style="font-size: 13px; color: var(--mobbin-text-muted);">Inputs, ô phân tích STAR, hàng FAQ</span>
@@ -284,7 +286,7 @@
         </div>
         <p class="footer-copy">Hệ sinh thái chuẩn bị phỏng vấn thông minh.</p>
       </div>
-      <div style="display: flex; gap: 24px; font-size: 13px;">
+      <div style="display: flex; gap: 16px; font-size: 13px; flex-wrap: wrap;">
         <a href="../../index.html" style="color: #ffffff; text-decoration: none;">Trang chủ</a>
         <a href="../dashboard/dashboard.html" style="color: #ffffff; text-decoration: none;">Bảng điều khiển</a>
         <a href="../interview/interview-info.html" style="color: #ffffff; text-decoration: none;">Phỏng vấn AI</a>

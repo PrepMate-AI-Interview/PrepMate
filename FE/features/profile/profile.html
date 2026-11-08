@@ -41,25 +41,25 @@
 
     <main class="main-content main-content-new">
         <!-- Top Profile Hero Section -->
-        <div class="dashboard-hero" style="margin-bottom: 24px;">
+        <div class="dashboard-hero pm-page-header" style="margin-bottom: 24px;">
             <div class="hero-left">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
                     <span style="font-size:12px;font-weight:700;color:#1d4ed8;background:#eff6ff;padding:3px 10px;border-radius:100px;border:1px solid #bfdbfe;">Hồ sơ ứng viên</span>
                     <span id="profile-sub-badge" style="font-size:12px;font-weight:700;color:#059669;background:#ecfdf5;padding:3px 10px;border-radius:100px;border:1px solid #a7f3d0;">Tài khoản cá nhân</span>
                 </div>
-                <h1 style="font-size:24px;margin-bottom:8px;">Hồ sơ năng lực cá nhân</h1>
-                <p style="font-size:14px;color:var(--text-secondary);margin-bottom:0;max-width:650px;">
+                <h1 class="pm-page-title" style="font-size:24px;margin-bottom:8px;">Hồ sơ năng lực cá nhân</h1>
+                <p class="pm-page-subtitle pm-content-wrap" style="font-size:14px;color:var(--text-secondary);margin-bottom:0;max-width:650px;">
                     Quản lý thông tin định danh, mục tiêu nghề nghiệp và liên kết các tài liệu CV phục vụ phỏng vấn mô phỏng cùng PrepMate AI.
                 </p>
             </div>
             <div class="hero-stats">
                 <div class="hero-stat-item">
-                    <span class="num" id="profile-exp-stat">—</span>
-                    <span class="lbl">Cấp độ mục tiêu</span>
+                    <span class="num pm-stat-value" id="profile-exp-stat">—</span>
+                    <span class="lbl pm-stat-label">Cấp độ mục tiêu</span>
                 </div>
                 <div class="hero-stat-item">
-                    <span class="num" id="profile-status-stat" style="color:#059669;">Hoạt động</span>
-                    <span class="lbl">Trạng thái</span>
+                    <span class="num pm-stat-value" id="profile-status-stat" style="color:#059669;">Hoạt động</span>
+                    <span class="lbl pm-stat-label">Trạng thái</span>
                 </div>
             </div>
         </div>
@@ -67,11 +67,11 @@
         <!-- 1. ACCOUNT SECTION (Tài khoản / Hồ sơ) -->
         <div class="settings-section pm-card" id="account">
             <div class="section-header">
-                <div style="display:flex;align-items:center;gap:10px;">
+                <div class="pm-heading-with-icon" style="display:flex;align-items:center;gap:10px;">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     <div>
-                        <h3 data-i18n-key="profilePersonalInfo" style="margin:0;">Thông tin cá nhân & Tài khoản</h3>
-                        <p style="margin:2px 0 0;font-size:12px;color:var(--text-secondary);">Quản lý hồ sơ định danh, email và bảo mật tài khoản cá nhân</p>
+                        <h3 class="pm-section-heading" data-i18n-key="profilePersonalInfo" style="margin:0;">Thông tin cá nhân & Tài khoản</h3>
+                        <p class="pm-section-desc pm-content-wrap" style="margin:2px 0 0;font-size:12px;color:var(--text-secondary);">Quản lý hồ sơ định danh, email và bảo mật tài khoản cá nhân</p>
                     </div>
                 </div>
             </div>
@@ -133,11 +133,11 @@
         <!-- Redundant account hub removed from presentation (WI-03B) -->
         <div class="settings-section pm-card" id="account-hubs" style="display: none !important;" aria-hidden="true">
             <div class="section-header">
-                <div style="display:flex;align-items:center;gap:10px;">
+                <div class="pm-heading-with-icon" style="display:flex;align-items:center;gap:10px;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-accent-blue);"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                     <div>
-                        <h3 style="margin:0;">Trung tâm Quản lý & Cài đặt Tài khoản</h3>
-                        <p style="margin:2px 0 0;font-size:12px;color:var(--text-secondary);">Truy cập nhanh các chuyên trang quản lý CV, thiết bị mô phỏng và gói dịch vụ chuyên sâu</p>
+                        <h3 class="pm-section-heading" style="margin:0;">Trung tâm Quản lý & Cài đặt Tài khoản</h3>
+                        <p class="pm-section-desc pm-content-wrap" style="margin:2px 0 0;font-size:12px;color:var(--text-secondary);">Truy cập nhanh các chuyên trang quản lý CV, thiết bị mô phỏng và gói dịch vụ chuyên sâu</p>
                     </div>
                 </div>
             </div>
