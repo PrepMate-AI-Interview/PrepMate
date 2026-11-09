@@ -361,7 +361,7 @@ body.dashboard-body {
 }
 
 .stepper-divider.completed {
-    background: #10b981 !important;
+    background: var(--pm-success, #059669) !important;
 }
 
 .stepper-tab.locked,
@@ -1646,6 +1646,10 @@ body.dark-mode .shared-guest-cta-content p {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-wrap: nowrap;
+}
+.readiness-summary-title svg {
+    flex-shrink: 0;
 }
 
 .readiness-specs-grid {

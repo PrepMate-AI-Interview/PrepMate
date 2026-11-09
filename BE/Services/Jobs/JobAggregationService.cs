@@ -133,7 +133,7 @@ namespace backend.Services.Jobs
             {
                 // When unconfigured, present the verified benchmark catalog as sample reference
                 finalJobs = new List<JobPostingDto>(filteredSamples);
-                notice = "Chưa cấu hình JOOBLE_API_KEY. Đang hiển thị danh mục việc làm benchmark mẫu được thẩm định của PrepMate cùng các liên kết tìm việc trực tiếp TopCV, VietnamWorks, ITviec, CareerViet.";
+                notice = "Đang hiển thị danh mục việc làm benchmark mẫu được thẩm định của PrepMate cùng các liên kết tìm việc trực tiếp TopCV, VietnamWorks, ITviec, CareerViet.";
             }
 
             // Apply client-requested sorting

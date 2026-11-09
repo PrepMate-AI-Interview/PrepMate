@@ -184,21 +184,21 @@
             </p>
             <div class="zoom-pause-stats-row">
               <div class="pause-stat-pill">
-                <span class="stat-icon">⏱</span>
+                <span class="stat-icon"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
                 <div class="stat-meta">
                   <span class="stat-label">Thời lượng</span>
                   <strong class="stat-val">${escapeHtmlDefensive(timerStr)}</strong>
                 </div>
               </div>
               <div class="pause-stat-pill">
-                <span class="stat-icon">📌</span>
+                <span class="stat-icon"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-2l-2-3V6a2 2 0 0 0-2-2h-6a2 2 0 0 0-2 2v6l-2 3v2z"/></svg></span>
                 <div class="stat-meta">
                   <span class="stat-label">Tiến độ</span>
                   <strong class="stat-val">Câu ${currentQNum} / ${totalQNum}</strong>
                 </div>
               </div>
               <div class="pause-stat-pill">
-                <span class="stat-icon">🛡️</span>
+                <span class="stat-icon"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
                 <div class="stat-meta">
                   <span class="stat-label">Bảo mật</span>
                   <strong class="stat-val">Đã lưu</strong>
@@ -207,10 +207,10 @@
             </div>
             <div class="zoom-pause-actions">
               <button type="button" onclick="pauseInterview()" class="btn-zoom-resume">
-                ▶ Tiếp tục phỏng vấn ngay
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="margin-right:6px;vertical-align:middle;"><polygon points="5 3 19 12 5 21 5 3"/></svg>Tiếp tục phỏng vấn ngay
               </button>
               <button type="button" onclick="endInterview(true)" class="btn-zoom-end-early">
-                🔴 Kết thúc phỏng vấn sớm
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:6px;vertical-align:middle;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Kết thúc phỏng vấn sớm
               </button>
             </div>
           </div>

@@ -438,7 +438,7 @@
               const b = document.createElement("span");
               b.className = "speech-filter-badge";
               b.title = "Tự động lọc khoảng lặng dài, chỉ phát phần giọng nói";
-              b.textContent = "🎙️ Đã lọc khoảng lặng";
+              b.textContent = "Đã lọc khoảng lặng";
               badgeContainer.appendChild(b);
             }
           } catch(e) {}

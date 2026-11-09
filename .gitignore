@@ -45,6 +45,8 @@ tmp/
 temp/
 *.log
 tests/e2e/screenshots/
+tests/e2e/screenshots-progress-ui/
+tests/audit-artifacts/wi-*/
 artifacts/
 
 # Secrets & Local Environment Overrides

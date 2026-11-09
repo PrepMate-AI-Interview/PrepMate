@@ -520,9 +520,13 @@ body.light-mode select {
     border-color: rgba(203, 213, 225, 0.7);
 }
 
-body.light-mode .btn-primary,
 body.light-mode .btn-outline {
     color: var(--text-primary);
+}
+
+body.light-mode .btn-primary {
+    background-color: var(--pm-primary, #1d4ed8);
+    color: #ffffff !important;
 }
 
 .btn:hover {
@@ -531,9 +535,14 @@ body.light-mode .btn-outline {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background-color: var(--pm-primary, #1d4ed8);
+    background: linear-gradient(135deg, var(--pm-primary, #1d4ed8), var(--pm-accent-blue, #2563eb));
     border: none;
-    color: white;
+    color: #ffffff !important;
+}
+
+.btn-primary * {
+    color: #ffffff !important;
 }
 
 .btn-primary:hover {
@@ -4317,4 +4326,22 @@ html[data-theme="dark"] .workspace-footer-status-dot,
 body.dark-mode .workspace-footer-status-dot {
     background: var(--pm-badge-success-text, #34d399) !important;
     box-shadow: 0 0 6px rgba(16, 185, 129, 0.6) !important;
+}
+
+/* WI-GLOBAL-VISUAL-SURFACE-COLOR-01: Logo Contrast Fix */
+html[data-theme="dark"] .logo-new,
+body.dark-mode .logo-new,
+html[data-theme="dark"] .logo-text-group,
+body.dark-mode .logo-text-group {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .logo-new span,
+body.dark-mode .logo-new span {
+    color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .logo-new .logo-accent,
+body.dark-mode .logo-new .logo-accent {
+    color: #8ab4f8 !important;
 }

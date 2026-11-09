@@ -58,7 +58,7 @@ function showZoomEndConfirmDialog(answeredCount, totalCount) {
         </div>
         <div class="zoom-confirm-body">
           <div class="zoom-confirm-icon-box">
-            <div class="zoom-confirm-icon">🔴</div>
+            <div class="zoom-confirm-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
           </div>
           <h3 class="zoom-confirm-title">Kết thúc buổi phỏng vấn?</h3>
           <p class="zoom-confirm-text">
@@ -69,7 +69,7 @@ function showZoomEndConfirmDialog(answeredCount, totalCount) {
             }
           </p>
           <div class="zoom-confirm-tip">
-            💡 AI sẽ phân tích toàn diện các câu trả lời theo <strong>chuẩn STAR</strong>, tính toán điểm năng lực và xuất <strong>Báo cáo Phân tích Phỏng vấn Chuyên sâu</strong>.
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;display:inline-block;vertical-align:text-bottom;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>AI sẽ phân tích toàn diện các câu trả lời theo <strong>chuẩn STAR</strong>, tính toán điểm năng lực và xuất <strong>Báo cáo Phân tích Phỏng vấn Chuyên sâu</strong>.
           </div>
         </div>
         <div class="zoom-confirm-actions">
@@ -77,7 +77,7 @@ function showZoomEndConfirmDialog(answeredCount, totalCount) {
             Tiếp tục phỏng vấn
           </button>
           <button type="button" class="btn-zoom-confirm-end" id="zoom-confirm-ok-btn">
-            🔴 Kết thúc & Xuất báo cáo AI
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:6px;vertical-align:middle;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Kết thúc & Xuất báo cáo AI
           </button>
         </div>
       </div>

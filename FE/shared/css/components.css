@@ -202,18 +202,21 @@
 
 /* Button Sizes */
 .btn-sm {
-  padding: 6px 12px;
+  min-height: 34px;
+  padding: 6px 14px;
   font-size: var(--font-size-body-sm, 13px);
   border-radius: var(--pm-radius-btn-sm, 6px);
 }
 
 .btn-md {
-  padding: 9px 16px;
+  min-height: 42px;
+  padding: 10px 18px;
   font-size: var(--font-size-body, 14px);
   border-radius: var(--pm-radius-btn-md, 8px);
 }
 
 .btn-lg {
+  min-height: 48px;
   padding: 12px 24px;
   font-size: 1rem;
   border-radius: var(--pm-radius-btn-lg, 10px);
@@ -262,8 +265,12 @@
 /* Button Variants */
 .btn-primary {
   background: var(--pm-cta-ink, #141414);
-  color: var(--color-text-inverse, #ffffff);
+  color: #ffffff !important;
   border-color: var(--pm-cta-ink, #141414);
+}
+
+.btn-primary * {
+  color: #ffffff !important;
 }
 
 .btn-primary:hover {
@@ -693,7 +700,7 @@ select.form-control, select.pm-select, .pm-select {
 
 .badge-friendly {
   background: #ecfdf5;
-  color: #059669;
+  color: #065f46;
   border: 1px solid #a7f3d0;
 }
 
@@ -1747,4 +1754,75 @@ body.dark-mode .pm-stat-card {
 html[data-theme="dark"] .pm-stat-value,
 body.dark-mode .pm-stat-value {
   color: var(--pm-text-primary, #ffffff);
+}
+
+
+/* WI-GLOBAL-VISUAL-SURFACE-COLOR-01: Shared Dark Mode Badge & Pill Tokens */
+html[data-theme="dark"] .badge-success,
+body.dark-mode .badge-success,
+html[data-theme="dark"] .pm-badge-success,
+body.dark-mode .pm-badge-success,
+html[data-theme="dark"] .badge-friendly,
+body.dark-mode .badge-friendly {
+  background: var(--pm-badge-success-bg, rgba(16, 185, 129, 0.16)) !important;
+  color: var(--pm-badge-success-text, #34d399) !important;
+  border-color: var(--pm-badge-success-border, rgba(52, 211, 153, 0.35)) !important;
+}
+
+html[data-theme="dark"] .badge-warning,
+body.dark-mode .badge-warning,
+html[data-theme="dark"] .pm-badge-warning,
+body.dark-mode .pm-badge-warning {
+  background: var(--pm-badge-warning-bg, rgba(245, 158, 11, 0.16)) !important;
+  color: var(--pm-badge-warning-text, #fbbf24) !important;
+  border-color: var(--pm-badge-warning-border, rgba(251, 191, 36, 0.35)) !important;
+}
+
+html[data-theme="dark"] .badge-danger,
+body.dark-mode .badge-danger,
+html[data-theme="dark"] .pm-badge-danger,
+body.dark-mode .pm-badge-danger {
+  background: var(--pm-badge-danger-bg, rgba(239, 68, 68, 0.16)) !important;
+  color: var(--pm-badge-danger-text, #fca5a5) !important;
+  border-color: var(--pm-badge-danger-border, rgba(248, 113, 113, 0.35)) !important;
+}
+
+html[data-theme="dark"] .badge-info,
+body.dark-mode .badge-info,
+html[data-theme="dark"] .pm-badge-info,
+body.dark-mode .pm-badge-info,
+html[data-theme="dark"] .badge-professional,
+body.dark-mode .badge-professional {
+  background: var(--pm-badge-info-bg, rgba(37, 99, 235, 0.16)) !important;
+  color: var(--pm-badge-info-text, #93c5fd) !important;
+  border-color: var(--pm-badge-info-border, rgba(96, 165, 250, 0.35)) !important;
+}
+
+html[data-theme="dark"] .badge-neutral,
+body.dark-mode .badge-neutral,
+html[data-theme="dark"] .pm-badge-neutral,
+body.dark-mode .pm-badge-neutral {
+  background: var(--pm-badge-neutral-bg, #303134) !important;
+  color: var(--pm-badge-neutral-text, #E8EAED) !important;
+  border-color: var(--pm-badge-neutral-border, #3C4043) !important;
+}
+
+/* Standardized Question Type Badge */
+.badge-qtype {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  background: var(--pm-surface-subtle, #f1f5f9);
+  border: 1px solid var(--pm-hairline, #e2e8f0);
+  border-radius: var(--pm-radius-badge, 6px);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pm-text-secondary, #334155);
+}
+
+html[data-theme="dark"] .badge-qtype,
+body.dark-mode .badge-qtype {
+  background: #252629 !important;
+  border-color: #3C4043 !important;
+  color: #BDC1C6 !important;
 }

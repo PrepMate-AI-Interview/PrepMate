@@ -986,7 +986,7 @@
                             <!-- Guest Preview Alert Badge (Shown if running as Guest without saving) -->
                             <div id="guest-preview-alert" class="hidden"
                                 style="margin-top: 12px; padding: 10px 14px; border-radius: 8px; background: #fffbeb; border: 1px solid #fde68a; font-size: 12.5px; color: #92400e; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-                                <span>⚠️ <strong>Bản xem trước dành cho Khách:</strong> Kết quả này là tạm thời và sẽ
+                                <span><strong>Bản xem trước dành cho Khách:</strong> Kết quả này là tạm thời và sẽ
                                     không được lưu vào lịch sử phỏng vấn của bạn.</span>
                                 <button type="button" class="btn-text-link" onclick="promptGuestLogin()"
                                     style="font-size: 12px; font-weight: 700; color: #b45309;">Đăng nhập để lưu</button>
@@ -1321,7 +1321,7 @@
                                     <label class="chamber-input-label" style="margin-bottom: 0;">Giọng nói Người phỏng
                                         vấn AI</label>
                                     <span class="voice-badge-pill" id="voice-service-status-pill"
-                                        style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: rgba(16, 185, 129, 0.15); color: #10b981; font-weight: 500;">
+                                        style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--pm-primary-soft, #eff6ff); color: var(--pm-primary, #2563eb); border: 1px solid var(--pm-primary-border, #bfdbfe); font-weight: 500;">
                                         ElevenLabs Flash v2.5
                                     </span>
                                 </div>
@@ -1361,7 +1361,7 @@
                                         </div>
                                         <button type="button" id="btn-preview-voice" class="btn-preview-voice"
                                             onclick="toggleVoicePreview()"
-                                            style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 500; font-size: 13px; cursor: pointer; transition: all 0.2s ease;">
+                                            style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--pm-primary-border, #bfdbfe); background: var(--pm-primary-soft, #eff6ff); color: var(--pm-primary, #2563eb); font-weight: 500; font-size: 13px; cursor: pointer; transition: all 0.2s ease;">
                                             <span id="preview-voice-icon">▶</span>
                                             <span id="preview-voice-label">Nghe thử</span>
                                         </button>
@@ -1436,12 +1436,12 @@
                                                 thống.</span>
                                         </div>
                                         <div style="display: flex; align-items: flex-start; gap: 6px;">
-                                            <span>🛡️</span>
+                                            <svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:2px;" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                                             <!-- prettier-ignore -->
                                             <span><strong>Bảo mật &amp; Quyền riêng tư:</strong> Chỉ văn bản câu hỏi cần đọc được gửi tới dịch vụ TTS. Dữ liệu CV, câu trả lời của ứng viên, luồng micro và camera KHÔNG gửi tới ElevenLabs. Chế độ Zero Retention phụ thuộc chính sách cấp phép Enterprise của tài khoản; khi chưa được kích hoạt hoặc không khả dụng, nội dung câu hỏi có thể được lưu trữ tạm thời theo chính sách của provider.</span>
                                         </div>
                                         <div style="display: flex; align-items: flex-start; gap: 6px; margin-top: 4px;">
-                                            <span>🌐</span>
+                                            <svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:2px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                                             <span><strong>Model Voice Design:</strong> Sử dụng model
                                                 eleven_multilingual_ttv_v2 (tách biệt với model TTS eleven_flash_v2_5).
                                                 Hãy nghe kỹ bản xem trước để đánh giá chất giọng trước khi lưu.</span>
@@ -1452,7 +1452,7 @@
                                         <button type="button" id="btn-create-voice-preview"
                                             onclick="executeCreateVoiceDesignPreview()"
                                             style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; border: none; background: #6366f1; color: #fff; font-weight: 500; font-size: 13px; cursor: pointer;">
-                                            <span>✨</span>
+                                            <svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                                             <span id="btn-create-voice-preview-text">Tạo bản nghe thử (Preview)</span>
                                         </button>
                                     </div>
@@ -1474,7 +1474,7 @@
                                                 style="flex: 1; padding: 7px 10px; font-size: 12px; border-radius: 5px; border: 1px solid #334155; background: #1e293b; color: #fff;">
                                             <button type="button" id="btn-save-designed-voice"
                                                 onclick="executeSaveDesignedVoice()"
-                                                style="padding: 7px 14px; border-radius: 5px; border: none; background: #10b981; color: #fff; font-size: 12px; font-weight: 500; cursor: pointer;">
+                                                style="padding: 7px 14px; border-radius: 5px; border: none; background: var(--pm-primary, #2563eb); color: #fff; font-size: 12px; font-weight: 500; cursor: pointer;">
                                                 <svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Xác nhận &amp; Sử dụng
                                             </button>
                                         </div>
@@ -1509,7 +1509,7 @@
 
                             <!-- Summary Review Card with Quick Edit Buttons -->
                             <div class="readiness-summary-card">
-                                <h4 class="readiness-summary-title pm-heading-with-icon pm-heading-center">
+                                <h4 class="readiness-summary-title pm-heading-with-icon">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2">
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -1607,18 +1607,18 @@
                                 <!-- Device Pre-selection & Testing (WI-COACH-04A) -->
                                 <div class="device-preflight-selection-box" style="margin-top: 10px; margin-bottom: 12px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
                                     <div style="font-size: 12.5px; font-weight: 700; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                                        <span>⚙️ Chọn Thiết bị Micro &amp; Camera</span>
+                                        <svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Chọn Thiết bị Micro &amp; Camera</span>
                                         <button type="button" id="btn-refresh-devices" onclick="refreshPreflightDevices()" style="font-size: 11px; background: #e0f2fe; color: #0284c7; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer;">Làm mới danh sách</button>
                                     </div>
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                                         <div>
-                                            <label for="preflight-audio-device-select" style="display: block; font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 3px;">🎙️ Micro đầu vào:</label>
+                                            <label for="preflight-audio-device-select" style="display: block; font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 3px;">Micro đầu vào:</label>
                                             <select id="preflight-audio-device-select" class="form-select" style="width: 100%; font-size: 11.5px; padding: 5px 7px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;" onchange="onPreflightAudioDeviceChange(this.value)">
                                                 <option value="">Mặc định hệ thống</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label for="preflight-video-device-select" style="display: block; font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 3px;">📹 Camera:</label>
+                                            <label for="preflight-video-device-select" style="display: block; font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 3px;">Camera:</label>
                                             <select id="preflight-video-device-select" class="form-select" style="width: 100%; font-size: 11.5px; padding: 5px 7px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;" onchange="onPreflightVideoDeviceChange(this.value)">
                                                 <option value="">Mặc định hệ thống</option>
                                             </select>
@@ -4922,7 +4922,7 @@
 
             if (quota.tier === 'pro') {
                 banner.classList.add('pro-banner');
-                textEl.innerHTML = '✨ Bạn đang sử dụng gói <strong>PRO Không giới hạn</strong>. Trải nghiệm phỏng vấn AI toàn diện với đầy đủ tính năng phân tích.';
+                textEl.innerHTML = 'Bạn đang sử dụng gói <strong>PRO Không giới hạn</strong>. Trải nghiệm phỏng vấn AI toàn diện với đầy đủ tính năng phân tích.';
                 if (actionEl) {
                     actionEl.textContent = 'Quản lý gói';
                     actionEl.href = '../../features/payment/pricing.html';
@@ -4931,14 +4931,14 @@
             } else if (quota.tier === 'guest') {
                 banner.classList.add('guest-banner');
                 if (quota.canStart && quota.remaining > 0) {
-                    textEl.innerHTML = `👋 Bạn đang trải nghiệm với tư cách <strong>Khách</strong> (còn <strong>${quota.remaining} lượt phỏng vấn demo</strong>). Đăng ký để lưu tiến độ và mở thêm quyền lợi.`;
+                    textEl.innerHTML = `Bạn đang trải nghiệm với tư cách <strong>Khách</strong> (còn <strong>${quota.remaining} lượt phỏng vấn demo</strong>). Đăng ký để lưu tiến độ và mở thêm quyền lợi.`;
                     if (actionEl) {
                         actionEl.textContent = 'Đăng ký miễn phí';
                         actionEl.href = '../../features/auth/auth.html?mode=register';
                     }
                 } else {
                     banner.classList.add('banner-exhausted');
-                    textEl.innerHTML = '⚠️ Bạn đã sử dụng hết <strong>1 lượt phỏng vấn demo</strong> cho Khách. Đăng nhập hoặc tạo tài khoản miễn phí để tiếp tục.';
+                    textEl.innerHTML = 'Bạn đã sử dụng hết <strong>1 lượt phỏng vấn demo</strong> cho Khách. Đăng nhập hoặc tạo tài khoản miễn phí để tiếp tục.';
                     if (actionEl) {
                         actionEl.textContent = 'Đăng nhập / Đăng ký';
                         actionEl.href = '../../features/auth/auth.html';
@@ -4948,7 +4948,7 @@
             } else {
                 // Free tier
                 if (quota.canStart && quota.remaining > 0) {
-                    textEl.innerHTML = `🎯 Bạn đang sử dụng gói <strong>Free</strong> (còn <strong>${quota.remaining}/${quota.limit || 3} lượt phỏng vấn</strong> trong tuần). Nâng cấp PRO để luyện tập không giới hạn.`;
+                    textEl.innerHTML = `Bạn đang sử dụng gói <strong>Free</strong> (còn <strong>${quota.remaining}/${quota.limit || 3} lượt phỏng vấn</strong> trong tuần). Nâng cấp PRO để luyện tập không giới hạn.`;
                     if (actionEl) {
                         actionEl.textContent = 'Nâng cấp PRO';
                         actionEl.href = '../../features/payment/pricing.html';
@@ -4956,7 +4956,7 @@
                 } else {
                     banner.classList.add('banner-exhausted');
                     const resetDate = quota.resetAt ? new Date(quota.resetAt).toLocaleDateString('vi-VN') : 'đầu tuần sau';
-                    textEl.innerHTML = `⚠️ Bạn đã dùng hết <strong>${quota.limit || 3}/${quota.limit || 3} lượt phỏng vấn miễn phí</strong> trong tuần. Hạn mức sẽ tự động đặt lại vào ${resetDate}.`;
+                    textEl.innerHTML = `Bạn đã dùng hết <strong>${quota.limit || 3}/${quota.limit || 3} lượt phỏng vấn miễn phí</strong> trong tuần. Hạn mức sẽ tự động đặt lại vào ${resetDate}.`;
                     if (actionEl) {
                         actionEl.textContent = 'Nâng cấp PRO ngay';
                         actionEl.href = '../../features/payment/pricing.html';

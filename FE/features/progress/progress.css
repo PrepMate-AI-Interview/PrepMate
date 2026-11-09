@@ -1323,19 +1323,92 @@ body.dark-mode .heatmap-day-cell.level-0 {
   border-color: #3C4043 !important;
 }
 
-/* ── WI-02C PROGRESS REPORTS & DATA INTEGRITY STYLES ── */
+/* ── PM STATUS NOTICE & SINGLE SESSION HINT (WI-PROGRESS-404-PRESENTATION-FIX-01) ── */
+.pm-status-notice,
 .trend-single-hint {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  margin-top: 10px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 12px;
-  color: #64748b;
-  line-height: 1.4;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  margin: 12px 0 16px 0;
+  width: 100%;
+  border-radius: var(--prep-radius-md, 8px);
+  border: 1px solid var(--prep-border, #e2e8f0);
+  background: var(--pm-bg, #f8fafc);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--prep-text-secondary, #475569);
+  box-sizing: border-box;
+}
+
+.trend-single-hint .notice-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.trend-single-hint .notice-main-text {
+  font-weight: 600;
+  color: inherit;
+}
+
+.pm-status-notice svg,
+.trend-single-hint svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Semantic Info */
+.pm-status-notice.status-info,
+.trend-single-hint.status-info {
+  background: var(--pm-primary-soft, #eff6ff);
+  border-color: var(--pm-primary-border, #bfdbfe);
+  color: #1e40af;
+}
+
+.pm-status-notice.status-info svg,
+.trend-single-hint.status-info svg {
+  color: var(--pm-primary, #2563eb);
+}
+
+/* Semantic Success */
+.pm-status-notice.status-success,
+.trend-single-hint.status-success {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.pm-status-notice.status-success svg,
+.trend-single-hint.status-success svg {
+  color: #16a34a;
+}
+
+/* Semantic Warning */
+.pm-status-notice.status-warning,
+.trend-single-hint.status-warning {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+.pm-status-notice.status-warning svg,
+.trend-single-hint.status-warning svg {
+  color: #d97706;
+}
+
+/* Semantic Danger */
+.pm-status-notice.status-danger,
+.trend-single-hint.status-danger {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.pm-status-notice.status-danger svg,
+.trend-single-hint.status-danger svg {
+  color: #dc2626;
 }
 
 .reports-section {
@@ -1523,11 +1596,45 @@ body.dark-mode .btn-open-report:hover {
   color: #ffffff !important;
 }
 
+html[data-theme="dark"] .pm-status-notice,
+body.dark-mode .pm-status-notice,
 html[data-theme="dark"] .trend-single-hint,
 body.dark-mode .trend-single-hint {
   background: #242528 !important;
   border-color: #3C4043 !important;
-  color: #9AA0A6 !important;
+  color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .pm-status-notice.status-info,
+body.dark-mode .pm-status-notice.status-info,
+html[data-theme="dark"] .trend-single-hint.status-info,
+body.dark-mode .trend-single-hint.status-info {
+  background: rgba(37, 99, 235, 0.12) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  color: #93c5fd !important;
+}
+
+html[data-theme="dark"] .pm-status-notice.status-info svg,
+body.dark-mode .pm-status-notice.status-info svg,
+html[data-theme="dark"] .trend-single-hint.status-info svg,
+body.dark-mode .trend-single-hint.status-info svg {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .pm-status-notice.status-success,
+body.dark-mode .pm-status-notice.status-success,
+html[data-theme="dark"] .trend-single-hint.status-success,
+body.dark-mode .trend-single-hint.status-success {
+  background: rgba(34, 197, 94, 0.12) !important;
+  border-color: rgba(74, 222, 128, 0.35) !important;
+  color: #86efac !important;
+}
+
+html[data-theme="dark"] .pm-status-notice.status-success svg,
+body.dark-mode .pm-status-notice.status-success svg,
+html[data-theme="dark"] .trend-single-hint.status-success svg,
+body.dark-mode .trend-single-hint.status-success svg {
+  color: #4ade80 !important;
 }
 
 /* ==========================================================================
@@ -1578,3 +1685,5 @@ body.dark-mode .trend-single-hint {
     justify-content: center;
   }
 }
+
+.reports-header-left h3 svg { flex-shrink: 0; }

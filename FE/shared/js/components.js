@@ -608,7 +608,7 @@ class AppWorkspaceFooter extends HTMLElement {
                     <li><a href="${root}features/about/about.html">Về chúng tôi</a></li>
                 </ul>
                 <span class="workspace-footer-sep">•</span>
-                <span>© 2026 PrepMate AI Inc.</span>
+                <span class="workspace-footer-copy">© 2026 PrepMate AI Inc.</span>
             </div>
         </footer>
         `;
@@ -642,7 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <li><a href="${root}features/about/about.html">Về chúng tôi</a></li>
                 </ul>
                 <span class="workspace-footer-sep">•</span>
-                <span>© 2026 PrepMate AI Inc.</span>
+                <span class="workspace-footer-copy">© 2026 PrepMate AI Inc.</span>
             </div>
             `;
         }
