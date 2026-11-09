@@ -194,7 +194,9 @@ body.auth-body .auth-card {
 }
 
 body.dark-mode .auth-card,
-html[data-theme="dark"] .auth-card {
+html[data-theme="dark"] .auth-card,
+html[data-theme="dark"] body.auth-body .auth-card,
+body.dark-mode.auth-body .auth-card {
   background: #1e2024 !important;
   border-color: #2e3238 !important;
   box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.04) !important;

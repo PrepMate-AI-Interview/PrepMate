@@ -19,6 +19,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
 body {
@@ -32,6 +33,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow-wrap: break-word;
+  overflow-x: clip;
 }
 
 /* Accessible Focus Ring (WCAG 2.4.7 / 2.4.11) */

@@ -411,7 +411,7 @@
       container.classList.add("fallback", "missing-recording");
       container.innerHTML = `
         <div class="pm-vclip-fallback-notice">
-          <span class="fallback-icon">📹</span>
+          <span class="fallback-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>
           <div class="fallback-content">
             <strong class="fallback-title">Không tìm thấy bản ghi video cho lượt này</strong>
             <p class="fallback-desc">Bản ghi có thể đã hết hạn lưu trữ hoặc đã bị xóa theo chính sách bảo mật thiết bị của bạn.</p>
@@ -432,7 +432,7 @@
       container.classList.add("fallback", "audio-only");
       container.innerHTML = `
         <div class="pm-vclip-fallback-notice">
-          <span class="fallback-icon">🎙️</span>
+          <span class="fallback-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></span>
           <div class="fallback-content">
             <strong class="fallback-title">Lượt trả lời này được ghi âm chỉ có âm thanh (không có video)</strong>
             <p class="fallback-desc">Camera đã tắt trong lượt này để bảo vệ quyền riêng tư. Không có dữ liệu hình ảnh để hiển thị khoảnh khắc video.</p>
@@ -452,7 +452,7 @@
       container.classList.add("fallback", "blob-error");
       container.innerHTML = `
         <div class="pm-vclip-fallback-notice">
-          <span class="fallback-icon">⚠️</span>
+          <span class="fallback-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
           <div class="fallback-content">
             <strong class="fallback-title">Lỗi truy xuất luồng video cục bộ</strong>
             <p class="fallback-desc">Trình duyệt không thể giải mã dữ liệu video từ bộ nhớ IndexedDB.</p>

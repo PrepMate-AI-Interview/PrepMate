@@ -190,9 +190,9 @@
 }
 
 .company-pill.pill-industry {
-  background: rgba(16, 185, 129, 0.08);
-  color: #059669;
-  border-color: rgba(16, 185, 129, 0.2);
+  background: var(--pm-primary-soft, #eff6ff);
+  color: var(--pm-primary, #2563eb);
+  border-color: var(--pm-primary-border, #bfdbfe);
 }
 
 /* Sections */

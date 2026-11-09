@@ -1033,7 +1033,7 @@ body.dashboard-body .glow-bg {
 .hero-stat-item .sub {
     font-size: 11px;
     font-weight: 500;
-    color: var(--pm-text-muted, #94a3b8);
+    color: var(--pm-text-muted, #64748b);
     margin-top: 4px;
     display: block;
     order: 3;
@@ -1057,7 +1057,7 @@ body.dashboard-body .glow-bg {
 .hero-stat-item .num-unit {
     font-size: 13px;
     font-weight: 600;
-    color: var(--pm-text-muted, #94a3b8);
+    color: var(--pm-text-muted, #64748b);
 }
 
 .hero-stat-item .lbl {
@@ -1347,7 +1347,7 @@ body.dashboard-body .glow-bg {
 }
 
 .tag-pill.green {
-    color: var(--pm-emerald, #059669);
+    color: var(--pm-emerald, #065f46);
     background: var(--pm-emerald-subtle, #ecfdf5);
     border: 1px solid var(--pm-emerald-border, #a7f3d0);
 }
@@ -2723,4 +2723,27 @@ body.dark-mode .tag-pill.purple {
   background: rgba(168, 85, 247, 0.15) !important;
   border: 1px solid rgba(168, 85, 247, 0.3) !important;
   color: #d8b4fe !important;
+}
+
+/* WI-GLOBAL-VISUAL-SURFACE-COLOR-01: Dashboard Dark Mode Contrast Fixes */
+html[data-theme="dark"] .history-view-all-link,
+body.dark-mode .history-view-all-link {
+    color: #8ab4f8 !important;
+}
+
+html[data-theme="dark"] .history-view-all-link:hover,
+body.dark-mode .history-view-all-link:hover {
+    color: #bfdbfe !important;
+}
+
+html[data-theme="dark"] .history-item .btn-action-resume,
+body.dark-mode .history-item .btn-action-resume {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border-color: #2563eb !important;
+}
+
+html[data-theme="dark"] .history-item .btn-action-resume *,
+body.dark-mode .history-item .btn-action-resume * {
+    color: #ffffff !important;
 }

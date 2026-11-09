@@ -595,7 +595,7 @@ function renderHeaderMeta(sessInfo, session) {
 
   if (navMeta && navJob && navComp) {
     navJob.textContent = jobTitle;
-    navComp.textContent = `🏢 ${compName}`;
+    navComp.textContent = compName;
     navMeta.classList.remove("hidden");
   }
 }
@@ -788,7 +788,7 @@ function renderOverviewHero(ev, perf, sessInfo, compInfo, evidenceSummary, sessi
 
   if (posEl) posEl.textContent = `Vị trí: ${pos}`;
   if (lvlEl) lvlEl.textContent = `Mục tiêu: ${targetLvl}`;
-  if (compEl) compEl.textContent = `🏢 ${comp}`;
+  if (compEl) compEl.textContent = comp;
 
   const interviewerEl = document.getElementById("hero-interviewer-name");
   if (interviewerEl) {
@@ -1325,7 +1325,7 @@ function getDomainKnowledgeIcon(targetPosition) {
     return "🎨";
   }
   if (has("product") || has("project") || has("scrum") || has("agile") || has("du an") || has("san pham") || hasW("pm") || hasW("po")) {
-    return "🚀";
+    return "📋";
   }
   if (has("operation") || has("van hanh") || has("supply chain") || has("chuoi cung ung") || has("logistics") || has("kho")) {
     return "📦";
@@ -1334,12 +1334,12 @@ function getDomainKnowledgeIcon(targetPosition) {
 }
 
 const STANDARD_DIMENSIONS = [
-  { key: "TECHNICAL_KNOWLEDGE", name: "Kiến thức Kỹ thuật", icon: "⚙️" },
-  { key: "PRACTICAL_APPLICATION", name: "Ứng dụng Thực tế", icon: "🛠️" },
-  { key: "REASONING_DEPTH", name: "Độ sâu Tư duy & Lập luận", icon: "🧠" },
-  { key: "FOLLOW_UP_HANDLING", name: "Xử lý Câu hỏi Đào sâu", icon: "🎯" },
-  { key: "COMMUNICATION", name: "Giao tiếp & Cấu trúc STAR", icon: "💬" },
-  { key: "CONSISTENCY", name: "Tính Nhất quán", icon: "⚖️" }
+  { key: "TECHNICAL_KNOWLEDGE", name: "Kiến thức Kỹ thuật", icon: `<svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>` },
+  { key: "PRACTICAL_APPLICATION", name: "Ứng dụng Thực tế", icon: `<svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>` },
+  { key: "REASONING_DEPTH", name: "Độ sâu Tư duy & Lập luận", icon: `<svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>` },
+  { key: "FOLLOW_UP_HANDLING", name: "Xử lý Câu hỏi Đào sâu", icon: `<svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>` },
+  { key: "COMMUNICATION", name: "Giao tiếp & Cấu trúc STAR", icon: `<svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>` },
+  { key: "CONSISTENCY", name: "Tính Nhất quán", icon: `<svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>` }
 ];
 
 var _cachedDimensionsData = [];
@@ -2016,7 +2016,7 @@ function renderDiagnosticsSection(report, diag, perfParam = null) {
         return `
           <div class="diag-item-card">
             <div class="diag-card-header">
-              <h5 class="diag-item-title"><span>⚠️</span> ${escapeHtml(title)}</h5>
+              <h5 class="diag-item-title pm-heading-with-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>${escapeHtml(title)}</span></h5>
               <span class="diag-badge ${prioClass}">Ưu tiên ${priority}</span>
             </div>
             ${desc ? `<p class="diag-desc">${escapeHtml(desc)}</p>` : ""}
@@ -2064,7 +2064,7 @@ function renderDiagnosticsSection(report, diag, perfParam = null) {
         return `
           <div class="diag-item-card">
             <div class="diag-card-header">
-              <h5 class="diag-item-title"><span>🔍</span> ${escapeHtml(title)}</h5>
+              <h5 class="diag-item-title pm-heading-with-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>${escapeHtml(title)}</span></h5>
               <div style="display:flex;gap:6px;">
                 ${isMandatory ? `<span class="diag-badge priority-high">Bắt buộc</span>` : `<span class="diag-badge priority-low">Tùy chọn</span>`}
                 <span class="diag-badge ${badgeClass}">${badgeLabel}</span>
@@ -2096,7 +2096,7 @@ function renderDiagnosticsSection(report, diag, perfParam = null) {
         return `
           <div class="diag-item-card">
             <div class="diag-card-header">
-              <h5 class="diag-item-title"><span>🛡️</span> Rủi ro tiềm ẩn</h5>
+              <h5 class="diag-item-title pm-heading-with-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Rủi ro tiềm ẩn</span></h5>
               <span class="diag-badge ${sevClass}">Mức độ: ${severity}</span>
             </div>
             <p class="diag-desc">${escapeHtml(desc)}</p>
@@ -2350,7 +2350,7 @@ function renderRoadmapSection(roadmap, diag) {
             ` : "")}
             ${contextGuideLink ? `
               <div class="rec-context-guide-row">
-                <span class="rec-context-icon" aria-hidden="true">💡</span>
+                <span class="rec-context-icon" aria-hidden="true"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
                 <div class="rec-context-content">
                   ${contextGuideLink}
                 </div>
@@ -2576,7 +2576,7 @@ function renderPreparationSection(prep, jobTitle = "") {
     dressBox.innerHTML = `
       <div class="prep-dresscode-box">
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-          <span class="dresscode-header-badge">👔 ${escapeHtml(dressGuide.sectorName)} • ${escapeHtml(dressGuide.formatLabel)}</span>
+          <span class="dresscode-header-badge">${escapeHtml(dressGuide.sectorName)} • ${escapeHtml(dressGuide.formatLabel)}</span>
           ${dressGuide.companyNotice ? `<span style="font-size: 11px; color: #64748b; font-style: italic;">${escapeHtml(dressGuide.companyNotice)}</span>` : ""}
         </div>
         <h4 class="dresscode-style-title">${escapeHtml(dressGuide.typicalStyle)}</h4>
@@ -2762,7 +2762,7 @@ function renderChecklistSection(prep, sessionId, jobTitle = "") {
       <div class="interview-prep-note-sheet" id="interview-prep-note-sheet">
         <div class="note-sheet-header">
           <div class="note-badge-row">
-            <span class="note-pin-icon" aria-hidden="true">📌</span>
+            <span class="note-pin-icon" aria-hidden="true"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-2l-2-3V6a2 2 0 0 0-2-2h-6a2 2 0 0 0-2 2v6l-2 3v2z"/></svg></span>
             <span class="note-sheet-badge">GHI CHÚ DÀNH CHO BẠN</span>
           </div>
           <p class="note-sheet-intro">
@@ -2775,7 +2775,7 @@ function renderChecklistSection(prep, sessionId, jobTitle = "") {
           <div class="note-group-section ${currentFormat === 'onsite' ? 'active-focus' : 'hidden-group'}" id="note-group-onsite" style="${currentFormat === 'onsite' ? 'display:block;' : 'display:none;'}">
             <div class="note-group-header">
               <h4 class="note-group-title">
-                <span class="note-group-icon">🏢</span>
+                <span class="note-group-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="2"/></svg></span>
                 <span>Phỏng Vấn Trực Tiếp (Tại Doanh Nghiệp)</span>
               </h4>
               <span class="note-group-desc">Lưu ý về trang phục, lộ trình di chuyển, hồ sơ bản in và tác phong trực tiếp.</span>
@@ -2801,7 +2801,7 @@ function renderChecklistSection(prep, sessionId, jobTitle = "") {
           <div class="note-group-section ${currentFormat === 'online' ? 'active-focus' : 'hidden-group'}" id="note-group-online" style="${currentFormat === 'online' ? 'display:block;' : 'display:none;'}">
             <div class="note-group-header">
               <h4 class="note-group-title">
-                <span class="note-group-icon">🌐</span>
+                <span class="note-group-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
                 <span>Phỏng Vấn Trực Tuyến (Online / Video Call)</span>
               </h4>
               <span class="note-group-desc">Lưu ý về thiết bị, microphone, camera, ánh sáng và đường truyền dự phòng.</span>
@@ -2838,7 +2838,7 @@ function renderChecklistSection(prep, sessionId, jobTitle = "") {
     });
 
     if (rawGroups.Technical.length > 0) {
-      testHtml += '<div class="checklist-group"><h4 class="checklist-group-title"><span>💻</span> Kiến thức Kỹ thuật</h4>';
+      testHtml += '<div class="checklist-group"><h4 class="checklist-group-title pm-heading-with-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span>Kiến thức Kỹ thuật</span></h4>';
       rawGroups.Technical.forEach(it => {
         const id = "chk-" + it.idx;
         const isChecked = savedState[id] === true;
@@ -2848,7 +2848,7 @@ function renderChecklistSection(prep, sessionId, jobTitle = "") {
     }
 
     if (rawGroups.Company.length > 0) {
-      testHtml += '<div class="checklist-group"><h4 class="checklist-group-title"><span>🏢</span> Hiểu biết Doanh nghiệp</h4>';
+      testHtml += '<div class="checklist-group"><h4 class="checklist-group-title pm-heading-with-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22.01"/><line x1="15" y1="22" x2="15" y2="22.01"/></svg><span>Hiểu biết Doanh nghiệp</span></h4>';
       rawGroups.Company.forEach(it => {
         const id = "chk-" + it.idx;
         const isChecked = savedState[id] === true;
@@ -3043,7 +3043,7 @@ async function renderSpeechCoachingSection(report, session) {
 
     metricsGrid.innerHTML = `
       <div class="speech-metric-card">
-        <div class="speech-metric-icon">🗣️</div>
+        <div class="speech-metric-icon"><svg class="pm-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
         <div class="speech-metric-info">
           <div class="speech-metric-val">${summary.totalFillers}</div>
           <div class="speech-metric-label">Từ đệm phát hiện</div>
@@ -3061,7 +3061,7 @@ async function renderSpeechCoachingSection(report, session) {
       </div>
 
       <div class="speech-metric-card">
-        <div class="speech-metric-icon">🔁</div>
+        <div class="speech-metric-icon"><svg class="pm-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
         <div class="speech-metric-info">
           <div class="speech-metric-val">${summary.totalRepetitions}</div>
           <div class="speech-metric-label">Lặp từ / ngập ngừng</div>
@@ -3070,7 +3070,7 @@ async function renderSpeechCoachingSection(report, session) {
       </div>
 
       <div class="speech-metric-card">
-        <div class="speech-metric-icon">🎙️</div>
+        <div class="speech-metric-icon"><svg class="pm-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></div>
         <div class="speech-metric-info">
           <div class="speech-metric-val">${durationText}</div>
           <div class="speech-metric-label">Thời lượng trả lời</div>
@@ -3185,7 +3185,7 @@ async function renderSpeechCoachingSection(report, session) {
           <div class="speech-practice-excerpt">"${escapeHtml(excerptText)}"</div>
           <div class="speech-audio-slot"></div>
           <div class="speech-practice-advice">
-            <span>💡</span>
+            <svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
             <span><strong>Lời khuyên:</strong> ${escapeHtml(m.structureFeedback || m.pacingFeedback)}</span>
           </div>
         `;
@@ -3345,7 +3345,7 @@ async function renderVisualCoachingSection(report, session) {
         <div class="speech-metric-card" style="padding: 14px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
           <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 4px;">Ánh Sáng Khung Hình</div>
           <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">
-            ${visualReport.dominantLighting === "OPTIMAL" ? "☀️ Độ Sáng Cân Bằng" : (visualReport.dominantLighting === "UNDEREXPOSED" ? "🌙 Khá Tối" : (visualReport.dominantLighting === "OVEREXPOSED" ? "⚡ Độ Sáng Cao" : (visualReport.dominantLighting === "BACKLIT" ? "⛅ Dấu Hiệu Ngược Sáng" : "🌤️ Mức Cơ Bản")))}
+            ${visualReport.dominantLighting === "OPTIMAL" ? "Độ Sáng Cân Bằng" : (visualReport.dominantLighting === "UNDEREXPOSED" ? "Khá Tối" : (visualReport.dominantLighting === "OVEREXPOSED" ? "Độ Sáng Cao" : (visualReport.dominantLighting === "BACKLIT" ? "Dấu Hiệu Ngược Sáng" : "Mức Cơ Bản")))}
           </div>
           <div style="font-size: 12px; color: #475569;">${escapeHtml(visualReport.lightingSummary || "")}</div>
         </div>
@@ -3354,17 +3354,17 @@ async function renderVisualCoachingSection(report, session) {
           <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 4px;">Nhận Diện Chủ Thể & Bố Cục</div>
           <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">(Phân tích On-Device, không gửi ảnh lên máy chủ)</div>
           <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">
-            ${(visualReport.personDetectionRate !== undefined && visualReport.personDetectionRate < 0.5) ? `⚠️ Chưa rõ người (${Math.round((visualReport.personDetectionRate || 0) * 100)}%)` : `👤 Nhận diện đạt ${Math.round((visualReport.personDetectionRate !== undefined ? visualReport.personDetectionRate : 1.0) * 100)}%`}
+            ${(visualReport.personDetectionRate !== undefined && visualReport.personDetectionRate < 0.5) ? `Chưa rõ người (${Math.round((visualReport.personDetectionRate || 0) * 100)}%)` : `Nhận diện đạt ${Math.round((visualReport.personDetectionRate !== undefined ? visualReport.personDetectionRate : 1.0) * 100)}%`}
           </div>
           <div style="font-size: 12px; color: #475569; margin-bottom: 4px;">${escapeHtml(visualReport.framingSummary || visualReport.personDetectionSummary || "")}</div>
-          <div style="font-size: 11px; color: #64748b; border-top: 1px dashed #e2e8f0; padding-top: 4px; margin-top: 4px;">🛡️ Khung hình chưa hiển thị đủ vai để đánh giá tư thế; không suy đoán cảm xúc.</div>
+          <div style="font-size: 11px; color: #64748b; border-top: 1px dashed #e2e8f0; padding-top: 4px; margin-top: 4px;">Khung hình chưa hiển thị đủ vai để đánh giá tư thế; không suy đoán cảm xúc.</div>
         </div>
 
         <div class="speech-metric-card" style="padding: 14px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
           <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 4px;">Độ Thay Đổi Khung Hình Mẫu</div>
           <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">(Ảnh mẫu thời điểm, không theo dõi liên tục)</div>
           <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">
-            📸 Ảnh Mẫu Đầu Lượt
+            Ảnh Mẫu Đầu Lượt
           </div>
           <div style="font-size: 12px; color: #475569;">${escapeHtml(visualReport.motionSummary || "Chưa đủ dữ liệu chuỗi thời gian để đánh giá chuyển động liên tục")}</div>
         </div>
@@ -3377,7 +3377,7 @@ async function renderVisualCoachingSection(report, session) {
     const recs = visualReport.recommendations || [];
     recsContainer.innerHTML = `
       <div style="font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-        💡 Gợi ý tham khảo về góc máy & điều kiện hình ảnh:
+        Gợi ý tham khảo về góc máy & điều kiện hình ảnh:
       </div>
       <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569; display: flex; flex-direction: column; gap: 6px;">
         ${recs.map(r => `<li>${escapeHtml(r)}</li>`).join("")}
@@ -3411,7 +3411,7 @@ async function renderVisualCoachingSection(report, session) {
         temporalBreakdown.innerHTML = `
           <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
             <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 6px;">
-              <span>👀 Hướng Đầu Trực Diện</span>
+              <span>Hướng Đầu Trực Diện</span>
               <span style="font-weight: 700; color: #0284c7;">${facingRate}%</span>
             </div>
             <div style="width: 100%; height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
@@ -3422,7 +3422,7 @@ async function renderVisualCoachingSection(report, session) {
 
           <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
             <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 6px;">
-              <span>🧍 Trục Thân Cân Bằng</span>
+              <span>Trục Thân Cân Bằng</span>
               <span style="font-weight: 700; color: #16a34a;">${uprightRate}%</span>
             </div>
             <div style="width: 100%; height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
@@ -3433,7 +3433,7 @@ async function renderVisualCoachingSection(report, session) {
 
           <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
             <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 6px;">
-              <span>👐 Hiện Diện Bàn Tay</span>
+              <span>Hiện Diện Bàn Tay</span>
               <span style="font-weight: 700; color: #9333ea;">${handsRate}%</span>
             </div>
             <div style="width: 100%; height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
@@ -3458,10 +3458,10 @@ async function renderVisualCoachingSection(report, session) {
                 </span>
               </div>
               <div style="display: grid; grid-template-columns: 1fr; gap: 6px; font-size: 12px; line-height: 1.5;">
-                <div style="display: flex; gap: 8px;"><strong style="color: #334155; min-width: 100px;">🔍 Quan sát:</strong> <span style="color: #1e293b;">${escapeHtml(o.observation)}</span></div>
-                <div style="display: flex; gap: 8px;"><strong style="color: #64748b; min-width: 100px;">🎯 Bối cảnh:</strong> <span style="color: #475569;">${escapeHtml(o.context)}</span></div>
-                <div style="display: flex; gap: 8px;"><strong style="color: #94a3b8; min-width: 100px;">⚙️ Giới hạn kỹ thuật:</strong> <span style="color: #64748b; font-style: italic;">${escapeHtml(o.limitation)}</span></div>
-                <div style="display: flex; gap: 8px;"><strong style="color: #0284c7; min-width: 100px;">💡 Gợi ý hành động:</strong> <span style="color: #0369a1; font-weight: 500;">${escapeHtml(o.actionableSuggestion)}</span></div>
+                <div style="display: flex; gap: 8px;"><strong style="color: #334155; min-width: 100px;">Quan sát:</strong> <span style="color: #1e293b;">${escapeHtml(o.observation)}</span></div>
+                <div style="display: flex; gap: 8px;"><strong style="color: #64748b; min-width: 100px;">Bối cảnh:</strong> <span style="color: #475569;">${escapeHtml(o.context)}</span></div>
+                <div style="display: flex; gap: 8px;"><strong style="color: #94a3b8; min-width: 100px;">Giới hạn kỹ thuật:</strong> <span style="color: #64748b; font-style: italic;">${escapeHtml(o.limitation)}</span></div>
+                <div style="display: flex; gap: 8px;"><strong style="color: #0284c7; min-width: 100px;">Gợi ý hành động:</strong> <span style="color: #0369a1; font-weight: 500;">${escapeHtml(o.actionableSuggestion)}</span></div>
               </div>
             </div>
           `).join("");
@@ -3508,7 +3508,7 @@ async function renderVisualSnapshotsGallery(report, session, visualReport, prelo
     if (countBadge) countBadge.textContent = "Camera tắt";
     gallery.innerHTML = `
       <div class="pm-visual-empty-card" style="padding: 14px 16px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; color: #64748b; font-size: 13px; display: flex; align-items: center; gap: 12px;">
-        <span style="font-size: 22px;">📷</span>
+        <svg class="pm-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
         <div>
           <strong style="color: #334155;">Lượt này không có ảnh minh chứng vì camera chưa bật hoặc không thu được frame hợp lệ.</strong>
           <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">
@@ -3597,51 +3597,51 @@ async function renderVisualSnapshotsGallery(report, session, visualReport, prelo
     const lightingLevel = metrics.lightingLevel || (metrics.isUnderExposed ? "UNDEREXPOSED" : (metrics.isOverExposed ? "OVEREXPOSED" : "OPTIMAL"));
     const framingType = metrics.framingType || "CENTERED";
 
-    let lightingBadgeText = "☀️ Độ Sáng Cân Bằng";
+    let lightingBadgeText = "Độ Sáng Cân Bằng";
     let lightingClass = "success";
     if (lightingLevel === "UNDEREXPOSED") {
-      lightingBadgeText = "🌙 Khá Tối";
+      lightingBadgeText = "Khá Tối";
       lightingClass = "warning";
     } else if (lightingLevel === "OVEREXPOSED") {
-      lightingBadgeText = "⚡ Độ Sáng Cao";
+      lightingBadgeText = "Độ Sáng Cao";
       lightingClass = "warning";
     } else if (lightingLevel === "BACKLIT") {
-      lightingBadgeText = "⛅ Ngược Sáng";
+      lightingBadgeText = "Ngược Sáng";
       lightingClass = "warning";
     }
 
-    let framingBadgeText = "🎯 Chi tiết phân bố trung tâm";
+    let framingBadgeText = "Chi tiết phân bố trung tâm";
     if (framingType === "LEAN_LEFT") {
       framingBadgeText = "⬅️ Chi tiết tập trung bên trái";
     } else if (framingType === "LEAN_RIGHT") {
-      framingBadgeText = "➡️ Chi tiết tập trung bên phải";
+      framingBadgeText = "Chi tiết tập trung bên phải";
     } else if (framingType === "UNBALANCED") {
-      framingBadgeText = "⚖️ Chi tiết phân bố chưa đều";
+      framingBadgeText = "Chi tiết phân bố chưa đều";
     }
 
     // Person Presence & Evidence-based Framing (WI-COACH-VIDEO-02B)
     const detection = metrics.detection || {};
     const evidenceFraming = metrics.evidenceFraming;
-    let presenceBadgeText = "👤 Đã nhận diện người";
+    let presenceBadgeText = "Đã nhận diện người";
     let presenceClass = "success";
 
     if (detection.status === "CONFIDENT_DETECTION") {
-      presenceBadgeText = `👤 Đã nhận diện (${Math.round((detection.confidence || 0.9) * 100)}%)`;
+      presenceBadgeText = `Đã nhận diện (${Math.round((detection.confidence || 0.9) * 100)}%)`;
       presenceClass = "success";
     } else if (detection.status === "NO_PERSON_DETECTED") {
-      presenceBadgeText = "⚠️ Chưa phát hiện người";
+      presenceBadgeText = "Chưa phát hiện người";
       presenceClass = "warning";
     } else if (detection.status === "POOR_VISIBILITY") {
-      presenceBadgeText = "⚠️ Thiếu sáng";
+      presenceBadgeText = "Thiếu sáng";
       presenceClass = "warning";
     }
 
     if (evidenceFraming === "OPTIMAL_CENTERED") {
-      framingBadgeText = "🎯 Bố cục trung tâm";
+      framingBadgeText = "Bố cục trung tâm";
     } else if (evidenceFraming === "TOO_CLOSE") {
-      framingBadgeText = "🔍 Quá gần camera";
+      framingBadgeText = "Quá gần camera";
     } else if (evidenceFraming === "TOO_FAR") {
-      framingBadgeText = "🔭 Quá xa camera";
+      framingBadgeText = "Quá xa camera";
     } else if (evidenceFraming === "CUT_OFF_TOP") {
       framingBadgeText = "⬆️ Sát mép trên";
     } else if (evidenceFraming === "CUT_OFF_BOTTOM") {
@@ -3649,9 +3649,9 @@ async function renderVisualSnapshotsGallery(report, session, visualReport, prelo
     } else if (evidenceFraming === "LEAN_LEFT") {
       framingBadgeText = "⬅️ Lệch trái";
     } else if (evidenceFraming === "LEAN_RIGHT") {
-      framingBadgeText = "➡️ Lệch phải";
+      framingBadgeText = "Lệch phải";
     } else if (evidenceFraming === "UNVERIFIED_NO_SUBJECT") {
-      framingBadgeText = "❓ Chưa xác định chủ thể";
+      framingBadgeText = "Chưa xác định chủ thể";
     }
 
     const interpretationText = "Ảnh mẫu đầu lượt (On-Device YCbCr Skin Locus + BT.601 Luma), không sử dụng mô hình nhận diện khuôn mặt sinh trắc học để định danh; không nhận diện cảm xúc hay suy đoán tâm lý.";
@@ -3685,7 +3685,7 @@ async function renderVisualSnapshotsGallery(report, session, visualReport, prelo
             ${escapeHtml(interpretationText)}
           </div>
           <div class="pm-visual-recommendation">
-            💡 ${escapeHtml(recommendationText)}
+            ${escapeHtml(recommendationText)}
           </div>
         </div>
       </div>
@@ -3759,7 +3759,7 @@ function renderTurnProvenanceSection(report, session) {
               ${analysis ? `
                 <div class="turn-evaluation-box">
                   <div class="turn-evaluation-header">
-                    <span class="eval-icon">🎯</span>
+                    <span class="eval-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
                     <strong>Đánh giá chuyên môn từ AI:</strong>
                   </div>
                   <p class="turn-eval-text">${escapeHtml(analysis)}</p>
@@ -3768,7 +3768,7 @@ function renderTurnProvenanceSection(report, session) {
               ${supplement ? `
                 <div class="turn-supplement-box">
                   <div class="turn-supplement-header">
-                    <span class="supplement-icon">💡</span>
+                    <span class="supplement-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
                     <strong>Định hướng câu trả lời chuẩn mực & Chiều sâu kỹ thuật:</strong>
                   </div>
                   <p class="turn-supplement-text">${escapeHtml(supplement)}</p>
@@ -5313,7 +5313,7 @@ async function renderVideoMomentsSection(report, session, visualReport) {
     }
     container.innerHTML = `
       <div class="pm-vclip-fallback-notice">
-        <span class="fallback-icon">📹</span>
+        <span class="fallback-icon"><svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>
         <div class="fallback-content">
           <strong class="fallback-title">Chưa có bản ghi video cho phiên này hoặc camera đã tắt</strong>
           <p class="fallback-desc">
@@ -5411,13 +5411,13 @@ async function renderVoiceBodyCoachingSection(report, session, visualReport) {
     card.setAttribute("data-item-id", item.id);
 
     // Dimension badge styling
-    let dimLabel = "🗣️ Giọng nói & Nhịp độ";
+    let dimLabel = "Giọng nói & Nhịp độ";
     let dimClass = "voice";
     if (item.dimension === "body_language") {
-      dimLabel = "🧍 Tác phong & Ngôn ngữ cơ thể";
+      dimLabel = "Tác phong & Ngôn ngữ cơ thể";
       dimClass = "body";
     } else if (item.dimension === "integrated") {
-      dimLabel = "🔄 Tích hợp Diễn đạt & Tác phong";
+      dimLabel = "Tích hợp Diễn đạt & Tác phong";
       dimClass = "integrated";
     }
 
@@ -5426,13 +5426,13 @@ async function renderVoiceBodyCoachingSection(report, session, visualReport) {
     let confText = "✓ Minh chứng tin cậy";
     let confClass = "status-reliable";
     if (confStatus === "uncertain_evidence") {
-      confText = "⚠️ Minh chứng ước lượng";
+      confText = "Minh chứng ước lượng";
       confClass = "status-uncertain";
     } else if (confStatus === "insufficient_evidence") {
-      confText = "⚠️ Chưa đủ dữ liệu hình ảnh";
+      confText = "Chưa đủ dữ liệu hình ảnh";
       confClass = "status-insufficient";
     } else if (confStatus === "unavailable_media") {
-      confText = "📹 Không có video / Chỉ có âm thanh";
+      confText = "Không có video / Chỉ có âm thanh";
       confClass = "status-unavailable";
     }
 
@@ -5440,10 +5440,10 @@ async function renderVoiceBodyCoachingSection(report, session, visualReport) {
 
     // Tier badge
     const tier = item.evidence?.selectedTier || "";
-    let tierText = "🎙️ Phân tích âm thanh";
-    if (tier === "tier1_mediapipe") tierText = "🎯 Tier 1 MediaPipe";
-    else if (tier === "tier2_contour_fallback") tierText = "📐 Tier 2 Contour Fallback";
-    else if (tier === "integrated") tierText = "🔗 Tích hợp Âm thanh & Hình ảnh";
+    let tierText = "Phân tích âm thanh";
+    if (tier === "tier1_mediapipe") tierText = "Tier 1 MediaPipe";
+    else if (tier === "tier2_contour_fallback") tierText = "Tier 2 Contour Fallback";
+    else if (tier === "integrated") tierText = "Tích hợp Âm thanh & Hình ảnh";
 
     // Video clip button or placeholder
     let videoActionHtml = "";
@@ -5471,13 +5471,13 @@ async function renderVoiceBodyCoachingSection(report, session, visualReport) {
       <div class="pm-coaching-body">
         <!-- Phần A: Quan sát thực tế -->
         <div class="pm-coaching-row pm-row-obs">
-          <div class="pm-row-label">🔍 Quan sát thực tế (Observation)</div>
+          <div class="pm-row-label">Quan sát thực tế (Observation)</div>
           <div class="pm-row-text">${escapeHtml(item.observation)}</div>
         </div>
 
         <!-- Phần B: Minh chứng & Tín hiệu -->
         <div class="pm-coaching-row pm-row-ev">
-          <div class="pm-row-label">📊 Tín hiệu đo đạc (Evidence)</div>
+          <div class="pm-row-label">Tín hiệu đo đạc (Evidence)</div>
           <div class="pm-row-content">
             <span class="pm-ev-chip">
               ${escapeHtml(item.evidence?.signal || "")}: <strong>${escapeHtml(item.evidence?.measurementValue || "")}</strong>
@@ -5491,25 +5491,25 @@ async function renderVoiceBodyCoachingSection(report, session, visualReport) {
 
         <!-- Phần C: Phân tích tác động -->
         <div class="pm-coaching-row pm-row-interp">
-          <div class="pm-row-label">🎯 Phân tích tác động (Interpretation)</div>
+          <div class="pm-row-label">Phân tích tác động (Interpretation)</div>
           <div class="pm-row-text">${escapeHtml(item.interpretation)}</div>
         </div>
 
         <!-- Phần D: Bài tập rèn luyện -->
         <div class="pm-coaching-row pm-row-rec">
-          <div class="pm-row-label">💡 Bài tập rèn luyện (Recommendation)</div>
+          <div class="pm-row-label">Bài tập rèn luyện (Recommendation)</div>
           <div class="pm-row-text">${escapeHtml(item.recommendation)}</div>
         </div>
 
         <!-- Phần E: Giới hạn & Độ tin cậy -->
         <div class="pm-coaching-row pm-row-lim">
-          <div class="pm-row-label">⚙️ Độ tin cậy & Giới hạn kỹ thuật (Confidence & Limitations)</div>
+          <div class="pm-row-label">Độ tin cậy & Giới hạn kỹ thuật (Confidence & Limitations)</div>
           <div class="pm-row-text">${escapeHtml(item.confidenceAndLimitations?.reason || "")}</div>
         </div>
       </div>
 
       <div class="pm-coaching-footer">
-        <span>🛡️ Chuẩn minh chứng PrepMate • Hoàn toàn độc lập với điểm năng lực chuyên môn (affectsProfessionalScore = false)</span>
+        <span>Chuẩn minh chứng PrepMate • Hoàn toàn độc lập với điểm năng lực chuyên môn (affectsProfessionalScore = false)</span>
       </div>
     `;
 
@@ -6377,7 +6377,7 @@ function renderVisualOutfitSuggestions(session = {}) {
     <div class="outfit-slider-container compact-slider" role="region" aria-roledescription="carousel" aria-label="Gợi ý trang phục phỏng vấn" tabindex="0">
       <div class="outfit-slider-header">
         <div class="outfit-slider-title-wrap">
-          <h4 class="outfit-slider-heading"><span>👔</span> Gợi Ý Trang Phục Phỏng Vấn</h4>
+          <h4 class="outfit-slider-heading pm-heading-with-icon"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg><span>Gợi Ý Trang Phục Phỏng Vấn</span></h4>
         </div>
       </div>
 
@@ -6739,7 +6739,7 @@ function renderAfterInterviewGuidance(session = {}, report = {}) {
 
       <div class="guidance-questions-grid">
         <div class="guidance-category-card">
-          <h4 class="guidance-cat-title">🎯 Khuyến Nghị Quyết Định (Hiring Recommendation)</h4>
+          <h4 class="guidance-cat-title pm-heading-with-icon"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Khuyến Nghị Quyết Định (Hiring Recommendation)</span></h4>
           <ul class="guidance-q-list">
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> Ứng viên thể hiện nền tảng kỹ thuật vững vàng, đạt chuẩn yêu cầu năng lực cốt lõi.</li>
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> Cần thẩm định thêm khả năng vận hành hệ thống thực tế và xử lý sự cố quy mô lớn.</li>
@@ -6747,7 +6747,7 @@ function renderAfterInterviewGuidance(session = {}, report = {}) {
           </ul>
         </div>
         <div class="guidance-category-card">
-          <h4 class="guidance-cat-title">🔍 Điểm Cần Đào Sâu Thêm (Probing Areas)</h4>
+          <h4 class="guidance-cat-title pm-heading-with-icon"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Điểm Cần Đào Sâu Thêm (Probing Areas)</span></h4>
           <ul class="guidance-q-list">
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> Kiểm chứng các tuyên bố (Claims) về tối ưu hiệu năng database có số liệu thực tế đo đạc không.</li>
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> Thử thách ứng viên với bài toán giới hạn tài nguyên và phân vùng mạng (Network Partition).</li>
@@ -6755,7 +6755,7 @@ function renderAfterInterviewGuidance(session = {}, report = {}) {
           </ul>
         </div>
         <div class="guidance-category-card">
-          <h4 class="guidance-cat-title">❓ Đề Xuất Câu Hỏi Cho Vòng Sau (Next Round Questions)</h4>
+          <h4 class="guidance-cat-title pm-heading-with-icon"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Đề Xuất Câu Hỏi Cho Vòng Sau (Next Round Questions)</span></h4>
           <ul class="guidance-q-list">
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> "Khi hệ thống gặp nghẽn cổ chai I/O ở database trong đợt sale peak, bạn điều tra và xử lý theo các bước nào?"</li>
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> "Hãy kể về 1 quyết định kiến trúc bạn từng đưa ra nhưng sau đó nhận ra là sai lầm. Bạn đã sửa chữa như thế nào?"</li>
@@ -6785,7 +6785,7 @@ function renderAfterInterviewGuidance(session = {}, report = {}) {
 
       <div class="guidance-questions-grid">
         <div class="guidance-category-card">
-          <h4 class="guidance-cat-title">💻 Về Kỹ Thuật & Bài Toán Hệ Thống</h4>
+          <h4 class="guidance-cat-title pm-heading-with-icon"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span>Về Kỹ Thuật & Bài Toán Hệ Thống</span></h4>
           <ul class="guidance-q-list">
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> "Thách thức kỹ thuật hoặc nợ công nghệ (Technical Debt) lớn nhất mà đội ngũ đang giải quyết hiện tại là gì?"</li>
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> "Quy trình CI/CD và chiến lược kiểm thử tự động của đội ngũ đang được triển khai như thế nào?"</li>
@@ -6793,7 +6793,7 @@ function renderAfterInterviewGuidance(session = {}, report = {}) {
           </ul>
         </div>
         <div class="guidance-category-card">
-          <h4 class="guidance-cat-title">👥 Về Đội Ngũ & Văn Hóa Hợp Tác</h4>
+          <h4 class="guidance-cat-title pm-heading-with-icon"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Về Đội Ngũ & Văn Hóa Hợp Tác</span></h4>
           <ul class="guidance-q-list">
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> "Cấu trúc của squad/team mà vị trí này sẽ gia nhập như thế nào và cách mọi người phối hợp với PM/QA?"</li>
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> "Văn hóa code review và chia sẻ tri thức (Knowledge Sharing) trong nội bộ team diễn ra như thế nào?"</li>
@@ -6801,7 +6801,7 @@ function renderAfterInterviewGuidance(session = {}, report = {}) {
           </ul>
         </div>
         <div class="guidance-category-card">
-          <h4 class="guidance-cat-title">🎯 Về Kỳ Vọng 90 Ngày Đầu & Thành Công</h4>
+          <h4 class="guidance-cat-title pm-heading-with-icon"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Về Kỳ Vọng 90 Ngày Đầu & Thành Công</span></h4>
           <ul class="guidance-q-list">
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> "Đâu là thước đo thành công quan trọng nhất trong 30 – 60 – 90 ngày đầu đối với người đảm nhận vai trò này?"</li>
             <li class="guidance-q-item"><span class="guidance-q-bullet">•</span> "Dự án hoặc tính năng đầu tiên mà anh/chị kỳ vọng nhân sự mới sẽ trực tiếp tham gia là gì?"</li>

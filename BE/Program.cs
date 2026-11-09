@@ -582,6 +582,28 @@ else
     app.UseCors("AllowAll");
 }
 
+// Standalone 404 handler: returns real HTTP 404 with 404.html body for unmatched non-API routes (WI-404-JOBS-PROGRESS-UX-01)
+app.Use(async (context, next) =>
+{
+    await next();
+    if (context.Response.StatusCode == StatusCodes.Status404NotFound
+        && !context.Response.HasStarted
+        && !context.Request.Path.StartsWithSegments("/api"))
+    {
+        var webRoot = app.Environment.WebRootPath ?? resolvedWebRoot;
+        if (!string.IsNullOrEmpty(webRoot))
+        {
+            var errorPagePath = Path.Combine(webRoot, "404.html");
+            if (File.Exists(errorPagePath))
+            {
+                context.Response.ContentType = "text/html; charset=utf-8";
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                await context.Response.SendFileAsync(errorPagePath);
+            }
+        }
+    }
+});
+
 // Serve frontend from wwwroot (standard ASP.NET Core static files)
 app.UseDefaultFiles(); // serves index.html by default at "/"
 app.Use(async (context, next) =>

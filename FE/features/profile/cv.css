@@ -282,3 +282,21 @@ body.dark-mode .cv-score-pill {
     background: rgba(16, 185, 129, 0.16) !important;
     border-color: rgba(52, 211, 153, 0.35) !important;
 }
+
+
+@media (max-width: 600px) {
+    .cv-card {
+        padding: 16px !important;
+        border-radius: 16px !important;
+    }
+    .cv-doc-preview {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+        padding: 12px 14px !important;
+    }
+    #cv-name-display {
+        word-break: break-all !important;
+        overflow-wrap: anywhere !important;
+    }
+}

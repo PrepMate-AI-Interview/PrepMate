@@ -97,10 +97,17 @@
         <!-- Charts Row -->
         <div class="charts-row">
             <!-- Score Trend -->
-            <div class="chart-card">
+            <div class="chart-card" id="trend-chart-card">
                 <h3>
                     <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Xu hướng điểm số qua các buổi luyện</span>
                 </h3>
+                <!-- Informative Single Session Notice within Trend Chart Component (WI-PROGRESS-404-PRESENTATION-FIX-01) -->
+                <div id="trend-single-session-hint" class="trend-single-hint pm-status-notice status-info" role="status" aria-live="polite" style="display:none;">
+                    <svg class="notice-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <div class="notice-content">
+                        <span class="notice-main-text" id="trend-single-hint-text">Đã ghi nhận 1 buổi phỏng vấn. Biểu đồ xu hướng sẽ hiển thị khi bạn có ít nhất 2 buổi luyện tập.</span>
+                    </div>
+                </div>
                 <div class="chart-canvas-wrap">
                     <canvas id="trend-chart"></canvas>
                     <div id="trend-empty-state" class="chart-empty-state" role="status" aria-live="polite" style="display:none;">
@@ -113,10 +120,6 @@
                         </div>
                         <h4>Chưa có dữ liệu xu hướng</h4>
                         <p>Biểu đồ theo dõi sẽ được vẽ tự động sau khi bạn hoàn thành buổi phỏng vấn đầu tiên.</p>
-                    </div>
-                    <div id="trend-single-session-hint" class="trend-single-hint" style="display:none;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                        <span>Đang ghi nhận 1 buổi phỏng vấn. Đường xu hướng so sánh sẽ tự động kích hoạt khi có từ 2 buổi luyện trở lên.</span>
                     </div>
                 </div>
             </div>
@@ -237,7 +240,7 @@
             <div class="reports-card">
                 <div class="reports-header">
                     <div class="reports-header-left">
-                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--pm-primary,#2563eb);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>Báo cáo Đánh giá Chi tiết từ Buổi Phỏng vấn</h3>
+                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--pm-primary,#2563eb);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span>Báo cáo Đánh giá Chi tiết từ Buổi Phỏng vấn</span></h3>
                         <p class="reports-subtitle">Truy cập toàn bộ nhận xét, phân tích STAR và bảng bằng chứng của các lượt phỏng vấn đã hoàn thành.</p>
                     </div>
                 </div>
@@ -650,18 +653,32 @@
     function renderTrendChart(sessions) {
         const canvas = document.getElementById('trend-chart');
         const emptyState = document.getElementById('trend-empty-state');
-        if (!sessions || !sessions.length) {
+        const singleHint = document.getElementById('trend-single-session-hint');
+        const count = Array.isArray(sessions) ? sessions.length : 0;
+
+        if (count === 0) {
             if (canvas) canvas.style.display = 'none';
             if (emptyState) emptyState.style.display = 'flex';
+            if (singleHint) singleHint.style.display = 'none';
             if (trendChartInstance) { trendChartInstance.destroy(); trendChartInstance = null; }
             return;
         }
-        if (canvas) canvas.style.display = 'block';
-        if (emptyState) emptyState.style.display = 'none';
 
-        const singleHint = document.getElementById('trend-single-session-hint');
-        if (singleHint) {
-            singleHint.style.display = (sessions.length === 1) ? 'flex' : 'none';
+        if (count === 1) {
+            if (emptyState) emptyState.style.display = 'none';
+            if (singleHint) {
+                singleHint.style.display = 'flex';
+                const countText = count === 1 ? '1 buổi phỏng vấn' : (count + ' buổi phỏng vấn');
+                const hintText = document.getElementById('trend-single-hint-text') || singleHint.querySelector('.notice-main-text') || singleHint.querySelector('span');
+                if (hintText) {
+                    hintText.textContent = 'Đã ghi nhận ' + countText + '. Biểu đồ xu hướng sẽ hiển thị khi bạn có ít nhất 2 buổi luyện tập.';
+                }
+            }
+            if (canvas) canvas.style.display = 'block';
+        } else {
+            if (canvas) canvas.style.display = 'block';
+            if (emptyState) emptyState.style.display = 'none';
+            if (singleHint) singleHint.style.display = 'none';
         }
 
         if (trendChartInstance) trendChartInstance.destroy();
@@ -933,7 +950,7 @@
             cards.push({
                 cardClass: 'card-urgent',
                 tagClass: 'tag-urgent',
-                tagText: '🚨 Cần khắc phục',
+                tagText: 'Cần khắc phục',
                 scorePill: weakQ.rating || 'Chưa tốt',
                 title: `Khắc phục câu: "${escapeHtml(shortQ)}"`,
                 diagnosis: weakQ.analysis ? escapeHtml(weakQ.analysis) : 'Câu trả lời chưa nêu bật được giải pháp chuyên môn cụ thể và thiếu minh chứng thực tiễn.',
@@ -952,7 +969,7 @@
             cards.push({
                 cardClass: 'card-urgent',
                 tagClass: 'tag-urgent',
-                tagText: '🎯 Buổi gần nhất',
+                tagText: 'Buổi gần nhất',
                 scorePill: `${latest.overallScore || 0}/100 điểm`,
                 title: `Tối ưu trọng tâm: ${escapeHtml(latest.jobTitle || 'Phỏng vấn')}`,
                 diagnosis: escapeHtml(feedbackText),
@@ -973,7 +990,7 @@
             cards.push({
                 cardClass: 'card-star',
                 tagClass: 'tag-star',
-                tagText: '💬 Chuẩn STAR',
+                tagText: 'Chuẩn STAR',
                 scorePill: `${avgStar}/100 điểm`,
                 title: 'Chuẩn hóa cấu trúc trả lời hành vi theo STAR',
                 diagnosis: 'Câu trả lời tình huống của bạn còn mang tính liệt kê công việc, thiếu phần Hành động cá nhân (Action) và Kết quả định lượng (Result).',
@@ -994,7 +1011,7 @@
             cards.push({
                 cardClass: 'card-tech',
                 tagClass: 'tag-tech',
-                tagText: '🔧 Chuyên môn',
+                tagText: 'Chuyên môn',
                 scorePill: `${avgTech}/100 điểm`,
                 title: 'Đào sâu nguyên lý & Case Study thực tế',
                 diagnosis: `Kỹ năng chuyên môn hiện đạt ${avgTech}/100. Khi phỏng vấn chuyên môn, hãy làm rõ bối cảnh, phương pháp thực hiện và lý do lựa chọn giải pháp thay vì chỉ đưa ra câu trả lời lý thuyết.`,
@@ -1013,7 +1030,7 @@
             cards.push({
                 cardClass: 'card-profile',
                 tagClass: 'tag-profile',
-                tagText: '📝 Tối ưu CV',
+                tagText: 'Tối ưu CV',
                 scorePill: 'Khớp JD',
                 title: 'Đối chiếu từ khóa kỹ năng giữa CV và JD',
                 diagnosis: 'Hệ thống AI nhận diện câu hỏi phỏng vấn dựa trên CV của bạn. Nếu CV thiếu từ khóa chuyên môn trọng tâm, câu hỏi mô phỏng sẽ chưa sát với kỳ vọng nhà tuyển dụng.',

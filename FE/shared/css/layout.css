@@ -1111,7 +1111,7 @@ app-workspace-footer {
 }
 
 .workspace-footer-version {
-  color: var(--pm-text-muted, #94a3b8);
+  color: var(--pm-text-muted, #64748b);
   font-size: 12px;
   font-weight: var(--pm-font-weight-regular, 456);
 }
@@ -1126,6 +1126,10 @@ app-workspace-footer {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+  color: var(--pm-text-muted, #64748b);
+}
+
+.workspace-footer-links li {
   color: var(--pm-text-muted, #64748b);
 }
 
@@ -2019,6 +2023,7 @@ html[data-theme="dark"] .user-profile-sidebar:hover .icon-setting {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #ffffff !important;
 }
 
 /* Collapsed mode for guest login button */
@@ -2125,7 +2130,9 @@ html[data-theme="dark"] .sidebar-new .nav-new a.active {
 }
 
 body.dark-mode .sidebar-new .nav-new a.active svg,
-html[data-theme="dark"] .sidebar-new .nav-new a.active svg {
+html[data-theme="dark"] .sidebar-new .nav-new a.active svg,
+body.dark-mode .sidebar-new .nav-new a.active span,
+html[data-theme="dark"] .sidebar-new .nav-new a.active span {
   color: #8ab4f8 !important;
 }
 
@@ -2996,4 +3003,14 @@ html[data-theme="dark"] .workspace-footer-version {
 body.dark-mode .workspace-footer-sep,
 html[data-theme="dark"] .workspace-footer-sep {
   color: var(--pm-border, #3C4043) !important;
+}
+
+.workspace-footer-copy {
+  color: var(--pm-text-muted, #64748b);
+  font-size: 12px;
+}
+
+body.dark-mode .workspace-footer-copy,
+html[data-theme="dark"] .workspace-footer-copy {
+  color: var(--pm-text-muted, #9AA0A6) !important;
 }

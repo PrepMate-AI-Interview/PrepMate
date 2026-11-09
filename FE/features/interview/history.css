@@ -69,12 +69,12 @@
 }
 
 .metric-mini-card {
-  background: var(--hist-surface);
-  border: 1px solid var(--hist-border);
-  border-radius: var(--pm-radius-card, 12px);
-  padding: 16px 20px;
-  box-shadow: var(--hist-shadow-sm);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  background: var(--hist-surface, #ffffff);
+  border: 1px solid var(--hist-border, #e2e8f0);
+  border-radius: var(--pm-radius-card-sm, 12px);
+  padding: 18px 20px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
 
 .metric-mini-card:hover {
@@ -99,9 +99,9 @@
 }
 
 .metric-mini-card .lbl {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--hist-text-muted);
+  color: var(--pm-text-secondary, #334155);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
@@ -189,20 +189,20 @@
 .history-item {
   background: var(--pm-surface, #ffffff);
   border: 1px solid var(--pm-border, #e2e8f0);
-  border-radius: 14px;
-  padding: 16px 20px;
+  border-radius: var(--pm-radius-card, 16px);
+  padding: 20px 22px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  box-shadow: var(--pm-shadow-sm);
-  transition: all 0.18s ease;
+  gap: 18px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(15, 23, 42, 0.03);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
 }
 
 .history-item:hover {
   border-color: var(--pm-primary-border, #bfdbfe);
-  box-shadow: var(--pm-shadow-md);
-  transform: translateY(-1px);
+  box-shadow: 0 6px 20px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  transform: translateY(-2px);
 }
 
 /* Score Pill */
@@ -362,19 +362,19 @@
 .history-item .pm-diff-badge.basic {
   background: var(--pm-emerald-soft, #ecfdf5);
   border: 1px solid var(--pm-emerald-border, #a7f3d0);
-  color: var(--pm-emerald, #059669);
+  color: var(--pm-emerald-text, #065f46);
 }
 
 .history-item .pm-diff-badge.medium {
   background: var(--pm-amber-soft, #fffbeb);
   border: 1px solid var(--pm-amber-border, #fde68a);
-  color: var(--pm-amber, #d97706);
+  color: var(--pm-amber-text, #92400e);
 }
 
 .history-item .pm-diff-badge.hard {
   background: var(--pm-red-soft, #fef2f2);
   border: 1px solid var(--pm-red-border, #fecaca);
-  color: var(--pm-red, #dc2626);
+  color: var(--pm-red-text, #991b1b);
 }
 
 .pm-status-pill {
@@ -397,7 +397,7 @@
 
 .pm-status-pill.done {
   background: var(--hist-success-soft, #ecfdf5);
-  color: var(--hist-success, #059669);
+  color: var(--pm-emerald-text, #065f46);
   border: 1px solid var(--hist-success-border, #a7f3d0);
 }
 
@@ -406,9 +406,9 @@
 }
 
 .pm-status-pill.in-progress {
-  background: #eff6ff;
-  color: #1d4ed8;
-  border: 1px solid #bfdbfe;
+  background: var(--pm-primary-soft, #eff6ff);
+  color: var(--pm-primary, #1d4ed8);
+  border: 1px solid var(--pm-primary-border, #bfdbfe);
 }
 
 .pm-status-pill.in-progress .pm-status-dot {
@@ -416,9 +416,9 @@
 }
 
 .pm-status-pill.incomplete {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background: var(--pm-red-soft, #fef2f2);
+  color: var(--pm-red-text, #991b1b);
+  border: 1px solid var(--pm-red-border, #fecaca);
 }
 
 .pm-status-pill.incomplete .pm-status-dot {
@@ -457,10 +457,12 @@
 .btn-action-repractice {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 7px 14px;
+  min-height: 40px;
+  padding: 0 16px;
   border-radius: var(--pm-radius-btn-md, 8px);
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
@@ -490,14 +492,20 @@
 .history-item .btn-action-resume,
 .btn-action-resume {
   background: var(--pm-primary, #1d4ed8);
-  color: #ffffff;
+  color: #ffffff !important;
   border: 1px solid var(--pm-primary, #1d4ed8);
+}
+
+.history-item .btn-action-resume *,
+.btn-action-resume * {
+  color: #ffffff !important;
 }
 
 .history-item .btn-action-resume:hover,
 .btn-action-resume:hover {
   background: var(--pm-primary-hover, #1e40af);
   border-color: var(--pm-primary-hover, #1e40af);
+  color: #ffffff !important;
   transform: translateY(-1px);
   box-shadow: var(--pm-shadow-sm, 0 2px 6px rgba(15, 23, 42, 0.08));
 }
@@ -850,4 +858,110 @@ html[data-theme="dark"] .history-item .pm-interviewer-badge {
 body.dark-mode .history-item-date,
 html[data-theme="dark"] .history-item-date {
   color: #9AA0A6 !important;
+}
+
+
+/* WI-GLOBAL-VISUAL-SURFACE-COLOR-01: History Dark Mode Enhancements */
+html[data-theme="dark"] .metric-mini-card,
+body.dark-mode .metric-mini-card {
+  background: #292A2D !important;
+  border-color: #3C4043 !important;
+}
+
+html[data-theme="dark"] .metric-mini-card .lbl,
+body.dark-mode .metric-mini-card .lbl {
+  color: #BDC1C6 !important;
+}
+
+html[data-theme="dark"] .metric-mini-card .val,
+body.dark-mode .metric-mini-card .val {
+  color: #E8EAED !important;
+}
+
+html[data-theme="dark"] .metric-mini-card .val.val-primary,
+body.dark-mode .metric-mini-card .val.val-primary {
+  color: #8ab4f8 !important;
+}
+
+html[data-theme="dark"] .metric-mini-card .val.val-success,
+body.dark-mode .metric-mini-card .val.val-success {
+  color: #34d399 !important;
+}
+
+html[data-theme="dark"] .btn-action-resume,
+body.dark-mode .btn-action-resume {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+html[data-theme="dark"] .btn-action-resume *,
+body.dark-mode .btn-action-resume * {
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .btn-action-resume:hover,
+body.dark-mode .btn-action-resume:hover {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .pm-status-pill.in-progress,
+body.dark-mode .pm-status-pill.in-progress {
+  background: rgba(37, 99, 235, 0.16) !important;
+  color: #93c5fd !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+}
+
+html[data-theme="dark"] .pm-status-pill.in-progress .pm-status-dot,
+body.dark-mode .pm-status-pill.in-progress .pm-status-dot {
+  background: #60a5fa !important;
+}
+
+html[data-theme="dark"] .pm-status-pill.incomplete,
+body.dark-mode .pm-status-pill.incomplete {
+  background: rgba(239, 68, 68, 0.16) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(248, 113, 113, 0.35) !important;
+}
+
+html[data-theme="dark"] .pm-status-pill.incomplete .pm-status-dot,
+body.dark-mode .pm-status-pill.incomplete .pm-status-dot {
+  background: #f87171 !important;
+}
+
+html[data-theme="dark"] .pm-status-pill.done,
+body.dark-mode .pm-status-pill.done {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+html[data-theme="dark"] .pm-status-pill.done .pm-status-dot,
+body.dark-mode .pm-status-pill.done .pm-status-dot {
+  background: #34d399 !important;
+}
+
+html[data-theme="dark"] .history-item .pm-diff-badge.easy,
+html[data-theme="dark"] .history-item .pm-diff-badge.basic,
+body.dark-mode .history-item .pm-diff-badge.easy,
+body.dark-mode .history-item .pm-diff-badge.basic {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+html[data-theme="dark"] .history-item .pm-diff-badge.medium,
+body.dark-mode .history-item .pm-diff-badge.medium {
+  background: rgba(245, 158, 11, 0.16) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+}
+
+html[data-theme="dark"] .history-item .pm-diff-badge.hard,
+body.dark-mode .history-item .pm-diff-badge.hard {
+  background: rgba(239, 68, 68, 0.16) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(248, 113, 113, 0.35) !important;
 }

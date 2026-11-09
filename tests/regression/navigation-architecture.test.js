@@ -222,13 +222,13 @@ assert(fs.existsSync(notFoundHtmlPath), 'FE/404.html exists');
 const notFoundHtmlContent = fs.readFileSync(notFoundHtmlPath, 'utf8');
 
 // 2. 404.html uses public shell
-assert(notFoundHtmlContent.includes('<app-header></app-header>'), '404.html includes canonical <app-header>');
-assert(notFoundHtmlContent.includes('<app-footer></app-footer>'), '404.html includes canonical <app-footer>');
+assert(!notFoundHtmlContent.includes('<app-header>'), '404.html is standalone without <app-header>');
+assert(!notFoundHtmlContent.includes('<app-footer>'), '404.html is standalone without <app-footer>');
 
 // 3. 404.html provides clear recovery CTAs
 assert(notFoundHtmlContent.includes('href="index.html"') && notFoundHtmlContent.includes('Về trang chủ'), '404.html has "Về trang chủ" CTA');
-assert(notFoundHtmlContent.includes('href="features/auth/auth.html"') && notFoundHtmlContent.includes('Đăng nhập'), '404.html has "Đăng nhập" CTA');
-assert(notFoundHtmlContent.includes('Trang bạn tìm không tồn tại hoặc đã được di chuyển'), '404.html has professional error message');
+assert(notFoundHtmlContent.includes('Quay lại trang trước'), '404.html has "Quay lại trang trước" secondary action');
+assert(notFoundHtmlContent.includes('Không tìm thấy trang bạn cần'), '404.html has professional error message');
 
 console.log('[PASS] Suite 9: 404 Surface verified.');
 
