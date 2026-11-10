@@ -629,10 +629,10 @@
         </div>
 
         <!-- Executive Delivery Assessment: 3 Core Questions (WI-REPORT-11) -->
-        <div class="speech-executive-assessment-card glass-panel" id="speech-executive-assessment-card" style="margin-bottom: var(--space-6, 24px); padding: var(--space-5, 20px); border-left: 4px solid var(--pm-primary, #2563eb);">
-          <div class="delivery-assessment-header" style="display: flex; align-items: center; gap: var(--space-2, 8px); margin-bottom: var(--space-3, 12px);">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--pm-primary, #2563eb)" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-            <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--rpt-text-primary);">Tổng Quan Phong Cách Thể Hiện & Giao Tiếp</h3>
+        <div class="speech-executive-assessment-card glass-panel" id="speech-executive-assessment-card">
+          <div class="delivery-assessment-header">
+            <svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--pm-primary, #2563eb)" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            <h3 class="delivery-assessment-title">Tổng Quan Phong Cách Thể Hiện & Giao Tiếp</h3>
           </div>
           <div class="delivery-assessment-grid" id="delivery-assessment-content">
             <!-- Rendered by report.js: 1. Nhận định tổng quan, 2. Biểu hiện đáng chú ý, 3. Điểm cần cải thiện -->
@@ -661,7 +661,7 @@
           <div class="speech-metrics-grid" id="speech-metrics-grid"></div>
 
           <!-- 2. Most Frequent Fillers and Delivery Breakdown -->
-          <div class="speech-analysis-card glass-panel" id="speech-fillers-breakdown-card">
+          <div class="speech-analysis-card" id="speech-fillers-breakdown-card">
             <h4 class="speech-card-title pm-heading-with-icon">
               <svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -675,7 +675,7 @@
           </div>
 
           <!-- 3. Targeted Practice Moments with Per-Turn Audio Player -->
-          <div class="speech-practice-box glass-panel" id="speech-practice-box">
+          <div class="speech-practice-box" id="speech-practice-box">
             <div class="speech-practice-header">
               <h4 class="speech-card-title pm-heading-with-icon">
                 <svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -712,7 +712,7 @@
           </div>
 
           <!-- 4. Delivery Structure & Conciseness -->
-          <div class="speech-analysis-card glass-panel" id="speech-delivery-structure-card">
+          <div class="speech-analysis-card" id="speech-delivery-structure-card">
             <h4 class="speech-card-title pm-heading-with-icon">
               <svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <line x1="8" y1="6" x2="21" y2="6"/>
@@ -728,7 +728,7 @@
           </div>
 
           <!-- 5. Top 3 Prioritized Actionable Drills -->
-          <div class="speech-priority-plan glass-panel" id="speech-priority-plan">
+          <div class="speech-priority-plan" id="speech-priority-plan">
             <div class="speech-priority-header">
               <span class="priority-badge">KẾ HOẠCH HÀNH ĐỘNG</span>
               <h4 class="speech-card-title">Ưu Tiên Rèn Luyện Kỹ Năng Trình Bày (Tối Đa 3 Trọng Tâm)</h4>
@@ -839,7 +839,7 @@
           </div>
         </div>
 
-        <!-- 6. Full Interview Audio Recording Replay & Download (WI-REPORT-VIDEO-AUDIO-UX-02 Phase 4) -->
+        <!-- 6. Candidate Answers Audio Recording Replay & Download (WI-PREPMATE-FINAL-POLISH-01) -->
         <div class="full-interview-audio-card glass-panel" id="full-interview-audio-card" style="margin-top: var(--space-6, 24px);">
           <div class="full-audio-card-header">
             <div class="full-audio-header-title">
@@ -847,12 +847,12 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
               </span>
               <div class="full-audio-title-wrap">
-                <span class="full-audio-badge">BẢN GHI ÂM CUỘC PHỎNG VẤN</span>
+                <span class="full-audio-badge">BẢN GHI ÂM CÂU TRẢ LỜI ỨNG VIÊN</span>
                 <h3 class="speech-card-title pm-heading-with-icon" style="margin: 0;">
-                  <span>Bản Ghi Âm Toàn Bộ Buổi Phỏng Vấn</span>
+                  <span>Bản Ghi Âm Toàn Bộ Buổi Phỏng Vấn (Phần Trả Lời)</span>
                 </h3>
                 <p class="speech-card-desc" style="margin: var(--space-1, 4px) 0 0 0;">
-                  Nghe lại toàn bộ âm thanh câu trả lời của buổi phỏng vấn hoặc tải tệp âm thanh về máy để tự đánh giá và đối chiếu.
+                  Nghe lại bản ghi âm câu trả lời của ứng viên qua từng câu hỏi hoặc tải tệp âm thanh về máy để tự đánh giá tác phong phát âm. (Lưu ý: Bản ghi âm ghi lại giọng nói của ứng viên từ micro trong các lượt trả lời, không bao gồm câu hỏi của AI).
                 </p>
               </div>
             </div>

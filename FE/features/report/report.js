@@ -3337,13 +3337,13 @@ async function renderSpeechCoachingSection(report, session) {
         <p class="delivery-point-text">${escapeHtml(overallSynthesis)}</p>
       </div>
       <div class="delivery-assessment-point evidence">
-        <span class="delivery-point-label"><span class="point-badge amber">2</span> Biểu hiện đáng chú ý:</span>
+        <span class="delivery-point-label"><span class="point-badge emerald">2</span> Biểu hiện đáng chú ý:</span>
         <ul class="delivery-evidence-list">
           ${notableObservations.map(obs => `<li>${obs}</li>`).join("")}
         </ul>
       </div>
       <div class="delivery-assessment-point improvement">
-        <span class="delivery-point-label"><span class="point-badge emerald">3</span> Điểm cần cải thiện:</span>
+        <span class="delivery-point-label"><span class="point-badge amber">3</span> Điểm cần cải thiện:</span>
         <p class="delivery-point-text action-highlight">${escapeHtml(keyAction)}</p>
       </div>
     `;
@@ -5933,11 +5933,13 @@ async function renderFullInterviewAudioSection(report, session, recordings) {
     }
     container.innerHTML = `
       <div class="full-audio-empty-notice">
-        <span class="notice-icon">ℹ️</span>
+        <span class="notice-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </span>
         <div class="notice-content">
-          <strong>Chưa có dữ liệu bản ghi âm cho buổi phỏng vấn này</strong>
+          <strong>Chưa có dữ liệu bản ghi âm micro cho buổi phỏng vấn này</strong>
           <p>
-            Bạn đã hoàn thành buổi phỏng vấn qua micro/văn bản hoặc bản ghi âm đã được dọn dẹp theo chính sách bảo mật cục bộ của trình duyệt. Điểm đánh giá năng lực chuyên môn và các đề xuất phát triển vẫn được lưu giữ đầy đủ, không bị ảnh hưởng.
+            Phiên phỏng vấn được thực hiện ở chế độ văn bản hoặc dữ liệu micro chưa được ghi nhận. Điểm đánh giá năng lực chuyên môn và các đề xuất phát triển vẫn được lưu giữ đầy đủ, không bị ảnh hưởng.
           </p>
         </div>
       </div>
@@ -5987,12 +5989,12 @@ async function renderFullInterviewAudioSection(report, session, recordings) {
   playerWidget.innerHTML = `
     <div class="full-audio-track-info">
       <div class="track-info-left">
-        <span class="track-title-badge">TOÀN BỘ PHỎNG VẤN</span>
-        <h4 class="track-title">${escapeHtml(jobTitle)} — ${escapeHtml(sessionDate)}</h4>
+        <span class="track-title-badge">GHI ÂM PHẦN TRẢ LỜI</span>
+        <h4 class="track-title">Phần trả lời của ứng viên: ${escapeHtml(jobTitle)} — ${escapeHtml(sessionDate)}</h4>
         <div class="track-meta-row">
-          <span>${audioRecs.length} câu hỏi có ghi âm</span>
+          <span>${audioRecs.length} lượt trả lời có ghi âm micro</span>
           <span>•</span>
-          <span>Tổng thời lượng: <strong class="total-duration-label">${formatTimeMs(totalDurationMs)}</strong></span>
+          <span>Tổng thời lượng trả lời: <strong class="total-duration-label">${formatTimeMs(totalDurationMs)}</strong></span>
         </div>
       </div>
       <div class="track-info-right">
@@ -7453,8 +7455,8 @@ function renderReferenceMaterials(session = {}, report = {}) {
         id: "ref-fin-valuation",
         title: "Định Giá Doanh Nghiệp & Mô Hình Tài Chính Thực Chiến",
         author: "GS. Aswath Damodaran • NYU Stern School of Business",
-        domain: "ifrs.org",
-        url: "https://www.ifrs.org/issued-standards/list-of-standards/",
+        domain: "pages.stern.nyu.edu",
+        url: "https://pages.stern.nyu.edu/~adamodar/",
         type: "Sách chuyên khảo",
         typeClass: "ref-type-book",
         desc: "Phương pháp chiết khấu dòng tiền (DCF), định giá theo hệ số so sánh tương đối (Multiples) và kỹ thuật phân tích độ nhạy.",
@@ -7480,8 +7482,8 @@ function renderReferenceMaterials(session = {}, report = {}) {
         id: "ref-mkt-50",
         title: "Marketing 5.0: Technology for Humanity",
         author: "Philip Kotler & Hermawan Kartajaya • Wiley",
-        domain: "skillshop.withgoogle.com",
-        url: "https://skillshop.withgoogle.com/",
+        domain: "wiley.com",
+        url: "https://www.wiley.com/en-us/Marketing+5.0:+Technology+for+Humanity-p-9781119785255",
         type: "Sách chuyên khảo",
         typeClass: "ref-type-book",
         desc: "Chiến lược tiếp thị dựa trên dữ liệu lớn, cá nhân hóa trải nghiệm khách hàng và tự động hóa chuỗi hành trình chuyển đổi số.",
@@ -7532,8 +7534,8 @@ function renderReferenceMaterials(session = {}, report = {}) {
         id: "ref-tech-cleanarch",
         title: "Clean Architecture: A Craftsman's Guide to Software Structure",
         author: "Robert C. Martin (Uncle Bob) • Prentice Hall",
-        domain: "developer.mozilla.org",
-        url: "https://developer.mozilla.org/",
+        domain: "blog.cleancoder.com",
+        url: "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html",
         type: "Chuẩn kiến trúc phần mềm",
         typeClass: "ref-type-standard",
         desc: "Các nguyên lý phân tách mối quan tâm độc lập (Separation of Concerns), Dependency Inversion và thiết kế hệ thống dễ kiểm thử.",
@@ -7594,7 +7596,7 @@ function renderReferenceMaterials(session = {}, report = {}) {
       title: "Body Language & Nonverbal Communication in Professional Meetings",
       author: "Mind Tools Content Team • Emerald Works",
       domain: "mindtools.com",
-      url: "https://www.mindtools.com/",
+      url: "https://www.mindtools.com/pages/article/Body_Language.htm",
       type: "Giao tiếp phi ngôn ngữ",
       typeClass: "ref-type-framework",
       desc: "Nguyên tắc duy trì ánh mắt trực diện (eye-contact), cử chỉ tay mở, tư thế ngồi thẳng và kiểm soát biểu cảm trước ống kính máy quay.",
@@ -7707,7 +7709,7 @@ function renderReferenceMaterials(session = {}, report = {}) {
             <span class="ref-category-icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             </span>
-            <span>Tài Liệu Chuyên Môn &amp; Thiết Kế Hệ Thống Theo Ngành</span>
+            <span>Tài Liệu Chuyên Môn Theo Lĩnh Vực &amp; Thiết Kế Hệ Thống</span>
           </h4>
         </div>
         <div class="reference-materials-grid">

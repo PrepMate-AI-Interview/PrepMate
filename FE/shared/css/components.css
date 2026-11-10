@@ -1437,6 +1437,78 @@ morph-icon svg,
   display: block;
 }
 
+/* 13.1 Global SVG Alignment & Optical Centering Contract (WI-GLOBAL-SVG-ALIGNMENT-01) */
+.btn > svg,
+.btn > .pm-icon,
+.btn > morph-icon,
+.icon-btn > svg,
+.icon-btn > .pm-icon,
+.icon-btn > morph-icon,
+.dropdown-item > svg,
+.dropdown-item > .pm-icon,
+.tab-btn > svg,
+.nav-tab > svg,
+.header-menu-link > svg,
+.header-dropdown-item > svg,
+.breadcrumb-item > svg,
+.badge > svg,
+.pm-status-pill > svg {
+  flex-shrink: 0 !important;
+  display: block !important;
+  align-self: center !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* 13.2 Icon-Only Containers: Perfect Geometry & Zero Line-Height */
+.btn-icon,
+.icon-btn,
+.sidebar-toggle-btn,
+.empty-icon,
+.chart-empty-icon,
+.speech-metric-icon,
+.filter-header-icon,
+.brand-squircle,
+.illustration-bubble,
+.auth-state-icon-bubble,
+.theme-switch-icon,
+.in-tile-icon-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 0 !important;
+  text-align: center;
+}
+
+.btn-icon svg,
+.icon-btn svg,
+.sidebar-toggle-btn svg,
+.empty-icon svg,
+.chart-empty-icon svg,
+.speech-metric-icon svg,
+.filter-header-icon svg,
+.brand-squircle svg,
+.illustration-bubble svg,
+.auth-state-icon-bubble svg,
+.theme-switch-icon svg,
+.in-tile-icon-btn svg {
+  margin: auto !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+}
+
+.auth-state-icon-bubble {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px auto !important;
+  border-radius: 50%;
+  background-color: var(--pm-primary-subtle, rgba(37, 99, 235, 0.08));
+}
+
+html[data-theme="dark"] .auth-state-icon-bubble {
+  background-color: rgba(37, 99, 235, 0.16);
+}
+
 /* Canonical Size Presets */
 .pm-icon-xs { width: 12px; height: 12px; }
 .pm-icon-sm { width: 14px; height: 14px; }
@@ -1656,6 +1728,18 @@ html[data-theme="dark"] .btn-danger * {
 .pm-heading-with-icon.pm-heading-center > morph-icon,
 .pm-heading-with-icon.pm-heading-center > .pm-icon {
   margin-top: 0;
+}
+
+/* Optical centering for headings with icons unless explicitly multiline */
+.pm-heading-with-icon:not(.pm-heading-multiline) {
+  align-items: center;
+}
+
+.pm-heading-with-icon:not(.pm-heading-multiline) > svg,
+.pm-heading-with-icon:not(.pm-heading-multiline) > morph-icon,
+.pm-heading-with-icon:not(.pm-heading-multiline) > .pm-icon {
+  margin-top: 0;
+  align-self: center;
 }
 
 /* 14.4 Metric & Statistic 3-Tier Hierarchy */

@@ -397,8 +397,11 @@ body.dashboard-body {
 .industry-search-subwrap svg {
   position: absolute;
   left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--pm-text-muted, #94a3b8);
   pointer-events: none;
+  display: block;
 }
 
 .industry-search-input {

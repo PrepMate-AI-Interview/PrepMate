@@ -3148,7 +3148,16 @@ body.dark-mode .btn-report-voice {
 }
 
 .speech-metric-icon {
-  font-size: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: var(--pm-primary-50, #eff6ff);
+  color: var(--pm-primary-600, #2563eb);
+  flex-shrink: 0;
+  font-size: 20px;
   line-height: 1;
 }
 
@@ -3485,6 +3494,12 @@ body.dark-mode .speech-practive-header {
 [data-theme="dark"] .speech-metric-card:hover,
 body.dark-mode .speech-metric-card:hover {
   background: var(--rpt-surface-hover, #243044);
+}
+
+[data-theme="dark"] .speech-metric-icon,
+body.dark-mode .speech-metric-icon {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
 }
 
 [data-theme="dark"] .speech-metric-val,
@@ -4214,8 +4229,12 @@ body.dark-mode .speech-priority-meta {
 }
 
 .full-audio-empty-notice .notice-icon {
-  font-size: 20px;
-  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .full-audio-restricted-notice .notice-icon {
@@ -5590,9 +5609,13 @@ body.dark-mode .turn-chip-btn {
 
 .outfit-svg-silhouette {
   width: 80px;
-  height: 96px;
+  height: 80px;
+  max-width: 100%;
+  max-height: 100%;
   color: var(--rpt-primary);
   fill: currentColor;
+  display: block;
+  margin: auto;
 }
 
 .outfit-style-title {
@@ -12333,6 +12356,19 @@ body.dark-mode .capability-pill {
   align-items: center !important;
   gap: var(--space-2, 8px) !important;
   text-align: left !important;
+}
+
+.pm-heading-with-icon > svg,
+.pm-heading-with-icon > morph-icon,
+.pm-heading-with-icon > .pm-icon,
+.delivery-assessment-header > svg,
+.ref-category-title > svg,
+.telemetry-header-title h3 > svg,
+.full-audio-title-wrap h3 > svg {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  flex-shrink: 0 !important;
+  align-self: center !important;
 }
 
 /* Ensure descriptions are placed strictly underneath headings with standard spacing */

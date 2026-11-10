@@ -211,7 +211,10 @@ body.dashboard-body .glow-bg {
 .sidebar-new.collapsed .logo-text-group,
 .sidebar-new.collapsed .nav-section-label,
 .sidebar-new.collapsed .nav-new a .nav-label,
+.sidebar-new.collapsed .nav-new a > span:not(.badge),
+.sidebar-new.collapsed .nav-new a span,
 .sidebar-new.collapsed .nav-settings-link .nav-label,
+.sidebar-new.collapsed .nav-settings-link span,
 .sidebar-new.collapsed .badge-nav-pulse,
 .sidebar-new.collapsed .badge-nav-pro,
 .sidebar-new.collapsed .badge-new,
@@ -232,9 +235,16 @@ body.dashboard-body .glow-bg {
 
 .sidebar-new.collapsed .nav-new a {
     justify-content: center;
+    align-items: center;
     padding: 11px 0;
     gap: 0;
     border-left: none !important;
+}
+
+.sidebar-new.collapsed .nav-new a svg {
+    margin: 0 auto;
+    display: block;
+    flex-shrink: 0;
 }
 
 .sidebar-new.collapsed .nav-new a.active {

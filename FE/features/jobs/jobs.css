@@ -181,11 +181,14 @@ body.dashboard-body {
 .search-field-icon {
   position: absolute;
   left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 17px;
   height: 17px;
   color: var(--prep-text-muted);
   pointer-events: none;
   z-index: 1;
+  display: block;
 }
 
 .jobs-search-bar input[type="text"] {
