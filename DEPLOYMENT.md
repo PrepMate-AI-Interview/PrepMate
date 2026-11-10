@@ -200,6 +200,58 @@ Sau khi Render hoàn tất quá trình deploy (trạng thái `Live`), tiến hà
 
 ---
 
+### 3.5 Cấu Hình Dịch Vụ Gửi Email Xác Thực Trên Nền Tảng Render (Render Email Production & Lifecycle)
+
+Hệ thống xác thực PrepMate hỗ trợ chu kỳ xác minh email người dùng (Email Verification Lifecycle) và dọn dẹp tài khoản chờ hết hạn. Khi triển khai trên **Render (Web Service)**, cấu hình phụ thuộc vào gói tài nguyên (Compute Plan) của Web Service:
+
+```mermaid
+flowchart TD
+    RenderService["Web Service Trên Render"] --> PlanCheck{"Gói Compute Plan?"}
+    PlanCheck -- "Render Free Web Service" --> FreePlan["Cổng SMTP (25, 465, 587) BỊ CHẶN BỞI FIREWALL\nSử dụng Resend HTTPS REST API (Port 443)\nEMAIL__PROVIDER=resend_api\nEMAIL__RESEND_API_KEY=re_..."]
+    PlanCheck -- "Render Paid (Starter+) / VPS" --> PaidPlan["Hỗ trợ Outbound SMTP đầy đủ\nCó thể dùng Resend REST API hoặc Resend SMTP:\nEMAIL__PROVIDER=smtp\nEMAIL__SMTP_HOST=smtp.resend.com\nEMAIL__SMTP_PORT=465\nEMAIL__ENABLE_SSL=true"]
+    FreePlan --> CompositeSender["CompositeEmailSender SSOT"]
+    PaidPlan --> CompositeSender
+    CompositeSender --> RealDelivery["Hộp thư người dùng (Gmail/Outlook)"]
+```
+
+#### 1. Quy Định Cổng Mạng Trên Render Free vs Paid
+- **Render Free Web Service:** Render chặn toàn bộ outbound traffic qua các cổng SMTP (Port 25, 465, 587) ở cấp độ mạng ảo để chống lạm dụng gửi spam. Mọi nỗ lực kết nối SMTP từ Free Service sẽ bị timeout hoặc `Connection Refused`. **Giải pháp chuẩn:** Sử dụng **`ResendEmailSender`** gửi qua giao thức HTTPS API chuẩn (`POST https://api.resend.com/emails`) trên cổng 443 thông thường.
+- **Render Paid (Starter, Standard...) hoặc VPS Linux:** Cho phép outbound connection qua cổng 465 (SMTPS) và 587 (STARTTLS). Có thể lựa chọn Resend REST API hoặc Resend SMTP.
+
+#### 2. Danh Mục Biến Môi Trường Cần Thiết Trên Render Dashboard
+Vào **Render Dashboard > Web Service > Environment > Add Environment Variable**:
+
+| Tên biến môi trường | Giá trị mẫu / Định dạng | Mô tả nghiệp vụ |
+|:---|:---|:---|
+| `EMAIL__PROVIDER` | `resend_api` (hoặc `Auto`) | Phương thức gửi email. Đặt `resend_api` trên Render Free |
+| `EMAIL__RESEND_API_KEY` | `re_1234567890abcdef...` | Khóa API cấp từ Resend Dashboard (`https://resend.com/api-keys`) |
+| `EMAIL__FROM_ADDRESS` | `onboarding@resend.dev` (hoặc domain xác minh) | Địa chỉ email người gửi đã verify DNS (SPF/DKIM) tại Resend |
+| `EMAIL__FROM_NAME` | `PrepMate AI` | Tên hiển thị người gửi trong hòm thư ứng viên |
+| `FRONTEND_BASE_URL` | `https://prepmate.onrender.com` (hoặc custom domain) | URL dùng sinh liên kết kích hoạt gửi đến người dùng |
+| `AUTH__EMAIL_VERIFICATION_TOKEN_TTL_MINUTES` | `30` | Thời hạn hiệu lực của mã kích hoạt (Mặc định: 30 phút) |
+| `AUTH__PENDING_REGISTRATION_TTL_HOURS` | `24` | Thời hạn tối đa của tài khoản chờ xác minh (Mặc định: 24 giờ) |
+| `AUTH__VERIFICATION_RESEND_COOLDOWN_SECONDS` | `60` | Thời gian giãn cách giữa 2 lần gửi lại mã (Mặc định: 60 giây) |
+| `AUTH__VERIFICATION_MAX_SENDS_PER_24_HOURS` | `5` | Giới hạn gửi lại mã tối đa (Mặc định: 5 lần/24 giờ) |
+| `AUTH__PENDING_CLEANUP_INTERVAL_MINUTES` | `60` | Chu kỳ service chạy ngầm quét dọn tài khoản hết hạn (Mặc định: 60 phút) |
+
+#### 3. Chính Sách Chu Kỳ Tài Khoản (Account Lifecycle & Anti-Takeover)
+1. **Thời Hạn Mã Xác Minh (Token TTL):** Mã kích hoạt có hiệu lực trong **30 phút**. Khi yêu cầu gửi lại (resend) sát thời điểm pending hết hạn (24 giờ), thời hạn mã mới tự động bị giới hạn không vượt quá thời gian hết hạn của tài khoản pending (`Min(UtcNow + 30m, PendingRegistrationExpiresAt)`).
+2. **Bảo Vệ Chống Chiếm Quyền (Anti-Account-Takeover):**
+   - Đăng ký lại bằng email đang trong trạng thái chờ (Active Pending): Mật khẩu gốc được giữ nguyên 100%, không bị ghi đè bởi form public chưa xác minh.
+   - Tài khoản đã xác minh (`EmailVerified == true`): Tuyệt đối không thể bị đăng ký đè hay tác động qua luồng đăng ký mới.
+3. **Giải Phóng Email Khi Hết Hạn 24 Giờ:** Khi tài khoản chờ quá 24 giờ không kích hoạt, tài khoản chuyển sang trạng thái Expired. Email được giải phóng để người dùng hợp lệ có thể khởi tạo lại phiên đăng ký mới với mật khẩu mới.
+4. **Tự Động Dọn Dẹp An Toàn (Automated Cleanup):** `PendingAccountCleanupHostedService` chạy ngầm định kỳ (mỗi 60 phút) dọn dẹp các tài khoản pending đã hết hạn. Dịch vụ tuyệt đối **không xóa** tài khoản admin/manager, tài khoản đã có dữ liệu phỏng vấn (`Sessions`), CV (`CVs`) hoặc lịch sử thanh toán (`Transactions`).
+
+#### 4. Quy Trình Xác Minh & Kiểm Tra Khả Năng Quan Sát (Observability)
+- **Kiểm tra nhật ký:** Khi Resend API tiếp nhận thành công, máy chủ ghi log:
+  ```text
+  [ResendEmailSender] Provider accepted email delivery. MessageId: 49a3999c-0ce1-4ea6-ab68-af692d11b02b
+  ```
+  Quản trị viên có thể tra cứu trực tiếp `MessageId` trên bảng điều khiển Resend Dashboard để theo dõi trạng thái `Delivered`, `Bounced`, hoặc `Opened`.
+- **Tuyệt đối an toàn:** Hệ thống không bao giờ in `RESEND_API_KEY`, token bí mật hoặc mật khẩu người dùng vào log hệ thống.
+
+---
+
 ## 4. Secrets và Quản Lý Bảo Mật (Secrets & Cryptographic Safety)
 
 ### 4.1 Khởi Tạo Signing Secrets An Toàn

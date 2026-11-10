@@ -137,20 +137,7 @@ namespace backend.Controllers
                     string? evaluationRating = isEvalAvailable ? guestPreview.EvaluationRating : null;
 
                     // 2. Authoritative Completion Timestamp (FIX-03)
-                    string? completedAt = null;
-                    if (s.InterviewState?.StageCompletedAt != null)
-                    {
-                        completedAt = s.InterviewState.StageCompletedAt.Value.ToString("o");
-                    }
-                    else
-                    {
-                        var completedHistory = s.InterviewState?.StageHistory?.LastOrDefault(h =>
-                            string.Equals(h.Stage, "COMPLETED", StringComparison.OrdinalIgnoreCase));
-                        if (completedHistory != null)
-                        {
-                            completedAt = completedHistory.CompletedAt?.ToString("o") ?? completedHistory.StartedAt.ToString("o");
-                        }
-                    }
+                    string? completedAt = s.CompletedAt;
 
                     // 3. Question Count: Main questions only, excluding introduction (FIX-04)
                     int questionsAnswered = (s.Answers ?? new List<AnswerItem>())
@@ -172,15 +159,8 @@ namespace backend.Controllers
                         : null;
 
                     // 7. Duration: Only calculate from actual data, do not invent 15 mins (FIX-05)
-                    int? duration = null;
-                    if (s.Answers != null && s.Answers.Count > 0)
-                    {
-                        int totalSec = s.Answers.Sum(a => a.DurationSeconds);
-                        if (totalSec > 0)
-                        {
-                            duration = (int)Math.Ceiling(totalSec / 60.0);
-                        }
-                    }
+                    int? duration = s.Duration;
+                    int? durationSeconds = s.DurationSeconds;
 
                     bool isCompleted = string.Equals(s.Status, "completed", StringComparison.OrdinalIgnoreCase) ||
                                        string.Equals(s.InterviewState?.InterviewPhase, "COMPLETED", StringComparison.OrdinalIgnoreCase) ||
@@ -191,6 +171,7 @@ namespace backend.Controllers
                         id = s.Id,
                         sessionId = s.Id,
                         createdAt = s.CreatedAt,
+                        startedAt = s.StartedAt,
                         completedAt = completedAt,
                         jobTitle = jobTitle,
                         company = company,
@@ -202,6 +183,7 @@ namespace backend.Controllers
                         evaluationStatus = evalStatus,
                         isGuestPreview = true,
                         duration = duration,
+                        durationSeconds = durationSeconds,
                         language = s.Language
                     };
                 })
@@ -505,6 +487,16 @@ namespace backend.Controllers
                     };
 
 
+                // AutoStart commit on session creation if requested (WI-INTERVIEW-PERFORMANCE-OPTIMIZATION-01)
+                if (request.AutoStart == true)
+                {
+                    var startCommit = _quotaService.CommitSessionStart(session, User, HttpContext);
+                    if (startCommit.Success)
+                    {
+                        session.IsStarted = true;
+                    }
+                }
+
                 // =================================================
                 // 5. SAVE
                 // =================================================
@@ -522,6 +514,12 @@ namespace backend.Controllers
                 return Ok(new
                 {
                     sessionId,
+
+                    isStarted =
+                        session.IsStarted,
+
+                    startedAt =
+                        session.StartedAt,
 
                     isNoAiMode =
                         session.IsNoAiMode,
@@ -653,6 +651,9 @@ namespace backend.Controllers
                 isStarted = session.IsStarted,
                 startedAt = session.StartedAt,
                 createdAt = session.CreatedAt,
+                completedAt = session.CompletedAt,
+                duration = session.Duration,
+                durationSeconds = session.DurationSeconds,
                 language = session.Language,
                 questionsAnswered = session.Answers?.Count ?? 0,
                 isGuestPreview = true,

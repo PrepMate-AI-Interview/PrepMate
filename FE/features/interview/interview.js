@@ -130,23 +130,22 @@ function setInterviewUIState(state, customStatusText = "") {
       }
       if (micBtn) {
         if (typeof PrepMateAudioRecorder !== "undefined" && typeof PrepMateAudioRecorder.isMicPreviewActive === "function" && PrepMateAudioRecorder.isMicPreviewActive()) {
-          micBtn.classList.remove("off");
-          micBtn.classList.add("recording");
+          micBtn.classList.remove("off", "recording");
           micBtn.title = "Tắt kiểm tra Micro";
         } else {
-          micBtn.classList.remove("recording");
+          micBtn.classList.remove("recording", "candidate-speaking");
           micBtn.classList.add("off");
           micBtn.title = "Bật kiểm tra Micro (Nói thử để kiểm tra)";
         }
       }
       if (consoleMicBtn) {
         if (typeof PrepMateAudioRecorder !== "undefined" && typeof PrepMateAudioRecorder.isMicPreviewActive === "function" && PrepMateAudioRecorder.isMicPreviewActive()) {
-          consoleMicBtn.classList.remove("off");
-          consoleMicBtn.classList.add("recording");
+          consoleMicBtn.classList.remove("off", "recording");
+          consoleMicBtn.classList.add("active");
           consoleMicBtn.disabled = false;
           consoleMicBtn.title = "Tắt kiểm tra Micro";
         } else {
-          consoleMicBtn.classList.remove("recording");
+          consoleMicBtn.classList.remove("recording", "active");
           consoleMicBtn.classList.add("off");
           consoleMicBtn.disabled = false;
           consoleMicBtn.title = "Bật kiểm tra Micro (Nói thử để kiểm tra)";
@@ -299,7 +298,182 @@ function setInterviewUIState(state, customStatusText = "") {
 // WI-INTERVIEW-PREFLIGHT-01
 // ==========================================
 
+
+// ==========================================
+// VOICE ACTIVITY DETECTION & SPEAKING FEEDBACK
+// (WI-INTERVIEW-ROOM-UX-02)
+// ==========================================
+if (typeof window !== "undefined") window._preflightMicMuted = false;
+let _speakingTurnOnTimer = null;
+let _speakingTurnOffTimer = null;
+let _isCandidateSpeaking = false;
+let _liveAudioMeterInterval = null;
+let _liveAudioContext = null;
+let _liveAudioAnalyser = null;
+let _liveAudioSource = null;
+
+function handleCandidateVoiceActivity(level) {
+  const levelBar = document.getElementById("candidate-mic-level-bar");
+  const eqWrap = document.getElementById("candidate-mic-level-wrap");
+  const candidateTile = document.getElementById("candidate-tile");
+  const micBtn = document.getElementById("btn-mic");
+
+  const inSession = Boolean(typeof window !== "undefined" && window._isInterviewSessionStarted);
+  const isMuted = inSession
+    ? Boolean((typeof currentMicState !== "undefined" && currentMicState === MIC_STATE.MUTED) || (micBtn && micBtn.classList.contains("off")))
+    : Boolean((typeof window !== "undefined" && window._preflightMicMuted) || _preflightMicMuted || (micBtn && micBtn.classList.contains("off")));
+  if (isMuted) {
+    if (levelBar) {
+      levelBar.style.width = "0%";
+      levelBar.classList.remove("active");
+    }
+    if (eqWrap) {
+      eqWrap.classList.remove("active");
+      const eqBars = eqWrap.querySelectorAll(".eq-bar");
+      eqBars.forEach((bar) => { bar.style.height = "3px"; });
+    }
+    if (candidateTile) candidateTile.classList.remove("speaking", "candidate-speaking");
+    if (micBtn) micBtn.classList.remove("candidate-speaking");
+    _isCandidateSpeaking = false;
+    return;
+  }
+
+  // Update real level bar (SSOT backward compatibility)
+  if (levelBar) {
+    const barWidth = Math.min(100, Math.max(0, Math.round(level * 1.5)));
+    levelBar.style.width = barWidth + "%";
+    if (level > 14) {
+      levelBar.classList.add("active");
+    } else {
+      levelBar.classList.remove("active");
+    }
+  }
+
+  // Update modern 4-bar equalizer (WI-INTERVIEW-LIVE-LAYOUT-POLISH-03)
+  if (eqWrap) {
+    if (level > 14) {
+      eqWrap.classList.add("active");
+    } else {
+      eqWrap.classList.remove("active");
+    }
+    const eqBars = eqWrap.querySelectorAll(".eq-bar");
+    if (eqBars && eqBars.length >= 4) {
+      if (level <= 6) {
+        eqBars[0].style.height = "3px";
+        eqBars[1].style.height = "3px";
+        eqBars[2].style.height = "3px";
+        eqBars[3].style.height = "3px";
+      } else {
+        const norm = Math.min(1, Math.max(0.1, level / 60));
+        const h1 = Math.round(Math.min(14, Math.max(3, norm * 11 * 0.65)));
+        const h2 = Math.round(Math.min(14, Math.max(4, norm * 14 * 0.95)));
+        const h3 = Math.round(Math.min(14, Math.max(4, norm * 14 * 1.00)));
+        const h4 = Math.round(Math.min(14, Math.max(3, norm * 11 * 0.75)));
+        eqBars[0].style.height = h1 + "px";
+        eqBars[1].style.height = h2 + "px";
+        eqBars[2].style.height = h3 + "px";
+        eqBars[3].style.height = h4 + "px";
+      }
+    }
+  }
+
+  // Hysteresis threshold logic: On >= 120ms, Off >= 350ms
+  const isSpeech = level > 14;
+
+  if (isSpeech) {
+    if (_speakingTurnOffTimer) {
+      clearTimeout(_speakingTurnOffTimer);
+      _speakingTurnOffTimer = null;
+    }
+    if (!_isCandidateSpeaking && !_speakingTurnOnTimer) {
+      _speakingTurnOnTimer = setTimeout(() => {
+        _isCandidateSpeaking = true;
+        if (candidateTile) candidateTile.classList.add("speaking");
+        if (micBtn) micBtn.classList.add("candidate-speaking");
+        _speakingTurnOnTimer = null;
+      }, 120);
+    }
+  } else {
+    if (_speakingTurnOnTimer) {
+      clearTimeout(_speakingTurnOnTimer);
+      _speakingTurnOnTimer = null;
+    }
+    if (_isCandidateSpeaking && !_speakingTurnOffTimer) {
+      _speakingTurnOffTimer = setTimeout(() => {
+        _isCandidateSpeaking = false;
+        if (candidateTile) candidateTile.classList.remove("speaking");
+        if (micBtn) micBtn.classList.remove("candidate-speaking");
+        _speakingTurnOffTimer = null;
+      }, 350);
+    }
+  }
+}
+window.handleCandidateVoiceActivity = handleCandidateVoiceActivity;
+
+function startLiveAudioMeter() {
+  stopLiveAudioMeter();
+  if (typeof PrepMateAudioRecorder === "undefined") return;
+  const stream = PrepMateAudioRecorder.getAudioStream();
+  if (!stream || !stream.active || stream.getAudioTracks().every(t => !t.enabled || t.readyState === "ended")) {
+    return;
+  }
+  const AudioCtxClass = typeof window !== "undefined" ? (window.AudioContext || window.webkitAudioContext) : null;
+  if (!AudioCtxClass) return;
+
+  try {
+    _liveAudioContext = new AudioCtxClass();
+    _liveAudioSource = _liveAudioContext.createMediaStreamSource(stream);
+    _liveAudioAnalyser = _liveAudioContext.createAnalyser();
+    _liveAudioAnalyser.fftSize = 256;
+    _liveAudioSource.connect(_liveAudioAnalyser);
+
+    const dataArray = new Uint8Array(_liveAudioAnalyser.frequencyBinCount);
+    _liveAudioMeterInterval = setInterval(() => {
+      if (!_liveAudioAnalyser) return;
+      try {
+        _liveAudioAnalyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          sum += dataArray[i];
+        }
+        const avg = sum / dataArray.length;
+        const level = Math.min(100, Math.round((avg / 128) * 100));
+        handleCandidateVoiceActivity(level);
+      } catch (e) {}
+    }, 60);
+  } catch (err) {
+    console.warn("[AUDIO METER] Live audio meter init warning:", err);
+  }
+}
+window.startLiveAudioMeter = startLiveAudioMeter;
+
+function stopLiveAudioMeter() {
+  if (_liveAudioMeterInterval) {
+    clearInterval(_liveAudioMeterInterval);
+    _liveAudioMeterInterval = null;
+  }
+  if (_liveAudioSource) {
+    try { _liveAudioSource.disconnect(); } catch (e) {}
+    _liveAudioSource = null;
+  }
+  if (_liveAudioAnalyser) {
+    try { _liveAudioAnalyser.disconnect(); } catch (e) {}
+    _liveAudioAnalyser = null;
+  }
+  if (_liveAudioContext && typeof _liveAudioContext.close === "function") {
+    try { _liveAudioContext.close(); } catch (e) {}
+    _liveAudioContext = null;
+  }
+  handleCandidateVoiceActivity(0);
+}
+window.stopLiveAudioMeter = stopLiveAudioMeter;
+
 let _preflightMicMuted = false;
+window.setPreflightMicMuted = function(val) {
+  _preflightMicMuted = Boolean(val);
+  const micBtn = document.getElementById("btn-mic");
+  if (micBtn) micBtn.classList.toggle("off", _preflightMicMuted);
+};
 
 async function startMicPreflightTest() {
   if (typeof PrepMateAudioRecorder === "undefined" || typeof PrepMateAudioRecorder.startMicPreview !== "function") {
@@ -318,14 +492,7 @@ async function startMicPreflightTest() {
       if (levelBar) levelBar.style.width = "0%";
       return;
     }
-    if (levelBar) {
-      levelBar.style.width = Math.min(100, Math.max(0, level * 1.5)) + "%";
-      if (level > 15) {
-        levelBar.classList.add("active");
-      } else {
-        levelBar.classList.remove("active");
-      }
-    }
+    handleCandidateVoiceActivity(level);
   });
 
   if (result.success) {
@@ -345,15 +512,14 @@ async function startMicPreflightTest() {
       `;
     }
     if (micBtn && !window._isInterviewSessionStarted) {
-      micBtn.classList.remove("off");
-      micBtn.classList.add("recording");
+      micBtn.classList.remove("off", "recording", "candidate-speaking");
       micBtn.title = "Tắt kiểm tra Micro";
-      micBtn.innerHTML = `
-        <svg class="zoom-svg-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <line x1="12" y1="19" x2="12" y2="23"/>
-          <line x1="8" y1="23" x2="16" y2="23"/>
+      micBtn.innerHTML = (typeof ZOOM_ICONS !== "undefined" && ZOOM_ICONS.micOn) ? ZOOM_ICONS.micOn : `
+        <svg class="zoom-svg-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+          <line x1="12" y1="18" x2="12" y2="22"/>
+          <line x1="8" y1="22" x2="16" y2="22"/>
         </svg>
       `;
     }
@@ -384,6 +550,12 @@ function stopMicPreflightTest(closeTracks = false) {
     levelBar.style.width = "0%";
     levelBar.classList.remove("active");
   }
+  const eqWrap = document.getElementById("candidate-mic-level-wrap");
+  if (eqWrap) {
+    eqWrap.classList.remove("active");
+    const eqBars = eqWrap.querySelectorAll(".eq-bar");
+    eqBars.forEach((bar) => { bar.style.height = "3px"; });
+  }
 }
 window.stopMicPreflightTest = stopMicPreflightTest;
 
@@ -391,7 +563,6 @@ function toggleMicPreflight() {
   if (window._isInterviewSessionStarted) return;
   if (_preflightMicMuted) {
     startMicPreflightTest();
-    if (typeof showToast === "function") showToast("Đã bật kiểm tra micro.", "info");
   } else {
     _preflightMicMuted = true;
     stopMicPreflightTest(true);
@@ -415,7 +586,7 @@ function toggleMicPreflight() {
       `;
     }
     if (micBtn) {
-      micBtn.classList.remove("recording");
+      micBtn.classList.remove("recording", "candidate-speaking");
       micBtn.classList.add("off");
       micBtn.title = "Bật kiểm tra Micro";
       micBtn.innerHTML = `
@@ -430,8 +601,10 @@ function toggleMicPreflight() {
         </svg>
       `;
     }
-    if (levelBar) levelBar.style.width = "0%";
-    if (typeof showToast === "function") showToast("Đã tắt kiểm tra micro.", "info");
+    if (levelBar) {
+      levelBar.style.width = "0%";
+      levelBar.classList.remove("active");
+    }
   }
 }
 window.toggleMicPreflight = toggleMicPreflight;
@@ -552,6 +725,9 @@ async function startInterviewSession(skipConfirm = false) {
         const jdText = config.jdText || currentInterviewSession?.jdText || "";
         const userDescription = config.userDescription || currentInterviewSession?.userDescription || "";
         const interviewLanguage = config.interviewLanguage || currentInterviewSession?.interviewLanguage || "vi";
+        if (!currentInterviewSession) {
+          currentInterviewSession = {};
+        }
         const persona = config.interviewerPersona || (typeof localStorage !== "undefined" ? localStorage.getItem("prepmate_interviewer_persona") : "") || "professional";
         currentInterviewSession.interviewerPersona = persona;
 
@@ -572,6 +748,9 @@ async function startInterviewSession(skipConfirm = false) {
           interviewLanguage,
           language: interviewLanguage,
           maximumQuestions: 15,
+          cvAnalysis: config.cvAnalysis || null,
+          jdAnalysis: config.jdAnalysis || null,
+          autoStart: true,
         });
 
         const backendSessionId = data.sessionId || data.id || data.Id;
@@ -579,12 +758,14 @@ async function startInterviewSession(skipConfirm = false) {
         currentInterviewSession.backendSessionId = backendSessionId;
         currentInterviewSession.status = data.status || "in_progress";
         sessionStorage.setItem(INTERVIEW_SESSION_STORAGE_KEY, backendSessionId);
-        try {
-          if (typeof InterviewApiClient !== "undefined" && typeof InterviewApiClient.startSession === "function") {
-            await InterviewApiClient.startSession(backendSessionId);
+        if (!data.isStarted) {
+          try {
+            if (typeof InterviewApiClient !== "undefined" && typeof InterviewApiClient.startSession === "function") {
+              await InterviewApiClient.startSession(backendSessionId);
+            }
+          } catch (startErr) {
+            console.warn("[START INTERVIEW] startSession commit warning:", startErr);
           }
-        } catch (startErr) {
-          console.warn("[START INTERVIEW] startSession commit warning:", startErr);
         }
         return backendSessionId;
       } catch (err) {
@@ -951,10 +1132,8 @@ async function submitIntroduction(introductionText) {
 
     isProcessingAnswer = false;
 
-    // Show the first adaptive question
-    setTimeout(() => {
-      showAdaptiveQuestion();
-    }, 300);
+    // Show the first adaptive question immediately (WI-INTERVIEW-PERFORMANCE-OPTIMIZATION-01)
+    showAdaptiveQuestion();
   } catch (error) {
     stopProcessingStatusProgression();
     console.error("[INTERVIEW API] Introduction submission failed:", error);
@@ -1260,10 +1439,8 @@ async function sendMessage() {
 
     isProcessingAnswer = false;
 
-    // Display next question
-    setTimeout(() => {
-      showAdaptiveQuestion();
-    }, 300);
+    // Display next question immediately (WI-INTERVIEW-PERFORMANCE-OPTIMIZATION-01)
+    showAdaptiveQuestion();
   } catch (error) {
     stopProcessingStatusProgression();
     console.error("[INTERVIEW API] Respond error:", error);

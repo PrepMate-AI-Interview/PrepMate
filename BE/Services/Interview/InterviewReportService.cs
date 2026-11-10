@@ -277,6 +277,36 @@ namespace backend.Services.Interview
                     session.InterviewState.IsReadyToFinish =
                         true;
 
+                    var nowUtc = DateTime.UtcNow;
+                    session.InterviewState.StageCompletedAt = nowUtc;
+                    session.CompletedAt = nowUtc.ToString("o");
+                    if (session.StartedAt != null && DateTime.TryParse(session.StartedAt, null, System.Globalization.DateTimeStyles.RoundtripKind, out var startT))
+                    {
+                        if (nowUtc >= startT)
+                        {
+                            session.DurationSeconds = (int)Math.Max(0, (nowUtc - startT).TotalSeconds);
+                        }
+                    }
+
+                    if (session.InterviewState.StageHistory != null && session.InterviewState.StageHistory.Count > 0)
+                    {
+                        var lastRecord = session.InterviewState.StageHistory.LastOrDefault();
+                        if (lastRecord != null && lastRecord.CompletedAt == null)
+                        {
+                            lastRecord.CompletedAt = nowUtc;
+                        }
+                    }
+                    if (session.InterviewState.StageHistory != null && !session.InterviewState.StageHistory.Any(h => string.Equals(h.Stage, "COMPLETED", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        session.InterviewState.StageHistory.Add(new StageHistoryRecord
+                        {
+                            Stage = "COMPLETED",
+                            StartedAt = nowUtc,
+                            CompletedAt = nowUtc,
+                            TransitionReason = "Interview evaluation report generated"
+                        });
+                    }
+
                     _fileDb.Sessions[
                         session.Id] =
                         session;
@@ -422,6 +452,16 @@ namespace backend.Services.Interview
             session.Status = "completed";
             session.InterviewState.InterviewPhase = "COMPLETED";
             session.InterviewState.IsReadyToFinish = true;
+            var fallbackNowUtc = DateTime.UtcNow;
+            session.InterviewState.StageCompletedAt = fallbackNowUtc;
+            session.CompletedAt = fallbackNowUtc.ToString("o");
+            if (session.StartedAt != null && DateTime.TryParse(session.StartedAt, null, System.Globalization.DateTimeStyles.RoundtripKind, out var fallbackStartT))
+            {
+                if (fallbackNowUtc >= fallbackStartT)
+                {
+                    session.DurationSeconds = (int)Math.Max(0, (fallbackNowUtc - fallbackStartT).TotalSeconds);
+                }
+            }
             _fileDb.Sessions[session.Id] = session;
             _fileDb.Save();
 

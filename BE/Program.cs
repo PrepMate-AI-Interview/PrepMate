@@ -240,12 +240,20 @@ builder.Services.AddRateLimiter(options =>
 
 
 });
-// Register Unified Email Services (WI-AUTH-01)
+// Register Unified Email Services (WI-AUTH-01 & WI-AUTH-02)
+builder.Services.AddHttpClient();
 var emailOptions = EmailOptions.FromConfiguration(builder.Configuration);
 builder.Services.AddSingleton(emailOptions);
+var authLifecycleOptions = AuthLifecycleOptions.FromConfiguration(builder.Configuration);
+builder.Services.AddSingleton(authLifecycleOptions);
 builder.Services.AddSingleton<IEmailInboxStore, InMemoryEmailInboxStore>();
 builder.Services.AddSingleton<EmailTemplateRenderer>();
 builder.Services.AddSingleton<IEmailSender, CompositeEmailSender>();
+
+// Register Automated Pending Account Cleanup Service (WI-AUTH-02)
+builder.Services.AddSingleton<PendingAccountCleanupHostedService>();
+builder.Services.AddSingleton<IPendingAccountCleanupService>(sp => sp.GetRequiredService<PendingAccountCleanupHostedService>());
+builder.Services.AddHostedService(sp => sp.GetRequiredService<PendingAccountCleanupHostedService>());
 
 builder.Services.AddSingleton<FileDb>(sp =>
 {
@@ -303,6 +311,14 @@ builder.Services.AddSingleton<IComboRootService, ComboRootService>();
 builder.Services.AddHttpClient<IPrepMateAIClient, PrepMateAIClient>(client =>
 {
     client.Timeout = TimeSpan.FromSeconds(60);
+})
+.ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+{
+    PooledConnectionLifetime = TimeSpan.FromMinutes(15),
+    PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+    KeepAlivePingDelay = TimeSpan.FromSeconds(30),
+    KeepAlivePingTimeout = TimeSpan.FromSeconds(10),
+    EnableMultipleHttp2Connections = true
 });
 builder.Services.AddSingleton<IAIRouter, AIRouter>();
 builder.Services.AddHttpClient<IAIProviderAdapter, OpenAIChatCompletionsAdapter>(client =>
@@ -312,6 +328,14 @@ builder.Services.AddHttpClient<IAIProviderAdapter, OpenAIChatCompletionsAdapter>
 builder.Services.AddHttpClient<GeminiService>(client =>
 {
     client.Timeout = TimeSpan.FromSeconds(60);
+})
+.ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+{
+    PooledConnectionLifetime = TimeSpan.FromMinutes(15),
+    PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+    KeepAlivePingDelay = TimeSpan.FromSeconds(30),
+    KeepAlivePingTimeout = TimeSpan.FromSeconds(10),
+    EnableMultipleHttp2Connections = true
 });
 builder.Services.AddHttpClient<backend.Services.AI.IVilaoModelDiscoveryService, backend.Services.AI.VilaoModelDiscoveryService>(client =>
 {

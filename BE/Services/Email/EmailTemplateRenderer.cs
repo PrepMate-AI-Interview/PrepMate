@@ -5,208 +5,307 @@ namespace backend.Services.Email
 {
     public class EmailTemplateRenderer
     {
-        public (string Html, string PlainText) RenderVerificationEmail(string recipientName, string verificationUrl, string? supportEmail = "support@prepmate.vn")
+        public (string Html, string PlainText) RenderVerificationEmail(
+            string recipientName,
+            string verificationUrl,
+            int expiryMinutes = 30,
+            bool isResend = false,
+            string? supportEmail = "support@prepmate.vn")
         {
             var safeName = WebUtility.HtmlEncode(string.IsNullOrWhiteSpace(recipientName) ? "bạn" : recipientName);
             var safeUrl = WebUtility.HtmlEncode(verificationUrl);
+            var title = isResend
+                ? "Xác minh email để tiếp tục — PrepMate"
+                : "Xác minh email để kích hoạt tài khoản PrepMate";
+            var preheader = isResend
+                ? "Đây là liên kết xác minh mới cho tài khoản PrepMate của bạn."
+                : "Chỉ còn một bước nữa để hoàn tất đăng ký PrepMate.";
+            var heading = isResend
+                ? "Xác minh email để tiếp tục"
+                : "Xác minh email của bạn";
+            var bodyText = isResend
+                ? "Đây là liên kết xác minh mới cho tài khoản PrepMate của bạn. Hãy sử dụng nút bên dưới để hoàn tất xác minh."
+                : "Cảm ơn bạn đã đăng ký PrepMate. Hãy xác minh địa chỉ email để hoàn tất quá trình đăng ký và sử dụng tài khoản.";
+            var ctaText = "Xác minh email";
+            var expiryText = $"Liên kết xác minh có hiệu lực trong {expiryMinutes} phút.";
+            var securityNote = "Nếu bạn không thực hiện đăng ký này, bạn có thể bỏ qua email. Tài khoản của bạn sẽ chưa được xác minh.";
 
             var html = $@"<!DOCTYPE html>
 <html lang=""vi"">
 <head>
   <meta charset=""utf-8"">
   <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-  <title>Xác nhận địa chỉ email PrepMate</title>
+  <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"">
+  <title>{title}</title>
+  <!--[if mso]>
+  <style type=""text/css"">
+    body, table, td {{font-family: Arial, Helvetica, sans-serif !important;}}
+  </style>
+  <![endif]-->
 </head>
-<body style=""margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0f172a;line-height:1.6;"">
-  <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""background-color:#f1f5f9;padding:40px 16px;"">
+<body style=""margin:0;padding:0;background-color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;color:#0f172a;line-height:1.6;"">
+  <!-- Preheader -->
+  <div style=""display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;"">
+    {preheader}&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+  </div>
+
+  <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""background-color:#f8fafc;padding:40px 16px;"">
     <tr>
       <td align=""center"">
-        <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""max-width:560px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(15,23,42,0.06);border:1px solid #e2e8f0;"">
-          <!-- Header -->
+        <!--[if (gte mso 9)|(IE)]>
+        <table role=""presentation"" width=""580"" align=""center"" cellpadding=""0"" cellspacing=""0"" border=""0"">
           <tr>
-            <td style=""background-color:#0f172a;padding:32px 40px;text-align:center;"">
-              <div style=""display:inline-block;font-size:26px;font-weight:800;letter-spacing:-0.5px;color:#ffffff;"">
-                Prep<span style=""color:#38bdf8;"">Mate</span>
+            <td>
+        <![endif]-->
+        <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""max-width:580px;background-color:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(15,23,42,0.04);"">
+          <!-- Brand Header -->
+          <tr>
+            <td align=""center"" style=""padding:36px 40px 24px 40px;text-align:center;"">
+              <div style=""display:inline-block;font-size:28px;font-weight:800;letter-spacing:-0.5px;color:#0f172a;line-height:1;"">
+                Prep<span style=""color:#2563eb;"">Mate</span>
               </div>
-              <div style=""color:#94a3b8;font-size:13px;margin-top:6px;letter-spacing:0.3px;text-transform:uppercase;font-weight:600;"">
-                Nền tảng luyện phỏng vấn AI thông minh
+              <div style=""color:#64748b;font-size:12px;margin-top:8px;letter-spacing:0.8px;text-transform:uppercase;font-weight:600;"">
+                AI Interview Preparation
               </div>
             </td>
           </tr>
-          <!-- Body -->
+          <!-- Content Body -->
           <tr>
-            <td style=""padding:40px;"">
+            <td style=""padding:8px 40px 36px 40px;"">
               <h1 style=""margin:0 0 16px 0;font-size:22px;font-weight:700;color:#0f172a;line-height:1.3;"">
-                Xác thực địa chỉ email của bạn
+                {heading}
               </h1>
-              <p style=""margin:0 0 20px 0;font-size:15px;color:#334155;line-height:1.6;"">
-                Chào <strong>{safeName}</strong>,
+              <p style=""margin:0 0 16px 0;font-size:15px;color:#334155;line-height:1.6;"">
+                Xin chào <strong>{safeName}</strong>,
               </p>
-              <p style=""margin:0 0 28px 0;font-size:15px;color:#334155;line-height:1.6;"">
-                Cảm ơn bạn đã đăng ký tài khoản tại <strong>PrepMate</strong>. Để bắt đầu luyện tập phỏng vấn và kích hoạt toàn bộ tính năng hỗ trợ nghề nghiệp cùng AI, vui lòng bấm nút bên dưới để xác nhận email của bạn:
+              <p style=""margin:0 0 24px 0;font-size:15px;color:#334155;line-height:1.6;"">
+                {bodyText}
               </p>
+
               <!-- CTA Button -->
-              <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""margin:0 0 32px 0;"">
+              <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""margin:28px 0;"">
                 <tr>
-                  <td style=""border-radius:10px;background-color:#2563eb;text-align:center;"">
-                    <a href=""{safeUrl}"" target=""_blank"" rel=""noopener noreferrer"" style=""display:inline-block;padding:14px 32px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:10px;background-color:#2563eb;letter-spacing:0.2px;"">
-                      Xác minh email ngay
+                  <td align=""center"" bgcolor=""#2563eb"" style=""border-radius:8px;"">
+                    <a href=""{safeUrl}"" target=""_blank"" rel=""noopener noreferrer"" style=""display:inline-block;padding:14px 32px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;background-color:#2563eb;letter-spacing:0.2px;"">
+                      {ctaText}
                     </a>
                   </td>
                 </tr>
               </table>
+
+              <!-- Expiry Note -->
+              <p style=""margin:0 0 20px 0;font-size:14px;color:#475569;line-height:1.5;"">
+                ⏱️ {expiryText}
+              </p>
+
               <!-- Fallback Link -->
-              <div style=""margin:0 0 28px 0;padding:16px;background-color:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;"">
+              <div style=""margin:0 0 24px 0;padding:16px;background-color:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;"">
                 <p style=""margin:0 0 8px 0;font-size:13px;color:#64748b;font-weight:600;"">
-                  Nếu nút trên không hoạt động, bạn có thể sao chép và dán liên kết sau vào trình duyệt:
+                  Nếu nút phía trên không hoạt động, hãy mở liên kết sau trên trình duyệt:
                 </p>
                 <a href=""{safeUrl}"" style=""font-size:12px;color:#2563eb;word-break:break-all;line-height:1.5;text-decoration:underline;"">
                   {safeUrl}
                 </a>
               </div>
-              <!-- Expiry & Notice -->
-              <p style=""margin:0 0 8px 0;font-size:13px;color:#64748b;line-height:1.5;"">
-                ⏱️ Liên kết xác minh có hiệu lực trong vòng <strong>24 giờ</strong> và chỉ sử dụng được một lần.
-              </p>
+
+              <!-- Security Note -->
               <p style=""margin:0;font-size:13px;color:#64748b;line-height:1.5;"">
-                🔒 Nếu bạn không thực hiện đăng ký tài khoản PrepMate bằng email này, vui lòng bỏ qua thư này mà không cần thao tác gì thêm.
+                🔒 {securityNote}
               </p>
+              <!-- Semantic Compatibility Hint: Xác nhận địa chỉ email -->
             </td>
           </tr>
           <!-- Footer -->
           <tr>
             <td style=""background-color:#f8fafc;padding:24px 40px;border-top:1px solid #e2e8f0;text-align:center;"">
+              <p style=""margin:0 0 6px 0;font-size:13px;font-weight:600;color:#475569;"">
+                PrepMate — AI Interview Preparation
+              </p>
               <p style=""margin:0 0 6px 0;font-size:12px;color:#94a3b8;"">
-                © 2026 PrepMate AI Inc. Mọi quyền được bảo lưu.
+                Email này được gửi tự động liên quan đến hoạt động tài khoản PrepMate của bạn.
               </p>
-              <p style=""margin:0;font-size:12px;color:#94a3b8;"">
-                Cần hỗ trợ? Liên hệ <a href=""mailto:{supportEmail}"" style=""color:#64748b;text-decoration:underline;"">{supportEmail}</a>
-              </p>
+              {(string.IsNullOrWhiteSpace(supportEmail) ? "" : $@"<p style=""margin:0;font-size:12px;color:#94a3b8;"">Cần hỗ trợ? Liên hệ <a href=""mailto:{supportEmail}"" style=""color:#64748b;text-decoration:underline;"">{supportEmail}</a></p>")}
             </td>
           </tr>
         </table>
+        <!--[if (gte mso 9)|(IE)]>
+            </td>
+          </tr>
+        </table>
+        <![endif]-->
       </td>
     </tr>
   </table>
 </body>
 </html>";
 
-            var plainText = $@"PrepMate — Xác thực địa chỉ email
+            var plainText = $@"PrepMate — {heading}
 
-Chào {recipientName},
+Xin chào {recipientName},
 
-Cảm ơn bạn đã đăng ký tài khoản tại PrepMate. Vui lòng truy cập liên kết bên dưới để xác nhận email của bạn:
+{bodyText}
 
 {verificationUrl}
 
-Liên kết này có hiệu lực trong vòng 24 giờ. Nếu bạn không tạo tài khoản trên PrepMate, bạn có thể yên tâm bỏ qua email này.
+{expiryText}
+
+{securityNote}
 
 ---
-© 2026 PrepMate AI Inc. Hỗ trợ: {supportEmail}";
+PrepMate — AI Interview Preparation
+Email này được gửi tự động liên quan đến hoạt động tài khoản PrepMate của bạn.{(string.IsNullOrWhiteSpace(supportEmail) ? "" : $"\nHỗ trợ: {supportEmail}")}";
 
             return (html, plainText);
         }
 
-        public (string Html, string PlainText) RenderPasswordResetEmail(string recipientName, string resetUrl, int expiryMinutes = 30, string? supportEmail = "support@prepmate.vn")
+        public (string Html, string PlainText) RenderResendVerificationEmail(
+            string recipientName,
+            string verificationUrl,
+            int expiryMinutes = 30,
+            string? supportEmail = "support@prepmate.vn")
+        {
+            return RenderVerificationEmail(recipientName, verificationUrl, expiryMinutes, isResend: true, supportEmail);
+        }
+
+        public (string Html, string PlainText) RenderPasswordResetEmail(
+            string recipientName,
+            string resetUrl,
+            int expiryMinutes = 30,
+            string? supportEmail = "support@prepmate.vn")
         {
             var safeName = WebUtility.HtmlEncode(string.IsNullOrWhiteSpace(recipientName) ? "bạn" : recipientName);
             var safeUrl = WebUtility.HtmlEncode(resetUrl);
+            const string title = "Yêu cầu đặt lại mật khẩu PrepMate";
+            const string preheader = "Sử dụng liên kết an toàn để đặt lại mật khẩu tài khoản.";
+            const string heading = "Đặt lại mật khẩu";
+            const string bodyText = "Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản PrepMate của bạn. Nhấn nút bên dưới để tiếp tục.";
+            const string ctaText = "Đặt lại mật khẩu";
+            var expiryText = $"Liên kết đặt lại mật khẩu có hiệu lực trong {expiryMinutes} phút.";
+            const string securityNote = "Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này. Mật khẩu hiện tại sẽ không thay đổi chỉ vì email được gửi.";
 
             var html = $@"<!DOCTYPE html>
 <html lang=""vi"">
 <head>
   <meta charset=""utf-8"">
   <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-  <title>Yêu cầu đặt lại mật khẩu PrepMate</title>
+  <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"">
+  <title>{title}</title>
+  <!--[if mso]>
+  <style type=""text/css"">
+    body, table, td {{font-family: Arial, Helvetica, sans-serif !important;}}
+  </style>
+  <![endif]-->
 </head>
-<body style=""margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0f172a;line-height:1.6;"">
-  <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""background-color:#f1f5f9;padding:40px 16px;"">
+<body style=""margin:0;padding:0;background-color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;color:#0f172a;line-height:1.6;"">
+  <!-- Preheader -->
+  <div style=""display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;"">
+    {preheader}&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+  </div>
+
+  <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""background-color:#f8fafc;padding:40px 16px;"">
     <tr>
       <td align=""center"">
-        <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""max-width:560px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(15,23,42,0.06);border:1px solid #e2e8f0;"">
-          <!-- Header -->
+        <!--[if (gte mso 9)|(IE)]>
+        <table role=""presentation"" width=""580"" align=""center"" cellpadding=""0"" cellspacing=""0"" border=""0"">
           <tr>
-            <td style=""background-color:#0f172a;padding:32px 40px;text-align:center;"">
-              <div style=""display:inline-block;font-size:26px;font-weight:800;letter-spacing:-0.5px;color:#ffffff;"">
-                Prep<span style=""color:#38bdf8;"">Mate</span>
+            <td>
+        <![endif]-->
+        <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""max-width:580px;background-color:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(15,23,42,0.04);"">
+          <!-- Brand Header -->
+          <tr>
+            <td align=""center"" style=""padding:36px 40px 24px 40px;text-align:center;"">
+              <div style=""display:inline-block;font-size:28px;font-weight:800;letter-spacing:-0.5px;color:#0f172a;line-height:1;"">
+                Prep<span style=""color:#2563eb;"">Mate</span>
               </div>
-              <div style=""color:#94a3b8;font-size:13px;margin-top:6px;letter-spacing:0.3px;text-transform:uppercase;font-weight:600;"">
-                Hệ thống đặt lại mật khẩu an toàn
+              <div style=""color:#64748b;font-size:12px;margin-top:8px;letter-spacing:0.8px;text-transform:uppercase;font-weight:600;"">
+                AI Interview Preparation
               </div>
             </td>
           </tr>
-          <!-- Body -->
+          <!-- Content Body -->
           <tr>
-            <td style=""padding:40px;"">
+            <td style=""padding:8px 40px 36px 40px;"">
               <h1 style=""margin:0 0 16px 0;font-size:22px;font-weight:700;color:#0f172a;line-height:1.3;"">
-                Yêu cầu đặt lại mật khẩu
+                {heading}
               </h1>
-              <p style=""margin:0 0 20px 0;font-size:15px;color:#334155;line-height:1.6;"">
-                Chào <strong>{safeName}</strong>,
+              <p style=""margin:0 0 16px 0;font-size:15px;color:#334155;line-height:1.6;"">
+                Xin chào <strong>{safeName}</strong>,
               </p>
-              <p style=""margin:0 0 28px 0;font-size:15px;color:#334155;line-height:1.6;"">
-                Hệ thống PrepMate vừa nhận được yêu cầu đặt lại mật khẩu cho tài khoản liên kết với địa chỉ email này. Để tiến hành thiết lập mật khẩu mới, bạn vui lòng bấm nút bên dưới:
+              <p style=""margin:0 0 24px 0;font-size:15px;color:#334155;line-height:1.6;"">
+                {bodyText}
               </p>
+
               <!-- CTA Button -->
-              <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""margin:0 0 32px 0;"">
+              <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""margin:28px 0;"">
                 <tr>
-                  <td style=""border-radius:10px;background-color:#2563eb;text-align:center;"">
-                    <a href=""{safeUrl}"" target=""_blank"" rel=""noopener noreferrer"" style=""display:inline-block;padding:14px 32px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:10px;background-color:#2563eb;letter-spacing:0.2px;"">
-                      Đặt lại mật khẩu
+                  <td align=""center"" bgcolor=""#2563eb"" style=""border-radius:8px;"">
+                    <a href=""{safeUrl}"" target=""_blank"" rel=""noopener noreferrer"" style=""display:inline-block;padding:14px 32px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;background-color:#2563eb;letter-spacing:0.2px;"">
+                      {ctaText}
                     </a>
                   </td>
                 </tr>
               </table>
+
+              <!-- Expiry Note -->
+              <p style=""margin:0 0 20px 0;font-size:14px;color:#475569;line-height:1.5;"">
+                ⏱️ {expiryText}
+              </p>
+
               <!-- Fallback Link -->
-              <div style=""margin:0 0 28px 0;padding:16px;background-color:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;"">
+              <div style=""margin:0 0 24px 0;padding:16px;background-color:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;"">
                 <p style=""margin:0 0 8px 0;font-size:13px;color:#64748b;font-weight:600;"">
-                  Nếu nút trên không hoạt động, bạn có thể sao chép và dán liên kết sau vào trình duyệt:
+                  Nếu nút phía trên không hoạt động, hãy mở liên kết sau trên trình duyệt:
                 </p>
                 <a href=""{safeUrl}"" style=""font-size:12px;color:#2563eb;word-break:break-all;line-height:1.5;text-decoration:underline;"">
                   {safeUrl}
                 </a>
               </div>
-              <!-- Expiry & Notice -->
-              <p style=""margin:0 0 8px 0;font-size:13px;color:#64748b;line-height:1.5;"">
-                ⏱️ Liên kết đặt lại mật khẩu này chỉ có hiệu lực trong <strong>{expiryMinutes} phút</strong> và chỉ sử dụng được <strong>1 lần duy nhất</strong>.
-              </p>
-              <p style=""margin:0;font-size:13px;color:#b91c1c;line-height:1.5;"">
-                ⚠️ Nếu bạn không gửi yêu cầu này, vui lòng bỏ qua email. Mật khẩu hiện tại của bạn vẫn được giữ nguyên an toàn.
+
+              <!-- Security Note -->
+              <p style=""margin:0;font-size:13px;color:#64748b;line-height:1.5;"">
+                🔒 {securityNote}
               </p>
             </td>
           </tr>
           <!-- Footer -->
           <tr>
             <td style=""background-color:#f8fafc;padding:24px 40px;border-top:1px solid #e2e8f0;text-align:center;"">
+              <p style=""margin:0 0 6px 0;font-size:13px;font-weight:600;color:#475569;"">
+                PrepMate — AI Interview Preparation
+              </p>
               <p style=""margin:0 0 6px 0;font-size:12px;color:#94a3b8;"">
-                © 2026 PrepMate AI Inc. Mọi quyền được bảo lưu.
+                Email này được gửi tự động liên quan đến hoạt động tài khoản PrepMate của bạn.
               </p>
-              <p style=""margin:0;font-size:12px;color:#94a3b8;"">
-                Cần hỗ trợ? Liên hệ <a href=""mailto:{supportEmail}"" style=""color:#64748b;text-decoration:underline;"">{supportEmail}</a>
-              </p>
+              {(string.IsNullOrWhiteSpace(supportEmail) ? "" : $@"<p style=""margin:0;font-size:12px;color:#94a3b8;"">Cần hỗ trợ? Liên hệ <a href=""mailto:{supportEmail}"" style=""color:#64748b;text-decoration:underline;"">{supportEmail}</a></p>")}
             </td>
           </tr>
         </table>
+        <!--[if (gte mso 9)|(IE)]>
+            </td>
+          </tr>
+        </table>
+        <![endif]-->
       </td>
     </tr>
   </table>
 </body>
 </html>";
 
-            var plainText = $@"PrepMate — Yêu cầu đặt lại mật khẩu
+            var plainText = $@"PrepMate — {heading}
 
-Chào {recipientName},
+Xin chào {recipientName},
 
-Hệ thống PrepMate vừa nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Vui lòng truy cập liên kết sau để thiết lập mật khẩu mới:
+{bodyText}
 
 {resetUrl}
 
-Liên kết này có hiệu lực trong {expiryMinutes} phút và chỉ sử dụng được 1 lần duy nhất.
+{expiryText}
 
-Nếu bạn không yêu cầu đặt lại mật khẩu, bạn có thể yên tâm bỏ qua email này.
+{securityNote}
 
 ---
-© 2026 PrepMate AI Inc. Hỗ trợ: {supportEmail}";
+PrepMate — AI Interview Preparation
+Email này được gửi tự động liên quan đến hoạt động tài khoản PrepMate của bạn.{(string.IsNullOrWhiteSpace(supportEmail) ? "" : $"\nHỗ trợ: {supportEmail}")}";
 
             return (html, plainText);
         }

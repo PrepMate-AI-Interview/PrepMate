@@ -383,6 +383,13 @@
   --pm-space-12:            var(--space-12);
   --pm-space-16:            var(--space-16);
 
+  /* Executive Component Density Tokens (WI-GLOBAL-UI-DENSITY-BALANCE-01) */
+  --pm-card-padding:        var(--space-5, 20px);
+  --pm-card-padding-sm:     14px;
+  --pm-control-height:      38px;
+  --pm-control-height-sm:   32px;
+  --pm-control-height-lg:   46px;
+
   /* ========================================================
      7. LAYOUT DIMENSIONS & BREAKPOINTS
      ======================================================== */

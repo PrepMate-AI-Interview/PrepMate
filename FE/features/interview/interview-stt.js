@@ -77,8 +77,7 @@ function setMicState(state, detail = "") {
   switch (state) {
     case MIC_STATE.LISTENING:
       if (micBtn) {
-        micBtn.classList.add("recording");
-        micBtn.classList.remove("off");
+        micBtn.classList.remove("off", "recording");
         micBtn.innerHTML = icons.micOn || "";
         micBtn.title = "Tắt Micro (Phím cách)";
         if (typeof micBtn.setAttribute === "function") {
@@ -90,8 +89,8 @@ function setMicState(state, detail = "") {
         }
       }
       if (consoleMicBtn) {
-        consoleMicBtn.classList.add("recording");
-        consoleMicBtn.classList.remove("off");
+        consoleMicBtn.classList.add("active");
+        consoleMicBtn.classList.remove("off", "recording");
         consoleMicBtn.title = "Dừng nói (Phím cách)";
         if (typeof consoleMicBtn.setAttribute === "function") {
           consoleMicBtn.setAttribute("aria-label", "Dừng nói");
@@ -101,7 +100,6 @@ function setMicState(state, detail = "") {
       if (consoleMicLabel) {
         consoleMicLabel.textContent = "Dừng nói";
       }
-      if (candidateTile) candidateTile.classList.add("speaking");
       if (candidateMicBadge) {
         candidateMicBadge.innerHTML = icons.nameplateMicLive || "";
         candidateMicBadge.classList.add("live");
@@ -109,6 +107,9 @@ function setMicState(state, detail = "") {
         candidateMicBadge.title = "Micro đang thu âm";
       }
       setSpeechStatus("listening");
+      if (typeof startLiveAudioMeter === "function") {
+        startLiveAudioMeter();
+      }
 
       // Silent mic detection: 15s with 0 speech results triggers gentle hint
       _silentMicTimer = setTimeout(() => {
@@ -124,7 +125,7 @@ function setMicState(state, detail = "") {
     case MIC_STATE.MUTED:
     case MIC_STATE.READY:
       if (micBtn) {
-        micBtn.classList.remove("recording");
+        micBtn.classList.remove("recording", "candidate-speaking");
         micBtn.classList.add("off");
         micBtn.innerHTML = icons.micMuted || "";
         micBtn.title = "Bật Micro (Phím cách)";
@@ -137,7 +138,7 @@ function setMicState(state, detail = "") {
         }
       }
       if (consoleMicBtn) {
-        consoleMicBtn.classList.remove("recording");
+        consoleMicBtn.classList.remove("recording", "active");
         consoleMicBtn.classList.add("off");
         consoleMicBtn.title = "Nói để trả lời (Bật micro)";
         if (typeof consoleMicBtn.setAttribute === "function") {
@@ -148,7 +149,23 @@ function setMicState(state, detail = "") {
       if (consoleMicLabel) {
         consoleMicLabel.textContent = "Nói để trả lời";
       }
-      if (candidateTile) candidateTile.classList.remove("speaking");
+      if (candidateTile) {
+        candidateTile.classList.remove("speaking", "candidate-speaking");
+      }
+      if (typeof stopLiveAudioMeter === "function") {
+        stopLiveAudioMeter();
+      }
+      const candidateMicBar = document.getElementById("candidate-mic-level-bar");
+      if (candidateMicBar) {
+        candidateMicBar.style.width = "0%";
+        candidateMicBar.classList.remove("active");
+      }
+      const eqWrap = document.getElementById("candidate-mic-level-wrap");
+      if (eqWrap) {
+        eqWrap.classList.remove("active");
+        const eqBars = eqWrap.querySelectorAll(".eq-bar");
+        eqBars.forEach((bar) => { bar.style.height = "3px"; });
+      }
       if (candidateMicBadge) {
         candidateMicBadge.innerHTML = icons.nameplateMicMuted || "";
         candidateMicBadge.classList.remove("live");

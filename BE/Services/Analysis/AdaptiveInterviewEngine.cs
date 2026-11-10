@@ -615,7 +615,7 @@ namespace backend.Services
             return null;
         }
 
-        private void UpdateConceptState(
+        public void UpdateConceptState(
             InterviewState state,
             AnswerAnalysis analysis)
         {
@@ -736,7 +736,7 @@ namespace backend.Services
                 list.Remove(item);
             }
         }
-        private void SanitizeAndValidateAnalysis(string answer, AnswerAnalysis analysis)
+        public void SanitizeAndValidateAnalysis(string answer, AnswerAnalysis analysis)
         {
             if (string.IsNullOrWhiteSpace(answer) || analysis == null) return;
 

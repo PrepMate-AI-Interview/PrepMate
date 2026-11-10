@@ -819,8 +819,22 @@
         } catch (error) {
           console.error("[AUTH PAGE] Register error:", error);
           const rawMsg = error.message || "Đăng ký thất bại.";
-          // Handle backend blocklist rejection gracefully without exposing blocklist details
-          if (rawMsg.includes("phổ biến") || rawMsg.includes("dễ đoán") || rawMsg.includes("blocklist") || rawMsg.includes("chặn")) {
+          if (error.requiresVerification) {
+            const errEl = document.getElementById("signup-error");
+            if (errEl) {
+              errEl.innerHTML = `
+                <svg class="auth-alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span class="auth-alert-text">
+                  ${escapeHtml(rawMsg)} <a href="./verify-email.html?email=${encodeURIComponent(error.email || email)}" style="color:var(--auth-link-color);text-decoration:underline;font-weight:600;">Xác minh ngay</a>
+                </span>
+              `;
+              errEl.style.display = "flex";
+            }
+          } else if (rawMsg.includes("phổ biến") || rawMsg.includes("dễ đoán") || rawMsg.includes("blocklist") || rawMsg.includes("chặn")) {
             showError("signup", "Mật khẩu này quá phổ biến hoặc dễ đoán. Vui lòng thử mật khẩu khác.");
             setStrengthIndicatorManual("weak", "Yếu");
           } else {

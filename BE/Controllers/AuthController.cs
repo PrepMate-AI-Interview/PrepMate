@@ -28,6 +28,7 @@ namespace backend.Controllers
         private readonly IEmailInboxStore _inboxStore;
         private readonly IWebHostEnvironment _environment;
         private readonly ILoginProtectionService _loginProtection;
+        private readonly AuthLifecycleOptions _authOptions;
 
         public AuthController(
             FileDb fileDb,
@@ -37,7 +38,8 @@ namespace backend.Controllers
             EmailOptions emailOptions,
             IEmailInboxStore inboxStore,
             IWebHostEnvironment environment,
-            ILoginProtectionService loginProtection)
+            ILoginProtectionService loginProtection,
+            AuthLifecycleOptions? authOptions = null)
         {
             _fileDb = fileDb;
             _jwtService = jwtService;
@@ -47,6 +49,7 @@ namespace backend.Controllers
             _inboxStore = inboxStore;
             _environment = environment;
             _loginProtection = loginProtection;
+            _authOptions = authOptions ?? new AuthLifecycleOptions();
         }
 
         // ======================================================================
@@ -80,12 +83,157 @@ namespace backend.Controllers
             await _fileDb.RefreshFromCloudAsync(TimeSpan.FromSeconds(5));
 
             // Check if email already exists
-            foreach (var existingUser in _fileDb.Users.Values)
+            var existingUser = _fileDb.Users.Values.FirstOrDefault(u =>
+                u.Email.Equals(normalizedEmail, StringComparison.OrdinalIgnoreCase));
+
+            if (existingUser != null)
             {
-                if (existingUser.Email.Equals(normalizedEmail, StringComparison.OrdinalIgnoreCase))
+                // Case C: Account is already verified -> Strictly preserve existing account, reject duplicate registration
+                if (existingUser.EmailVerified)
                 {
-                    return BadRequest(new { error = "Email này đã được sử dụng." });
+                    return BadRequest(new
+                    {
+                        error = "Email này đã được sử dụng và xác minh. Vui lòng đăng nhập hoặc sử dụng chức năng quên mật khẩu.",
+                        code = "email_already_registered",
+                        isVerified = true
+                    });
                 }
+
+                // Case B: Account exists but is unverified (Pending registration)
+                // Check if the pending registration has expired (Phase 5)
+                if (existingUser.IsPendingRegistrationExpired)
+                {
+                    var rawToken = GenerateSecureToken();
+                    var tokenHash = HashToken(rawToken, "verify_email");
+                    var expPendingExpiry = DateTime.UtcNow.AddHours(_authOptions.PendingRegistrationTtlHours);
+                    var expTokenExpiry = DateTime.UtcNow.AddMinutes(_authOptions.EmailVerificationTokenTtlMinutes);
+                    if (expTokenExpiry > expPendingExpiry) expTokenExpiry = expPendingExpiry;
+
+                    lock (_fileDb)
+                    {
+                        existingUser.Fullname = request.Fullname.Trim();
+                        existingUser.PasswordHash = PasswordHasher.HashPassword(request.Password);
+                        existingUser.Password = string.Empty;
+                        existingUser.CreatedAt = DateTime.UtcNow;
+                        existingUser.PendingRegistrationExpiresAt = expPendingExpiry;
+                        existingUser.EmailVerificationTokenHash = tokenHash;
+                        existingUser.EmailVerificationTokenExpiresAt = expTokenExpiry;
+                        existingUser.VerificationResendCount = 0;
+                        existingUser.LastVerificationEmailSentAt = DateTime.UtcNow;
+                        existingUser.SecurityStamp = Guid.NewGuid().ToString("N");
+                        _fileDb.Save();
+                    }
+
+                    var expBaseUrl = ResolveBaseUrl();
+                    var expVerificationLink = $"{expBaseUrl}/features/auth/verify-email.html?token={rawToken}";
+                    var (expHtmlBody, expPlainText) = _templateRenderer.RenderVerificationEmail(existingUser.Fullname, expVerificationLink, _authOptions.EmailVerificationTokenTtlMinutes);
+
+                    var expSendResult = await _emailSender.SendEmailAsync(new EmailMessage(
+                        To: existingUser.Email,
+                        Subject: "PrepMate — Xác nhận địa chỉ email của bạn",
+                        HtmlBody: expHtmlBody,
+                        PlainTextBody: expPlainText,
+                        SenderName: _emailOptions.SenderName,
+                        SenderEmail: _emailOptions.SenderEmail
+                    ));
+
+                    return Ok(new AuthResponse
+                    {
+                        Id = existingUser.Id,
+                        Fullname = existingUser.Fullname,
+                        Email = existingUser.Email,
+                        Username = existingUser.Username,
+                        Token = string.Empty,
+                        Role = existingUser.Role,
+                        Subscription = existingUser.Subscription,
+                        SubscriptionExpiry = existingUser.SubscriptionExpiry,
+                        RequiresVerification = true,
+                        IsPending = true,
+                        Message = expSendResult.Success
+                            ? "Phiên đăng ký cũ đã hết hạn. PrepMate đã khởi tạo lại và gửi liên kết xác minh mới đến email của bạn."
+                            : "Phiên đăng ký đã được khởi tạo lại. Hệ thống gửi email đang bận, bạn có thể yêu cầu gửi lại sau."
+                    });
+                }
+
+                // Pending registration is active (not expired).
+                // 1. Enforce resend cooldown to prevent spamming
+                var cooldownSecs = _authOptions.VerificationResendCooldownSeconds;
+                if (existingUser.LastVerificationEmailSentAt.HasValue &&
+                    existingUser.LastVerificationEmailSentAt.Value.AddSeconds(cooldownSecs) > DateTime.UtcNow)
+                {
+                    var waitSeconds = (int)Math.Ceiling((existingUser.LastVerificationEmailSentAt.Value.AddSeconds(cooldownSecs) - DateTime.UtcNow).TotalSeconds);
+                    return BadRequest(new
+                    {
+                        error = $"Email này đang chờ xác minh. Vui lòng kiểm tra hộp thư hoặc đợi {waitSeconds} giây trước khi yêu cầu gửi lại.",
+                        code = "pending_verification_cooldown",
+                        requiresVerification = true,
+                        isPending = true,
+                        email = existingUser.Email,
+                        cooldownRemaining = waitSeconds
+                    });
+                }
+
+                // 2. Enforce maximum resend limit per 24 hours
+                if (existingUser.VerificationResendCount >= _authOptions.VerificationMaxSendsPer24Hours)
+                {
+                    return StatusCode(StatusCodes.Status429TooManyRequests, new
+                    {
+                        error = $"Bạn đã vượt quá số lần gửi lại mã xác minh (tối đa {_authOptions.VerificationMaxSendsPer24Hours} lần/24 giờ). Vui lòng đợi phiên đăng ký hết hạn hoặc kiểm tra lại hộp thư.",
+                        code = "max_resends_exceeded",
+                        requiresVerification = true,
+                        isPending = true,
+                        email = existingUser.Email
+                    });
+                }
+
+                // Cooldown passed & under limit: issue fresh single-use token and resend verification email
+                // NOTE: Security requirement: Do NOT overwrite existingUser.PasswordHash with unverified input
+                // to prevent attacker takeover of active pending registrations.
+                var rawNewToken = GenerateSecureToken();
+                var newTokenHash = HashToken(rawNewToken, "verify_email");
+
+                var activePendingExpiry = existingUser.PendingRegistrationExpiresAt ?? existingUser.CreatedAt.AddHours(_authOptions.PendingRegistrationTtlHours);
+                var activeTokenExpiry = DateTime.UtcNow.AddMinutes(_authOptions.EmailVerificationTokenTtlMinutes);
+                if (activeTokenExpiry > activePendingExpiry) activeTokenExpiry = activePendingExpiry;
+
+                lock (_fileDb)
+                {
+                    existingUser.EmailVerificationTokenHash = newTokenHash;
+                    existingUser.EmailVerificationTokenExpiresAt = activeTokenExpiry;
+                    existingUser.LastVerificationEmailSentAt = DateTime.UtcNow;
+                    existingUser.VerificationResendCount++;
+                    _fileDb.Save();
+                }
+
+                var bUrl = ResolveBaseUrl();
+                var vLink = $"{bUrl}/features/auth/verify-email.html?token={rawNewToken}";
+                var (hBody, pText) = _templateRenderer.RenderResendVerificationEmail(existingUser.Fullname, vLink, _authOptions.EmailVerificationTokenTtlMinutes);
+
+                var resendResult = await _emailSender.SendEmailAsync(new EmailMessage(
+                    To: existingUser.Email,
+                    Subject: "PrepMate — Xác nhận địa chỉ email của bạn",
+                    HtmlBody: hBody,
+                    PlainTextBody: pText,
+                    SenderName: _emailOptions.SenderName,
+                    SenderEmail: _emailOptions.SenderEmail
+                ));
+
+                return Ok(new AuthResponse
+                {
+                    Id = existingUser.Id,
+                    Fullname = existingUser.Fullname,
+                    Email = existingUser.Email,
+                    Username = existingUser.Username,
+                    Token = string.Empty,
+                    Role = existingUser.Role,
+                    Subscription = existingUser.Subscription,
+                    SubscriptionExpiry = existingUser.SubscriptionExpiry,
+                    RequiresVerification = true,
+                    IsPending = true,
+                    Message = resendResult.Success
+                        ? "Tài khoản của bạn đang chờ xác minh. PrepMate đã gửi lại liên kết kích hoạt đến hộp thư của bạn."
+                        : "Tài khoản đang chờ xác minh. Hệ thống gửi email đang bận, bạn có thể yêu cầu gửi lại sau."
+                });
             }
 
             // Generate Username from email prefix if not supplied
@@ -106,7 +254,11 @@ namespace backend.Controllers
 
             // Generate cryptographically secure verification token
             var rawVerificationToken = GenerateSecureToken();
-            var verificationTokenHash = HashToken(rawVerificationToken);
+            var verificationTokenHash = HashToken(rawVerificationToken, "verify_email");
+
+            var newPendingExpiry = DateTime.UtcNow.AddHours(_authOptions.PendingRegistrationTtlHours);
+            var newTokenExpiry = DateTime.UtcNow.AddMinutes(_authOptions.EmailVerificationTokenTtlMinutes);
+            if (newTokenExpiry > newPendingExpiry) newTokenExpiry = newPendingExpiry;
 
             var newUser = new User
             {
@@ -121,7 +273,9 @@ namespace backend.Controllers
                 Subscription = "free",
                 EmailVerified = false, // Must verify email before accessing protected resources
                 EmailVerificationTokenHash = verificationTokenHash,
-                EmailVerificationTokenExpiresAt = DateTime.UtcNow.AddHours(24),
+                EmailVerificationTokenExpiresAt = newTokenExpiry,
+                PendingRegistrationExpiresAt = newPendingExpiry,
+                VerificationResendCount = 0,
                 LastVerificationEmailSentAt = DateTime.UtcNow,
                 SecurityStamp = Guid.NewGuid().ToString("N")
             };
@@ -135,7 +289,7 @@ namespace backend.Controllers
             // Construct verification link using configured Frontend Base URL
             var baseUrl = ResolveBaseUrl();
             var verificationLink = $"{baseUrl}/features/auth/verify-email.html?token={rawVerificationToken}";
-            var (htmlBody, plainText) = _templateRenderer.RenderVerificationEmail(newUser.Fullname, verificationLink);
+            var (htmlBody, plainText) = _templateRenderer.RenderVerificationEmail(newUser.Fullname, verificationLink, _authOptions.EmailVerificationTokenTtlMinutes);
 
             var sendResult = await _emailSender.SendEmailAsync(new EmailMessage(
                 To: newUser.Email,
@@ -157,6 +311,7 @@ namespace backend.Controllers
                 Subscription = newUser.Subscription,
                 SubscriptionExpiry = newUser.SubscriptionExpiry,
                 RequiresVerification = true,
+                IsPending = true,
                 Message = sendResult.Success
                     ? "Đăng ký thành công! Vui lòng kiểm tra email để xác minh tài khoản của bạn."
                     : "Đăng ký thành công. Hệ thống gửi email đang bận, bạn có thể đăng nhập và yêu cầu gửi lại sau."
@@ -247,6 +402,7 @@ namespace backend.Controllers
                 {
                     error = "Tài khoản của bạn chưa được xác minh email. Vui lòng kiểm tra hộp thư hoặc yêu cầu gửi lại email xác minh.",
                     requiresVerification = true,
+                    isPending = true,
                     email = user.Email
                 });
             }
@@ -292,31 +448,47 @@ namespace backend.Controllers
                 return BadRequest(new { error = "Mã xác minh không hợp lệ hoặc bị thiếu.", code = "invalid" });
             }
 
-            var tokenHash = HashToken(request.Token);
+            var tokenHashWithPurpose = HashToken(request.Token, "verify_email");
+            var legacyTokenHash = HashToken(request.Token);
 
             lock (_fileDb)
             {
                 var user = _fileDb.Users.Values.FirstOrDefault(u =>
                     !string.IsNullOrEmpty(u.EmailVerificationTokenHash) &&
-                    u.EmailVerificationTokenHash == tokenHash);
+                    (u.EmailVerificationTokenHash == tokenHashWithPurpose || u.EmailVerificationTokenHash == legacyTokenHash));
 
                 if (user == null)
                 {
                     return BadRequest(new { error = "Liên kết xác minh không hợp lệ hoặc đã được sử dụng.", code = "invalid_or_used" });
                 }
 
-                if (user.EmailVerificationTokenExpiresAt.HasValue &&
-                    user.EmailVerificationTokenExpiresAt.Value < DateTime.UtcNow)
+                if ((user.EmailVerificationTokenExpiresAt.HasValue && user.EmailVerificationTokenExpiresAt.Value < DateTime.UtcNow) ||
+                    user.IsPendingRegistrationExpired)
                 {
                     user.EmailVerificationTokenHash = null;
                     _fileDb.Save();
                     return BadRequest(new { error = "Liên kết xác minh đã hết hạn. Vui lòng yêu cầu gửi lại email mới.", code = "expired", email = user.Email });
                 }
 
+                // Optional password establishment / confirmation upon email ownership verification (Phase 4.3)
+                if (!string.IsNullOrWhiteSpace(request.Password))
+                {
+                    if (!PasswordPolicy.Validate(request.Password, out var passwordError))
+                    {
+                        return BadRequest(new { error = passwordError, code = "invalid_password" });
+                    }
+                    user.PasswordHash = PasswordHasher.HashPassword(request.Password);
+                    user.Password = string.Empty;
+                    user.PasswordChangedAt = DateTime.UtcNow;
+                }
+
                 user.EmailVerified = true;
                 user.EmailVerifiedAt = DateTime.UtcNow;
                 user.EmailVerificationTokenHash = null;
                 user.EmailVerificationTokenExpiresAt = null;
+                user.PendingRegistrationExpiresAt = null;
+                user.VerificationResendCount = 0;
+                user.SecurityStamp = Guid.NewGuid().ToString("N");
                 _fileDb.Save();
 
                 return Ok(new
@@ -369,32 +541,55 @@ namespace backend.Controllers
                 return Ok(new { message = neutralMsg });
             }
 
-            // Cooldown: 60 seconds
-            if (user.LastVerificationEmailSentAt.HasValue &&
-                user.LastVerificationEmailSentAt.Value.AddSeconds(60) > DateTime.UtcNow)
+            if (user.IsPendingRegistrationExpired)
             {
-                var waitSeconds = (int)Math.Ceiling((user.LastVerificationEmailSentAt.Value.AddSeconds(60) - DateTime.UtcNow).TotalSeconds);
+                // Expired pending accounts cannot resend, must re-register
+                return Ok(new { message = neutralMsg });
+            }
+
+            // Cooldown check
+            var resendCooldownSecs = _authOptions.VerificationResendCooldownSeconds;
+            if (user.LastVerificationEmailSentAt.HasValue &&
+                user.LastVerificationEmailSentAt.Value.AddSeconds(resendCooldownSecs) > DateTime.UtcNow)
+            {
+                var waitSeconds = (int)Math.Ceiling((user.LastVerificationEmailSentAt.Value.AddSeconds(resendCooldownSecs) - DateTime.UtcNow).TotalSeconds);
                 return BadRequest(new
                 {
                     error = $"Vui lòng đợi {waitSeconds} giây trước khi yêu cầu gửi lại email xác minh.",
+                    code = "pending_verification_cooldown",
                     cooldownRemaining = waitSeconds
                 });
             }
 
+            // Maximum resends check
+            if (user.VerificationResendCount >= _authOptions.VerificationMaxSendsPer24Hours)
+            {
+                return StatusCode(StatusCodes.Status429TooManyRequests, new
+                {
+                    error = $"Bạn đã vượt quá số lần gửi lại mã xác minh (tối đa {_authOptions.VerificationMaxSendsPer24Hours} lần/24 giờ). Vui lòng đợi phiên đăng ký hết hạn hoặc kiểm tra lại hộp thư.",
+                    code = "max_resends_exceeded"
+                });
+            }
+
             var rawToken = GenerateSecureToken();
-            var tokenHash = HashToken(rawToken);
+            var tokenHash = HashToken(rawToken, "verify_email");
+
+            var resendPendingExp = user.PendingRegistrationExpiresAt ?? user.CreatedAt.AddHours(_authOptions.PendingRegistrationTtlHours);
+            var resendTokenExp = DateTime.UtcNow.AddMinutes(_authOptions.EmailVerificationTokenTtlMinutes);
+            if (resendTokenExp > resendPendingExp) resendTokenExp = resendPendingExp;
 
             lock (_fileDb)
             {
                 user.EmailVerificationTokenHash = tokenHash;
-                user.EmailVerificationTokenExpiresAt = DateTime.UtcNow.AddHours(24);
+                user.EmailVerificationTokenExpiresAt = resendTokenExp;
                 user.LastVerificationEmailSentAt = DateTime.UtcNow;
+                user.VerificationResendCount++;
                 _fileDb.Save();
             }
 
             var baseUrl = ResolveBaseUrl();
             var verificationLink = $"{baseUrl}/features/auth/verify-email.html?token={rawToken}";
-            var (htmlBody, plainText) = _templateRenderer.RenderVerificationEmail(user.Fullname, verificationLink);
+            var (htmlBody, plainText) = _templateRenderer.RenderResendVerificationEmail(user.Fullname, verificationLink, _authOptions.EmailVerificationTokenTtlMinutes);
 
             await _emailSender.SendEmailAsync(new EmailMessage(
                 To: user.Email,
@@ -427,8 +622,9 @@ namespace backend.Controllers
             var user = _fileDb.Users.Values.FirstOrDefault(u =>
                 u.Email.Equals(normalizedEmail, StringComparison.OrdinalIgnoreCase));
 
-            // Anti-enumeration: neutral response for non-existent users
-            if (user == null)
+            // Anti-enumeration: neutral response for non-existent users OR unverified accounts (Phase 6.2)
+            // Unverified pending accounts are strictly disallowed from issuing password reset tokens
+            if (user == null || !user.EmailVerified)
             {
                 return Ok(new { message = neutralMsg });
             }
@@ -442,7 +638,7 @@ namespace backend.Controllers
             }
 
             var rawResetToken = GenerateSecureToken();
-            var resetTokenHash = HashToken(rawResetToken);
+            var resetTokenHash = HashToken(rawResetToken, "reset_password");
 
             lock (_fileDb)
             {
@@ -480,15 +676,16 @@ namespace backend.Controllers
                 return BadRequest(new { valid = false, error = "Mã đặt lại mật khẩu không hợp lệ.", code = "invalid" });
             }
 
-            var tokenHash = HashToken(token);
+            var tokenHashWithPurpose = HashToken(token, "reset_password");
+            var legacyTokenHash = HashToken(token);
 
             lock (_fileDb)
             {
                 var user = _fileDb.Users.Values.FirstOrDefault(u =>
                     !string.IsNullOrEmpty(u.PasswordResetTokenHash) &&
-                    u.PasswordResetTokenHash == tokenHash);
+                    (u.PasswordResetTokenHash == tokenHashWithPurpose || u.PasswordResetTokenHash == legacyTokenHash));
 
-                if (user == null)
+                if (user == null || !user.EmailVerified)
                 {
                     return BadRequest(new { valid = false, error = "Liên kết đặt lại mật khẩu không hợp lệ hoặc đã được sử dụng.", code = "invalid_or_used" });
                 }
@@ -522,15 +719,16 @@ namespace backend.Controllers
                 return BadRequest(new { error = passwordError });
             }
 
-            var tokenHash = HashToken(request.Token);
+            var tokenHashWithPurpose = HashToken(request.Token, "reset_password");
+            var legacyTokenHash = HashToken(request.Token);
 
             lock (_fileDb)
             {
                 var user = _fileDb.Users.Values.FirstOrDefault(u =>
                     !string.IsNullOrEmpty(u.PasswordResetTokenHash) &&
-                    u.PasswordResetTokenHash == tokenHash);
+                    (u.PasswordResetTokenHash == tokenHashWithPurpose || u.PasswordResetTokenHash == legacyTokenHash));
 
-                if (user == null)
+                if (user == null || !user.EmailVerified)
                 {
                     return BadRequest(new { error = "Liên kết đặt lại mật khẩu không hợp lệ hoặc đã được sử dụng.", code = "invalid_or_used" });
                 }
@@ -668,10 +866,84 @@ namespace backend.Controllers
             return Convert.ToHexString(bytes).ToLowerInvariant();
         }
 
-        private static string HashToken(string token)
+        // ======================================================================
+        // CHANGE PASSWORD (POST /api/auth/change-password) (WI-AUTH-EMAIL-DELIVERY-01)
+        // ======================================================================
+        [Authorize]
+        [HttpPost("change-password")]
+        public IActionResult ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.CurrentPassword) || string.IsNullOrWhiteSpace(request.NewPassword))
+            {
+                return BadRequest(new { error = "Vui lòng nhập mật khẩu hiện tại và mật khẩu mới." });
+            }
+
+            var callerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(callerId))
+            {
+                return Unauthorized(new { error = "Không tìm thấy danh tính người dùng từ token xác thực." });
+            }
+
+            lock (_fileDb)
+            {
+                if (!_fileDb.Users.TryGetValue(callerId, out var user))
+                {
+                    return NotFound(new { error = "Không tìm thấy người dùng." });
+                }
+
+                // Phase 6.1: Only Active/Verified accounts can change password
+                if (!user.EmailVerified)
+                {
+                    return BadRequest(new
+                    {
+                        error = "Tài khoản của bạn chưa được xác minh email. Vui lòng xác minh email trước khi đổi mật khẩu.",
+                        requiresVerification = true,
+                        code = "unverified"
+                    });
+                }
+
+                // Verify current password
+                var isCurrentPasswordValid = false;
+                if (!string.IsNullOrEmpty(user.PasswordHash))
+                {
+                    isCurrentPasswordValid = PasswordHasher.VerifyPassword(request.CurrentPassword, user.PasswordHash);
+                }
+                else if (!string.IsNullOrEmpty(user.Password) && user.Password == request.CurrentPassword)
+                {
+                    isCurrentPasswordValid = true;
+                }
+
+                if (!isCurrentPasswordValid)
+                {
+                    return BadRequest(new { error = "Mật khẩu hiện tại không chính xác." });
+                }
+
+                if (!PasswordPolicy.Validate(request.NewPassword, out var passwordError))
+                {
+                    return BadRequest(new { error = passwordError });
+                }
+
+                if (string.Equals(request.CurrentPassword, request.NewPassword, StringComparison.Ordinal))
+                {
+                    return BadRequest(new { error = "Mật khẩu mới không được trùng với mật khẩu hiện tại." });
+                }
+
+                user.PasswordHash = PasswordHasher.HashPassword(request.NewPassword);
+                user.Password = string.Empty;
+                user.PasswordChangedAt = DateTime.UtcNow;
+                user.SecurityStamp = Guid.NewGuid().ToString("N"); // Revokes all previous sessions
+
+                _fileDb.Save();
+
+                return Ok(new { message = "Đổi mật khẩu thành công. Vui lòng đăng nhập lại trên các thiết bị khác nếu cần." });
+            }
+        }
+
+        private static string HashToken(string token, string? purpose = null)
         {
             using var sha256 = SHA256.Create();
-            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(token.Trim()));
+            var payload = string.IsNullOrEmpty(purpose) ? token.Trim() : $"{purpose}:{token.Trim()}";
+            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(payload));
             return Convert.ToHexString(bytes).ToLowerInvariant();
         }
 

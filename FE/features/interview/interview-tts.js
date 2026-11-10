@@ -516,6 +516,40 @@
   }
 
   let _hasShownElevenLabsRestrictedToast = false;
+  let _elevenLabsConfigured = null; // null = unprobed, true = configured, false = unconfigured/unavailable
+  let _cachedSpeechVoices = [];
+
+  function preloadWebSpeechVoices() {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      try {
+        const v = window.speechSynthesis.getVoices();
+        if (v && v.length > 0) _cachedSpeechVoices = v;
+        if ("onvoiceschanged" in window.speechSynthesis) {
+          window.speechSynthesis.onvoiceschanged = () => {
+            try {
+              const updated = window.speechSynthesis.getVoices();
+              if (updated && updated.length > 0) _cachedSpeechVoices = updated;
+            } catch (e) { }
+          };
+        }
+      } catch (e) { }
+    }
+  }
+  preloadWebSpeechVoices();
+
+  async function probeElevenLabsAvailability() {
+    if (_elevenLabsConfigured !== null) return _elevenLabsConfigured;
+    try {
+      const status = await fetchTTSStatus();
+      _elevenLabsConfigured = Boolean(status && status.configured);
+    } catch (e) {
+      _elevenLabsConfigured = false;
+    }
+    return _elevenLabsConfigured;
+  }
+  if (typeof window !== "undefined") {
+    probeElevenLabsAvailability();
+  }
 
   async function speakElevenLabs(text, onEndCallback = null, sessionId = null, targetIdentity = null) {
     if (!ttsEnabled || (typeof window.isTTSEnabled === "function" && !window.isTTSEnabled())) {
@@ -569,7 +603,10 @@
         } catch (e) {}
         debugTTS("TTS", `Backend TTS proxy returned HTTP ${resp.status}`, errJson);
 
-        if (resp.status === 401 && errJson?.error === "ELEVENLABS_ACCOUNT_RESTRICTED") {
+        if (resp.status === 503) {
+          _elevenLabsConfigured = false;
+        } else if (resp.status === 401 && errJson?.error === "ELEVENLABS_ACCOUNT_RESTRICTED") {
+          _elevenLabsConfigured = false;
           if (!_hasShownElevenLabsRestrictedToast && typeof showToast === "function") {
             _hasShownElevenLabsRestrictedToast = true;
             showToast(`Lưu ý: Tài khoản ElevenLabs bị giới hạn (Free Tier - Unusual Activity). Để nghe đúng giọng ElevenLabs ${pSettings.name}, vui lòng nâng cấp gói hoặc cập nhật API key trong BE/appsettings.json. Hệ thống đang dùng tạm giọng trình duyệt.`, "warning", 8000);
@@ -597,6 +634,25 @@
       currentSpeechState = SPEECH_STATE.SPEAKING;
       isQuestionSpeaking = true;
       window._activeSpeechCallback = onEndCallback;
+
+      audio.onplay = () => {
+        const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+        window._lastTtsAudioStartTime = now;
+        window._ttsTelemetryEvents = window._ttsTelemetryEvents || [];
+        const ttsEvent = {
+          eventType: "elevenlabs_onplay",
+          sessionId: sessionId,
+          perfTimestamp: now,
+          epochTimestamp: Date.now(),
+          textSnippet: String(text || "").slice(0, 100)
+        };
+        window._ttsTelemetryEvents.push(ttsEvent);
+        window._lastTtsAudioEvent = ttsEvent;
+        debugTTS("TTS", `ElevenLabs audio onplay fired for session #${sessionId} at +${now.toFixed(1)}ms`);
+        if (typeof window._onTtsAudioStarted === "function") {
+          try { window._onTtsAudioStarted(sessionId, now, ttsEvent); } catch (e) { }
+        }
+      };
 
       audio.onended = () => {
         window._currentAIAudio = null;
@@ -729,8 +785,10 @@
     }
 
     // Try ElevenLabs first if configured
-    const usedEL = await speakElevenLabs(cleanText, onEndCallback, thisSessionId, targetIdentity);
-    if (usedEL) return;
+    if (_elevenLabsConfigured !== false) {
+      const usedEL = await speakElevenLabs(cleanText, onEndCallback, thisSessionId, targetIdentity);
+      if (usedEL) return;
+    }
 
     // Fallback to browser Web Speech API
     if (!("speechSynthesis" in window)) {
@@ -757,7 +815,9 @@
       utt.lang = speechLang;
 
       const personaVoiceSettings = resolveActivePersonaVoiceSettings();
-      const allVoices = (window.speechSynthesis && window.speechSynthesis.getVoices()) || [];
+      const allVoices = (_cachedSpeechVoices && _cachedSpeechVoices.length > 0)
+        ? _cachedSpeechVoices
+        : ((window.speechSynthesis && window.speechSynthesis.getVoices()) || []);
       const viVoices = allVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith("vi"));
 
       let matchedVoice = null;
@@ -790,6 +850,25 @@
       if (activeRec && activeListening) {
         try { activeRec.stop(); } catch (e) { }
       }
+
+      utt.onstart = () => {
+        const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+        window._lastTtsAudioStartTime = now;
+        window._ttsTelemetryEvents = window._ttsTelemetryEvents || [];
+        const ttsEvent = {
+          eventType: "web_speech_onstart",
+          sessionId: thisSessionId,
+          perfTimestamp: now,
+          epochTimestamp: Date.now(),
+          textSnippet: String(text || "").slice(0, 100)
+        };
+        window._ttsTelemetryEvents.push(ttsEvent);
+        window._lastTtsAudioEvent = ttsEvent;
+        debugTTS("TTS", `Web Speech utterance onstart fired for session #${thisSessionId} at +${now.toFixed(1)}ms`);
+        if (typeof window._onTtsAudioStarted === "function") {
+          try { window._onTtsAudioStarted(thisSessionId, now, ttsEvent); } catch (e) { }
+        }
+      };
 
       utt.onend = () => {
         debugTTS("TTS", "AI speech completed naturally.", { thisSessionId, currentSpeechSessionId, currentSpeechState });
@@ -873,6 +952,9 @@
   window.getSpeechState = () => currentSpeechState;
   window.getSpeechSessionId = () => currentSpeechSessionId;
   window.getSpeechIdentity = () => currentSpeechIdentity;
+  window.getTtsLastAudioStartTime = () => window._lastTtsAudioStartTime || 0;
+  window.getTtsTelemetryEvents = () => [...(window._ttsTelemetryEvents || [])];
+  window.getTtsLastAudioEvent = () => window._lastTtsAudioEvent || null;
   window.isTTSEnabled = () => ttsEnabled;
   window.updateTTSButtonUI = updateTTSButtonUI;
   window.toggleTTS = toggleTTS;

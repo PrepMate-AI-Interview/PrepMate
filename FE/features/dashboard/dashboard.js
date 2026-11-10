@@ -741,6 +741,11 @@ function renderHistoryList(sessions) {
             `;
         }
 
+        const sessSec = typeof getSessionDurationSeconds === 'function' ? getSessionDurationSeconds(session) : ((session.durationSeconds ?? (session.duration ? session.duration * 60 : null)));
+        const displayDuration = sessSec > 0
+            ? (typeof formatDuration === 'function' ? formatDuration(sessSec) : `${Math.round(sessSec / 60)} phút`)
+            : (session.duration ? `${session.duration} phút` : 'Chưa xác định');
+
         historyItem.innerHTML = `
             <div class="history-item-score ${scoreClass}" title="Điểm đánh giá tổng quan (0-100)">
                 ${displayScore}
@@ -757,7 +762,7 @@ function renderHistoryList(sessions) {
                     <span class="pm-flag-badge">${escapeHtml(lang)}</span>
                     <span class="pm-time-badge">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        <span>${session.duration || 15} phút</span>
+                        <span>${escapeHtml(displayDuration)}</span>
                     </span>
                     <span class="pm-questions-badge">${session.questionsAnswered || 5} câu hỏi</span>
                     <span class="pm-seniority-chip" title="Cấp bậc ứng tuyển: ${escapeHtml(displayLevel)}">Cấp bậc: ${escapeHtml(displayLevel)}</span>
@@ -803,7 +808,15 @@ function updateDashboardStats(sessions) {
     const avgScore = scores.length > 0
         ? Math.round(scores.reduce((sum, s) => sum + s, 0) / scores.length)
         : null;
-    const totalTime = completedSessions.reduce((sum, s) => sum + (s.duration || 0), 0);
+
+    const totalSec = completedSessions.reduce((sum, s) => {
+        return sum + (typeof getSessionDurationSeconds === 'function'
+            ? getSessionDurationSeconds(s)
+            : ((s.durationSeconds ?? (s.duration ? s.duration * 60 : 0)) || 0));
+    }, 0);
+    const totalTimeText = typeof formatDuration === 'function'
+        ? formatDuration(totalSec, { isAggregate: true })
+        : (totalSec > 0 ? `${Math.round(totalSec / 60)} phút` : '0 phút');
 
     const statSessionsEl = document.getElementById('stat-sessions');
     if (statSessionsEl) statSessionsEl.innerText = completedSessions.length;
@@ -819,7 +832,7 @@ function updateDashboardStats(sessions) {
     }
 
     const timeEl = document.getElementById('stat-time');
-    if (timeEl) timeEl.innerText = `${totalTime} phút`;
+    if (timeEl) timeEl.innerText = totalTimeText;
 
     const totalEl = document.getElementById('stat-sessions-total');
     if (totalEl) totalEl.innerText = sessions.length;

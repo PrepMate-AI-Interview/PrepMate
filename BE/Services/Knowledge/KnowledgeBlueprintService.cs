@@ -58,12 +58,18 @@ namespace backend.Services.Knowledge
                 return DomainCompetencyTemplateProvider.GetTemplate(safePosition, safeLevel, family);
             }
 
-            // Path B: No JD provided (Quick Practice or standard interview) -> JD-Independent Blueprint
+            // Path B: No custom JD provided -> Fast, validated JD-independent blueprint from domain template (0ms)
+            Console.WriteLine($"[BLUEPRINT] Using authoritative pre-validated domain blueprint template for family '{family}' ({safePosition}).");
+            var domainTemplate = DomainCompetencyTemplateProvider.GetTemplate(safePosition, safeLevel, family);
+            if (domainTemplate != null && domainTemplate.Areas.Count > 0)
+            {
+                return domainTemplate;
+            }
+
+            // Path C: Fallback role-prompt generation if template was empty
             try
             {
                 var rolePrompt = BlueprintPrompt.BuildFromRole(safePosition, safeLevel, family, companyContext);
-                Console.WriteLine($"[BLUEPRINT] Generating JD-independent Knowledge Blueprint for role: '{safePosition}' ({family}, {safeLevel})...");
-
                 var roleJson = await _geminiService.CallGeminiApiAsync(
                     rolePrompt,
                     isJsonMode: true
@@ -73,17 +79,14 @@ namespace backend.Services.Knowledge
                 if (generatedBlueprint != null && generatedBlueprint.Areas.Count >= 2 &&
                     generatedBlueprint.Areas.Any(a => a.Concepts != null && a.Concepts.Count > 0))
                 {
-                    Console.WriteLine($"[BLUEPRINT] Successfully generated role-specific Knowledge Blueprint with {generatedBlueprint.Areas.Count} areas.");
                     return generatedBlueprint;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[BLUEPRINT] Role blueprint AI generation failed: {ex.Message}. Using validated domain template.");
+                Console.WriteLine($"[BLUEPRINT] Role blueprint fallback failed: {ex.Message}.");
             }
 
-            // Path C: Authoritative validated template fallback
-            Console.WriteLine($"[BLUEPRINT] Using pre-validated domain blueprint template for family '{family}' ({safePosition}).");
             return DomainCompetencyTemplateProvider.GetTemplate(safePosition, safeLevel, family);
         }
 

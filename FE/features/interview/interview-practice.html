@@ -324,7 +324,13 @@
                       <line x1="8" y1="22" x2="16" y2="22" />
                     </svg>
                   </span>
-                  <div id="candidate-mic-level-wrap" class="candidate-mic-level-wrap" title="Mức âm thanh micro (Nói thử để kiểm tra)"><div id="candidate-mic-level-bar" class="candidate-mic-level-bar"></div></div>
+                  <div id="candidate-mic-level-wrap" class="candidate-mic-level-wrap candidate-mic-equalizer" title="Mức âm thanh micro (Nói thử để kiểm tra)" aria-label="Mức âm thanh micro">
+                    <div id="candidate-mic-level-bar" class="candidate-mic-level-bar" style="display:none;"></div>
+                    <span class="eq-bar bar-1"></span>
+                    <span class="eq-bar bar-2"></span>
+                    <span class="eq-bar bar-3"></span>
+                    <span class="eq-bar bar-4"></span>
+                  </div>
                   <span class="tile-user-name" id="candidate-tile-name"
                     >Bạn (Ứng viên)</span
                   >
@@ -462,22 +468,24 @@
                 <button
                   type="button"
                   class="ir-btn-assist"
+                  id="btn-assist-repeat"
                   onclick="requestClarification()"
                   title="Nhờ người phỏng vấn nhắc lại hoặc làm rõ ý câu hỏi"
                   aria-label="Nhờ người phỏng vấn nhắc lại câu hỏi"
                 >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                  Nhắc lại
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  <span>Nhắc lại</span>
                 </button>
                 <button
                   type="button"
                   class="ir-btn-assist"
+                  id="btn-assist-think"
                   onclick="requestThinkTime()"
                   title="Xin 30 giây chuẩn bị ý trả lời"
                   aria-label="Xin 30 giây chuẩn bị ý trả lời"
                 >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  Xin 30s
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>Xin 30s</span>
                 </button>
               </div>
             </div>
@@ -577,7 +585,8 @@
               <span class="ir-helper-tip">
                 Mẹo: Nhấn "Nói để trả lời" hoặc nhập trực tiếp • Kiểm tra micro trước khi gửi
               </span>
-              <span class="ir-key-hint">Enter để gửi • Shift + Enter xuống dòng</span>
+              <span class="ir-key-hint ir-key-hint-desktop">Enter để gửi • Shift + Enter xuống dòng</span>
+              <span class="ir-key-hint ir-key-hint-touch">Chạm Gửi hoặc Nói qua micro để trả lời</span>
             </div>
           </section>
         </div>

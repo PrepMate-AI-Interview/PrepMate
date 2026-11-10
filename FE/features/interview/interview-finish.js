@@ -358,7 +358,9 @@
 
       const sessionStart = currentInterviewSession.startTime ? new Date(currentInterviewSession.startTime) : new Date();
       currentInterviewSession.date = currentInterviewSession.date || sessionStart.toISOString();
-      currentInterviewSession.duration = Math.max(1, Math.round((Date.now() - sessionStart.getTime()) / 60000));
+      const elapsedSec = Math.max(1, Math.round((Date.now() - sessionStart.getTime()) / 1000));
+      currentInterviewSession.durationSeconds = elapsedSec;
+      currentInterviewSession.duration = Math.max(1, Math.round(elapsedSec / 60));
       currentInterviewSession.questionsAnswered = validResponses.length;
 
       // WI-02B3: Maintain session status as in_progress when backend rejects completion!
@@ -442,7 +444,10 @@
 
       const sessionStart = currentInterviewSession.startTime ? new Date(currentInterviewSession.startTime) : new Date();
       currentInterviewSession.date = currentInterviewSession.date || sessionStart.toISOString();
-      currentInterviewSession.duration = Math.max(1, Math.round((Date.now() - sessionStart.getTime()) / 60000));
+      const elapsedSec = Math.max(1, Math.round((Date.now() - sessionStart.getTime()) / 1000));
+      currentInterviewSession.durationSeconds = elapsedSec;
+      currentInterviewSession.duration = Math.max(1, Math.round(elapsedSec / 60));
+      currentInterviewSession.completedAt = new Date().toISOString();
       currentInterviewSession.questionsAnswered = validResponses.length;
       currentInterviewSession.status = "completed";
       currentInterviewSession.userResponses = userResponsesList;

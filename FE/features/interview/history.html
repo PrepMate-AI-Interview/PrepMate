@@ -448,12 +448,23 @@
             }).filter(x => x > 0);
 
             const avg = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : '—';
-            const totalMins = sessions.reduce((acc, s) => acc + (s.duration || 0), 0);
+            const totalSec = completed.reduce((acc, s) => {
+                const sec = typeof getSessionDurationSeconds === 'function'
+                    ? getSessionDurationSeconds(s)
+                    : ((s.durationSeconds ?? (s.duration ? s.duration * 60 : 0)) || 0);
+                return acc + (Number.isFinite(sec) && sec > 0 ? sec : 0);
+            }, 0);
+            const totalMins = totalSec > 0 ? (totalSec < 60 ? 1 : Math.round(totalSec / 60)) : 0;
+            const formattedTotal = typeof formatDuration === 'function' ? formatDuration(totalSec, { isAggregate: true }) : `${totalMins} phút`;
 
             document.getElementById('hist-total-count').innerText = total;
             document.getElementById('hist-avg-score').innerText = avg;
             document.getElementById('hist-completed-count').innerText = completed.length;
-            document.getElementById('hist-total-minutes').innerText = totalMins;
+            const histTotalMinsEl = document.getElementById('hist-total-minutes');
+            if (histTotalMinsEl) {
+                histTotalMinsEl.innerText = totalMins;
+                histTotalMinsEl.title = `Tổng thời gian thực tế: ${formattedTotal}`;
+            }
         }
 
         function filterHistoryList() {
@@ -729,7 +740,14 @@
                                 <span class="pm-flag-badge">${escapeHtml(lang)}</span>
                                 <span class="pm-time-badge">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                    <span>${session.duration ? session.duration + ' phút' : 'Chưa xác định'}</span>
+                                    <span>${(() => {
+                                        const sessSec = typeof getSessionDurationSeconds === 'function'
+                                            ? getSessionDurationSeconds(session)
+                                            : (session.durationSeconds || (session.duration ? session.duration * 60 : 0));
+                                        return escapeHtml(sessSec > 0
+                                            ? (typeof formatDuration === 'function' ? formatDuration(sessSec) : `${Math.round(sessSec / 60)} phút`)
+                                            : (session.duration ? `${session.duration} phút` : 'Chưa xác định'));
+                                    })()}</span>
                                 </span>
                                 <span class="pm-questions-badge" title="Số lượng câu hỏi trong buổi phỏng vấn">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
