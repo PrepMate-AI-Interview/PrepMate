@@ -22,6 +22,161 @@ namespace backend.Services
         }
 
         // =========================================================
+        // UNIFIED TURN: INTRODUCTION ANALYSIS + FIRST QUESTION (WI-INTERVIEW-PERFORMANCE-OPTIMIZATION-01)
+        // Reduces AI Gateway round trips from 2 to 1 (50% turn latency reduction)
+        // =========================================================
+        public async Task<(AnswerAnalysis Analysis, GeneratedQuestion FirstQuestion)?>
+            AnalyzeIntroductionAndGenerateFirstQuestionAsync(
+                Session session,
+                string introduction)
+        {
+            var context = session.InterviewContext;
+            var state = session.InterviewState;
+            if (context == null || state == null) return null;
+
+            try
+            {
+                var prompt = backend.Prompts.Interview.IntroductionPrompt.BuildUnifiedIntroductionAndFirstQuestion(
+                    context,
+                    state,
+                    introduction,
+                    context.Language
+                );
+
+                var json = await _geminiService.CallGeminiApiForTaskAsync(
+                    AITaskType.IntroductionAnalysis,
+                    prompt,
+                    isJsonMode: true,
+                    sessionId: session.Id
+                );
+
+                var cleanJson = json.Trim();
+                if (cleanJson.StartsWith("```json", StringComparison.OrdinalIgnoreCase))
+                {
+                    cleanJson = cleanJson.Substring(7);
+                }
+                else if (cleanJson.StartsWith("```"))
+                {
+                    cleanJson = cleanJson.Substring(3);
+                }
+                if (cleanJson.EndsWith("```"))
+                {
+                    cleanJson = cleanJson.Substring(0, cleanJson.Length - 3);
+                }
+                cleanJson = cleanJson.Trim();
+
+                using var doc = JsonDocument.Parse(cleanJson);
+                var root = doc.RootElement;
+                if (!root.TryGetProperty("analysis", out var analysisEl) ||
+                    !root.TryGetProperty("firstQuestion", out var questionEl))
+                {
+                    return null;
+                }
+
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var analysis = JsonSerializer.Deserialize<AnswerAnalysis>(analysisEl.GetRawText(), options);
+                var firstQuestion = JsonSerializer.Deserialize<GeneratedQuestion>(questionEl.GetRawText(), options);
+
+                if (analysis == null || firstQuestion == null || string.IsNullOrWhiteSpace(firstQuestion.Question))
+                {
+                    return null;
+                }
+
+                ValidateQuestion(firstQuestion);
+                firstQuestion.DecisionUsed = "INTRODUCTION";
+                firstQuestion.IsFollowUp = false;
+                UpdateState(state, firstQuestion);
+
+                return (analysis, firstQuestion);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[UNIFIED TURN] Introduction turn fallback: {ex.Message}");
+                return null;
+            }
+        }
+
+        // =========================================================
+        // UNIFIED TURN: ANSWER ANALYSIS + NEXT ADAPTIVE QUESTION (WI-INTERVIEW-PERFORMANCE-OPTIMIZATION-01)
+        // Reduces AI Gateway round trips from 2 to 1 (50% turn latency reduction)
+        // =========================================================
+        public async Task<(AnswerAnalysis Analysis, GeneratedQuestion NextQuestion)?>
+            AnalyzeAnswerAndGenerateAdaptiveQuestionAsync(
+                Session session,
+                string currentQuestion,
+                string answer,
+                string priorHistory)
+        {
+            var context = session.InterviewContext;
+            var state = session.InterviewState;
+            if (context == null || state == null) return null;
+
+            try
+            {
+                var prompt = backend.Prompts.Interview.AnalysisPrompt.BuildUnifiedAnswerAnalysisAndNextQuestion(
+                    context.TargetPosition,
+                    state.CurrentTopic,
+                    state.CurrentSubtopic,
+                    currentQuestion,
+                    answer,
+                    priorHistory,
+                    context.Persona,
+                    context.Language
+                );
+
+                var json = await _geminiService.CallGeminiApiForTaskAsync(
+                    AITaskType.AnswerEvaluation,
+                    prompt,
+                    isJsonMode: true,
+                    sessionId: session.Id
+                );
+
+                var cleanJson = json.Trim();
+                if (cleanJson.StartsWith("```json", StringComparison.OrdinalIgnoreCase))
+                {
+                    cleanJson = cleanJson.Substring(7);
+                }
+                else if (cleanJson.StartsWith("```"))
+                {
+                    cleanJson = cleanJson.Substring(3);
+                }
+                if (cleanJson.EndsWith("```"))
+                {
+                    cleanJson = cleanJson.Substring(0, cleanJson.Length - 3);
+                }
+                cleanJson = cleanJson.Trim();
+
+                using var doc = JsonDocument.Parse(cleanJson);
+                var root = doc.RootElement;
+                if (!root.TryGetProperty("analysis", out var analysisEl) ||
+                    !root.TryGetProperty("nextQuestion", out var questionEl))
+                {
+                    return null;
+                }
+
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var analysis = JsonSerializer.Deserialize<AnswerAnalysis>(analysisEl.GetRawText(), options);
+                var nextQuestion = JsonSerializer.Deserialize<GeneratedQuestion>(questionEl.GetRawText(), options);
+
+                if (analysis == null || nextQuestion == null || string.IsNullOrWhiteSpace(nextQuestion.Question))
+                {
+                    return null;
+                }
+
+                ValidateQuestion(nextQuestion);
+                nextQuestion.DecisionUsed = state.LastDecision ?? "AdaptiveFollowUp";
+                nextQuestion.IsFollowUp = true;
+
+                return (analysis, nextQuestion);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[UNIFIED TURN] Answer analysis + next question fallback: {ex.Message}");
+                return null;
+            }
+        }
+
+        // =========================================================
         // GENERATE FIRST QUESTION AFTER INTRODUCTION
         // =========================================================
         public async Task<GeneratedQuestion>

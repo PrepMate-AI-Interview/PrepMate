@@ -36,6 +36,11 @@ namespace backend.Models
         // Language Contract
         public string? Language { get; set; } = "vi-VN";
         public string? InterviewLanguage { get; set; }
+
+        // Context Preparation & Performance Optimization (WI-INTERVIEW-PERFORMANCE-OPTIMIZATION-01)
+        public AnalyzeCvResponse? CvAnalysis { get; set; }
+        public AnalyzeJdResponse? JdAnalysis { get; set; }
+        public bool? AutoStart { get; set; }
     }
 
     public class CreateSessionResponse
@@ -183,6 +188,7 @@ namespace backend.Models
         public string Subscription { get; set; } = "free"; // "free" | "pro"
         public string? SubscriptionExpiry { get; set; }
         public bool? RequiresVerification { get; set; }
+        public bool? IsPending { get; set; }
         public string? Message { get; set; }
     }
 
@@ -200,6 +206,13 @@ namespace backend.Models
     public class VerifyEmailRequest
     {
         public string Token { get; set; } = string.Empty;
+        public string? Password { get; set; }
+    }
+
+    public class ChangePasswordRequest
+    {
+        public string CurrentPassword { get; set; } = string.Empty;
+        public string NewPassword { get; set; } = string.Empty;
     }
 
     public class ResendVerificationRequest

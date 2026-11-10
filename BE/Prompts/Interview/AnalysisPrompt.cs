@@ -109,5 +109,108 @@ TIÊU CHÍ PHÂN TÍCH
 {{PromptOutputPolicy.GetJsonContract(schema)}}
 """;
         }
+
+        public static string BuildUnifiedAnswerAnalysisAndNextQuestion(
+            string targetPosition,
+            string currentTopic,
+            string currentSubtopic,
+            string question,
+            string answer,
+            string priorHistory = "",
+            InterviewerPersona? persona = null,
+            string? language = InterviewLanguage.Vietnamese)
+        {
+            var historySection = string.IsNullOrWhiteSpace(priorHistory)
+                ? "[Chưa có lịch sử các lượt trước]"
+                : priorHistory.Trim();
+
+            var langInstruction = PromptLanguagePolicy.GetInstruction(language);
+            var personaRole = persona?.Role ?? "Senior Technical Interviewer";
+            var personaStyle = persona?.CommunicationStyle ?? "Đĩnh đạc, thực chiến, đào sâu bài toán thực tế";
+
+            var schema = """
+{
+  "analysis": {
+    "mainConcept": "Khái niệm kỹ thuật hoặc nghiệp vụ chính trong câu trả lời",
+    "answerType": "DEFINITION | EXPLANATION | EXAMPLE | EXPERIENCE | PROBLEM_SOLVING | COMPARISON | OPINION | UNCERTAIN",
+    "depth": 2,
+    "confidence": 0.9,
+    "followUpCandidates": ["Tối đa 3 khái niệm cụ thể có thể đào sâu tiếp"],
+    "incorrectConcepts": ["Khái niệm sai hoặc nhầm lẫn rõ ràng nếu có"],
+    "needsClarification": false,
+    "showsPracticalExperience": true,
+    "doesNotKnow": false,
+    "hasInconsistency": false,
+    "inconsistencyDetail": "",
+    "contradictedPriorStatement": "",
+    "verifiedFacts": ["Sự thật đã được chứng minh cặn kẽ"],
+    "unverifiedClaims": ["Tuyên bố tự nhận chưa có giải pháp chứng minh"],
+    "challengeTrigger": ""
+  },
+  "nextQuestion": {
+    "question": "Nội dung câu hỏi tiếp theo hoàn chỉnh kèm lời phản hồi/dẫn dắt tự nhiên của người phỏng vấn",
+    "conversationalTransition": "Tôi hiểu định hướng giải pháp của bạn...",
+    "topic": "Chủ đề câu hỏi",
+    "subtopic": "Khía cạnh khai thác cụ thể",
+    "dimension": "Technical",
+    "questionType": "TechnicalConcept",
+    "difficulty": 2,
+    "targetConcept": "Khái niệm hoặc kỹ năng trọng tâm",
+    "reason": "Lý do lựa chọn câu hỏi này"
+  }
+}
+""";
+
+            return $$"""
+{{langInstruction}}
+
+{{PromptGroundingPolicy.Instruction}}
+
+{{PromptContextBoundary.SecurityDisclaimer}}
+
+Bạn đóng vai trò kép trong hệ thống phỏng vấn AI thông minh:
+1. Phân tích câu trả lời của ứng viên cho lượt phỏng vấn vừa qua.
+2. Đóng vai Người phỏng vấn ({{personaRole}} - {{personaStyle}}) để sinh câu hỏi tiếp theo thích ứng trực tiếp với câu trả lời.
+
+====================
+THÔNG TIN VỊ TRÍ & NGỮ CẢNH
+====================
+Vị trí: {{targetPosition}}
+Topic hiện tại: {{currentTopic}}
+Subtopic hiện tại: {{currentSubtopic}}
+
+====================
+LỊCH SỬ CÁC LƯỢT TRẢ LỜI TRƯỚC
+====================
+{{PromptContextBoundary.Wrap("PRIOR_HISTORY", historySection)}}
+
+====================
+LƯỢT PHỎNG VẤN HIỆN TẠI
+====================
+Câu hỏi của interviewer:
+{{question}}
+
+Câu trả lời của ứng viên:
+{{PromptContextBoundary.Wrap("CANDIDATE_ANSWER", answer)}}
+
+====================
+YÊU CẦU THỰC HIỆN
+====================
+1. Phân tích câu trả lời:
+   - Đánh giá depth từ 0 (không biết) đến 4 (chuyên sâu).
+   - Tách bạch verifiedFacts (đã chứng minh bằng giải pháp/số liệu thực tế) và unverifiedClaims (chỉ tuyên bố một chiều).
+   - Phát hiện hiểu sai (incorrectConcepts) hoặc mâu thuẫn với lịch sử (hasInconsistency).
+   - Mỗi danh sách facts/claims/concepts chỉ lấy tối đa 2-3 mục cốt lõi nhất.
+2. Sinh câu hỏi phỏng vấn tiếp theo:
+   - Bắt đầu bằng phản hồi/ghi nhận tự nhiên, ngắn gọn 1 câu (ví dụ: "Tôi hiểu cách bạn tiếp cận bài toán...", "Bạn có nhắc tới giải pháp...").
+   - Đặt câu hỏi tiếp theo sắc bén, trực diện, tối đa 1-2 câu.
+   - Nếu ứng viên trả lời tốt: đào sâu vào trade-off, edge case hoặc giải pháp quy mô lớn hơn.
+   - Nếu ứng viên trả lời chưa rõ hoặc có điểm chưa chính xác: đặt câu hỏi gợi mở để ứng viên kiểm chứng hoặc làm rõ.
+   - TUYỆT ĐỐI KHÔNG tự bịa đặt những công nghệ ứng viên chưa từng nêu.
+3. YÊU CẦU ĐỘ DÀI: Viết cô đọng, súc tích, văn phong chuyên nghiệp, không dài dòng để đảm bảo thời gian phản hồi nhanh nhất cho ứng viên.
+
+{{PromptOutputPolicy.GetJsonContract(schema)}}
+""";
+        }
     }
 }

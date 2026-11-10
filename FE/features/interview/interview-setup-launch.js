@@ -121,6 +121,8 @@ async function startInterview() {
       interviewRound,
       cvText,
       jdText,
+      cvAnalysis: (typeof window !== "undefined" && window._cvAnalysisResult) ? window._cvAnalysisResult : null,
+      jdAnalysis: (typeof window !== "undefined" && window._jdAnalysisResult) ? window._jdAnalysisResult : null,
       userDescription: enrichedDescription,
       selectedIndustry,
       interviewerPersona,

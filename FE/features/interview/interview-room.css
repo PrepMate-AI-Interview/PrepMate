@@ -31,14 +31,20 @@
     --ir-shadow-lg: var(--pm-shadow-lg, 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04));
 }
 
-body.interview-body {
+body.interview-body,
+html body.interview-body {
     background-color: var(--ir-bg) !important;
     color: var(--ir-text-secondary);
     font-family: var(--pm-font-sans, var(--font-sans));
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    height: 100vh;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    height: 100vh !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    display: block !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
 }
 
 /* Master Layout */
@@ -46,8 +52,11 @@ body.interview-body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
     overflow: hidden;
     background-color: var(--ir-bg);
+    box-sizing: border-box;
 }
 
 /* ==========================================================================
@@ -359,6 +368,7 @@ body.interview-body {
     min-height: 0;
     height: calc(100vh - 56px);
     max-height: calc(100vh - 56px);
+    width: 100%;
     position: relative;
     background: #f8fafc;
     overflow: hidden;
@@ -369,12 +379,14 @@ body.interview-body {
 .ir-video-stage-column {
     flex: 1;
     min-width: 0;
+    width: 100%;
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 12px 20px 14px 20px;
-    gap: 12px;
+    padding: 10px 18px 12px 18px;
+    gap: 10px;
     overflow-y: auto;
+    scrollbar-gutter: stable;
     box-sizing: border-box;
 }
 
@@ -384,11 +396,13 @@ body.interview-body {
 .ir-video-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    gap: 16px;
     flex: 0 0 auto;
-    height: clamp(210px, 28vh, 260px);
-    min-height: 200px;
-    max-height: 280px;
+    width: 100%;
+    height: clamp(300px, 42vh, 440px);
+    min-height: 290px;
+    max-height: 480px;
+    box-sizing: border-box;
     transition: filter 0.3s ease, opacity 0.3s ease;
 }
 
@@ -400,14 +414,17 @@ body.interview-body {
 
 .ir-video-tile {
     background: #090d16;
-    border: 2.5px solid transparent;
+    border: 2px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14);
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .ir-video-tile:hover {
@@ -419,7 +436,7 @@ body.interview-body {
 .ir-video-tile.interviewer-speaking,
 .ir-video-tile.candidate-speaking {
     border-color: #22c55e !important;
-    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.35), 0 14px 40px rgba(0, 0, 0, 0.45) !important;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.35), 0 12px 32px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* Video Tile Header Bar (Glassmorphic Top Overlay) */
@@ -456,8 +473,10 @@ body.interview-body {
 }
 
 .tile-tag.candidate {
-    color: #a7f3d0;
-    border-color: rgba(16, 185, 129, 0.35);
+    background: rgba(6, 78, 59, 0.88);
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .live-dot {
@@ -505,15 +524,15 @@ body.interview-body {
 
 /* Media Surface Container */
 .tile-media-wrapper {
-    flex: 1;
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    position: relative;
+    background: #0f172a;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #0f172a;
-    overflow: hidden;
 }
 
 /* ==========================================================================
@@ -679,16 +698,16 @@ body.interview-body {
 }
 
 .zoom-nameplate {
-    background: rgba(15, 23, 42, 0.82);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 8px;
     padding: 6px 12px;
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
     max-width: 85%;
 }
 
@@ -753,7 +772,7 @@ body.interview-body {
     50% { transform: scaleY(1.3); }
 }
 
-/* Candidate mic audio level meter (WI-INTERVIEW-PREFLIGHT-01) */
+/* Candidate mic audio level meter & Equalizer Waveform (WI-INTERVIEW-LIVE-LAYOUT-POLISH-03) */
 .candidate-mic-level-wrap {
     width: 28px;
     height: 6px;
@@ -779,6 +798,47 @@ body.interview-body {
     box-shadow: 0 0 4px #22c55e;
 }
 
+/* Modern 4-bar soundwave equalizer embedded in nameplate */
+.candidate-mic-level-wrap.candidate-mic-equalizer {
+    width: 22px;
+    height: 14px;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0;
+    overflow: visible;
+    margin: 0 5px 0 2px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5px;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+.candidate-mic-equalizer .eq-bar {
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    min-height: 2px;
+    max-height: 14px;
+    background: rgba(255, 255, 255, 0.45);
+    border-radius: 2px;
+    transition: height 0.08s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+    flex-shrink: 0;
+}
+
+.candidate-mic-equalizer.active .eq-bar {
+    background: #10b981;
+    box-shadow: 0 0 5px rgba(16, 185, 129, 0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .candidate-mic-equalizer .eq-bar {
+        transition: none !important;
+    }
+}
+
 .zoom-user-text {
     display: flex;
     flex-direction: column;
@@ -786,10 +846,13 @@ body.interview-body {
     min-width: 0;
 }
 
+.zoom-nameplate .tile-user-name,
+.tile-user-name,
 .zoom-user-text .tile-user-name {
-    font-size: 13.5px;
-    font-weight: 700;
-    color: #ffffff;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
     letter-spacing: -0.2px;
     white-space: nowrap;
     overflow: hidden;
@@ -809,7 +872,8 @@ body.interview-body {
 /* Candidate Camera Tile */
 .candidate-media {
     background: #0f172a;
-    position: relative;
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -819,16 +883,21 @@ body.interview-body {
 }
 
 #webcam-video {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     transform: scaleX(-1);
     display: block;
+    z-index: 1;
 }
 
 .camera-placeholder {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -879,16 +948,16 @@ body.interview-body {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 14px;
+    padding: 6px 16px;
     border-radius: 9999px;
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    font-size: 11.5px;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font-size: 12px;
     font-weight: 600;
-    color: #94a3b8;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    color: #f8fafc;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
 }
 
 .camera-off-indicator .cam-off-icon {
@@ -967,17 +1036,34 @@ body.interview-body {
     transform: scale(0.95);
 }
 
+.in-tile-icon-btn.in-tile-mic.candidate-speaking,
+.in-tile-icon-btn#btn-mic.candidate-speaking {
+    background: rgba(15, 23, 42, 0.95) !important;
+    border-color: #10b981 !important;
+    color: #34d399 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.45), 0 0 16px rgba(16, 185, 129, 0.5) !important;
+    animation: pulseInTileSpeaking 1.2s infinite ease-in-out !important;
+}
+
+@keyframes pulseInTileSpeaking {
+    0%, 100% {
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.4), 0 0 12px rgba(16, 185, 129, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 3.5px rgba(16, 185, 129, 0.65), 0 0 22px rgba(16, 185, 129, 0.7);
+    }
+}
+
 .in-tile-icon-btn.in-tile-mic.recording,
 .in-tile-icon-btn#btn-mic.recording {
-    background: #ef4444 !important;
-    border-color: #f87171 !important;
+    background: rgba(15, 23, 42, 0.95) !important;
+    border-color: rgba(16, 185, 129, 0.5) !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.35) !important;
-    animation: pulseInTileRecording 1.4s infinite !important;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.35) !important;
 }
 
 .in-tile-icon-btn.off {
-    background: rgba(239, 68, 68, 0.18) !important;
+    background: rgba(15, 23, 42, 0.88) !important;
     border-color: rgba(239, 68, 68, 0.45) !important;
     color: #f87171 !important;
 }
@@ -1038,11 +1124,10 @@ body.interview-body {
 
 .in-tile-btn.in-tile-mic.recording,
 .in-tile-btn#btn-mic.recording {
-    background: #ef4444 !important;
-    border-color: #f87171 !important;
+    background: rgba(15, 23, 42, 0.95) !important;
+    border-color: rgba(16, 185, 129, 0.5) !important;
     color: #ffffff !important;
-    box-shadow: 0 0 18px rgba(239, 68, 68, 0.65) !important;
-    animation: pulseInTileRecording 1.4s infinite !important;
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.45) !important;
 }
 
 @keyframes pulseInTileRecording {
@@ -1062,15 +1147,19 @@ body.interview-body {
    ========================================================================== */
 .ir-question-stage {
     background: #ffffff;
-    border: 1px solid var(--ir-border);
-    border-radius: 14px;
-    padding: 14px 20px;
+    border: 1px solid var(--ir-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 10px 18px;
     box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-    flex-shrink: 0;
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    min-height: 80px;
+    gap: 6px;
+    min-height: 76px;
+    max-height: clamp(76px, 13vh, 130px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .ir-question-header {
@@ -1193,35 +1282,42 @@ body.interview-body {
    ========================================================================== */
 .ir-response-console {
     background: #ffffff;
-    border: 1px solid var(--ir-border);
-    border-radius: 14px;
-    padding: 12px 18px;
+    border: 1px solid var(--ir-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 10px 18px;
     box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-    flex-shrink: 0;
+    flex: 0 0 auto;
+    min-height: 110px;
+    max-height: clamp(120px, 18vh, 165px);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    justify-content: space-between;
+    gap: 6px;
     box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .ir-response-status-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
 .ir-response-status-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .ir-response-input-row {
+    flex: 1 1 auto;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: stretch;
+    min-height: 48px;
+    max-height: 85px;
 }
 .ir-response-actions {
     display: flex;
@@ -1234,15 +1330,17 @@ body.interview-body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 7px;
     padding: 0 16px;
-    height: 72px;
-    min-height: 60px;
-    border-radius: 10px;
+    height: 100% !important;
+    min-height: 48px !important;
+    max-height: 85px !important;
+    border-radius: 8px;
     border: 1.5px solid #cbd5e1;
     background: #f1f5f9;
     color: #1e293b;
-    font-size: 13.5px;
+    box-sizing: border-box !important;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
@@ -1602,6 +1700,19 @@ body.interview-body {
     font-weight: 500;
 }
 
+.ir-key-hint-touch {
+    display: none;
+}
+
+@media (pointer: coarse) {
+    .ir-key-hint-desktop {
+        display: none !important;
+    }
+    .ir-key-hint-touch {
+        display: inline !important;
+    }
+}
+
 .ir-dialogue-input-group {
     display: flex;
     gap: 8px;
@@ -1614,15 +1725,15 @@ body.light-mode #user-input,
 .ir-response-input {
     flex: 1 !important;
     width: 100% !important;
-    height: 72px !important;
-    min-height: 60px !important;
-    max-height: 120px !important;
+    height: 100% !important;
+    min-height: 48px !important;
+    max-height: 85px !important;
     background: #f8fafc !important;
     border: 1px solid #cbd5e1 !important;
-    border-radius: 10px !important;
+    border-radius: 8px !important;
     color: #0f172a !important;
-    padding: 10px 14px !important;
-    font-size: 14px !important;
+    padding: 8px 14px !important;
+    font-size: 13.5px !important;
     font-family: inherit !important;
     line-height: 1.5 !important;
     outline: none !important;
@@ -1650,24 +1761,26 @@ body #user-input:disabled {
 
 .ir-btn-send-dialogue,
 #btn-send {
-    height: 72px;
-    min-height: 60px;
-    padding: 0 20px;
+    height: 100% !important;
+    min-height: 48px !important;
+    max-height: 85px !important;
+    padding: 0 18px;
     background: var(--ir-blue);
     color: #ffffff;
     border: none;
-    border-radius: 10px;
-    font-size: 13.5px;
-    font-weight: 700;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
     font-family: inherit;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 7px;
     transition: all 0.2s ease;
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    box-sizing: border-box !important;
 }
 
 .ir-btn-send-dialogue:hover:not(:disabled),
@@ -2748,12 +2861,12 @@ body #user-input:disabled {
 @media (max-width: 1024px) {
     .ir-video-grid {
         grid-template-columns: 1fr 1fr;
-        height: 180px;
-        min-height: 0;
-        gap: 10px;
+        height: clamp(240px, 32vh, 320px);
+        min-height: 240px;
+        gap: 12px;
     }
     .ir-video-tile {
-        height: 180px;
+        height: 100%;
     }
     .ir-transcript-drawer {
         width: 100%;
@@ -2844,12 +2957,12 @@ body #user-input:disabled {
         max-width: 100% !important;
         width: 100% !important;
         grid-template-columns: 1fr 1fr !important;
-        height: 125px !important;
-        gap: 8px !important;
+        height: clamp(170px, 25vh, 220px) !important;
+        gap: 10px !important;
     }
     .ir-video-tile {
         max-width: 100% !important;
-        height: 125px !important;
+        height: 100% !important;
     }
     .avatar-interviewer-ring,
     .avatar-user-ring {
@@ -2916,6 +3029,16 @@ body #user-input:disabled {
         width: 100% !important;
         justify-content: flex-start !important;
         gap: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+    }
+    .ir-btn-assist {
+        min-height: 36px !important;
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+        border-radius: 6px !important;
+        touch-action: manipulation;
     }
     .ir-response-console {
         max-width: 100% !important;
@@ -2979,11 +3102,11 @@ body #user-input:disabled {
         padding: 6px 10px !important;
     }
     .ir-video-grid {
-        height: 115px !important;
+        height: clamp(135px, 20vh, 165px) !important;
         gap: 6px !important;
     }
     .ir-video-tile {
-        height: 115px !important;
+        height: 100% !important;
     }
     .avatar-interviewer-ring,
     .avatar-user-ring {
@@ -3020,6 +3143,41 @@ body #user-input:disabled {
         font-size: 12.5px !important;
         height: 42px !important;
         min-height: 42px !important;
+    }
+    .ir-question-quick-actions {
+        gap: 6px !important;
+    }
+    .ir-btn-assist {
+        min-height: 36px !important;
+        padding: 5px 10px !important;
+        font-size: 11.5px !important;
+        gap: 4px !important;
+    }
+}
+
+@media (max-width: 390px) {
+    .ir-question-header {
+        gap: 5px !important;
+    }
+    .ir-question-header-left {
+        gap: 5px !important;
+    }
+    .ir-question-badge {
+        font-size: 10px !important;
+        padding: 2px 7px !important;
+    }
+    .ir-question-quick-actions {
+        gap: 5px !important;
+    }
+    .ir-btn-assist {
+        min-height: 36px !important;
+        padding: 5px 8px !important;
+        font-size: 11px !important;
+        gap: 4px !important;
+    }
+    .ir-btn-assist svg {
+        width: 12px !important;
+        height: 12px !important;
     }
 }
 

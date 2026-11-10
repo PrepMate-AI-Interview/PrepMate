@@ -35,12 +35,14 @@ namespace backend.Models
 
         public string Role { get; set; } = "user"; // "user" | "manager" | "admin"
 
-        // Email Verification & Password Reset Security State (WI-AUTH-01)
+        // Email Verification & Password Reset Security State (WI-AUTH-01 & WI-AUTH-02)
         public bool EmailVerified { get; set; } = true;
         public DateTime? EmailVerifiedAt { get; set; }
         public string? EmailVerificationTokenHash { get; set; }
         public DateTime? EmailVerificationTokenExpiresAt { get; set; }
         public DateTime? LastVerificationEmailSentAt { get; set; }
+        public DateTime? PendingRegistrationExpiresAt { get; set; }
+        public int VerificationResendCount { get; set; } = 0;
 
         public string? PasswordResetTokenHash { get; set; }
         public DateTime? PasswordResetTokenExpiresAt { get; set; }
@@ -60,6 +62,16 @@ namespace backend.Models
         // Computed helpers (not stored, for convenience)
         public bool IsAdmin => Role == "admin";
         public bool IsManager => Role == "manager";
+
+        [JsonIgnore]
+        public bool IsPendingEmailVerification => !EmailVerified && (PendingRegistrationExpiresAt.HasValue
+            ? PendingRegistrationExpiresAt.Value >= DateTime.UtcNow
+            : (EmailVerificationTokenExpiresAt.HasValue ? EmailVerificationTokenExpiresAt.Value >= DateTime.UtcNow : CreatedAt.AddHours(24) >= DateTime.UtcNow));
+
+        [JsonIgnore]
+        public bool IsPendingRegistrationExpired => !EmailVerified && (PendingRegistrationExpiresAt.HasValue
+            ? PendingRegistrationExpiresAt.Value < DateTime.UtcNow
+            : (EmailVerificationTokenExpiresAt.HasValue ? EmailVerificationTokenExpiresAt.Value < DateTime.UtcNow : CreatedAt.AddHours(24) < DateTime.UtcNow));
 
         /// <summary>
         /// Evaluates whether the user's paid subscription is currently active and within its valid time window.

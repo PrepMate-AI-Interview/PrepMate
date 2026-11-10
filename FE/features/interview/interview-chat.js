@@ -96,6 +96,15 @@ function appendAIMessage(text, headerLabel = null, isFollowUp = false) {
 
   if (typeof window !== "undefined") {
     window._lastAppendedAiMessage = normalized;
+    const renderNow = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+    window._lastAiMessageRenderTime = renderNow;
+    window._aiMessageRenderEvents = window._aiMessageRenderEvents || [];
+    window._aiMessageRenderEvents.push({
+      textSnippet: normalized.slice(0, 100),
+      perfTimestamp: renderNow,
+      epochTimestamp: Date.now(),
+      isFollowUp: Boolean(isFollowUp)
+    });
   }
 
   const resolvedHeader = headerLabel || getActiveInterviewerDisplayName();
@@ -238,4 +247,5 @@ if (typeof window !== "undefined") {
   window.renderNewInterviewWelcomeMessage = renderNewInterviewWelcomeMessage;
   window.getActiveInterviewerDisplayName = getActiveInterviewerDisplayName;
   window.getActiveInterviewerInitials = getActiveInterviewerInitials;
+  window.getAiMessageRenderEvents = () => [...(window._aiMessageRenderEvents || [])];
 }

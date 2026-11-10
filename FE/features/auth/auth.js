@@ -402,9 +402,15 @@ async function registerUser({ fullname, email, username, password }) {
   }
 
   if (!response.ok) {
-    throw new Error(
+    const err = new Error(
       data.error || data.message || "Đăng ký tài khoản thất bại.",
     );
+    if (data.requiresVerification) {
+      err.requiresVerification = true;
+      err.email = data.email || cleanEmail;
+      err.cooldownRemaining = data.cooldownRemaining;
+    }
+    throw err;
   }
 
   if (!data.id) {

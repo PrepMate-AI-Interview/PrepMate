@@ -185,9 +185,24 @@ namespace backend.Services.Interview
                 );
 
                 // =====================================================
-                // 3. ANALYZE INTRODUCTION
+                // 3. ANALYZE INTRODUCTION & FIRST QUESTION (ORCHESTRATED)
                 // =====================================================
 
+                var unifiedIntro = await _questionGenerationService.AnalyzeIntroductionAndGenerateFirstQuestionAsync(
+                    session,
+                    introduction
+                );
+
+                AnswerAnalysis analysis = null!;
+                GeneratedQuestion? precomputedFirstQuestion = null;
+
+                if (unifiedIntro.HasValue)
+                {
+                    analysis = unifiedIntro.Value.Analysis;
+                    precomputedFirstQuestion = unifiedIntro.Value.FirstQuestion;
+                }
+                else
+                {
                 var targetPosition =
                     string.IsNullOrWhiteSpace(
                         session.InterviewContext.TargetPosition)
@@ -234,22 +249,16 @@ namespace backend.Services.Interview
                 }
                 cleanJson = cleanJson.Trim();
 
-                var analysis =
+                analysis =
                     JsonSerializer.Deserialize<AnswerAnalysis>(
                         cleanJson,
                         options
-                    );
-
-                if (analysis == null)
-                {
-                    throw new InvalidOperationException(
-                        "AI không phân tích được phần introduction."
-                    );
+                    ) ?? throw new InvalidOperationException("AI không phân tích được phần introduction.");
                 }
 
                 // =====================================================
                 session.EvidenceLedger ??= new backend.Models.AI.EvidenceLedger { SessionId = session.Id };
-                session.EvidenceLedger.RecordTurn(
+                (session.EvidenceLedger ??= new backend.Models.AI.EvidenceLedger { SessionId = session.Id }).RecordTurn(
                     1,
                     "Giới thiệu bản thân",
                     introduction,
@@ -361,8 +370,9 @@ namespace backend.Services.Interview
                 // 10. GENERATE FIRST REAL INTERVIEW QUESTION
                 // =====================================================
 
-                var nextQuestion =
-                    await _questionGenerationService
+                var nextQuestion = precomputedFirstQuestion != null && !string.IsNullOrWhiteSpace(precomputedFirstQuestion.Question)
+                    ? precomputedFirstQuestion
+                    : await _questionGenerationService
                         .GenerateAfterIntroductionAsync(
                             session,
                             analysis
@@ -997,14 +1007,58 @@ namespace backend.Services.Interview
                 };
                 session.Answers.Add(techAnswerItem);
 
-                // 2. Analyze answer + decide next action (includes Knowledge Coverage update)
-                var analysis =
-                    await _adaptiveInterviewEngine
-                        .ProcessAnswerAsync(
-                            session,
-                            currentQuestion,
-                            answer
+                // 2. Analyze answer + decide next action (Orchestrated unified turn with graceful fallback)
+                // Note: session.Answers already contains the current turn at the end, so priorHistory excludes the last item
+                var priorHistory = session.Answers != null && session.Answers.Count > 1
+                    ? string.Join(
+                        "\n\n",
+                        session.Answers
+                            .SkipLast(1)
+                            .TakeLast(4)
+                            .Select((a, idx) => $"Q{idx + 1}: {a.Question}\nA{idx + 1}: {a.Answer}"))
+                    : string.Empty;
+
+                var unifiedTurn = await _questionGenerationService.AnalyzeAnswerAndGenerateAdaptiveQuestionAsync(
+                    session,
+                    currentQuestion,
+                    answer,
+                    priorHistory
+                );
+
+                AnswerAnalysis analysis;
+                GeneratedQuestion? precomputedNextQuestion = null;
+
+                if (unifiedTurn.HasValue)
+                {
+                    analysis = unifiedTurn.Value.Analysis;
+                    precomputedNextQuestion = unifiedTurn.Value.NextQuestion;
+                    _adaptiveInterviewEngine.SanitizeAndValidateAnalysis(answer, analysis);
+
+                    if (session.InterviewContext?.KnowledgeBlueprint != null)
+                    {
+                        _knowledgeCoverageService.UpdateCoverage(
+                            session.InterviewState,
+                            session.InterviewContext.KnowledgeBlueprint,
+                            analysis
                         );
+                    }
+
+                    _adaptiveInterviewEngine.UpdateConceptState(session.InterviewState, analysis);
+                    session.InterviewState.QuestionCount++;
+                    var action = _adaptiveInterviewEngine.DecideNextAction(session.InterviewState, analysis);
+                    session.InterviewState.LastDecision = action.ToString();
+                    _adaptiveInterviewEngine.UpdateState(session.InterviewState, action, analysis, session.InterviewContext?.KnowledgeBlueprint);
+                }
+                else
+                {
+                    analysis =
+                        await _adaptiveInterviewEngine
+                            .ProcessAnswerAsync(
+                                session,
+                                currentQuestion,
+                                answer
+                            );
+                }
 
                 // Phase 3 Step 1: Record turn evidence metadata on answerItem for final evaluation traceability
                 techAnswerItem.TargetConceptId = session.InterviewState.ActiveTargetEvaluation?.ConceptId;
@@ -1038,12 +1092,12 @@ namespace backend.Services.Interview
                     }
                 }
 
-                session.EvidenceLedger.RecordTurn(
-                    session.Answers.Count,
+                (session.EvidenceLedger ??= new backend.Models.AI.EvidenceLedger { SessionId = session.Id }).RecordTurn(
+                    session.Answers!.Count,
                     currentQuestion,
                     answer,
-                    techAnswerItem.TargetConceptName ?? session.InterviewState.CurrentTopic ?? "Technical",
-                    session.InterviewState.LastDecision ?? "AdaptiveFollowUp",
+                    techAnswerItem.TargetConceptName ?? session.InterviewState?.CurrentTopic ?? "Technical",
+                    session.InterviewState?.LastDecision ?? "AdaptiveFollowUp",
                     analysis.VerifiedFacts,
                     combinedGaps,
                     analysis.UnverifiedClaims,
@@ -1057,7 +1111,7 @@ namespace backend.Services.Interview
 
                 // 3. Check stage transition and interview completion via Stage Orchestrator
                 var techTransition = _stageOrchestrator.EvaluateTransition(session);
-                if (techTransition.HasTransitioned || session.InterviewState.IsReadyToFinish)
+                if (techTransition.HasTransitioned || session.InterviewState?.IsReadyToFinish == true)
                 {
                     var targetStage = techTransition.HasTransitioned ? techTransition.ToStage : InterviewStage.COMPLETED;
                     _stageOrchestrator.ApplyTransition(session, targetStage, techTransition.Reason);
@@ -1105,34 +1159,38 @@ namespace backend.Services.Interview
                     }
                 }
 
-                // 4. Generate next question
-                var nextQuestion =
-                    await _questionGenerationService
+                // 4. Generate next question (use precomputed or generate)
+                var nextQuestion = precomputedNextQuestion != null && !string.IsNullOrWhiteSpace(precomputedNextQuestion.Question)
+                    ? precomputedNextQuestion
+                    : await _questionGenerationService
                         .GenerateAsync(
                             session,
                             analysis
                         );
 
                 // Attach question stage metadata
-                nextQuestion.Stage = session.InterviewState.InterviewPhase;
+                nextQuestion.Stage = session.InterviewState?.InterviewPhase ?? InterviewStageNames.TechnicalAssessment;
 
                 // 5. Update state
-                session.InterviewState.CurrentTopic =
-                    nextQuestion.Topic;
-
-                session.InterviewState.CurrentSubtopic =
-                    nextQuestion.Subtopic;
-
-                session.InterviewState.CurrentDimension =
-                    nextQuestion.Dimension;
-
-                if (!string.IsNullOrWhiteSpace(
-                        nextQuestion.QuestionType))
+                if (session.InterviewState != null)
                 {
-                    AddUnique(
-                        session.InterviewState.QuestionTypesUsed,
-                        nextQuestion.QuestionType
-                    );
+                    session.InterviewState.CurrentTopic =
+                        nextQuestion.Topic;
+
+                    session.InterviewState.CurrentSubtopic =
+                        nextQuestion.Subtopic;
+
+                    session.InterviewState.CurrentDimension =
+                        nextQuestion.Dimension;
+
+                    if (!string.IsNullOrWhiteSpace(
+                            nextQuestion.QuestionType))
+                    {
+                        AddUnique(
+                            session.InterviewState.QuestionTypesUsed,
+                            nextQuestion.QuestionType
+                        );
+                    }
                 }
 
                 // 6. Store generated question
@@ -1164,8 +1222,8 @@ namespace backend.Services.Interview
                         difficulty =
                             nextQuestion.Difficulty,
                         isFollowUp =
-                            !string.Equals(session.InterviewState.LastDecision, nameof(InterviewAction.ChangeTopic), StringComparison.OrdinalIgnoreCase) &&
-                            !string.Equals(session.InterviewState.LastDecision, "INTRODUCTION_COMPLETE", StringComparison.OrdinalIgnoreCase),
+                            !string.Equals(session.InterviewState?.LastDecision, nameof(InterviewAction.ChangeTopic), StringComparison.OrdinalIgnoreCase) &&
+                            !string.Equals(session.InterviewState?.LastDecision, "INTRODUCTION_COMPLETE", StringComparison.OrdinalIgnoreCase),
                         isFinished = false,
                         stage = _stageOrchestrator.GetCurrentStage(session).ToString()
                     }

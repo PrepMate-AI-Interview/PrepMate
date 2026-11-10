@@ -234,5 +234,78 @@ namespace backend.Models
         public string? PlanSnapshot { get; set; }
         public string? OriginalGuestId { get; set; }
         public string? ClaimedAt { get; set; }
+
+        private string? _completedAt;
+        public string? CompletedAt
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(_completedAt)) return _completedAt;
+                if (InterviewState?.StageCompletedAt != null) return InterviewState.StageCompletedAt.Value.ToString("o");
+                var completedHistory = InterviewState?.StageHistory?.LastOrDefault(h =>
+                    string.Equals(h.Stage, "COMPLETED", System.StringComparison.OrdinalIgnoreCase));
+                if (completedHistory != null)
+                {
+                    return completedHistory.CompletedAt?.ToString("o") ?? completedHistory.StartedAt.ToString("o");
+                }
+                if (Evaluation != null && Evaluation.CreatedAt != default)
+                {
+                    return Evaluation.CreatedAt.ToString("o");
+                }
+                if (EvidenceLedger != null && EvidenceLedger.LastUpdatedAt != default && string.Equals(Status, "completed", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return EvidenceLedger.LastUpdatedAt.ToString("o");
+                }
+                return null;
+            }
+            set => _completedAt = value;
+        }
+
+        private int? _durationSeconds;
+        public int? DurationSeconds
+        {
+            get
+            {
+                if (_durationSeconds.HasValue && _durationSeconds.Value >= 0)
+                {
+                    return _durationSeconds.Value;
+                }
+
+                if (Answers != null && Answers.Count > 0)
+                {
+                    int totalAnswerSec = Answers.Sum(a => a.DurationSeconds);
+                    if (totalAnswerSec > 0)
+                    {
+                        return totalAnswerSec;
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(StartedAt) && !string.IsNullOrWhiteSpace(CompletedAt))
+                {
+                    if (System.DateTime.TryParse(StartedAt, null, System.Globalization.DateTimeStyles.RoundtripKind, out var start) &&
+                        System.DateTime.TryParse(CompletedAt, null, System.Globalization.DateTimeStyles.RoundtripKind, out var end))
+                    {
+                        if (end >= start)
+                        {
+                            return (int)System.Math.Max(0, (end - start).TotalSeconds);
+                        }
+                    }
+                }
+
+                return null;
+            }
+            set => _durationSeconds = value;
+        }
+
+        public int? Duration
+        {
+            get
+            {
+                var sec = DurationSeconds;
+                if (!sec.HasValue) return null;
+                if (sec.Value <= 0) return 0;
+                return (int)System.Math.Max(1, System.Math.Ceiling(sec.Value / 60.0));
+            }
+        }
     }
 }

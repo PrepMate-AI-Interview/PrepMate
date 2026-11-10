@@ -72,14 +72,7 @@ namespace backend.Services
                 request.InterviewLanguage ?? request.Language ?? backend.Models.InterviewLanguage.Vietnamese
             );
 
-            // Performance Optimization: Run Context Prompt asynchronously in parallel with Company Context & Blueprint
-            var contextPromptTask = _geminiService.CallGeminiApiForTaskAsync(
-                backend.Models.AI.AITaskType.CvAnalysis,
-                prompt,
-                isJsonMode: true
-            );
-
-            // Phase 2 Step 5: Extract Company Context (if company name or description is provided)
+            // Phase 2 Step 5 & 6: Extract Company Context and Knowledge Blueprint
             CompanyContext? companyContext = null;
             if (!string.IsNullOrWhiteSpace(request.TargetCompany) || !string.IsNullOrWhiteSpace(request.CompanyDescription))
             {
@@ -98,7 +91,6 @@ namespace backend.Services
                 }
             }
 
-            // Phase 2: Generate Knowledge Blueprint from JD or Sector/Role Context (JD-independent)
             KnowledgeBlueprint? blueprint = null;
             try
             {
@@ -114,8 +106,7 @@ namespace backend.Services
                 Console.WriteLine($"[INTERVIEW] Blueprint generation error: {ex.Message}");
             }
 
-            // Phase 2 Step 6: Enrich Blueprint with CompanyContext & Level Contextual Signals
-            if (blueprint != null && companyContext != null)
+            if (blueprint != null && companyContext != null && !string.IsNullOrWhiteSpace(jdText))
             {
                 try
                 {
@@ -132,7 +123,6 @@ namespace backend.Services
                 }
             }
 
-            // Phase 2 Step 7: Build Interview Strategy & Coverage Plan
             InterviewStrategy? strategy = null;
             if (blueprint != null)
             {
@@ -153,62 +143,98 @@ namespace backend.Services
                 }
             }
 
+            // OPTIMIZATION (WI-INTERVIEW-PERFORMANCE-OPTIMIZATION-01 & 02):
+            // Reuse prepared CV/JD analysis if already computed in Setup Step 4, avoiding redundant AI context call.
+            // Verified & sanitized against arbitrary length / malformed injections.
+            if (request.CvAnalysis != null && (request.CvAnalysis.KeySkills?.Count > 0 || !string.IsNullOrWhiteSpace(request.CvAnalysis.Summary)))
+            {
+                Console.WriteLine("[CONTEXT] Reusing prepared CV/JD analysis from setup step. Skipping redundant AI CvAnalysis call.");
+                var preparedKeySkills = SanitizeSnapshotSkills(request.CvAnalysis.KeySkills ?? request.Skills);
+                var preparedJdSkills = SanitizeSnapshotSkills(request.JdAnalysis?.KeySkills);
+
+                context.CvSummary = !string.IsNullOrWhiteSpace(request.CvAnalysis.Summary)
+                    ? SanitizeSnapshotText(request.CvAnalysis.Summary, 2000)
+                    : BuildFallbackCvSummary(request);
+                context.Skills = preparedKeySkills;
+                context.CandidateTopics = preparedKeySkills.Take(5).ToList();
+                context.ExpectedTopics = preparedJdSkills.Count > 0 ? preparedJdSkills.Take(5).ToList() : preparedKeySkills.Take(5).ToList();
+                context.Persona = InterviewerPersona.CreateDefault(context.TargetPosition);
+                context.KnowledgeBlueprint = blueprint;
+                context.CompanyContext = companyContext;
+                context.Strategy = strategy;
+                context.Industry = companyContext != null && companyContext.Industry != "Unknown"
+                    ? companyContext.Industry
+                    : ProfessionalDomainClassifier.Classify(context.TargetPosition);
+
+                return context;
+            }
+
+            // Fallback: Run context prompt if CV analysis was not pre-computed
+            Task<string>? contextPromptTask = null;
             try
             {
-                var json = await contextPromptTask;
-                Console.WriteLine("========== INTERVIEW CONTEXT RAW RESPONSE ==========");
-                Console.WriteLine(json);
-                Console.WriteLine("========== END INTERVIEW CONTEXT RAW RESPONSE ==========");
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-
-                var aiContext =
-                    JsonSerializer.Deserialize<InterviewContext>(
-                        json,
-                        options
-                    );
-
-                if (aiContext != null)
-                {
-                    // Giữ dữ liệu gốc từ request.
-                    aiContext.FullName = context.FullName;
-                    aiContext.Major = context.Major;
-                    aiContext.Specialization = context.Specialization;
-                    aiContext.ExperienceLevel = context.ExperienceLevel;
-                    aiContext.TargetPosition = context.TargetPosition;
-                    aiContext.TargetCompany = context.TargetCompany;
-                    aiContext.JdText = context.JdText;
-
-                    if (aiContext.Skills.Count == 0)
-                    {
-                        aiContext.Skills = context.Skills;
-                    }
-
-                    if (aiContext.Persona == null || string.IsNullOrWhiteSpace(aiContext.Persona.Role))
-                    {
-                        aiContext.Persona = InterviewerPersona.CreateDefault(aiContext.TargetPosition);
-                    }
-
-                    aiContext.KnowledgeBlueprint = blueprint;
-                    aiContext.CompanyContext = companyContext;
-                    aiContext.Strategy = strategy;
-                    if (string.IsNullOrWhiteSpace(aiContext.Industry))
-                    {
-                        aiContext.Industry = companyContext != null && companyContext.Industry != "Unknown"
-                            ? companyContext.Industry
-                            : ProfessionalDomainClassifier.Classify(aiContext.TargetPosition);
-                    }
-
-                    return aiContext;
-                }
+                contextPromptTask = _geminiService.CallGeminiApiForTaskAsync(
+                    backend.Models.AI.AITaskType.CvAnalysis,
+                    prompt,
+                    isJsonMode: true
+                );
             }
             catch (Exception ex)
             {
-                Console.WriteLine(
-                    $"[INTERVIEW] Context building error: {ex.Message}"
-                );
+                Console.WriteLine($"[INTERVIEW] Failed to dispatch context prompt: {ex.Message}");
+            }
+
+            if (contextPromptTask != null)
+            {
+                try
+                {
+                    var json = await contextPromptTask;
+                    Console.WriteLine("========== INTERVIEW CONTEXT RAW RESPONSE ==========");
+                    Console.WriteLine(json);
+                    Console.WriteLine("========== END INTERVIEW CONTEXT RAW RESPONSE ==========");
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    var aiContext = JsonSerializer.Deserialize<InterviewContext>(json, options);
+                    if (aiContext != null)
+                    {
+                        aiContext.FullName = context.FullName;
+                        aiContext.Major = context.Major;
+                        aiContext.Specialization = context.Specialization;
+                        aiContext.ExperienceLevel = context.ExperienceLevel;
+                        aiContext.TargetPosition = context.TargetPosition;
+                        aiContext.TargetCompany = context.TargetCompany;
+                        aiContext.JdText = context.JdText;
+
+                        if (aiContext.Skills.Count == 0)
+                        {
+                            aiContext.Skills = context.Skills;
+                        }
+
+                        if (aiContext.Persona == null || string.IsNullOrWhiteSpace(aiContext.Persona.Role))
+                        {
+                            aiContext.Persona = InterviewerPersona.CreateDefault(aiContext.TargetPosition);
+                        }
+
+                        aiContext.KnowledgeBlueprint = blueprint;
+                        aiContext.CompanyContext = companyContext;
+                        aiContext.Strategy = strategy;
+                        if (string.IsNullOrWhiteSpace(aiContext.Industry))
+                        {
+                            aiContext.Industry = companyContext != null && companyContext.Industry != "Unknown"
+                                ? companyContext.Industry
+                                : ProfessionalDomainClassifier.Classify(aiContext.TargetPosition);
+                        }
+
+                        return aiContext;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[INTERVIEW] Context building error: {ex.Message}");
+                }
             }
 
             // Nếu Gemini lỗi vẫn phải tạo được session.
@@ -244,6 +270,26 @@ namespace backend.Services
                     x => !string.IsNullOrWhiteSpace(x)
                 )
             );
+        }
+
+        private static string SanitizeSnapshotText(string? text, int maxLength = 2000)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+            var sanitized = text.Replace("\0", string.Empty).Trim();
+            if (sanitized.Length > maxLength) sanitized = sanitized.Substring(0, maxLength);
+            return sanitized;
+        }
+
+        private static List<string> SanitizeSnapshotSkills(IEnumerable<string>? skills, int maxCount = 30)
+        {
+            if (skills == null) return new List<string>();
+            return skills
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Select(s => SanitizeSnapshotText(s, 100))
+                .Where(s => s.Length > 0)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Take(maxCount)
+                .ToList();
         }
     }
 }

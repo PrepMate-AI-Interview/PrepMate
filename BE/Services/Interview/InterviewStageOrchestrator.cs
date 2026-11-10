@@ -198,6 +198,14 @@ namespace backend.Services.Interview
                 state.IsReadyToFinish = true;
                 state.StageCompletedAt = DateTime.UtcNow;
                 session.Status = "completed";
+                session.CompletedAt = state.StageCompletedAt.Value.ToString("o");
+                if (session.StartedAt != null && DateTime.TryParse(session.StartedAt, null, System.Globalization.DateTimeStyles.RoundtripKind, out var startT))
+                {
+                    if (state.StageCompletedAt.Value >= startT)
+                    {
+                        session.DurationSeconds = (int)Math.Max(0, (state.StageCompletedAt.Value - startT).TotalSeconds);
+                    }
+                }
             }
         }
 

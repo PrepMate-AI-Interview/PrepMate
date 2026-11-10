@@ -13,9 +13,12 @@ namespace backend.Services.Email
         public string SenderEmail { get; set; } = "no-reply@prepmate.vn";
         public string SenderName { get; set; } = "PrepMate AI";
         public string FrontendBaseUrl { get; set; } = "http://localhost:5000";
-        public string Provider { get; set; } = "Auto"; // "Auto" | "Smtp" | "Sandbox"
+        public string Provider { get; set; } = "Auto"; // "Auto" | "Resend" | "Resend_Api" | "Smtp" | "Sandbox"
+        public string ResendApiKey { get; set; } = string.Empty;
+        public string ResendApiUrl { get; set; } = "https://api.resend.com/emails";
 
         public bool HasSmtpConfiguration => !string.IsNullOrWhiteSpace(SmtpHost);
+        public bool HasResendConfiguration => !string.IsNullOrWhiteSpace(ResendApiKey);
 
         /// <summary>
         /// Reconciles email settings from IConfiguration and environment variables.
@@ -109,11 +112,25 @@ namespace backend.Services.Email
                 options.FrontendBaseUrl = feUrl.Trim().TrimEnd('/');
             }
 
-            // 9. Provider mode (Auto, Smtp, Sandbox)
+            // 9. Provider mode (Auto, Resend, Resend_Api, Smtp, Sandbox)
             var provider = configuration["Email:Provider"]
                 ?? Environment.GetEnvironmentVariable("EMAIL__PROVIDER")
                 ?? Environment.GetEnvironmentVariable("EMAIL_PROVIDER");
             if (!string.IsNullOrWhiteSpace(provider)) options.Provider = provider.Trim();
+
+            // 10. Resend API Key (for HTTPS API delivery, especially on Render Free Web Services)
+            var resendKey = configuration["Email:ResendApiKey"]
+                ?? configuration["ResendApiKey"]
+                ?? Environment.GetEnvironmentVariable("EMAIL__RESEND_API_KEY")
+                ?? Environment.GetEnvironmentVariable("EMAIL_RESEND_API_KEY")
+                ?? Environment.GetEnvironmentVariable("RESEND_API_KEY");
+            if (!string.IsNullOrWhiteSpace(resendKey)) options.ResendApiKey = resendKey.Trim();
+
+            // 11. Resend API URL (Default: https://api.resend.com/emails)
+            var resendUrl = configuration["Email:ResendApiUrl"]
+                ?? Environment.GetEnvironmentVariable("EMAIL__RESEND_API_URL")
+                ?? Environment.GetEnvironmentVariable("RESEND_API_URL");
+            if (!string.IsNullOrWhiteSpace(resendUrl)) options.ResendApiUrl = resendUrl.Trim();
 
             return options;
         }

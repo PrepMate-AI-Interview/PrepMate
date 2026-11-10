@@ -310,13 +310,8 @@ function toggleCamera() {
   const isCamActive = Boolean(window._userWebcamStream && window._userWebcamStream.active);
   if (isCamActive) {
     stopCamera();
-    if (typeof showToast === "function") showToast("Đã tắt camera.", "info");
   } else {
-    requestCameraAccess().then((success) => {
-      if (success && typeof showToast === "function") {
-        showToast("Đã bật camera.", "success");
-      }
-    });
+    requestCameraAccess();
   }
 }
 window.toggleCamera = toggleCamera;

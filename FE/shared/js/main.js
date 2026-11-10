@@ -1611,7 +1611,10 @@ function detectOffTopicAnswer(question, answer, jobTitle) {
  * showToast(message, type) — type: 'success' | 'error' | 'info' | 'warning'
  * Shows a non-blocking toast notification instead of alert()
  */
-function showToast(message, type = "info") {
+function showToast(message, type = "info", key = null) {
+  if (!message) return;
+  const normalizedType = type === "danger" ? "error" : type;
+
   // Create container if not exists
   let container = document.getElementById("prepmate-toast-container");
   if (!container) {
@@ -1653,8 +1656,45 @@ function showToast(message, type = "info") {
     },
   };
 
-  const c = colors[type] || colors.info;
+  const c = colors[normalizedType] || colors.info;
+  const toastKey = key || message;
+
+  // Deduplication / Update existing toast with same key
+  const safeToastKey = (typeof CSS !== "undefined" && typeof CSS.escape === "function")
+    ? CSS.escape(toastKey)
+    : String(toastKey).replace(/["\\]/g, "\\$&");
+  const existingToast = container.querySelector(`[data-toast-key="${safeToastKey}"]`);
+  if (existingToast) {
+    existingToast.textContent = message;
+    existingToast.style.borderColor = c.border;
+    existingToast.style.borderLeftColor = c.color;
+    existingToast.style.opacity = "1";
+    existingToast.style.transform = "translateX(0)";
+    if (existingToast._removeTimer) clearTimeout(existingToast._removeTimer);
+    existingToast._removeTimer = setTimeout(() => {
+      existingToast.style.opacity = "0";
+      existingToast.style.transform = "translateX(20px)";
+      setTimeout(() => existingToast.remove(), 300);
+    }, 3500);
+    return;
+  }
+
+  // Cap max active toasts to 3 (smoothly remove oldest)
+  const activeToasts = Array.from(container.querySelectorAll(".prepmate-toast-item:not(.prepmate-toast-leaving)"));
+  while (activeToasts.length >= 3) {
+    const oldest = activeToasts.shift();
+    if (oldest) {
+      oldest.classList.add("prepmate-toast-leaving");
+      if (oldest._removeTimer) clearTimeout(oldest._removeTimer);
+      oldest.style.opacity = "0";
+      oldest.style.transform = "translateX(20px)";
+      setTimeout(() => oldest.remove(), 200);
+    }
+  }
+
   const toast = document.createElement("div");
+  toast.className = "prepmate-toast-item";
+  toast.setAttribute("data-toast-key", toastKey);
   toast.style.cssText = `
         background: #1a2236;
         border: 1px solid ${c.border};
@@ -1682,7 +1722,7 @@ function showToast(message, type = "info") {
   });
 
   // Auto remove
-  setTimeout(() => {
+  toast._removeTimer = setTimeout(() => {
     toast.style.opacity = "0";
     toast.style.transform = "translateX(20px)";
     setTimeout(() => toast.remove(), 300);
@@ -2974,6 +3014,63 @@ if (typeof window !== "undefined") {
 
 
 // ==========================================
+// UNIFIED DURATION FORMATTING & CALCULATION (SSOT)
+// ==========================================
+function getSessionDurationSeconds(session) {
+  if (!session) return 0;
+  if (typeof session.durationSeconds === 'number' && session.durationSeconds >= 0) {
+    return session.durationSeconds;
+  }
+  if (typeof session.DurationSeconds === 'number' && session.DurationSeconds >= 0) {
+    return session.DurationSeconds;
+  }
+  if (typeof session.duration === 'number' && session.duration > 0) {
+    return session.duration * 60;
+  }
+  if (typeof session.Duration === 'number' && session.Duration > 0) {
+    return session.Duration * 60;
+  }
+  const startRaw = session.startedAt || session.StartedAt || session.startTime;
+  const endRaw = session.completedAt || session.CompletedAt || session.endedAt;
+  if (startRaw && endRaw) {
+    const tStart = new Date(startRaw).getTime();
+    const tEnd = new Date(endRaw).getTime();
+    if (!isNaN(tStart) && !isNaN(tEnd) && tEnd >= tStart) {
+      return Math.round((tEnd - tStart) / 1000);
+    }
+  }
+  return 0;
+}
+
+function formatDuration(seconds, options = {}) {
+  if (seconds === null || seconds === undefined || isNaN(seconds)) {
+    return options.isAggregate ? "0 phút" : "Chưa xác định";
+  }
+  const totalSec = Math.max(0, Math.round(Number(seconds)));
+  if (totalSec === 0) {
+    return "0 phút";
+  }
+  if (totalSec < 60) {
+    return options.isAggregate ? "< 1 phút" : "Dưới 1 phút";
+  }
+  const totalMinutes = Math.round(totalSec / 60);
+  if (totalMinutes < 60) {
+    return `${totalMinutes} phút`;
+  }
+  const hours = Math.floor(totalMinutes / 60);
+  const remainingMins = totalMinutes % 60;
+  if (remainingMins === 0) {
+    return `${hours} giờ`;
+  }
+  return `${hours} giờ ${remainingMins} phút`;
+}
+
+if (typeof window !== "undefined") {
+  window.formatDuration = formatDuration;
+  window.getSessionDurationSeconds = getSessionDurationSeconds;
+}
+
+// ==========================================
 // UNIFIED INTERVIEW SESSION SYNCHRONIZATION
 // (Single Source of Truth for Dashboard & History)
 // ==========================================
@@ -3039,7 +3136,9 @@ async function syncUserInterviewSessions() {
                 date: bDate,
                 createdAt: bDate,
                 status: (bs.status || bs.Status || "in_progress").toLowerCase(),
-                report: bs.report || bs.Report || null
+                report: bs.report || bs.Report || null,
+                duration: bs.duration !== undefined ? bs.duration : (bs.Duration !== undefined ? bs.Duration : null),
+                durationSeconds: bs.durationSeconds !== undefined ? bs.durationSeconds : (bs.DurationSeconds !== undefined ? bs.DurationSeconds : null)
               });
             }
           });
@@ -3089,7 +3188,9 @@ async function syncUserInterviewSessions() {
                 date: gDate,
                 createdAt: gDate,
                 status: (gs.status || "in_progress").toLowerCase(),
-                isGuestPreview: true
+                isGuestPreview: true,
+                duration: gs.duration !== undefined ? gs.duration : null,
+                durationSeconds: gs.durationSeconds !== undefined ? gs.durationSeconds : null
               });
             }
           });
@@ -3115,7 +3216,9 @@ async function syncUserInterviewSessions() {
           jobTitle: bs.jobTitle || ls.jobTitle || "Buổi phỏng vấn",
           company: bs.company || ls.company || ls.companyName || "Doanh nghiệp",
           date: lDate,
-          createdAt: lDate
+          createdAt: lDate,
+          duration: bs.duration != null ? bs.duration : (ls.duration != null ? ls.duration : null),
+          durationSeconds: bs.durationSeconds != null ? bs.durationSeconds : (ls.durationSeconds != null ? ls.durationSeconds : null)
         });
       } else {
         mergedMap.set(sid, ls);
