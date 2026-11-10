@@ -61,12 +61,25 @@ namespace backend.Services.Email
           <!-- Brand Header -->
           <tr>
             <td align=""center"" style=""padding:36px 40px 24px 40px;text-align:center;"">
-              <div style=""display:inline-block;font-size:28px;font-weight:800;letter-spacing:-0.5px;color:#0f172a;line-height:1;"">
-                Prep<span style=""color:#2563eb;"">Mate</span>
-              </div>
-              <div style=""color:#64748b;font-size:12px;margin-top:8px;letter-spacing:0.8px;text-transform:uppercase;font-weight:600;"">
-                AI Interview Preparation
-              </div>
+              <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" align=""center"" style=""margin:0 auto;text-align:center;"">
+                <tr>
+                  <td align=""center"" style=""text-align:center;"">
+                    <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" align=""center"" style=""margin:0 auto 12px auto;text-align:center;"">
+                      <tr>
+                        <td align=""center"" valign=""middle"" width=""44"" height=""44"" bgcolor=""#2563eb"" style=""width:44px;height:44px;background-color:#2563eb;border-radius:12px;text-align:center;color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:22px;font-weight:800;line-height:44px;"">
+                          P
+                        </td>
+                      </tr>
+                    </table>
+                    <div style=""font-size:28px;font-weight:800;letter-spacing:-0.5px;color:#0f172a;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;"">
+                      Prep<span style=""color:#2563eb;"">Mate</span>
+                    </div>
+                    <div style=""color:#64748b;font-size:12px;margin-top:8px;letter-spacing:0.8px;text-transform:uppercase;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;"">
+                      AI Interview Preparation
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
           <!-- Content Body -->
@@ -83,7 +96,7 @@ namespace backend.Services.Email
               </p>
 
               <!-- CTA Button -->
-              <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""margin:28px 0;"">
+              <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" align=""center"" style=""margin:28px auto;text-align:center;"">
                 <tr>
                   <td align=""center"" bgcolor=""#2563eb"" style=""border-radius:8px;"">
                     <a href=""{safeUrl}"" target=""_blank"" rel=""noopener noreferrer"" style=""display:inline-block;padding:14px 32px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;background-color:#2563eb;letter-spacing:0.2px;"">
@@ -214,12 +227,25 @@ Email này được gửi tự động liên quan đến hoạt động tài kho
           <!-- Brand Header -->
           <tr>
             <td align=""center"" style=""padding:36px 40px 24px 40px;text-align:center;"">
-              <div style=""display:inline-block;font-size:28px;font-weight:800;letter-spacing:-0.5px;color:#0f172a;line-height:1;"">
-                Prep<span style=""color:#2563eb;"">Mate</span>
-              </div>
-              <div style=""color:#64748b;font-size:12px;margin-top:8px;letter-spacing:0.8px;text-transform:uppercase;font-weight:600;"">
-                AI Interview Preparation
-              </div>
+              <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" align=""center"" style=""margin:0 auto;text-align:center;"">
+                <tr>
+                  <td align=""center"" style=""text-align:center;"">
+                    <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" align=""center"" style=""margin:0 auto 12px auto;text-align:center;"">
+                      <tr>
+                        <td align=""center"" valign=""middle"" width=""44"" height=""44"" bgcolor=""#2563eb"" style=""width:44px;height:44px;background-color:#2563eb;border-radius:12px;text-align:center;color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:22px;font-weight:800;line-height:44px;"">
+                          P
+                        </td>
+                      </tr>
+                    </table>
+                    <div style=""font-size:28px;font-weight:800;letter-spacing:-0.5px;color:#0f172a;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;"">
+                      Prep<span style=""color:#2563eb;"">Mate</span>
+                    </div>
+                    <div style=""color:#64748b;font-size:12px;margin-top:8px;letter-spacing:0.8px;text-transform:uppercase;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;"">
+                      AI Interview Preparation
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
           <!-- Content Body -->
@@ -236,7 +262,7 @@ Email này được gửi tự động liên quan đến hoạt động tài kho
               </p>
 
               <!-- CTA Button -->
-              <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""margin:28px 0;"">
+              <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" align=""center"" style=""margin:28px auto;text-align:center;"">
                 <tr>
                   <td align=""center"" bgcolor=""#2563eb"" style=""border-radius:8px;"">
                     <a href=""{safeUrl}"" target=""_blank"" rel=""noopener noreferrer"" style=""display:inline-block;padding:14px 32px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;background-color:#2563eb;letter-spacing:0.2px;"">

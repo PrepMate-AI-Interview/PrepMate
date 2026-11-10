@@ -81,9 +81,20 @@ namespace backend.Services.Email
                 return await _resendSender.SendEmailAsync(message, cancellationToken);
             }
 
-            // Fall back to SMTP if SMTP host is configured
+            // Fall back to SMTP if SMTP host is configured (strictly disabled on Render Free to prevent timeout)
             if (_options.HasSmtpConfiguration)
             {
+                var isRender = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("RENDER"));
+                if (isRender && isProduction)
+                {
+                    Console.WriteLine("[EMAIL CONFIG WARNING] Render Free blocks outbound SMTP ports. Please configure Resend HTTP API (EMAIL__PROVIDER=resend_api and EMAIL__RESEND_API_KEY).");
+                    return new EmailSendResult(
+                        false,
+                        null,
+                        "Render Free Web Service chặn các cổng SMTP ngoại vi. Vui lòng cấu hình Resend HTTPS API (EMAIL__PROVIDER=resend_api và EMAIL__RESEND_API_KEY).",
+                        EmailDeliveryStatus.Failed);
+                }
+
                 if (!isProduction)
                 {
                     await _sandboxSender.SendEmailAsync(message, cancellationToken);
@@ -91,15 +102,15 @@ namespace backend.Services.Email
                 return await _smtpSender.SendEmailAsync(message, cancellationToken);
             }
 
-            // Fallback for Development/Testing when no external credentials are provided
+            // Fallback for Development/Testing when no SMTP credentials are provided
             if (!isProduction)
             {
                 return await _sandboxSender.SendEmailAsync(message, cancellationToken);
             }
 
             // In Production, do not pretend email was sent if credentials are missing
-            Console.WriteLine("[EMAIL CONFIG ERROR] Cannot deliver email: neither Resend API key nor SMTP host is configured in Production environment.");
-            return new EmailSendResult(false, null, "Hệ thống gửi email chưa được cấu hình cho môi trường Production (cần EMAIL__RESEND_API_KEY hoặc cấu hình SMTP).", EmailDeliveryStatus.Failed);
+            Console.WriteLine("[EMAIL CONFIG ERROR] Cannot deliver email: SMTP host is not configured in Production environment.");
+            return new EmailSendResult(false, null, "Hệ thống gửi email chưa được cấu hình cho môi trường Production.", EmailDeliveryStatus.Failed);
         }
     }
 }

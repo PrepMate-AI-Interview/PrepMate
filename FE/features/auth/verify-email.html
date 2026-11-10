@@ -88,10 +88,12 @@
         <!-- 1b. Human Confirmation State (WI-02 Email Scanner Defense) -->
         <div id="state-confirm" style="display: none; flex-direction: column; gap: 20px; text-align: center;">
           <div style="background-color: var(--pm-surface-subtle, #f8fafc); border: 1px solid var(--auth-border); border-radius: 12px; padding: 24px 20px; text-align: center;">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              <polyline points="9 12 11 14 15 10"></polyline>
-            </svg>
+            <div class="auth-state-icon-bubble" style="display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; margin: 0 auto 16px auto; border-radius: 50%; background-color: var(--pm-primary-subtle, rgba(37,99,235,0.08));">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin: auto; display: block;">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <polyline points="9 12 11 14 15 10"></polyline>
+              </svg>
+            </div>
             <h2 class="pm-card-heading" style="font-size: 17px; font-weight: 700; margin: 0 0 8px 0; color: var(--auth-text-main);">
               Xác nhận kích hoạt tài khoản
             </h2>
@@ -129,10 +131,12 @@
         <!-- 3. Pending Verification State (Shown after registration) -->
         <div id="state-pending" style="display: none; flex-direction: column; gap: 20px;">
           <div style="background-color: var(--pm-surface-subtle, #f8fafc); border: 1px solid var(--auth-border); border-radius: 12px; padding: 20px; text-align: center;">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-              <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
+            <div class="auth-state-icon-bubble" style="display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; margin: 0 auto 16px auto; border-radius: 50%; background-color: var(--pm-primary-subtle, rgba(37,99,235,0.08));">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin: auto; display: block;">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </div>
             <h2 class="pm-card-heading" style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; color: var(--auth-text-main);">
               Vui lòng kiểm tra hộp thư
             </h2>
@@ -294,6 +298,12 @@
         document.getElementById("state-error").style.display = "flex";
       }
 
+      function formatCooldown(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      }
+
       function startResendCooldown(btnId, seconds) {
         resendCountdown = seconds;
         const btn = document.getElementById(btnId);
@@ -301,7 +311,18 @@
 
         clearInterval(resendTimer);
         btn.disabled = true;
+        // Immediate cooldown text set without 1s interval lag
         btn.textContent = `Gửi lại sau (${resendCountdown}s)`;
+        btn.textContent = `Gửi lại sau ${formatCooldown(resendCountdown)}`;
+
+        // Persist cooldown expiry timestamp in sessionStorage to prevent bypassing via reload
+        const cooldownUntil = Date.now() + seconds * 1000;
+        try {
+          sessionStorage.setItem("prepmate_resend_cooldown_until", String(cooldownUntil));
+          if (userEmail) {
+            sessionStorage.setItem(`prepmate_resend_cooldown_${userEmail}`, String(cooldownUntil));
+          }
+        } catch (e) {}
 
         resendTimer = setInterval(() => {
           resendCountdown--;
@@ -309,8 +330,12 @@
             clearInterval(resendTimer);
             btn.disabled = false;
             btn.textContent = "Gửi lại email xác minh";
+            try {
+              sessionStorage.removeItem("prepmate_resend_cooldown_until");
+              if (userEmail) sessionStorage.removeItem(`prepmate_resend_cooldown_${userEmail}`);
+            } catch (e) {}
           } else {
-            btn.textContent = `Gửi lại sau (${resendCountdown}s)`;
+            btn.textContent = `Gửi lại sau ${formatCooldown(resendCountdown)}`;
           }
         }, 1000);
       }
@@ -359,12 +384,15 @@
           const data = await res.json().catch(() => ({}));
 
           if (!res.ok) {
-            if (errEl) {
+            if (data.cooldownRemaining) {
+              if (errEl) {
+                errEl.innerHTML = "";
+                errEl.style.display = "none";
+              }
+              startResendCooldown("btn-resend-verification", data.cooldownRemaining);
+            } else if (errEl) {
               errEl.innerHTML = `<span class="auth-alert-text">${escapeHtml(data.error || "Không thể gửi lại email xác minh.")}</span>`;
               errEl.style.display = "flex";
-            }
-            if (data.cooldownRemaining) {
-              startResendCooldown("btn-resend-verification", data.cooldownRemaining);
             }
             return;
           }
@@ -441,7 +469,13 @@
           const data = await res.json().catch(() => ({}));
 
           if (!res.ok) {
-            if (errEl) {
+            if (data.cooldownRemaining) {
+              if (errEl) {
+                errEl.innerHTML = "";
+                errEl.style.display = "none";
+              }
+              startResendCooldown("btn-request-new-token", data.cooldownRemaining);
+            } else if (errEl) {
               errEl.innerHTML = `
                 <svg class="auth-alert-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <circle cx="12" cy="12" r="10"></circle>
@@ -451,13 +485,10 @@
                 <span class="auth-alert-text">${escapeHtml(data.error || "Không thể gửi lại email xác minh. Vui lòng thử lại sau.")}</span>
               `;
               errEl.style.display = "flex";
-            }
-            if (btn) {
-              btn.disabled = false;
-              btn.textContent = originalText;
-            }
-            if (data.cooldownRemaining) {
-              startResendCooldown("btn-request-new-token", data.cooldownRemaining);
+              if (btn) {
+                btn.disabled = false;
+                btn.textContent = originalText;
+              }
             }
             return;
           }
@@ -543,6 +574,19 @@
           showErrorState(errText, true, email || "");
         } else if (email) {
           showPendingState(email);
+          try {
+            const storedUntil = sessionStorage.getItem("prepmate_resend_cooldown_until") || (email ? sessionStorage.getItem(`prepmate_resend_cooldown_${email}`) : null);
+            if (storedUntil) {
+              const diffMs = parseInt(storedUntil, 10) - Date.now();
+              if (diffMs > 0) {
+                const remainingSecs = Math.ceil(diffMs / 1000);
+                startResendCooldown("btn-resend-verification", remainingSecs);
+              } else {
+                sessionStorage.removeItem("prepmate_resend_cooldown_until");
+                if (email) sessionStorage.removeItem(`prepmate_resend_cooldown_${email}`);
+              }
+            }
+          } catch (e) {}
         } else {
           showErrorState("Không tìm thấy thông tin xác minh. Vui lòng kiểm tra lại đường dẫn.", true);
         }
