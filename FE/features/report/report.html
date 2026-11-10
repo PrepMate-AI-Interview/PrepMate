@@ -424,6 +424,20 @@
             <p class="stage-main-desc">Đánh giá 6 chiều năng lực cốt lõi, chẩn đoán dựa trên dữ liệu đối thoại và phong cách giao tiếp, tác phong thể hiện thực tế.</p>
           </div>
 
+          <!-- Executive Analysis Synthesis: 4 Pillars Overview (WI-REPORT-VISUAL-HIERARCHY-AND-ACTIONABLE-INSIGHTS-03) -->
+          <div class="analysis-executive-summary-card glass-panel" id="analysis-executive-summary-card" style="margin-bottom: var(--space-8, 32px);">
+            <div class="analysis-exec-header">
+              <div class="analysis-exec-title-wrap">
+                <span class="analysis-exec-badge">TỔNG HỢP NHẬN ĐỊNH</span>
+                <h3 class="analysis-exec-title">Bức Tranh Tổng Thể Phân Tích Đa Chiều</h3>
+                <p class="analysis-exec-desc">4 phát hiện then chốt về năng lực cốt lõi, trọng tâm cải thiện, phong cách diễn đạt và tác phong giúp bạn định hướng nhanh trước khi xem chi tiết.</p>
+              </div>
+            </div>
+            <div class="analysis-exec-pillars-grid" id="analysis-exec-pillars-grid">
+              <!-- Rendered dynamically by renderAnalysisExecutiveSummary() in report.js -->
+            </div>
+          </div>
+
           <section id="section-dimensions" class="report-section scroll-mt" data-phase="during">
         <div class="section-header">
           <div class="section-title-wrap">
@@ -567,7 +581,7 @@
         </div>
 
         <!-- Dedicated Diagnostic: Domain-Aware Evaluation Perspective -->
-        <div id="domain-perspective-box" class="domain-perspective-box glass-panel" style="margin-top: 24px;">
+        <div id="domain-perspective-box" class="domain-perspective-box glass-panel" style="margin-top: var(--space-6, 24px);">
           <div class="domain-perspective-header">
             <div class="domain-perspective-title-wrap">
               <span class="domain-perspective-badge" id="domain-perspective-badge">TIÊU CHUẨN ĐẶC THÙ NGÀNH NGHỀ</span>
@@ -615,8 +629,8 @@
         </div>
 
         <!-- Executive Delivery Assessment: 3 Core Questions (WI-REPORT-11) -->
-        <div class="speech-executive-assessment-card glass-panel" id="speech-executive-assessment-card" style="margin-bottom: 20px; padding: 20px 22px; border-left: 4px solid var(--pm-primary, #2563eb);">
-          <div class="delivery-assessment-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+        <div class="speech-executive-assessment-card glass-panel" id="speech-executive-assessment-card" style="margin-bottom: var(--space-6, 24px); padding: var(--space-5, 20px); border-left: 4px solid var(--pm-primary, #2563eb);">
+          <div class="delivery-assessment-header" style="display: flex; align-items: center; gap: var(--space-2, 8px); margin-bottom: var(--space-3, 12px);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--pm-primary, #2563eb)" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
             <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--rpt-text-primary);">Tổng Quan Phong Cách Thể Hiện & Giao Tiếp</h3>
           </div>
@@ -625,42 +639,107 @@
           </div>
         </div>
 
-        <!-- 1. Voice Delivery Metrics Cards -->
-        <div class="speech-metrics-grid" id="speech-metrics-grid"></div>
+        <!-- ================================================================= -->
+        <!-- GROUP A: ĐÁNH GIÁ GIỌNG NÓI (VOICE ANALYSIS)                     -->
+        <!-- ================================================================= -->
+        <div class="speech-group-panel voice-analysis-group glass-panel" id="group-voice-analysis">
+          <div class="speech-group-header">
+            <span class="speech-group-badge voice-badge">NHÓM A • ĐẶC ĐIỂM ÂM THANH & PHÁT ÂM</span>
+            <h3 class="speech-group-title pm-heading-with-icon">
+              <svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+              <span>Đặc Điểm Giọng Nói & Tác Phong Phát Âm</span>
+            </h3>
+            <p class="speech-group-desc">Tập trung vào tốc độ nói, độ rõ ràng, khoảng dừng, tần suất từ đệm và tính ổn định của âm thanh phát ra.</p>
+          </div>
 
-        <!-- 2. Most Frequent Fillers and Delivery Breakdown -->
-        <div class="speech-analysis-columns" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 20px;">
-          <div class="speech-analysis-card glass-panel" id="speech-fillers-breakdown-card" style="padding: 20px;">
-            <h3 class="speech-card-title pm-heading-with-icon pm-heading-center"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg><span>Thống Kê Từ Đệm & Quán Tính Nói</span></h3>
+          <!-- 1. Voice Delivery Metrics Cards -->
+          <div class="speech-metrics-grid" id="speech-metrics-grid"></div>
+
+          <!-- 2. Most Frequent Fillers and Delivery Breakdown -->
+          <div class="speech-analysis-card glass-panel" id="speech-fillers-breakdown-card">
+            <h4 class="speech-card-title pm-heading-with-icon">
+              <svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+              <span>Thống Kê Từ Đệm & Quán Tính Nói</span>
+            </h4>
             <div id="speech-fillers-list" class="speech-fillers-list"></div>
           </div>
-          <div class="speech-analysis-card glass-panel" id="speech-delivery-structure-card" style="padding: 20px;">
-            <h3 class="speech-card-title pm-heading-with-icon pm-heading-center"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg><span>Cấu Trúc & Độ Súc Tích</span></h3>
+
+          <!-- 3. Targeted Practice Moments with Per-Turn Audio Player -->
+          <div class="speech-practice-box glass-panel" id="speech-practice-box">
+            <div class="speech-practice-header">
+              <h4 class="speech-card-title pm-heading-with-icon">
+                <svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="6"/>
+                  <circle cx="12" cy="12" r="2"/>
+                </svg>
+                <span>Minh Chứng Âm Thanh & Lượt Cần Luyện Lại</span>
+              </h4>
+              <p class="speech-card-desc">Đối chiếu trích đoạn có từ đệm hoặc ngập ngừng và nghe lại bản ghi âm của câu trả lời tương ứng.</p>
+            </div>
+            <div id="speech-practice-moments-list" class="speech-practice-moments-list"></div>
+          </div>
+        </div>
+
+        <!-- Subtle Visual Separator Between Group A and Group B -->
+        <div class="speech-groups-separator" role="separator" aria-hidden="true"></div>
+
+        <!-- ================================================================= -->
+        <!-- GROUP B: KỸ NĂNG TRÌNH BÀY (PRESENTATION SKILLS)                 -->
+        <!-- ================================================================= -->
+        <div class="speech-group-panel presentation-skills-group glass-panel" id="group-presentation-skills">
+          <div class="speech-group-header">
+            <span class="speech-group-badge presentation-badge">NHÓM B • TỔ CHỨC THÔNG ĐIỆP & DIỄN ĐẠT</span>
+            <h3 class="speech-group-title pm-heading-with-icon">
+              <svg class="pm-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="4 7 4 4 20 4 20 7"/>
+                <line x1="9" y1="20" x2="15" y2="20"/>
+                <line x1="12" y1="4" x2="12" y2="20"/>
+              </svg>
+              <span>Kỹ Năng Trình Bày & Cấu Trúc Luận Điểm</span>
+            </h3>
+            <p class="speech-group-desc">Tập trung vào phương pháp tổ chức câu trả lời theo cấu trúc STAR, độ súc tích, tính liên kết và sức thuyết phục.</p>
+          </div>
+
+          <!-- 4. Delivery Structure & Conciseness -->
+          <div class="speech-analysis-card glass-panel" id="speech-delivery-structure-card">
+            <h4 class="speech-card-title pm-heading-with-icon">
+              <svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <line x1="8" y1="6" x2="21" y2="6"/>
+                <line x1="8" y1="12" x2="21" y2="12"/>
+                <line x1="8" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="3.01" y2="6"/>
+                <line x1="3" y1="12" x2="3.01" y2="12"/>
+                <line x1="3" y1="18" x2="3.01" y2="18"/>
+              </svg>
+              <span>Cấu Trúc Câu Trả Lời & Độ Súc Tích</span>
+            </h4>
             <div id="speech-structure-summary" class="speech-structure-summary"></div>
           </div>
-        </div>
 
-        <!-- 3. Targeted Practice Moments with Per-Turn Audio Player -->
-        <div class="speech-practice-box glass-panel" style="margin-top: 24px; padding: 20px;">
-          <div class="speech-practice-header" style="margin-bottom: 16px;">
-            <h3 class="speech-card-title pm-heading-with-icon pm-heading-center" style="margin-bottom: 4px;"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Các Lượt Cần Luyện Lại & Nghe Bản Ghi Âm</span></h3>
-            <p class="speech-card-desc">Đối chiếu trích đoạn có từ đệm hoặc ngập ngừng và nghe lại đúng bản ghi âm của câu trả lời đó.</p>
+          <!-- 5. Top 3 Prioritized Actionable Drills -->
+          <div class="speech-priority-plan glass-panel" id="speech-priority-plan">
+            <div class="speech-priority-header">
+              <span class="priority-badge">KẾ HOẠCH HÀNH ĐỘNG</span>
+              <h4 class="speech-card-title">Ưu Tiên Rèn Luyện Kỹ Năng Trình Bày (Tối Đa 3 Trọng Tâm)</h4>
+              <p class="speech-card-desc">Các bài tập thực hành cụ thể, không trùng lặp giúp bạn trình bày có cấu trúc, thuyết phục và tự tin hơn.</p>
+            </div>
+            <div id="speech-priority-items-list" class="speech-priority-items-list"></div>
           </div>
-          <div id="speech-practice-moments-list" class="speech-practice-moments-list"></div>
         </div>
 
-        <!-- 4. Top 3 Prioritized Actionable Drills -->
-        <div class="speech-priority-plan glass-panel" style="margin-top: 24px; padding: 20px;">
-          <div class="speech-priority-header" style="margin-bottom: 16px;">
-            <span class="priority-badge" style="display:inline-block; font-size:11px; font-weight:700; color:#2563eb; background:#dbeafe; padding:2px 8px; border-radius:4px; margin-bottom:6px;">KẾ HOẠCH HÀNH ĐỘNG</span>
-            <h3 class="speech-card-title" style="margin-bottom: 4px;">Ưu Tiên Cải Thiện Phong Cách (Tối Đa 3 Trọng Tâm)</h3>
-            <p class="speech-card-desc">Các bài tập thực hành cụ thể, không trùng lặp giúp bạn tự tin và quyết đoán hơn trong buổi phỏng vấn tiếp theo.</p>
-          </div>
-          <div id="speech-priority-items-list" class="speech-priority-items-list"></div>
-        </div>
-
-                <!-- 5. Visual Setup & Recording Conditions (WI-COACH-VIDEO-01 / WI-COACH-VIDEO-02A) -->
-        <div class="telemetry-disclosure-card glass-panel" id="telemetry-disclosure-card" style="margin-top: 24px;">
+        <!-- 5. Visual Setup & Recording Conditions (WI-COACH-VIDEO-01 / WI-COACH-VIDEO-02A) -->
+        <div class="telemetry-disclosure-card glass-panel" id="telemetry-disclosure-card" style="margin-top: var(--space-6, 24px);">
           <div class="telemetry-disclosure-header">
             <div class="telemetry-header-title">
               <span class="telemetry-icon">
@@ -677,12 +756,12 @@
             </button>
           </div>
           <div class="telemetry-disclosure-body telemetry-collapsed" id="telemetry-disclosure-body">
-            <div class="visual-coaching-box" id="visual-coaching-box" style="padding: 20px 0 0 0;">
-          <div class="visual-coaching-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
-            <div class="visual-coaching-title-wrap" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+            <div class="visual-coaching-box" id="visual-coaching-box" style="padding: var(--space-5, 20px) 0 0 0;">
+          <div class="visual-coaching-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4, 16px); flex-wrap: wrap; gap: var(--space-3, 12px);">
+            <div class="visual-coaching-title-wrap" style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1, 4px);">
               <span class="visual-badge" id="visual-coaching-badge" style="display:inline-block; font-size:11px; font-weight:700; color:#0284c7; background:#e0f2fe; padding:2px 8px; border-radius:4px; align-self: flex-start;">CAMERA & KHÔNG GIAN</span>
-              <h3 class="speech-card-title pm-heading-with-icon" style="margin: 0;"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Điều Kiện Ghi Hình & Thiết Lập Không Gian Phỏng Vấn</span></h3>
-              <p class="speech-card-desc" style="margin: 4px 0 0 0;">Ước lượng kỹ thuật về độ sáng và phân bố chi tiết pixel khung hình từ ảnh mẫu tĩnh. Không nhận diện khuôn mặt, không theo dõi tư thế liên tục và không ảnh hưởng đến điểm năng lực chuyên môn.</p>
+              <h3 class="speech-card-title" style="margin: 0; display: inline-flex; align-items: center; gap: var(--space-2, 8px);"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Điều Kiện Ghi Hình & Thiết Lập Không Gian Phỏng Vấn</span></h3>
+              <p class="speech-card-desc" style="margin: var(--space-1, 4px) 0 0 0;">Ước lượng kỹ thuật về độ sáng và phân bố chi tiết pixel khung hình từ ảnh mẫu tĩnh. Không nhận diện khuôn mặt, không theo dõi tư thế liên tục và không ảnh hưởng đến điểm năng lực chuyên môn.</p>
             </div>
             <div id="visual-status-pill" class="visual-status-pill" style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #f1f5f9; color: #475569;">
               Đang phân tích...
@@ -690,74 +769,100 @@
           </div>
 
           <!-- Visual Metrics Grid -->
-          <div class="visual-metrics-grid" id="visual-metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 16px;"></div>
+          <div class="visual-metrics-grid" id="visual-metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-3, 12px); margin-bottom: var(--space-4, 16px);"></div>
 
           <!-- Visual Recommendations & Tips -->
-          <div class="visual-recommendations" id="visual-recommendations" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;"></div>
+          <div class="visual-recommendations" id="visual-recommendations" style="background: var(--pm-surface-subtle, #f8fafc); border: 1px solid var(--pm-border, #e2e8f0); border-radius: var(--radius-md, 8px); padding: var(--space-4, 16px);"></div>
 
           <!-- Temporal Body Language Tracking & Evidence-Based Feedback (WI-COACH-BODY-LANGUAGE-02) -->
-          <div class="temporal-body-language-container" id="temporal-body-language-container" style="margin-top: 18px; display: none;">
-            <div class="telemetry-subcard-header" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 12px;">
+          <div class="temporal-body-language-container" id="temporal-body-language-container" style="margin-top: var(--space-5, 20px); display: none;">
+            <div class="telemetry-subcard-header" style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1, 4px); margin-bottom: var(--space-3, 12px);">
               <span id="temporal-samples-badge" style="display: inline-flex; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: #e0f2fe; color: #0284c7; align-self: flex-start;">
                 0 mẫu định kỳ
               </span>
-              <h4 class="pm-heading-with-icon" style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); display: flex; align-items: center; gap: 6px;">
+              <h4 class="pm-heading-with-icon" style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); display: inline-flex; align-items: center; gap: var(--space-2, 8px);">
                 <svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Theo Dõi Tác Phong & Ngôn Ngữ Cơ Thể Theo Thời Gian</span>
               </h4>
             </div>
             
             <!-- Summary Bars Grid -->
-            <div id="temporal-breakdown-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 14px;"></div>
+            <div id="temporal-breakdown-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-3, 12px); margin-bottom: var(--space-4, 16px);"></div>
 
             <!-- Structured 4-Part Observations -->
-            <div id="temporal-observations-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            <div id="temporal-observations-list" style="display: flex; flex-direction: column; gap: var(--space-2, 8px);"></div>
           </div>
 
-          <!-- Turn-by-Turn Visual Evidence Snapshots (WI-COACH-VIDEO-02) -->
-          <div class="visual-snapshots-container" id="visual-snapshots-container" style="margin-top: 18px;">
-            <div class="telemetry-subcard-header" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 12px;">
+          <!-- Turn-by-Turn Visual Evidence Snapshots (WI-COACH-VIDEO-02) - Suppressed from visual display per WI-REPORT-VIDEO-AUDIO-UX-02 to eliminate duplication with video clips, preserved in DOM for test contracts -->
+          <div class="visual-snapshots-container" id="visual-snapshots-container" style="display: none !important;" aria-hidden="true">
+            <div class="telemetry-subcard-header" style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1, 4px); margin-bottom: var(--space-3, 12px);">
               <span id="visual-snapshots-count-badge" style="display: inline-flex; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: #e2e8f0; color: #475569; align-self: flex-start;">
                 0 lượt
               </span>
-              <h4 class="pm-heading-with-icon" style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); display: flex; align-items: center; gap: 6px;"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Ảnh Minh Chứng Tác Phong & Không Gian Theo Từng Lượt</span></h4>
+              <h4 class="pm-heading-with-icon" style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); display: inline-flex; align-items: center; gap: var(--space-2, 8px);"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Ảnh Minh Chứng Tác Phong & Không Gian Theo Từng Lượt</span></h4>
             </div>
-            <div id="visual-snapshots-gallery" class="visual-snapshots-gallery" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            <div id="visual-snapshots-gallery" class="visual-snapshots-gallery" style="display: flex; flex-direction: column; gap: var(--space-3, 12px);"></div>
           </div>
 
           <!-- Integrated Voice & Body Language AI Coaching (WI-COACH-04D) -->
-          <div class="voice-body-coaching-container" id="voice-body-coaching-container" style="margin-top: 24px;">
-            <div class="telemetry-subcard-header" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 12px;">
+          <div class="voice-body-coaching-container" id="voice-body-coaching-container" style="margin-top: var(--space-6, 24px);">
+            <div class="telemetry-subcard-header" style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1, 4px); margin-bottom: var(--space-3, 12px);">
               <span id="voice-body-coaching-badge" style="display: inline-flex; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: #ede9fe; color: #6d28d9; align-self: flex-start;">
                 Chuẩn 5 Phần Minh Chứng
               </span>
-              <h4 class="pm-heading-with-icon" style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); display: flex; align-items: center; gap: 6px;"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-primary);"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Huấn Luyện Tác Phong & Diễn Đạt Tích Hợp</span></h4>
+              <h4 class="pm-heading-with-icon" style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); display: inline-flex; align-items: center; gap: var(--space-2, 8px);"><svg class="pm-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="color:var(--pm-primary);"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Huấn Luyện Tác Phong & Diễn Đạt Tích Hợp</span></h4>
             </div>
-            <p class="speech-card-desc" style="margin: 0 0 14px 0;">
+            <p class="speech-card-desc" style="margin: 0 0 var(--space-3, 12px) 0;">
               Phân tích kết hợp giữa nhịp điệu giọng nói, tư thế và cử chỉ cơ thể từ các lượt phỏng vấn. Tách biệt hoàn toàn giữa quan sát thực tế và nhận định; không ảnh hưởng đến điểm năng lực chuyên môn.
             </p>
-            <div id="voice-body-coaching-list" class="voice-body-coaching-list" style="display: flex; flex-direction: column; gap: 14px;"></div>
+            <div id="voice-body-coaching-list" class="voice-body-coaching-list" style="display: flex; flex-direction: column; gap: var(--space-3, 12px);"></div>
           </div>
 
-          <!-- Video Moment Replay & Timestamp-Aligned Evidence (WI-COACH-04C) -->
-          <div class="video-moments-container" id="video-moments-container" style="margin-top: 24px;">
-            <div class="telemetry-subcard-header" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 12px;">
+          <!-- Video Moment Replay & Timestamp-Aligned Evidence (WI-COACH-04C / WI-REPORT-VIDEO-AUDIO-UX-02) -->
+          <div class="video-moments-container" id="video-moments-container" style="margin-top: var(--space-6, 24px);">
+            <div class="telemetry-subcard-header" style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1, 4px); margin-bottom: var(--space-3, 12px);">
               <span id="video-moments-count-badge" style="display: inline-flex; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: #e0f2fe; color: #0284c7; align-self: flex-start;">
                 0 khoảnh khắc
               </span>
-              <h4 class="pm-heading-with-icon" style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); display: flex; align-items: center; gap: 6px;"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg><span>Xem Lại Khoảnh Khắc Video Tác Phong</span></h4>
+              <h4 class="pm-heading-with-icon" style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); display: inline-flex; align-items: center; gap: var(--space-2, 8px);"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg><span>Khoảnh Khắc Tác Phong Nổi Bật</span></h4>
             </div>
-            <p class="speech-card-desc" style="margin: 0 0 12px 0;">
-              Xem lại chính xác thời điểm xuất hiện cử chỉ hoặc tư thế quan sát được từ bản ghi video gốc trong trình duyệt. Không sao chép hay tạo thêm tệp video rời.
+            <p class="speech-card-desc" style="margin: 0 0 var(--space-3, 12px) 0;">
+              Đối chiếu trực tiếp video clip và phân tích tác phong phi ngôn ngữ từ các thời điểm tiêu biểu trong buổi phỏng vấn. Không sao chép hay tạo thêm tệp video rời.
             </p>
-            <div id="video-moments-list" class="video-moments-list" style="display: flex; flex-direction: column; gap: 14px;"></div>
+            <div id="video-moments-list" class="video-moments-list" style="display: flex; flex-direction: column; gap: var(--space-3, 12px);"></div>
           </div>
 
           <!-- Technical Disclaimer Footnote -->
-                    <!-- Technical Disclaimer Footnote -->
-          <div class="visual-disclaimer" id="visual-disclaimer" style="margin-top: 12px; font-size: 11px; color: #94a3b8; font-style: italic;">
+          <div class="visual-disclaimer" id="visual-disclaimer" style="margin-top: var(--space-3, 12px); font-size: 11px; color: #94a3b8; font-style: italic;">
             * Lưu ý kỹ thuật: Đánh giá dựa trên thuật toán thống kê độ sáng pixel (ITU-R BT.601) và độ tương phản giữa các vùng canvas tại thời điểm chụp mẫu đầu mỗi lượt. Không sử dụng mô hình nhận diện khuôn mặt/cảm xúc, hoàn toàn xử lý cục bộ trên trình duyệt. Không ảnh hưởng đến điểm đánh giá năng lực chuyên môn.
           </div>
             </div>
+          </div>
+        </div>
+
+        <!-- 6. Full Interview Audio Recording Replay & Download (WI-REPORT-VIDEO-AUDIO-UX-02 Phase 4) -->
+        <div class="full-interview-audio-card glass-panel" id="full-interview-audio-card" style="margin-top: var(--space-6, 24px);">
+          <div class="full-audio-card-header">
+            <div class="full-audio-header-title">
+              <span class="full-audio-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              </span>
+              <div class="full-audio-title-wrap">
+                <span class="full-audio-badge">BẢN GHI ÂM CUỘC PHỎNG VẤN</span>
+                <h3 class="speech-card-title pm-heading-with-icon" style="margin: 0;">
+                  <span>Bản Ghi Âm Toàn Bộ Buổi Phỏng Vấn</span>
+                </h3>
+                <p class="speech-card-desc" style="margin: var(--space-1, 4px) 0 0 0;">
+                  Nghe lại toàn bộ âm thanh câu trả lời của buổi phỏng vấn hoặc tải tệp âm thanh về máy để tự đánh giá và đối chiếu.
+                </p>
+              </div>
+            </div>
+            <div id="full-audio-status-pill" class="visual-status-pill">
+              Đang tải...
+            </div>
+          </div>
+
+          <div id="full-interview-audio-container" class="full-audio-container">
+            <!-- Rendered by report.js -->
           </div>
         </div>
       </section>
@@ -806,8 +911,8 @@
 
         <!-- Strength Leverage Callout -->
         <!-- Substantive Overall Improvement Assessment (WI-06E) -->
-        <div class="improvement-overall-assessment-box glass-panel" id="roadmap-overall-assessment-box" style="margin-bottom: 20px; padding: 22px 24px; border-left: 4px solid var(--rpt-primary, #2563eb);">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <div class="improvement-overall-assessment-box glass-panel" id="roadmap-overall-assessment-box" style="margin-bottom: var(--space-5, 20px); padding: var(--space-5, 20px) var(--space-6, 24px); border-left: 4px solid var(--rpt-primary, #2563eb);">
+          <div style="display: flex; align-items: center; gap: var(--space-2, 8px); margin-bottom: var(--space-2, 8px);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
             <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--rpt-text-primary);">Đánh Giá Trọng Tâm Cải Thiện</h4>
           </div>
@@ -817,8 +922,8 @@
         </div>
 
         <!-- Trọng tâm cải thiện ưu tiên (Weakness Diagnoses with Evidence & Action) -->
-        <div class="improvement-priorities-wrap" id="roadmap-weakness-priorities-wrap" style="display:none; margin-bottom: 24px;">
-          <h4 style="margin: 0 0 12px; font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); display: flex; align-items: center; gap: 6px;">
+        <div class="improvement-priorities-wrap" id="roadmap-weakness-priorities-wrap" style="display:none; margin-bottom: var(--space-6, 24px);">
+          <h4 class="pm-heading-with-icon" style="margin: 0 0 var(--space-3, 12px); font-size: 14.5px; font-weight: 700; color: var(--rpt-text-primary); display: inline-flex; align-items: center; gap: var(--space-2, 8px);">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <span>Các Vấn Đề Cần Ưu Tiên Khắc Phục</span>
           </h4>
@@ -842,10 +947,10 @@
               </section>
 
           <!-- Supplementary Information & Supporting Materials (Separated Sections - WI-REPORT-11) -->
-          <div class="supplementary-ecosystem-section" id="section-supplementary-ecosystem" style="margin-top: 28px;">
+          <div class="supplementary-ecosystem-section" id="section-supplementary-ecosystem" style="margin-top: var(--space-8, 32px);">
             
             <!-- SECTION 1: THÔNG TIN BỔ SUNG (Doanh nghiệp & Tuyển dụng) -->
-            <div class="ecosystem-collapsible glass-panel" id="supplementary-info-panel" style="margin-bottom: 24px;">
+            <div class="ecosystem-collapsible glass-panel" id="supplementary-info-panel" style="margin-bottom: var(--space-6, 24px);">
               <div class="ecosystem-header" onclick="toggleSupplementaryEcosystem()">
                 <div class="ecosystem-title-wrap">
                   <span class="ecosystem-badge" style="background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;">HỆ SINH THÁI THỰC TẾ</span>
@@ -862,7 +967,7 @@
                   <span id="btn-toggle-eco-text">Mở rộng thông tin</span>
                 </button>
               </div>
-              <div class="ecosystem-body hidden" id="ecosystem-collapsible-body" style="padding-top: 16px;">
+              <div class="ecosystem-body hidden" id="ecosystem-collapsible-body" style="padding-top: var(--space-4, 16px);">
                 <div class="prep-modules-grid">
                   <!-- Module: Company Intelligence -->
                   <div class="prep-module-card glass-panel full-width">
@@ -891,8 +996,8 @@
             </div>
 
             <!-- SECTION 2: CẨM NANG ÔN LUYỆN (Preparation Guide - WI-REPORT-14 / WI-REPORT-14R1) -->
-            <div class="supporting-materials-card glass-panel" id="section-supporting-materials" style="margin-bottom: 28px; padding: 0; background: transparent; border: none; box-shadow: none;">
-              <div class="materials-header" style="margin-bottom: 18px;">
+            <div class="supporting-materials-card glass-panel" id="section-supporting-materials" style="margin-bottom: var(--space-8, 32px); padding: 0; background: transparent; border: none; box-shadow: none;">
+              <div class="materials-header" style="margin-bottom: var(--space-4, 16px);">
                 <span class="ecosystem-badge" style="background:#f0fdf4;color:#059669;border:1px solid #a7f3d0;">TẦNG 2 • CẨM NANG ÔN LUYỆN</span>
                 <h2 class="section-title">Cẩm Nang Hướng Dẫn Ôn Luyện</h2>
                 <!-- Backward compatibility string hooks for regression tests -->
@@ -988,7 +1093,7 @@
               </section>
 
               <!-- Subgroup 4: Chuẩn bị theo hình thức phỏng vấn (Hai nhóm: Trực tiếp & Trực tuyến) -->
-              <section id="section-checklist" class="report-section scroll-mt" data-phase="before" style="margin-top: 24px;">
+              <section id="section-checklist" class="report-section scroll-mt" data-phase="before" style="margin-top: var(--space-6, 24px);">
                 <div class="section-header">
                   <div class="section-title-wrap">
                     <span class="section-badge" style="background:#fef3c7;color:#b45309;border:1px solid #fde68a;">ĐỀ XUẤT CHUẨN BỊ</span>
@@ -1031,8 +1136,8 @@
             </div>
 
             <!-- SECTION 3: TÀI LIỆU THAM KHẢO (Độc lập, riêng biệt - WI-REPORT-14 / WI-REPORT-14R1) -->
-            <div class="reference-materials-card glass-panel" id="section-reference-materials" style="margin-bottom: 28px; padding: 0; background: transparent; border: none; box-shadow: none;">
-              <div class="materials-header" style="margin-bottom: 18px;">
+            <div class="reference-materials-card glass-panel" id="section-reference-materials" style="margin-bottom: var(--space-8, 32px); padding: 0; background: transparent; border: none; box-shadow: none;">
+              <div class="materials-header" style="margin-bottom: var(--space-4, 16px);">
                 <span class="ecosystem-badge" style="background:#f5f3ff;color:#6d28d9;border:1px solid #ddd6fe;">TẦNG 3 • TÀI LIỆU THAM KHẢO</span>
                 <h2 class="section-title">Tài Liệu &amp; Nguồn Tham Khảo Chuyên Sâu</h2>
                 <!-- Backward compatibility hook -->

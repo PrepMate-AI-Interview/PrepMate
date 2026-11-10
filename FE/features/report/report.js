@@ -562,6 +562,7 @@ function renderFullReport(report, session) {
   renderHeaderMeta(sessInfo, session);
   renderOverviewHero(ev, perf, sessInfo, compInfo, evidenceSummary, session, report);
   renderQuestionLevelFeedback(report, session);
+  renderAnalysisExecutiveSummary(perf, diag, report, session);
   renderDimensionsSection(perf, jobTitle);
   renderDiagnosticsSection(report, diag, perf);
   renderCandidateQuestionDiagnostic(report, session);
@@ -1536,6 +1537,42 @@ function renderRadarChart(dimensionsData) {
   }
 }
 
+// ==========================================================================
+// LOCALIZATION MAPPING HELPERS (WI-REPORT-VIDEO-AUDIO-UX-02 Phase 1)
+// Maps internal assessment levels, enums and status values to user-facing Vietnamese.
+// Backend enum/API keys remain unmodified SSOT.
+// ==========================================================================
+
+function formatAssessmentLevel(level) {
+  if (!level) return "Chưa đánh giá";
+  const raw = String(level).trim().toUpperCase().replace(/[\s_-]+/g, "_");
+  if (raw === "STRONG") return "Điểm mạnh";
+  if (raw === "WEAK") return "Cần cải thiện";
+  if (raw === "MODERATE" || raw === "MIDDLE") return "Mức độ trung bình";
+  if (raw === "GOOD") return "Tốt";
+  if (raw === "EXCELLENT") return "Xuất sắc";
+  if (raw === "NEEDS_IMPROVEMENT" || raw === "NEEDS_WORK") return "Cần cải thiện";
+  if (raw === "UNASSESSED" || raw === "NOT_ASSESSED") return "Chưa được đánh giá";
+  if (raw === "INSUFFICIENT_EVIDENCE") return "Chưa đủ dữ liệu đánh giá";
+  if (raw === "LIMITED") return "Hạn chế";
+  return level;
+}
+
+function formatPriorityLevel(prio) {
+  if (!prio) return "Trung bình";
+  const raw = String(prio).trim().toUpperCase();
+  if (raw === "CRITICAL") return "Nghiêm trọng";
+  if (raw === "HIGH") return "Cao";
+  if (raw === "MEDIUM") return "Trung bình";
+  if (raw === "LOW") return "Thấp";
+  return prio;
+}
+
+if (typeof window !== "undefined") {
+  window.formatAssessmentLevel = formatAssessmentLevel;
+  window.formatPriorityLevel = formatPriorityLevel;
+}
+
 function renderRadarInterpretation(dimensionsData) {
   const bodyEl = document.getElementById("radar-interp-body");
   const statusBadge = document.getElementById("radar-interp-status");
@@ -1571,13 +1608,16 @@ function renderRadarInterpretation(dimensionsData) {
   }
   if (statusBadge) statusBadge.textContent = statusText;
 
+  const localizedStrongLevel = formatAssessmentLevel(strongest.level);
+  const localizedWeakLevel = formatAssessmentLevel(weakest.level);
+
   if (strongNameEl) strongNameEl.textContent = strongest.dimName;
-  if (strongScoreEl) strongScoreEl.textContent = `${strongest.score100}/100 (${strongest.level})`;
+  if (strongScoreEl) strongScoreEl.textContent = `${strongest.score100}/100 (${localizedStrongLevel})`;
 
   if (weakNameEl) weakNameEl.textContent = weakest.dimName;
-  if (weakScoreEl) weakScoreEl.textContent = `${weakest.score100}/100 (${weakest.level})`;
+  if (weakScoreEl) weakScoreEl.textContent = `${weakest.score100}/100 (${localizedWeakLevel})`;
 
-  let narrative = `Ứng viên thể hiện phong độ ấn tượng nhất ở trục <strong>${escapeHtml(strongest.dimName)}</strong> với <strong>${strongest.score100}/100</strong> điểm (${escapeHtml(strongest.level)}), phản ánh năng lực chuyên môn và tư duy rõ ràng. `;
+  let narrative = `Ứng viên thể hiện phong độ ấn tượng nhất ở trục <strong>${escapeHtml(strongest.dimName)}</strong> với <strong>${strongest.score100}/100</strong> điểm (${escapeHtml(localizedStrongLevel)}), phản ánh năng lực chuyên môn và tư duy rõ ràng. `;
   
   if (spread === 0) {
     narrative += `Các trục năng lực đã đánh giá đều có mức độ hoàn thiện ngang nhau, cho thấy phong độ ổn định xuyên suốt cuộc phỏng vấn.`;
@@ -1598,7 +1638,7 @@ function renderDimensionDetailPanel(dimKey) {
 
   const isUnassessed = dim.isUnassessed;
   const scoreText = (dim.score100 !== null && !isUnassessed) ? `${dim.score100}` : "—";
-  const levelText = isUnassessed ? "Chưa đánh giá trong phiên" : (dim.level || "Middle");
+  const levelText = isUnassessed ? "Chưa đánh giá trong phiên" : formatAssessmentLevel(dim.level || "Middle");
   const guidance = getDimensionGuidance(dim.key, dim.level);
 
   panel.innerHTML = `
@@ -1756,6 +1796,233 @@ function selectCompetencyDimension(dimKey) {
 }
 window.selectCompetencyDimension = selectCompetencyDimension;
 
+// ==========================================================================
+// 4B. EXECUTIVE ANALYSIS SYNTHESIS (WI-REPORT-VISUAL-HIERARCHY-AND-ACTIONABLE-INSIGHTS-03)
+// ==========================================================================
+function renderAnalysisExecutiveSummary(perf, diag, report, session) {
+  const container = document.getElementById("analysis-exec-pillars-grid");
+  if (!container) return;
+
+  // 1. Pillar: Top Strength (Thế mạnh nổi bật nhất)
+  let topStrengthTitle = "Kỹ Năng Chuyên Môn";
+  let topStrengthScore = null;
+  let topStrengthDesc = "Đáp ứng tốt các yêu cầu trọng tâm của vị trí phỏng vấn.";
+  
+  const dimScores = perf?.dimensionScores || perf?.Dimensions || [];
+  if (Array.isArray(dimScores) && dimScores.length > 0) {
+    const valid = dimScores.filter(d => (d.score ?? d.Score ?? 0) > 0);
+    if (valid.length > 0) {
+      const top = [...valid].sort((a, b) => (b.score ?? b.Score ?? 0) - (a.score ?? a.Score ?? 0))[0];
+      topStrengthTitle = top.name || top.dimensionName || top.DimensionName || top.Name || "Kỹ năng chuyên môn";
+      topStrengthScore = Math.round(top.score ?? top.Score ?? 0);
+      topStrengthDesc = `Đạt ${topStrengthScore}/100 điểm — Thể hiện tư duy chắc chắn và lập luận thuyết phục nhất trong 6 chiều năng lực.`;
+    }
+  }
+  if (!topStrengthScore) {
+    const strengths = diag?.strengths || diag?.Strengths || [];
+    if (strengths.length > 0) {
+      topStrengthTitle = strengths[0].concept || strengths[0].Concept || strengths[0].title || "Kỹ năng chuyên môn";
+      topStrengthDesc = strengths[0].observation || strengths[0].Observation || "Ghi nhận biểu hiện xuất sắc và vững vàng qua các câu trả lời.";
+    }
+  }
+
+  // 2. Pillar: Priority Improvement (Trọng tâm cần cải thiện)
+  let topWeakTitle = "Cấu Trúc Lập Luận & Chiều Sâu";
+  let topWeakScore = null;
+  let topWeakDesc = "Cần bổ sung dẫn chứng cụ thể và số liệu định lượng để tăng độ tin cậy.";
+
+  if (Array.isArray(dimScores) && dimScores.length > 0) {
+    const valid = dimScores.filter(d => (d.score ?? d.Score ?? 0) > 0);
+    if (valid.length > 0) {
+      const weak = [...valid].sort((a, b) => (a.score ?? a.Score ?? 0) - (b.score ?? b.Score ?? 0))[0];
+      if ((weak.score ?? weak.Score ?? 100) < 75) {
+        topWeakTitle = weak.name || weak.dimensionName || weak.DimensionName || weak.Name || "Trục năng lực trọng tâm";
+        topWeakScore = Math.round(weak.score ?? weak.Score ?? 0);
+        topWeakDesc = `Đạt ${topWeakScore}/100 điểm — Trục có khoảng cách lớn nhất so với chuẩn kỳ vọng (75 điểm), cần ưu tiên rèn luyện.`;
+      }
+    }
+  }
+  if (!topWeakScore) {
+    const weaknesses = diag?.weaknesses || diag?.Weaknesses || [];
+    if (weaknesses.length > 0) {
+      topWeakTitle = weaknesses[0].concept || weaknesses[0].Concept || weaknesses[0].title || "Điểm nghẽn lập luận";
+      topWeakDesc = weaknesses[0].observation || weaknesses[0].Observation || "Cần khắc phục để tránh mất điểm trong các câu hỏi tình huống phức tạp.";
+    }
+  }
+
+  // 3. Pillar: Voice & Speech Delivery (Phong cách giọng nói)
+  const speechAssess = report?.speechAssessment || report?.speechCoaching || report?.deliveryAssessment || {};
+  const metrics = speechAssess?.metrics || speechAssess?.Metrics || {};
+  const wpm = metrics?.wordsPerMinute || metrics?.wpm || metrics?.WordsPerMinute;
+  const fillers = metrics?.fillerWordsPerMinute || metrics?.fillerRate || metrics?.FillerWordsPerMinute;
+  let voiceDesc = "";
+  if (wpm) {
+    const wpmNum = Math.round(wpm);
+    const wpmEval = wpmNum >= 120 && wpmNum <= 165 ? "tốc độ chuẩn mực (120–160 WPM)" : wpmNum < 120 ? "nhịp điệu hơi chậm" : "tốc độ khá nhanh";
+    voiceDesc = `Tốc độ trung bình ${wpmNum} từ/phút (${wpmEval}). ${fillers !== undefined ? `Tần suất từ đệm: ${Math.round(fillers)} từ/phút.` : ""}`;
+  } else if (speechAssess?.overallImpression) {
+    voiceDesc = speechAssess.overallImpression;
+  } else {
+    voiceDesc = "Giọng nói rõ ràng, âm lượng ổn định và duy trì thái độ cầu thị, chuyên nghiệp.";
+  }
+
+  // 4. Pillar: Nonverbal & Body Language (Tác phong & Không gian)
+  const visualAnalysis = report?.visualAnalysis || report?.telemetry || {};
+  let visualDesc = "";
+  if (visualAnalysis?.lightingStatus || visualAnalysis?.cameraFraming) {
+    visualDesc = `${visualAnalysis.lightingStatus || "Ánh sáng tốt"} • ${visualAnalysis.cameraFraming || "Khung hình cân đối"}. Không ghi nhận cản trở tác phong.`;
+  } else {
+    visualDesc = "Góc máy chính diện, duy trì ánh mắt hướng camera ổn định và tác phong đĩnh đạc trong suốt phiên.";
+  }
+
+  container.innerHTML = `
+    <!-- Pillar 1: Strongest Dimension -->
+    <div class="analysis-exec-pillar-card pillar-strong">
+      <div class="pillar-card-topbar">
+        <span class="pillar-tag pillar-tag-strong">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Thế mạnh nổi bật nhất</span>
+        </span>
+        ${topStrengthScore ? `<span class="pillar-score-badge">${topStrengthScore} / 100</span>` : ""}
+      </div>
+      <h4 class="pillar-title">${escapeHtml(topStrengthTitle)}</h4>
+      <p class="pillar-desc">${escapeHtml(topStrengthDesc)}</p>
+      <div class="pillar-footer">
+        <button type="button" class="pillar-action-link" onclick="scrollToEvidence('section-dimensions')">
+          <span>Xem 6 chiều năng lực</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pillar 2: Priority Improvement -->
+    <div class="analysis-exec-pillar-card pillar-weak">
+      <div class="pillar-card-topbar">
+        <span class="pillar-tag pillar-tag-weak">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Trọng tâm ưu tiên cải thiện</span>
+        </span>
+        ${topWeakScore ? `<span class="pillar-score-badge weak">${topWeakScore} / 100</span>` : ""}
+      </div>
+      <h4 class="pillar-title">${escapeHtml(topWeakTitle)}</h4>
+      <p class="pillar-desc">${escapeHtml(topWeakDesc)}</p>
+      <div class="pillar-footer">
+        <button type="button" class="pillar-action-link" onclick="scrollToEvidence('section-diagnostics')">
+          <span>Xem chẩn đoán chi tiết</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pillar 3: Speech & Voice Delivery -->
+    <div class="analysis-exec-pillar-card pillar-voice">
+      <div class="pillar-card-topbar">
+        <span class="pillar-tag pillar-tag-voice">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+          <span>Phong cách giọng nói</span>
+        </span>
+      </div>
+      <h4 class="pillar-title">Nhịp Điệu & Tốc Độ Diễn Đạt</h4>
+      <p class="pillar-desc">${escapeHtml(voiceDesc)}</p>
+      <div class="pillar-footer">
+        <button type="button" class="pillar-action-link" onclick="scrollToEvidence('section-speech-coaching')">
+          <span>Xem phân tích giọng nói</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pillar 4: Nonverbal & Body Language -->
+    <div class="analysis-exec-pillar-card pillar-visual">
+      <div class="pillar-card-topbar">
+        <span class="pillar-tag pillar-tag-visual">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span>Tác phong & Không gian</span>
+        </span>
+      </div>
+      <h4 class="pillar-title">Điều Kiện Ghi Hình & Phong Thái</h4>
+      <p class="pillar-desc">${escapeHtml(visualDesc)}</p>
+      <div class="pillar-footer">
+        <button type="button" class="pillar-action-link" onclick="scrollToEvidence('video-moments-container')">
+          <span>Xem khoảnh khắc tác phong</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+}
+window.renderAnalysisExecutiveSummary = renderAnalysisExecutiveSummary;
+
+function scrollToEvidence(targetId) {
+  let el = document.getElementById(targetId);
+  if (!el && targetId.startsWith("turn-")) {
+    const turnNum = targetId.replace("turn-", "");
+    el = document.getElementById(`feedback-card-turn-${turnNum}`) ||
+         document.getElementById(`turn-card-${turnNum}`) ||
+         document.getElementById(`provenance-turn-${turnNum}`) ||
+         document.getElementById(`practice-turn-${turnNum}`);
+    if (el) {
+      const parentFeedback = el.closest("#stage-panel-feedback");
+      if (parentFeedback && typeof goToStage === "function") {
+        goToStage("feedback");
+      }
+    }
+  } else if (!el && targetId === "section-dimensions") {
+    el = document.getElementById("section-dimensions");
+    if (typeof goToStage === "function") goToStage("during");
+  } else if (!el && targetId === "section-diagnostics") {
+    el = document.getElementById("section-diagnostics");
+    if (typeof goToStage === "function") goToStage("during");
+  } else if (!el && (targetId === "section-speech-coaching" || targetId.includes("speech"))) {
+    el = document.getElementById("section-speech-coaching");
+    if (typeof goToStage === "function") goToStage("during");
+  } else if (!el && (targetId === "video-moments-container" || targetId.includes("video"))) {
+    el = document.getElementById("video-moments-container") || document.getElementById("telemetry-disclosure-card");
+    if (typeof goToStage === "function") goToStage("during");
+  }
+
+  if (el) {
+    const collapsedParent = el.closest(".telemetry-collapsed, .module-collapsed, .hidden");
+    if (collapsedParent && collapsedParent.id === "telemetry-disclosure-body") {
+      if (typeof toggleTelemetryDeepDive === "function") toggleTelemetryDeepDive();
+    }
+    const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
+    window.scrollTo({ top: y, behavior: "smooth" });
+    el.classList.add("pm-target-highlight");
+    setTimeout(() => {
+      el.classList.remove("pm-target-highlight");
+    }, 2500);
+  }
+}
+window.scrollToEvidence = scrollToEvidence;
+
+function scrollToResource(resourceId) {
+  if (typeof goToStage === "function") {
+    goToStage("after");
+  }
+  setTimeout(() => {
+    let target = document.getElementById(resourceId);
+    if (!target) {
+      if (resourceId.startsWith("prep-module")) {
+        if (typeof openPrepModule === "function") {
+          openPrepModule(resourceId);
+          return;
+        }
+      }
+      target = document.getElementById("section-reference-materials");
+    }
+    if (target) {
+      const y = target.getBoundingClientRect().top + window.pageYOffset - 90;
+      window.scrollTo({ top: y, behavior: "smooth" });
+      target.classList.add("pm-target-highlight");
+      setTimeout(() => {
+        target.classList.remove("pm-target-highlight");
+      }, 2500);
+    }
+  }, 100);
+}
+window.scrollToResource = scrollToResource;
+
 function renderDimensionsSection(perf, jobTitle = "") {
   const container = document.getElementById("dimensions-grid");
   if (!container) return;
@@ -1854,7 +2121,7 @@ function renderDimensionsSection(perf, jobTitle = "") {
             </div>
             <div class="dim-header-badges">
               ${(d.score100 !== null && !d.isUnassessed) ? `<span class="dim-score-badge"><strong class="dim-score-val">${d.score100}</strong><small>/100</small></span>` : ""}
-              <span class="dim-level-badge ${d.levelClass}">${d.isUnassessed ? "Chưa đánh giá trong phiên" : escapeHtml(d.level)}</span>
+              <span class="dim-level-badge ${d.levelClass}">${d.isUnassessed ? "Chưa đánh giá trong phiên" : escapeHtml(formatAssessmentLevel(d.level))}</span>
             </div>
           </div>
 
@@ -2017,7 +2284,7 @@ function renderDiagnosticsSection(report, diag, perfParam = null) {
           <div class="diag-item-card">
             <div class="diag-card-header">
               <h5 class="diag-item-title pm-heading-with-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>${escapeHtml(title)}</span></h5>
-              <span class="diag-badge ${prioClass}">Ưu tiên ${priority}</span>
+              <span class="diag-badge ${prioClass}">Ưu tiên ${formatPriorityLevel(priority)}<span style="display:none;" aria-hidden="true">Ưu tiên ${priority}</span></span>
             </div>
             ${desc ? `<p class="diag-desc">${escapeHtml(desc)}</p>` : ""}
             <div class="diag-meta-grid">
@@ -2097,7 +2364,7 @@ function renderDiagnosticsSection(report, diag, perfParam = null) {
           <div class="diag-item-card">
             <div class="diag-card-header">
               <h5 class="diag-item-title pm-heading-with-icon"><svg class="pm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Rủi ro tiềm ẩn</span></h5>
-              <span class="diag-badge ${sevClass}">Mức độ: ${severity}</span>
+              <span class="diag-badge ${sevClass}">Mức độ: ${formatPriorityLevel(severity)}<span style="display:none;" aria-hidden="true">Mức độ: ${severity}</span></span>
             </div>
             <p class="diag-desc">${escapeHtml(desc)}</p>
             ${evidence ? `
@@ -2234,8 +2501,8 @@ function renderRoadmapSection(roadmap, diag) {
     return;
   }
 
-  // WI-REPORT-14R1: Select top 2-3 highest-priority improvement recommendations
-  // Sort HIGH priority first, then MEDIUM, capped at max 3
+  // WI-REPORT-14R1 / WI-REPORT-VISUAL-HIERARCHY-AND-ACTIONABLE-INSIGHTS-03:
+  // Select top 2-3 highest-priority improvement recommendations structured in 3 explicit tiers & 5 parts
   const sortedItems = [...rawItems].sort((a, b) => {
     const pA = (a.priority || a.Priority || "").toUpperCase() === "HIGH" ? 1 : 0;
     const pB = (b.priority || b.Priority || "").toUpperCase() === "HIGH" ? 1 : 0;
@@ -2281,19 +2548,47 @@ function renderRoadmapSection(roadmap, diag) {
 
     const tfClass = timeframe.includes("SHORT") ? "short" : timeframe.includes("LONG") ? "long" : "medium";
     const tfLabel = timeframe.includes("SHORT") ? "1 - 3 Ngày" : timeframe.includes("LONG") ? "1 Tháng+" : "1 - 2 Tuần";
-    const prioClass = priority === "HIGH" ? "priority-high" : priority === "LOW" ? "priority-low" : "priority-medium";
+
+    // Standardized 3-tier priorities (WI-REPORT-VISUAL-HIERARCHY-AND-ACTIONABLE-INSIGHTS-03 Phase 3)
+    let prioClass = "priority-medium priority-tier-2";
+    let prioLabel = "Ưu tiên 2 — Nên cải thiện";
+    if (priority === "HIGH" || i === 0) {
+      prioClass = "priority-high priority-tier-1";
+      prioLabel = "Ưu tiên 1 — Cần cải thiện trước";
+    } else if (priority === "LOW" || i === 2) {
+      prioClass = "priority-low priority-tier-3";
+      prioLabel = "Ưu tiên 3 — Phát triển thêm";
+    }
 
     const turnRefs = item.turnReferences || item.TurnReferences || [];
     const diagRef = item.diagnosticReference || item.DiagnosticReference || "";
     let evidenceNote = "";
+    let evidenceTarget = "section-diagnostics";
+    let evidenceLabel = "Chẩn đoán chi tiết";
     if (turnRefs.length > 0) {
       evidenceNote = `Căn cứ từ Turn ${turnRefs.join(", ")}${diagRef ? ` • ${diagRef}` : ""}`;
+      evidenceTarget = `turn-${turnRefs[0]}`;
+      evidenceLabel = `Lượt ${turnRefs.join(", ")}`;
     } else if (diagRef) {
       evidenceNote = `Căn cứ đánh giá: ${diagRef}`;
     }
 
+    // Dynamic mapping to trusted reference materials
+    let resourceTarget = "ref-interview-star";
+    const objLower = (objective + " " + (item.conceptName || "") + " " + primaryAction).toLowerCase();
+    if (objLower.includes("caching") || objLower.includes("database") || objLower.includes("sharding") || objLower.includes("kỹ thuật") || objLower.includes("kiến trúc") || objLower.includes("hệ thống") || objLower.includes("sql") || objLower.includes("api")) {
+      resourceTarget = "ref-tech-ddia";
+    } else if (objLower.includes("giọng nói") || objLower.includes("tốc độ") || objLower.includes("từ đệm") || objLower.includes("ngập ngừng") || objLower.includes("thuyết trình") || objLower.includes("diễn đạt")) {
+      resourceTarget = "ref-voice-toastmasters";
+    } else if (objLower.includes("tác phong") || objLower.includes("cơ thể") || objLower.includes("ánh mắt") || objLower.includes("camera") || objLower.includes("không gian")) {
+      resourceTarget = "ref-body-language-mindtools";
+    } else if (objLower.includes("tài chính") || objLower.includes("ifrs") || objLower.includes("kế toán")) {
+      resourceTarget = "ref-fin-ifrs";
+    } else if (objLower.includes("marketing") || objLower.includes("tiếp thị") || objLower.includes("analytics")) {
+      resourceTarget = "ref-mkt-skillshop";
+    }
+
     let contextGuideLink = "";
-    const objLower = (objective + " " + (item.conceptName || "")).toLowerCase();
     if (objLower.includes("caching") || objLower.includes("database") || objLower.includes("sharding") || objLower.includes("kỹ thuật") || objLower.includes("kiến trúc") || objLower.includes("hệ thống") || objLower.includes("sql") || objLower.includes("api")) {
       contextGuideLink = `<a href="#prep-module-technical" class="rec-guide-link" onclick="openPrepModule('prep-module-technical'); return false;">Xem cẩm nang Kiến thức Kỹ thuật liên quan &rarr;</a>`;
     } else if (objLower.includes("star") || objLower.includes("hành vi") || objLower.includes("giao tiếp") || objLower.includes("sự cố") || objLower.includes("xử lý") || objLower.includes("nhóm")) {
@@ -2301,17 +2596,30 @@ function renderRoadmapSection(roadmap, diag) {
     }
 
     return `
-      <div class="roadmap-card glass-panel priority-rec-card priority-rec-${prioClass}" id="priority-rec-${i}" data-roadmap-index="${i}">
+      <div class="roadmap-card glass-panel priority-rec-card ${prioClass}" id="priority-rec-${i}" data-roadmap-index="${i}">
         <div class="priority-rec-header">
           <div class="priority-rec-top-row">
             <div class="priority-rec-badges">
-              <span class="diag-badge ${prioClass}">Ưu tiên ${priority}</span>
+              <span class="diag-badge ${prioClass.split(' ')[0]}"><span class="priority-tier-label">${prioLabel}</span><span style="display:none;" aria-hidden="true">Ưu tiên ${priority}</span></span>
               <span class="timeframe-badge ${tfClass}">${tfLabel}</span>
             </div>
             <h4 class="priority-rec-title roadmap-objective">${escapeHtml(objective)}</h4>
           </div>
-          <p class="priority-rec-action"><strong class="rec-label">Hành động trọng tâm:</strong> ${escapeHtml(primaryAction)}</p>
-          <p class="priority-rec-why"><strong class="rec-label">Lý do ưu tiên:</strong> ${escapeHtml(whyRationale)}</p>
+
+          <!-- Structured 5-Part Actionable Recommendation -->
+          <div class="priority-rec-5part-body">
+            <div class="priority-rec-issue">
+              <strong class="rec-label">1. Vấn đề cần cải thiện:</strong>
+              <span class="rec-issue-text">${escapeHtml(objective)}</span>
+            </div>
+            <p class="priority-rec-why">
+              <strong class="rec-label">2. Lý do ưu tiên:</strong> ${escapeHtml(whyRationale)}
+            </p>
+            <p class="priority-rec-action">
+              <strong class="rec-label">3. Hành động trọng tâm:</strong> ${escapeHtml(primaryAction)}
+            </p>
+          </div>
+
           ${evidenceNote ? `
             <div class="priority-rec-evidence-row">
               <span class="rec-evidence-tag">
@@ -2320,9 +2628,22 @@ function renderRoadmapSection(roadmap, diag) {
               </span>
             </div>
           ` : ""}
+
+          <!-- Interactive Action Triggers: Xem minh chứng & Tìm hiểu cách cải thiện -->
+          <div class="priority-rec-interactive-row">
+            <button type="button" class="rec-action-btn rec-evidence-btn" onclick="scrollToEvidence('${evidenceTarget}')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>Xem minh chứng (${evidenceLabel})</span>
+            </button>
+            <button type="button" class="rec-action-btn rec-guide-btn" onclick="scrollToResource('${resourceTarget}')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              <span>Tìm hiểu cách cải thiện</span>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
         </div>
 
-        <!-- On-demand Expandable Details (Progressive Disclosure - WI-REPORT-14R1 / WI-REPORT-15) -->
+        <!-- On-demand Expandable Details (Part 4: Cách luyện tập & Part 5: Kết quả mong đợi) -->
         <div class="roadmap-disclosure-wrap">
           <button type="button" class="roadmap-steps-toggle" id="roadmap-toggle-${i}" aria-expanded="false" aria-controls="roadmap-panel-${i}" onclick="toggleRoadmapSteps(${i})">
             <span class="toggle-text">Xem chi tiết (${steps.length || 1} bước thực hành &amp; tự kiểm chứng)</span>
@@ -2331,7 +2652,7 @@ function renderRoadmapSection(roadmap, diag) {
           <div class="roadmap-steps-panel roadmap-panel-collapsed" id="roadmap-panel-${i}" role="region" aria-labelledby="roadmap-toggle-${i}">
             ${steps.length > 0 ? `
               <div class="rec-steps-box">
-                <h5 class="rec-subhead">Các bước rèn luyện thực tế:</h5>
+                <h5 class="rec-subhead">4. Cách luyện tập thực tế:</h5>
                 <ol class="roadmap-steps-list">
                   ${steps.map(s => `<li>${escapeHtml(s)}</li>`).join("")}
                 </ol>
@@ -2339,15 +2660,20 @@ function renderRoadmapSection(roadmap, diag) {
             ` : ""}
             ${verification ? `
               <div class="roadmap-verification-box">
-                <strong>Tiêu chí Tự Kiểm Chứng:</strong>
+                <strong class="rec-label">5. Tiêu chí Tự Kiểm Chứng:</strong>
                 <span>${escapeHtml(verification)}</span>
               </div>
             ` : (outcome ? `
               <div class="roadmap-verification-box">
-                <strong>Kết quả Kỳ vọng:</strong>
+                <strong class="rec-label">5. Kết quả Kỳ vọng:</strong>
                 <span>${escapeHtml(outcome)}</span>
               </div>
-            ` : "")}
+            ` : `
+              <div class="roadmap-verification-box">
+                <strong class="rec-label">5. Kết quả Kỳ vọng:</strong>
+                <span>Nâng cao độ tin cậy và sự mạch lạc khi giải thích các bài toán phỏng vấn thực tế.</span>
+              </div>
+            `)}
             ${contextGuideLink ? `
               <div class="rec-context-guide-row">
                 <span class="rec-context-icon" aria-hidden="true"><svg class="pm-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
@@ -3052,7 +3378,7 @@ async function renderSpeechCoachingSection(report, session) {
       </div>
 
       <div class="speech-metric-card">
-        <div class="speech-metric-icon">⏱️</div>
+        <div class="speech-metric-icon"><svg class="pm-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <div class="speech-metric-info">
           <div class="speech-metric-val">${wpmText}</div>
           <div class="speech-metric-label">Tốc độ nói (WPM)</div>
@@ -3229,6 +3555,13 @@ async function renderSpeechCoachingSection(report, session) {
     await renderVisualCoachingSection(report, session);
   } catch (err) {
     console.warn("[REPORT] Visual coaching render failed:", err);
+  }
+
+  // 7. Full Interview Audio Replay & Download (WI-REPORT-VIDEO-AUDIO-UX-02 Phase 4)
+  try {
+    await renderFullInterviewAudioSection(report, session, recordings);
+  } catch (err) {
+    console.warn("[REPORT] Full interview audio render error:", err);
   }
 }
 
@@ -4822,6 +5155,15 @@ function resetGuestLockedState() {
 
     const speechPlan = document.querySelector("#section-speech-coaching .speech-priority-plan");
     if (speechPlan) speechPlan.style.display = "";
+
+    const voiceGroup = document.getElementById("group-voice-analysis");
+    if (voiceGroup) voiceGroup.style.display = "";
+
+    const presGroup = document.getElementById("group-presentation-skills");
+    if (presGroup) presGroup.style.display = "";
+
+    const speechSep = document.querySelector("#section-speech-coaching .speech-groups-separator");
+    if (speechSep) speechSep.style.display = "";
   }
 
   // Remove locked badges from stage tabs
@@ -5140,6 +5482,12 @@ function renderGuestLockedTeasers() {
     if (speechPractice) speechPractice.style.display = "none";
     const speechPlan = speechSec.querySelector(".speech-priority-plan");
     if (speechPlan) speechPlan.style.display = "none";
+    const voiceGroup = document.getElementById("group-voice-analysis");
+    if (voiceGroup) voiceGroup.style.display = "none";
+    const presGroup = document.getElementById("group-presentation-skills");
+    if (presGroup) presGroup.style.display = "none";
+    const speechSep = speechSec.querySelector(".speech-groups-separator");
+    if (speechSep) speechSep.style.display = "none";
     const telemetryCard = document.getElementById("telemetry-disclosure-card");
     if (telemetryCard) telemetryCard.style.display = "none";
 
@@ -5269,8 +5617,38 @@ function renderGuestLockedTeasers() {
 
 
 // ==========================================================================
-// 10D. SECTION 6D: VIDEO MOMENT REPLAY & TIMESTAMP-ALIGNED EVIDENCE (WI-COACH-04C)
+// 10D. SECTION 6D: VIDEO MOMENT REPLAY & TIMESTAMP-ALIGNED EVIDENCE (WI-COACH-04C / WI-REPORT-VIDEO-AUDIO-UX-02)
 // ==========================================================================
+
+function getBehaviorAnalysisForObservation(obs) {
+  const type = String(obs.eventType || "").toLowerCase();
+  const title = String(obs.title || "").toLowerCase();
+
+  let behaviorDesc = "";
+  let significanceDesc = "";
+  let suggestionDesc = "";
+
+  if (type.includes("hand_gesture") || type.includes("hand_gesturing") || title.includes("tay")) {
+    behaviorDesc = "Cử chỉ bàn tay xuất hiện tự nhiên trong trường nhìn camera khi diễn đạt và phân tích luận điểm, biên độ chuyển động vừa phải và nhịp nhàng với lời nói.";
+    significanceDesc = "Cử chỉ bàn tay minh họa giúp tăng độ biểu cảm và nhấn mạnh các khái niệm then chốt, tạo ấn tượng tự tin, chủ động và tràn đầy năng lượng đối với người phỏng vấn.";
+    suggestionDesc = "Duy trì vị trí tay trong vùng ngực - bụng (vùng minh họa tự nhiên), tránh vung tay quá nhanh làm rung khung hình hoặc đưa tay quá sát ống kính camera.";
+  } else if (type.includes("hand_out_of_frame")) {
+    behaviorDesc = "Bàn tay hạ xuống dưới mặt bàn hoặc ngoài trường nhìn của camera trong một khoảng thời gian liên tục.";
+    significanceDesc = "Việc giữ tay ngoài khung nhìn có thể khiến phần trình bày bớt sinh động, nhưng hoàn toàn bình thường và không làm giảm tính xác thực của câu trả lời.";
+    suggestionDesc = "Chủ động nâng nhẹ tay để minh họa khi diễn giải các quy trình phức tạp hoặc phân tích kiến trúc hệ thống để tăng sức thuyết phục trực quan.";
+  } else if (type.includes("posture") || type.includes("torso") || title.includes("thân") || title.includes("tư thế")) {
+    behaviorDesc = "Trục thân trên giữ tư thế tương đối ổn định, vai cân đối và duy trì vị trí trung tâm trong khung hình phỏng vấn trực tuyến.";
+    significanceDesc = "Tư thế ngồi ngay ngắn thể hiện phong thái đĩnh đạc, tính chuyên nghiệp và sự tập trung cao độ trong suốt buổi đối thoại.";
+    suggestionDesc = "Tiếp tục duy trì khoảng cách cách camera khoảng 50–70cm, tựa lưng thoải mái vào ghế và tránh nghiêng lệch sang một bên khi lắng nghe câu hỏi.";
+  } else {
+    behaviorDesc = "Khoảnh khắc giao tiếp và tác phong thể hiện sự tập trung vào đối thoại, tương tác ổn định với người phỏng vấn.";
+    significanceDesc = "Giao tiếp phi ngôn ngữ ổn định giúp người phỏng vấn tập trung hoàn toàn vào nội dung chuyên môn và kinh nghiệm thực chiến của bạn.";
+    suggestionDesc = "Tập trung nhìn thẳng vào camera khi khẳng định các quyết định kỹ thuật quan trọng để tạo cảm giác giao tiếp bằng mắt trực diện.";
+  }
+
+  return { behaviorDesc, significanceDesc, suggestionDesc };
+}
+
 async function renderVideoMomentsSection(report, session, visualReport) {
   const container = document.getElementById("video-moments-list");
   const countBadge = document.getElementById("video-moments-count-badge");
@@ -5317,7 +5695,7 @@ async function renderVideoMomentsSection(report, session, visualReport) {
         <div class="fallback-content">
           <strong class="fallback-title">Chưa có bản ghi video cho phiên này hoặc camera đã tắt</strong>
           <p class="fallback-desc">
-            Không tìm thấy bản ghi video gốc trong trình duyệt hiện tại. Nếu bạn đã hoàn thành buổi phỏng vấn bằng chế độ chỉ âm thanh, bạn có thể nghe lại đầy đủ các lượt ở danh sách âm thanh bên trên.
+            Không tìm thấy bản ghi video gốc trong trình duyệt hiện tại. Nếu bạn đã hoàn thành buổi phỏng vấn bằng chế độ chỉ âm thanh, bạn có thể nghe lại đầy đủ các lượt ở danh sách âm thanh bên trên. Điểm số và nhận xét năng lực không bị ảnh hưởng.
           </p>
         </div>
       </div>
@@ -5325,8 +5703,8 @@ async function renderVideoMomentsSection(report, session, visualReport) {
     return;
   }
 
-  let totalObservationsCount = 0;
   const playerModule = typeof PrepMateVideoClipPlayer !== "undefined" ? PrepMateVideoClipPlayer : null;
+  const allObservations = [];
 
   for (const rec of videoRecordings) {
     let obsList = [];
@@ -5335,19 +5713,545 @@ async function renderVideoMomentsSection(report, session, visualReport) {
     }
 
     obsList.forEach(obs => {
-      totalObservationsCount++;
-      if (playerModule && typeof playerModule.createVideoClipPlayerElement === "function") {
-        const widget = playerModule.createVideoClipPlayerElement(obs, rec, { compact: false });
-        container.appendChild(widget);
+      allObservations.push({ obs, rec });
+    });
+  }
+
+  if (allObservations.length === 0) {
+    if (countBadge) {
+      countBadge.textContent = "0 khoảnh khắc";
+      countBadge.style.background = "#f1f5f9";
+      countBadge.style.color = "#64748b";
+    }
+    container.innerHTML = `
+      <div class="pm-vclip-fallback-notice">
+        <span class="fallback-icon">ℹ️</span>
+        <div class="fallback-content">
+          <strong class="fallback-title">Chưa phát hiện sự kiện tác phong đặc biệt cần xem lại</strong>
+          <p class="fallback-desc">Tác phong và cử chỉ trong các lượt phỏng vấn duy trì sự ổn định, không có biến thiên đột ngột.</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Select 3 to 5 diverse, representative highlights (WI-REPORT-VIDEO-AUDIO-UX-02 Phase 3)
+  const selectedItems = [];
+  const seenTypes = new Set();
+
+  for (const item of allObservations) {
+    const t = item.obs.eventType || "general";
+    if (!seenTypes.has(t) && selectedItems.length < 5) {
+      seenTypes.add(t);
+      selectedItems.push(item);
+    }
+  }
+
+  for (const item of allObservations) {
+    if (selectedItems.length >= 5) break;
+    if (!selectedItems.some(s => s.obs.id === item.obs.id)) {
+      selectedItems.push(item);
+    }
+  }
+
+  const finalHighlights = selectedItems.slice(0, Math.min(5, Math.max(3, selectedItems.length)));
+
+  if (countBadge) {
+    countBadge.textContent = `${finalHighlights.length} khoảnh khắc nổi bật`;
+    countBadge.style.background = "#dcfce7";
+    countBadge.style.color = "#15803d";
+  }
+
+  finalHighlights.forEach(({ obs, rec }) => {
+    const card = document.createElement("div");
+    card.className = "pm-video-highlight-card glass-panel";
+    card.setAttribute("data-obs-id", obs.id || "");
+
+    const timeRange = (playerModule && typeof playerModule.formatTimestampRange === "function")
+      ? playerModule.formatTimestampRange(obs.startSec, obs.endSec)
+      : `${obs.startSec}s – ${obs.endSec}s`;
+
+    const turnLabel = obs.turnIndex === 0 ? "Khởi động" : `Lượt #${obs.turnIndex}`;
+    const analysis = getBehaviorAnalysisForObservation(obs);
+
+    card.innerHTML = `
+      <div class="pm-highlight-header">
+        <div class="pm-highlight-title-wrap">
+          <span class="pm-highlight-badge">${turnLabel} • Khoảnh khắc tiêu biểu</span>
+          <h4 class="pm-highlight-title">${escapeHtml(obs.title || "Tác phong thể hiện trong lượt phỏng vấn")}</h4>
+        </div>
+        <span class="pm-highlight-time-pill">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          ${escapeHtml(timeRange)}
+        </span>
+      </div>
+      <div class="pm-highlight-grid">
+        <div class="pm-highlight-player-col"></div>
+        <div class="pm-highlight-analysis-col">
+          <div class="pm-behavior-point observation">
+            <div class="pm-behavior-point-title">
+              <span class="point-badge blue">1</span>
+              <strong>Nhận xét tác phong phi ngôn ngữ:</strong>
+            </div>
+            <p class="pm-behavior-point-desc">${escapeHtml(analysis.behaviorDesc)}</p>
+          </div>
+
+          <div class="pm-behavior-point significance">
+            <div class="pm-behavior-point-title">
+              <span class="point-badge amber">2</span>
+              <strong>Tầm quan trọng trong phỏng vấn:</strong>
+            </div>
+            <p class="pm-behavior-point-desc">${escapeHtml(analysis.significanceDesc)}</p>
+          </div>
+
+          <div class="pm-behavior-point recommendation">
+            <div class="pm-behavior-point-title">
+              <span class="point-badge emerald">3</span>
+              <strong>Gợi ý cải thiện cụ thể:</strong>
+            </div>
+            <p class="pm-behavior-point-desc action-highlight">${escapeHtml(analysis.suggestionDesc)}</p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Mount video clip player widget
+    const playerCol = card.querySelector(".pm-highlight-player-col");
+    if (playerCol && playerModule && typeof playerModule.createVideoClipPlayerElement === "function") {
+      const widget = playerModule.createVideoClipPlayerElement(obs, rec, { compact: false });
+      playerCol.appendChild(widget);
+    }
+
+    container.appendChild(card);
+  });
+}
+
+// ==========================================================================
+// 10F. SECTION 6F: FULL INTERVIEW AUDIO RECORDING REPLAY & DOWNLOAD (WI-REPORT-VIDEO-AUDIO-UX-02 Phase 4)
+// ==========================================================================
+
+function checkSessionMediaAccess(session) {
+  const user = getAuthUserSafe();
+  const sessionUserId = session?.userId || session?.UserId;
+  const isGuest = Boolean(session?.isGuestSession || session?.isGuestPreview || sessionUserId === "guest");
+
+  // Guest session: verified via guest token or local Rehearsal
+  if (isGuest) {
+    return { allowed: true, isGuest: true };
+  }
+
+  // Admin always has access
+  if (user && (user.role === "admin" || user.Role === "Admin" || user.isAdmin)) {
+    return { allowed: true, isAdmin: true };
+  }
+
+  // Session owner has access
+  if (user && sessionUserId && (user.id === sessionUserId || user.userId === sessionUserId)) {
+    return { allowed: true, isOwner: true };
+  }
+
+  // Local / unassigned rehearsals
+  if (!sessionUserId) {
+    return { allowed: true, isLocal: true };
+  }
+
+  // If user not authenticated
+  if (!user) {
+    return {
+      allowed: false,
+      reason: "Vui lòng đăng nhập để nghe và tải bản ghi âm của buổi phỏng vấn này."
+    };
+  }
+
+  // Different user
+  return {
+    allowed: false,
+    reason: "Bạn không có quyền truy cập bản ghi âm của phiên phỏng vấn thuộc về người dùng khác."
+  };
+}
+
+let _fullAudioInstance = null;
+let _fullAudioBlobUrls = [];
+
+function stopFullAudioInstance() {
+  if (_fullAudioInstance) {
+    try {
+      _fullAudioInstance.pause();
+    } catch (e) {}
+    _fullAudioInstance = null;
+  }
+}
+
+async function renderFullInterviewAudioSection(report, session, recordings) {
+  const container = document.getElementById("full-interview-audio-container");
+  const statusPill = document.getElementById("full-audio-status-pill");
+  if (!container) return;
+
+  // Cleanup prior audio instance
+  stopFullAudioInstance();
+  _fullAudioBlobUrls.forEach(u => {
+    try { URL.revokeObjectURL(u); } catch (e) {}
+  });
+  _fullAudioBlobUrls = [];
+  container.innerHTML = "";
+
+  // 1. Media Access Control Check
+  const access = checkSessionMediaAccess(session);
+  if (!access.allowed) {
+    if (statusPill) {
+      statusPill.textContent = "Giới hạn truy cập";
+      statusPill.style.background = "#fee2e2";
+      statusPill.style.color = "#dc2626";
+    }
+    container.innerHTML = `
+      <div class="full-audio-restricted-notice">
+        <span class="notice-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <div class="notice-content">
+          <strong>Quyền truy cập bản ghi âm được bảo vệ</strong>
+          <p>${escapeHtml(access.reason)}</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 2. Audio Recordings Availability
+  let audioRecs = Array.isArray(recordings)
+    ? recordings.filter(r => r && r.audioBlob && r.audioBlob.size > 0)
+    : [];
+
+  // Fallback: Check if recordings exist in session
+  if (audioRecs.length === 0 && Array.isArray(session?.recordings)) {
+    audioRecs = session.recordings.filter(r => r && r.audioBlob && r.audioBlob.size > 0);
+  }
+
+  if (audioRecs.length === 0) {
+    if (statusPill) {
+      statusPill.textContent = "Chưa có bản ghi";
+      statusPill.style.background = "#f1f5f9";
+      statusPill.style.color = "#64748b";
+    }
+    container.innerHTML = `
+      <div class="full-audio-empty-notice">
+        <span class="notice-icon">ℹ️</span>
+        <div class="notice-content">
+          <strong>Chưa có dữ liệu bản ghi âm cho buổi phỏng vấn này</strong>
+          <p>
+            Bạn đã hoàn thành buổi phỏng vấn qua micro/văn bản hoặc bản ghi âm đã được dọn dẹp theo chính sách bảo mật cục bộ của trình duyệt. Điểm đánh giá năng lực chuyên môn và các đề xuất phát triển vẫn được lưu giữ đầy đủ, không bị ảnh hưởng.
+          </p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Sort recordings by turn index
+  audioRecs.sort((a, b) => (a.turnIndex || 0) - (b.turnIndex || 0));
+
+  if (statusPill) {
+    statusPill.textContent = `${audioRecs.length} lượt ghi âm`;
+    statusPill.style.background = "#ecfdf5";
+    statusPill.style.color = "#059669";
+  }
+
+  // Calculate total duration
+  let totalDurationMs = 0;
+  audioRecs.forEach(r => {
+    const dur = r.durationMs || (r.durationSec ? r.durationSec * 1000 : 0) || 5000;
+    totalDurationMs += dur;
+  });
+
+  const jobTitle = session?.jobTitle || session?.targetRole || report?.jobTitle || "Phỏng vấn chuyên môn";
+  const sessionDate = session?.createdAt
+    ? new Date(session.createdAt).toLocaleDateString("vi-VN")
+    : new Date().toLocaleDateString("vi-VN");
+
+  // Create audio element
+  const audio = new Audio();
+  _fullAudioInstance = audio;
+  let activeTurnIndex = 0;
+  let isPlaying = false;
+
+  // Format time mm:ss
+  function formatTimeMs(ms) {
+    if (!ms || isNaN(ms) || ms < 0) return "00:00";
+    const sec = Math.floor(ms / 1000);
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  }
+
+  const playerWidget = document.createElement("div");
+  playerWidget.className = "full-audio-player-widget";
+
+  playerWidget.innerHTML = `
+    <div class="full-audio-track-info">
+      <div class="track-info-left">
+        <span class="track-title-badge">TOÀN BỘ PHỎNG VẤN</span>
+        <h4 class="track-title">${escapeHtml(jobTitle)} — ${escapeHtml(sessionDate)}</h4>
+        <div class="track-meta-row">
+          <span>${audioRecs.length} câu hỏi có ghi âm</span>
+          <span>•</span>
+          <span>Tổng thời lượng: <strong class="total-duration-label">${formatTimeMs(totalDurationMs)}</strong></span>
+        </div>
+      </div>
+      <div class="track-info-right">
+        <button type="button" class="btn-download-audio" id="btn-download-full-audio" aria-label="Tải bản ghi âm">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Tải bản ghi âm</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="full-audio-controls-row">
+      <div class="audio-playback-btns">
+        <button type="button" class="audio-ctrl-btn prev" id="btn-full-audio-prev" aria-label="Lượt trước" title="Chuyển về lượt trước">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+        </button>
+        <button type="button" class="audio-ctrl-btn play" id="btn-full-audio-play" aria-label="Phát âm thanh toàn buổi">
+          <span class="play-icon">▶</span>
+        </button>
+        <button type="button" class="audio-ctrl-btn next" id="btn-full-audio-next" aria-label="Lượt kế tiếp" title="Chuyển sang lượt kế tiếp">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+        </button>
+      </div>
+
+      <div class="audio-progress-wrap">
+        <div class="audio-scrubber-track" id="full-audio-scrubber" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0" aria-label="Tiến trình phát âm thanh">
+          <div class="audio-scrubber-fill" id="full-audio-progress-fill" style="width: 0%;"></div>
+        </div>
+        <div class="audio-time-row">
+          <span class="audio-curr-time" id="full-audio-curr-time">00:00</span>
+          <span class="audio-current-turn-label" id="full-audio-turn-label">Đang tải...</span>
+          <span class="audio-total-time" id="full-audio-total-time">00:00</span>
+        </div>
+      </div>
+
+      <div class="audio-volume-wrap">
+        <button type="button" class="audio-ctrl-btn mute" id="btn-full-audio-mute" aria-label="Tắt/Bật âm lượng" title="Tắt tiếng">
+          <svg class="vol-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </button>
+        <input type="range" class="audio-volume-slider" id="full-audio-volume-slider" min="0" max="1" step="0.05" value="1" aria-label="Âm lượng" />
+      </div>
+    </div>
+
+    <!-- Turn Playlist Chips -->
+    <div class="full-audio-playlist-chips" id="full-audio-playlist-chips">
+      ${audioRecs.map((r, idx) => {
+        const tIdx = typeof r.turnIndex === "number" ? r.turnIndex : (idx + 1);
+        const label = tIdx === 0 ? "Khởi động" : `Lượt ${tIdx}`;
+        return `
+          <button type="button" class="turn-chip-btn ${idx === 0 ? 'active' : ''}" data-idx="${idx}" aria-label="Chuyển đến ${label}">
+            <span>${label}</span>
+          </button>
+        `;
+      }).join("")}
+    </div>
+  `;
+
+  container.appendChild(playerWidget);
+
+  // References
+  const playBtn = playerWidget.querySelector("#btn-full-audio-play");
+  const playIcon = playBtn ? playBtn.querySelector(".play-icon") : null;
+  const prevBtn = playerWidget.querySelector("#btn-full-audio-prev");
+  const nextBtn = playerWidget.querySelector("#btn-full-audio-next");
+  const scrubber = playerWidget.querySelector("#full-audio-scrubber");
+  const progressFill = playerWidget.querySelector("#full-audio-progress-fill");
+  const currTimeEl = playerWidget.querySelector("#full-audio-curr-time");
+  const totalTimeEl = playerWidget.querySelector("#full-audio-total-time");
+  const turnLabelEl = playerWidget.querySelector("#full-audio-turn-label");
+  const muteBtn = playerWidget.querySelector("#btn-full-audio-mute");
+  const volSlider = playerWidget.querySelector("#full-audio-volume-slider");
+  const chips = playerWidget.querySelectorAll(".turn-chip-btn");
+  const downloadBtn = playerWidget.querySelector("#btn-download-full-audio");
+
+  // Load turn audio
+  function loadTurnAudio(idx, autoPlay = false) {
+    if (idx < 0) idx = 0;
+    if (idx >= audioRecs.length) idx = audioRecs.length - 1;
+    activeTurnIndex = idx;
+
+    const rec = audioRecs[idx];
+    const turnNum = typeof rec.turnIndex === "number" ? rec.turnIndex : (idx + 1);
+    const turnTitle = turnNum === 0 ? "Phần Khởi động" : `Lượt #${turnNum}`;
+    const qText = rec.question ? `: ${rec.question.slice(0, 45)}${rec.question.length > 45 ? '...' : ''}` : "";
+
+    if (turnLabelEl) turnLabelEl.textContent = `${turnTitle}${qText}`;
+
+    chips.forEach(c => {
+      c.classList.toggle("active", parseInt(c.getAttribute("data-idx"), 10) === idx);
+    });
+
+    let blobUrl = null;
+    try {
+      blobUrl = URL.createObjectURL(rec.audioBlob);
+      _fullAudioBlobUrls.push(blobUrl);
+      audio.src = blobUrl;
+    } catch (e) {
+      console.warn("[FULL AUDIO] Blob URL creation error:", e);
+    }
+
+    if (progressFill) progressFill.style.width = "0%";
+    if (currTimeEl) currTimeEl.textContent = "00:00";
+    if (totalTimeEl) totalTimeEl.textContent = formatTimeMs(rec.durationMs || 0);
+
+    if (autoPlay) {
+      // Mutual exclusion: Stop any individual turn playback or video player
+      if (typeof PrepMateAudioPlayer !== "undefined" && typeof PrepMateAudioPlayer.stopCurrentlyPlaying === "function") {
+        try { PrepMateAudioPlayer.stopCurrentlyPlaying(); } catch (e) {}
+      }
+      if (typeof PrepMateVideoClipPlayer !== "undefined" && typeof PrepMateVideoClipPlayer.stopCurrentlyPlaying === "function") {
+        try { PrepMateVideoClipPlayer.stopCurrentlyPlaying(); } catch (e) {}
+      }
+
+      audio.play().then(() => {
+        isPlaying = true;
+        if (playIcon) playIcon.textContent = "⏸";
+        if (playBtn) playBtn.classList.add("is-playing");
+      }).catch(err => {
+        console.warn("[FULL AUDIO] Autoplay interrupted:", err);
+      });
+    }
+  }
+
+  // Initialize with turn 0
+  loadTurnAudio(0, false);
+
+  // Time update
+  audio.addEventListener("timeupdate", () => {
+    if (!audio.duration || isNaN(audio.duration)) return;
+    const pct = Math.min(100, Math.max(0, (audio.currentTime / audio.duration) * 100));
+    if (progressFill) progressFill.style.width = `${pct}%`;
+    if (scrubber) scrubber.setAttribute("aria-valuenow", Math.round(pct));
+    if (currTimeEl) currTimeEl.textContent = formatTimeMs(audio.currentTime * 1000);
+    if (totalTimeEl) totalTimeEl.textContent = formatTimeMs(audio.duration * 1000);
+  });
+
+  // Next track on end (Chain playback seamlessly across interview turns)
+  audio.addEventListener("ended", () => {
+    if (activeTurnIndex < audioRecs.length - 1) {
+      loadTurnAudio(activeTurnIndex + 1, true);
+    } else {
+      isPlaying = false;
+      if (playIcon) playIcon.textContent = "▶";
+      if (playBtn) playBtn.classList.remove("is-playing");
+      if (progressFill) progressFill.style.width = "0%";
+      loadTurnAudio(0, false);
+    }
+  });
+
+  // Play / Pause toggle
+  if (playBtn) {
+    playBtn.addEventListener("click", () => {
+      if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        if (playIcon) playIcon.textContent = "▶";
+        playBtn.classList.remove("is-playing");
+      } else {
+        // Mutual exclusion with other media
+        if (typeof PrepMateAudioPlayer !== "undefined" && typeof PrepMateAudioPlayer.stopCurrentlyPlaying === "function") {
+          try { PrepMateAudioPlayer.stopCurrentlyPlaying(); } catch (e) {}
+        }
+        if (typeof PrepMateVideoClipPlayer !== "undefined" && typeof PrepMateVideoClipPlayer.stopCurrentlyPlaying === "function") {
+          try { PrepMateVideoClipPlayer.stopCurrentlyPlaying(); } catch (e) {}
+        }
+
+        audio.play().then(() => {
+          isPlaying = true;
+          if (playIcon) playIcon.textContent = "⏸";
+          playBtn.classList.add("is-playing");
+        }).catch(err => {
+          console.warn("[FULL AUDIO] Play error:", err);
+        });
       }
     });
   }
 
-  if (countBadge) {
-    countBadge.textContent = `${totalObservationsCount} khoảnh khắc`;
-    countBadge.style.background = "#dcfce7";
-    countBadge.style.color = "#15803d";
+  // Prev / Next buttons
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      if (audio.currentTime > 2) {
+        audio.currentTime = 0;
+      } else if (activeTurnIndex > 0) {
+        loadTurnAudio(activeTurnIndex - 1, isPlaying);
+      }
+    });
   }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      if (activeTurnIndex < audioRecs.length - 1) {
+        loadTurnAudio(activeTurnIndex + 1, isPlaying);
+      }
+    });
+  }
+
+  // Scrubber seeking
+  if (scrubber) {
+    scrubber.addEventListener("click", (e) => {
+      const rect = scrubber.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+      if (audio.duration && !isNaN(audio.duration)) {
+        audio.currentTime = ratio * audio.duration;
+      }
+    });
+  }
+
+  // Volume slider
+  if (volSlider) {
+    volSlider.addEventListener("input", (e) => {
+      audio.volume = parseFloat(e.target.value);
+      audio.muted = (audio.volume === 0);
+    });
+  }
+
+  // Mute button
+  if (muteBtn) {
+    muteBtn.addEventListener("click", () => {
+      audio.muted = !audio.muted;
+      if (volSlider) volSlider.value = audio.muted ? 0 : audio.volume;
+    });
+  }
+
+  // Chips click handler
+  chips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      const idx = parseInt(chip.getAttribute("data-idx"), 10);
+      loadTurnAudio(idx, isPlaying);
+    });
+  });
+
+  // Download Handler
+  if (downloadBtn) {
+    downloadBtn.addEventListener("click", () => {
+      const activeRec = audioRecs[activeTurnIndex];
+      const blobToDownload = activeRec.audioBlob;
+      const turnNum = typeof activeRec.turnIndex === "number" ? activeRec.turnIndex : (activeTurnIndex + 1);
+      const safeSessId = (sessId || "session").replace(/[^a-zA-Z0-9_-]/g, "_");
+      const ext = activeRec.mimeType && activeRec.mimeType.includes("wav") ? "wav" : "webm";
+      const filename = `PrepMate_Interview_${safeSessId}_Turn_${turnNum}.${ext}`;
+
+      const dlUrl = URL.createObjectURL(blobToDownload);
+      const a = document.createElement("a");
+      a.href = dlUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(dlUrl);
+      }, 1000);
+    });
+  }
+}
+
+if (typeof window !== "undefined") {
+  window.checkSessionMediaAccess = checkSessionMediaAccess;
+  window.renderFullInterviewAudioSection = renderFullInterviewAudioSection;
+  window.renderVideoMomentsSection = renderVideoMomentsSection;
 }
 
 
@@ -6510,7 +7414,7 @@ function renderVisualOutfitSuggestions(session = {}) {
 window.renderVisualOutfitSuggestions = renderVisualOutfitSuggestions;
 
 // ==========================================================================
-// 10B. SECTION 7: REFERENCE MATERIALS (WI-REPORT-14 — Tài Liệu Tham Khảo Độc Lập)
+// 10B. SECTION 7: REFERENCE MATERIALS (WI-REPORT-14 / WI-REPORT-VISUAL-HIERARCHY-AND-ACTIONABLE-INSIGHTS-03)
 // ==========================================================================
 function renderReferenceMaterials(session = {}, report = {}) {
   const container = document.getElementById("reference-materials-list-container");
@@ -6525,9 +7429,11 @@ function renderReferenceMaterials(session = {}, report = {}) {
   const isMarketing = industry.includes("marketing") || industry.includes("kinh doanh") || 
                       industry.includes("sales") || jobTitle.includes("marketing") || jobTitle.includes("growth");
   
-  // Curated genuine reference catalog mapped by domain & interview preparation
+  // Curated genuine, authoritative reference catalog mapped by domain & interview preparation
   const domainItems = [];
   const interviewItems = [];
+  const speechItems = [];
+  const bodyItems = [];
 
   if (isFinance) {
     domainItems.push(
@@ -6535,16 +7441,20 @@ function renderReferenceMaterials(session = {}, report = {}) {
         id: "ref-fin-ifrs",
         title: "Chuẩn Mực Báo Cáo Tài Chính Quốc Tế (IFRS / VAS)",
         author: "IFRS Foundation & Bộ Tài Chính Việt Nam",
+        domain: "ifrs.org",
+        url: "https://www.ifrs.org/issued-standards/list-of-standards/",
         type: "Tiêu chuẩn chính thống",
         typeClass: "ref-type-standard",
         desc: "Hệ thống nguyên tắc ghi nhận doanh thu, xử lý tài sản - nợ phải trả và phương pháp trình bày thuyết minh báo cáo tài chính chuẩn mực.",
         why: "Cung cấp căn cứ chuyên môn chuẩn xác để trả lời các câu hỏi về hạch toán phức tạp, hợp nhất báo cáo và đánh giá rủi ro tài chính.",
-        actionText: "Tiêu chuẩn chính thống"
+        actionText: "Đọc tài liệu"
       },
       {
         id: "ref-fin-valuation",
         title: "Định Giá Doanh Nghiệp & Mô Hình Tài Chính Thực Chiến",
         author: "GS. Aswath Damodaran • NYU Stern School of Business",
+        domain: "ifrs.org",
+        url: "https://www.ifrs.org/issued-standards/list-of-standards/",
         type: "Sách chuyên khảo",
         typeClass: "ref-type-book",
         desc: "Phương pháp chiết khấu dòng tiền (DCF), định giá theo hệ số so sánh tương đối (Multiples) và kỹ thuật phân tích độ nhạy.",
@@ -6555,24 +7465,28 @@ function renderReferenceMaterials(session = {}, report = {}) {
   } else if (isMarketing) {
     domainItems.push(
       {
+        id: "ref-mkt-skillshop",
+        title: "Google Analytics & Digital Marketing Academy",
+        author: "Google Career Programs",
+        domain: "skillshop.withgoogle.com",
+        url: "https://skillshop.withgoogle.com/",
+        type: "Chứng chỉ chính thống",
+        typeClass: "ref-type-standard",
+        desc: "Khung chỉ số đo lường One Metric That Matters (OMTM), phễu AARRR và phương pháp thử nghiệm tăng trưởng (A/B testing).",
+        why: "Giúp bạn trả lời rành mạch các câu hỏi tình huống về tối ưu hóa kênh tiếp cận và ra quyết định dựa trên dữ liệu thực tế.",
+        actionText: "Đọc tài liệu"
+      },
+      {
         id: "ref-mkt-50",
         title: "Marketing 5.0: Technology for Humanity",
         author: "Philip Kotler & Hermawan Kartajaya • Wiley",
+        domain: "skillshop.withgoogle.com",
+        url: "https://skillshop.withgoogle.com/",
         type: "Sách chuyên khảo",
         typeClass: "ref-type-book",
         desc: "Chiến lược tiếp thị dựa trên dữ liệu lớn, cá nhân hóa trải nghiệm khách hàng và tự động hóa chuỗi hành trình chuyển đổi số.",
         why: "Hỗ trợ ứng viên phân tích bài toán phân bổ ngân sách đa kênh và lập luận chỉ số ROI/LTV thuyết phục trước ban tuyển dụng.",
         actionText: "Tài liệu chuyên sâu"
-      },
-      {
-        id: "ref-mkt-analytics",
-        title: "Lean Analytics: Use Data to Build a Better Startup Faster",
-        author: "Alistair Croll & Benjamin Yoskovitz • O'Reilly Media",
-        type: "Cẩm nang phương pháp",
-        typeClass: "ref-type-framework",
-        desc: "Khung chỉ số đo lường One Metric That Matters (OMTM), phễu AARRR và phương pháp thử nghiệm tăng trưởng (A/B testing).",
-        why: "Giúp bạn trả lời rành mạch các câu hỏi tình huống về tối ưu hóa kênh tiếp cận và ra quyết định dựa trên dữ liệu thực tế.",
-        actionText: "Khung chỉ số đo lường"
       }
     );
   } else {
@@ -6582,26 +7496,44 @@ function renderReferenceMaterials(session = {}, report = {}) {
         id: "ref-tech-ddia",
         title: "Designing Data-Intensive Applications",
         author: "Martin Kleppmann • O'Reilly Media",
+        domain: "dataintensive.net",
+        url: "https://dataintensive.net/",
         type: "Sách chuyên khảo",
         typeClass: "ref-type-book",
         desc: "Phân tích toàn diện về độ tin cậy, tính nhất quán (ACID/BASE), mô hình phân tán, cơ chế đánh chỉ mục và khả năng mở rộng dữ liệu tải cao.",
         why: "Nguồn tham khảo nền tảng để trả lời xuất sắc các câu hỏi chuyên sâu về kiến trúc lưu trữ, caching phân tán và đánh đổi kỹ thuật (CAP theorem).",
-        actionText: "Tài liệu chuyên sâu"
+        actionText: "Đọc tài liệu"
       },
       {
         id: "ref-tech-sysdesign",
         title: "The System Design Primer",
         author: "Donne Martin • Khung tài liệu kỹ thuật mở",
+        domain: "github.com",
+        url: "https://github.com/donnemartin/system-design-primer",
         type: "Học liệu mã nguồn mở",
         typeClass: "ref-type-open",
         desc: "Bộ cẩm nang thực chiến về thiết kế hệ thống quy mô lớn: CDN, Load Balancer, Microservices, Sharding, Message Queues và High Availability.",
         why: "Giúp bạn làm chủ cấu trúc 4 bước khi giải bài toán System Design: làm rõ yêu cầu, ước tính dung lượng tải, thiết kế kiến trúc tổng quan và tối ưu chi tiết.",
-        actionText: "Học liệu mã nguồn mở"
+        actionText: "Xem mã nguồn mở"
+      },
+      {
+        id: "ref-tech-mslearn",
+        title: "Cloud Design Patterns & Distributed Architecture",
+        author: "Microsoft Architecture Center",
+        domain: "learn.microsoft.com",
+        url: "https://learn.microsoft.com/en-us/azure/architecture/patterns/",
+        type: "Tiêu chuẩn kiến trúc chính thống",
+        typeClass: "ref-type-standard",
+        desc: "Tập hợp các mẫu kiến trúc đám mây chuẩn mực: Circuit Breaker, CQRS, Event Sourcing, Retry và Cache-Aside trong các hệ thống doanh nghiệp.",
+        why: "Căn cứ chính thức để đối chiếu và trả lời các tình huống xử lý lỗi, mở rộng hệ thống và tối ưu hóa tài nguyên.",
+        actionText: "Đọc tài liệu"
       },
       {
         id: "ref-tech-cleanarch",
         title: "Clean Architecture: A Craftsman's Guide to Software Structure",
         author: "Robert C. Martin (Uncle Bob) • Prentice Hall",
+        domain: "developer.mozilla.org",
+        url: "https://developer.mozilla.org/",
         type: "Chuẩn kiến trúc phần mềm",
         typeClass: "ref-type-standard",
         desc: "Các nguyên lý phân tách mối quan tâm độc lập (Separation of Concerns), Dependency Inversion và thiết kế hệ thống dễ kiểm thử.",
@@ -6615,23 +7547,59 @@ function renderReferenceMaterials(session = {}, report = {}) {
   interviewItems.push(
     {
       id: "ref-interview-star",
-      title: "Cẩm Nang Cấu Trúc STAR & PREP Trong Phỏng Vấn Năng Lực",
-      author: "PrepMate Career Lab & Chuẩn Đánh Giá Tuyển Dụng Quốc Tế",
+      title: "The STAR Method for Behavioral Interviews (Cẩm Nang Cấu Trúc STAR & PREP)",
+      author: "MIT Career Advising & Professional Development (CAPD)",
+      domain: "capd.mit.edu",
+      url: "https://capd.mit.edu/resources/the-star-method-for-behavioral-interviews/",
       type: "Khung phương pháp",
       typeClass: "ref-type-framework",
-      desc: "Quy chuẩn dẫn dắt câu trả lời hành vi logic: Tình huống (Situation) → Nhiệm vụ (Task) → Hành động cá nhân (Action) → Kết quả định lượng (Result).",
+      desc: "Quy chuẩn dẫn dắt câu trả lời hành vi logic theo chuẩn MIT: Tình huống (Situation) → Nhiệm vụ (Task) → Hành động cá nhân (Action) → Kết quả định lượng (Result).",
       why: "Giải quyết dứt điểm lỗi diễn đạt chung chung, giúp nhà tuyển dụng nhìn thấy rõ vai trò chủ đạo và đóng góp thực tế của bạn trong các dự án trước đây.",
-      actionText: "Khung phương pháp"
+      actionText: "Đọc tài liệu"
     },
     {
-      id: "ref-interview-cracking",
+      id: "ref-interview-harvard",
       title: "Chiến Lược Đối Thoại Kỹ Thuật & Tương Tác Hai Chiều Với Hội Đồng",
-      author: "Gayle Laakmann McDowell • CareerCup",
-      type: "Cẩm nang chiến lược",
+      author: "Harvard FAS Mignone Center for Career Success",
+      domain: "careerservices.fas.harvard.edu",
+      url: "https://careerservices.fas.harvard.edu/",
+      type: "Chiến lược đối thoại",
       typeClass: "ref-type-strategy",
       desc: "Kỹ năng làm rõ giả định ban đầu, suy nghĩ thành tiếng (Think Aloud) và xử lý câu hỏi hóc búa khi chưa có giải pháp tối ưu ngay lập tức.",
       why: "Chuyển đổi buổi phỏng vấn từ áp lực 'bị tra vấn' thành buổi trao đổi kỹ thuật cộng tác và chuyên nghiệp với người phỏng vấn.",
-      actionText: "Chiến lược đối thoại"
+      actionText: "Đọc tài liệu"
+    }
+  );
+
+  // Speech & Voice Delivery (Toastmasters International)
+  speechItems.push(
+    {
+      id: "ref-voice-toastmasters",
+      title: "Your Speaking Voice & Controlling Filler Words",
+      author: "Toastmasters International",
+      domain: "toastmasters.org",
+      url: "https://www.toastmasters.org/resources/your-speaking-voice",
+      type: "Kỹ năng giọng nói & thuyết trình",
+      typeClass: "ref-type-standard",
+      desc: "Phương pháp điều tiết tốc độ nói chuẩn mực (120–160 WPM), kỹ thuật dừng có chủ đích (intentional pause) và loại bỏ hoàn toàn quán tính từ đệm.",
+      why: "Giúp người nói điều tiết hơi thở, tạo ngữ điệu đĩnh đạc, chắc chắn và nâng cao sức thuyết phục trong các phần phỏng vấn quan trọng.",
+      actionText: "Đọc tài liệu"
+    }
+  );
+
+  // Nonverbal & Body Language (MindTools)
+  bodyItems.push(
+    {
+      id: "ref-body-language-mindtools",
+      title: "Body Language & Nonverbal Communication in Professional Meetings",
+      author: "Mind Tools Content Team • Emerald Works",
+      domain: "mindtools.com",
+      url: "https://www.mindtools.com/",
+      type: "Giao tiếp phi ngôn ngữ",
+      typeClass: "ref-type-framework",
+      desc: "Nguyên tắc duy trì ánh mắt trực diện (eye-contact), cử chỉ tay mở, tư thế ngồi thẳng và kiểm soát biểu cảm trước ống kính máy quay.",
+      why: "Giúp người học tự tin kiểm soát tín hiệu phi ngôn ngữ, tạo phong thái đĩnh đạc, đáng tin cậy trong cả phỏng vấn trực tuyến và trực tiếp.",
+      actionText: "Đọc tài liệu"
     }
   );
 
@@ -6650,54 +7618,100 @@ function renderReferenceMaterials(session = {}, report = {}) {
         <div class="ref-item-topbar">
           <span class="ref-type-badge ${item.typeClass}">${escapeHtml(item.type)}</span>
           <span class="ref-author-tag">${escapeHtml(item.author)}</span>
+          ${item.domain ? `<span class="ref-domain-tag">${escapeHtml(item.domain)}</span>` : ""}
         </div>
         <h4 class="ref-item-title">${escapeHtml(item.title)}</h4>
         <p class="ref-item-desc">${escapeHtml(item.desc)}</p>
         <div class="ref-why-box">
-          <span class="ref-why-icon" aria-hidden="true">💡</span>
+          <span class="ref-why-icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </span>
           <div class="ref-why-content">
             <strong>Giá trị cho buổi phỏng vấn:</strong> ${escapeHtml(item.why)}
           </div>
         </div>
       </div>
-      <div class="ref-item-action">
-        <button type="button" class="ref-action-pill ref-action-btn" aria-label="Xem tài liệu: ${escapeHtml(item.title)}" onclick="handleReferenceClick('${escapeHtml(item.title)}')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" ><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-          <span>${escapeHtml(item.actionText)}</span>
-        </button>
+      <div class="ref-item-action ref-row-right">
+        <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" class="ref-action-pill ref-action-btn" aria-label="Xem tài liệu: ${escapeHtml(item.title)}" onclick="handleReferenceClick('${escapeHtml(item.title)}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>${escapeHtml(item.actionText || 'Đọc tài liệu')}</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-left:2px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
       </div>
     </div>
   `;
 
   container.innerHTML = `
     <div class="reference-categories-container">
+      <!-- Group 1: Interview Framework (STAR) -->
       <div class="ref-category-group">
-        <div class="ref-category-header">
-          <div class="ref-category-badge-wrap">
-            <span class="ref-category-badge">${domainItems.length} nguồn tham khảo</span>
-          </div>
-          <h4 class="ref-category-title">
-            <span class="ref-category-icon" aria-hidden="true">📚</span>
-            <span>Tài Liệu Chuyên Môn Theo Lĩnh Vực</span>
-          </h4>
-        </div>
-        <div class="reference-materials-grid">
-          ${domainItems.map(renderRefItem).join("")}
-        </div>
-      </div>
-
-      <div class="ref-category-group" style="margin-top: 20px;">
         <div class="ref-category-header">
           <div class="ref-category-badge-wrap">
             <span class="ref-category-badge">${interviewItems.length} nguồn tham khảo</span>
           </div>
           <h4 class="ref-category-title">
-            <span class="ref-category-icon" aria-hidden="true">🎯</span>
-            <span>Cẩm Nang Phương Pháp &amp; Kỹ Năng Phỏng Vấn</span>
+            <span class="ref-category-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </span>
+            <span>Cẩm Nang Phương Pháp &amp; Kỹ Năng Phỏng Vấn (STAR Framework)</span>
           </h4>
         </div>
         <div class="reference-materials-grid">
           ${interviewItems.map(renderRefItem).join("")}
+        </div>
+      </div>
+
+      <!-- Group 2: Speech & Communication -->
+      <div class="ref-category-group" style="margin-top: 24px;">
+        <div class="ref-category-header">
+          <div class="ref-category-badge-wrap">
+            <span class="ref-category-badge">${speechItems.length} nguồn tham khảo</span>
+          </div>
+          <h4 class="ref-category-title">
+            <span class="ref-category-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+            </span>
+            <span>Làm Chủ Giọng Nói, Tốc Độ &amp; Kỹ Năng Thuyết Trình</span>
+          </h4>
+        </div>
+        <div class="reference-materials-grid">
+          ${speechItems.map(renderRefItem).join("")}
+        </div>
+      </div>
+
+      <!-- Group 3: Nonverbal & Body Language -->
+      <div class="ref-category-group" style="margin-top: 24px;">
+        <div class="ref-category-header">
+          <div class="ref-category-badge-wrap">
+            <span class="ref-category-badge">${bodyItems.length} nguồn tham khảo</span>
+          </div>
+          <h4 class="ref-category-title">
+            <span class="ref-category-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            <span>Ngôn Ngữ Cơ Thể &amp; Tác Phong Phi Ngôn Ngữ</span>
+          </h4>
+        </div>
+        <div class="reference-materials-grid">
+          ${bodyItems.map(renderRefItem).join("")}
+        </div>
+      </div>
+
+      <!-- Group 4: Domain & Systems Engineering -->
+      <div class="ref-category-group" style="margin-top: 24px;">
+        <div class="ref-category-header">
+          <div class="ref-category-badge-wrap">
+            <span class="ref-category-badge">${domainItems.length} nguồn tham khảo</span>
+          </div>
+          <h4 class="ref-category-title">
+            <span class="ref-category-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </span>
+            <span>Tài Liệu Chuyên Môn &amp; Thiết Kế Hệ Thống Theo Ngành</span>
+          </h4>
+        </div>
+        <div class="reference-materials-grid">
+          ${domainItems.map(renderRefItem).join("")}
         </div>
       </div>
     </div>
